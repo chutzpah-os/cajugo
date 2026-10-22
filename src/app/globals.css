@@ -1,7 +1,54 @@
 @import "tailwindcss";
 
-/* Tokens do design (docs/design/DESIGN.md) entram na tarefa F09. */
+/* Tokens do design: docs/design/DESIGN.md §2. */
+@theme {
+  --color-ink: #1c1b20;
+  --color-ink-2: #2b2930;
+  --color-ink-3: #3a3840;
+  --color-text-2: #4a4750;
+  --color-text-3: #6b6872;
+  --color-text-4: #8a857d;
+  --color-on-dark-2: #b7b3bc;
+  --color-bg: #f4f2ef;
+  --color-surface: #ffffff;
+  --color-line: #e6e2dc;
+  --color-line-2: #efece7;
+  --color-field: #d9d4cc;
+  --color-field-dash: #c9c3ba;
+  --color-caju: #e8551e;
+  --color-caju-ink: #c8431a;
+  --color-caju-deep: #b23c12;
+  --color-caju-soft: #fdebe3;
+  --color-caju-tint: #fff6f1;
+  --color-castanha: #f5b400;
+  --color-ok: #146b45;
+  --color-ok-soft: #e3f3ea;
+  --color-warn: #8a5a00;
+  --color-warn-soft: #fff3d1;
+  --color-info: #1e4e9c;
+  --color-info-soft: #e6eefb;
+  --color-neutral-soft: #eeecea;
+  --color-whatsapp: #1fa855;
+
+  --radius-badge: 6px;
+  --radius-input: 10px;
+  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-sheet: 20px;
+}
+
+@theme inline {
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
 body {
-  background: #f4f2ef;
-  color: #1c1b20;
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+/* Foco visível: anel 2 px ink com 2 px de afastamento (DESIGN.md §7). */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
 }
