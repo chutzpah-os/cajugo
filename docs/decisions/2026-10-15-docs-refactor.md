@@ -40,3 +40,6 @@
 
 # 2026-10-22 · Componentes com campos nativos (F09)
 - Toggle e Sim/Não são checkbox/radio nativos: funcionam em formulário de Server Action sem JS e já são acessíveis. Componentes interativos (sheet, toast) entram com as telas.
+
+# 2026-10-22 · Por que postgres no MVP
+- Decisão do dono: já funciona e evita configurar permissões agora. A proteção fica na camada de serviço; app_user entra na fase 2.

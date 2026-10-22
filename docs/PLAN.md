@@ -28,8 +28,8 @@
 - [x] **F02b** `git init` e `.gitignore` (com `.env*`, `node_modules`, `.next`).
 - [x] **F03** Definir a estrutura de pastas e registrá-la em `ARCHITECTURE.md` §3 e no `CLAUDE.md`.
 - [x] **F04** Criar o app Next.js (TypeScript, App Router) e os comandos `dev`, `lint`, `typecheck`, `test`; registrar em `CLAUDE.md` › Comandos.
-- [~] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, criar `app_user`, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
-  - Feito: `cajugo-staging` (Free, São Paulo, Postgres 17), Data API desligada, RLS automático, Confirm email desligado, senha mínima 8, conexões pelo pooler no `.env.local` testadas; migration `0000_init` aplicada (tabelas com RLS, 0 policies). Falta: decidir o `app_user`. `cajugo-prod` fica para o lançamento.
+- [x] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
+  - Feito: `cajugo-staging` (Free, São Paulo, Postgres 17), Data API desligada, RLS automático, Confirm email desligado, senha mínima 8, conexões pelo pooler no `.env.local` testadas; migration `0000_init` aplicada (tabelas com RLS, 0 policies). Decidido: o app usa o usuário `postgres` no MVP; `app_user` na fase 2 (`SECURITY.md` §4). `cajugo-prod` fica para o lançamento.
 - [x] **F06** Drizzle + Drizzle Kit (postgres.js no runtime, pooler sem prepared statements), primeira migration (`profiles`, `stores`, RLS ligado sem policy) e testes de integração com **PGlite** (Postgres em memória, sem Docker).
 - [ ] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
 - [ ] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
@@ -120,4 +120,4 @@
 ---
 
 ## Fase 2 (depois do MVP)
-Backup do banco (Supabase Pro ou `pg_dump` agendado) quando houver lojistas pagando. Recuperação de senha automática por e-mail (SMTP próprio no Supabase Auth). Usuários da loja (funcionários), vendedores com comissão, consulta de placa, notificação por WhatsApp/push, analytics de funil, app Expo (aí entra a API com Bearer e a spec OpenAPI), motos/caminhões, versões desktop dos painéis.
+Backup do banco (Supabase Pro ou `pg_dump` agendado) quando houver lojistas pagando. Usuário de banco próprio (`app_user`) com menos permissões. Recuperação de senha automática por e-mail (SMTP próprio no Supabase Auth). Usuários da loja (funcionários), vendedores com comissão, consulta de placa, notificação por WhatsApp/push, analytics de funil, app Expo (aí entra a API com Bearer e a spec OpenAPI), motos/caminhões, versões desktop dos painéis.

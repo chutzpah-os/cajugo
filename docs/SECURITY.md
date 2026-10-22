@@ -47,8 +47,10 @@
 ### Supabase fechado por padrão
 O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fechado:
 - **Desative a Data API (PostgREST)** no projeto, ou remova o schema `public` dos schemas expostos.
-- **RLS ligado em todas as tabelas, sem nenhuma policy.** Nega tudo para `anon` e `authenticated`, como defesa extra. A aplicação conecta com um usuário próprio do Postgres, que não passa pelo RLS.
-- **Usuário de banco da aplicação** (`app_user`) com acesso só ao schema da aplicação, sem superuser; as migrations rodam com outro usuário. `activity_log` só com `INSERT` para o `app_user`.
+- **RLS ligado em todas as tabelas, sem nenhuma policy.** Nega tudo para `anon` e `authenticated`, como defesa extra.
+- **Usuário de banco no MVP: o `postgres` do Supabase**, pelo pooler, tanto para a aplicação quanto para as migrations. Ele é dono das tabelas, então o RLS não se aplica a ele. A senha fica só no `.env.local` e nas variáveis da Vercel (`DEPLOYMENT.md`).
+  - Consequência: o banco não impede a aplicação de alterar ou apagar qualquer tabela. A proteção é o código: toda escrita passa pela camada de serviço, e `activity_log` só recebe `insert` (nenhum serviço faz `update`/`delete` nela; revisar no `security-review`).
+  - **Fase 2:** criar um usuário próprio (`app_user`) com acesso só às tabelas da aplicação e `activity_log` só com `INSERT`, deixando o `postgres` só para migrations.
 - A `service_role key` só é usada no servidor, e apenas para tarefas administrativas do Auth (criar conta, definir senha temporária). A `anon key` também fica só no servidor.
 - SSL obrigatório na conexão.
 

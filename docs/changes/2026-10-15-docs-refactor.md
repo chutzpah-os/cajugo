@@ -68,3 +68,6 @@
 
 # 2026-10-22 · Migration no staging
 - `pnpm db:migrate` aplicou 0000_init no cajugo-staging; conferido: profiles e stores com RLS e sem policies.
+
+# 2026-10-22 · Usuário do banco no MVP
+- SECURITY §4, DEPLOYMENT e PLAN: app e migrations usam o usuário postgres no MVP; app_user foi para a fase 2. F05 (staging) concluída.

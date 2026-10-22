@@ -12,8 +12,8 @@ Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Ve
 ## Variáveis de ambiente (Vercel, por ambiente; todas só no servidor)
 | Nome | Uso |
 |---|---|
-| `DATABASE_URL` | pooler do Supabase em modo transação (porta 6543), usuário `app_user` |
-| `DATABASE_URL_MIGRATIONS` | conexão direta, usuário de migrations (só na sua máquina, no `.env` local; não vai para a Vercel) |
+| `DATABASE_URL` | pooler do Supabase em modo transação (porta 6543), usuário `postgres` (MVP; ver `SECURITY.md` §4) |
+| `DATABASE_URL_MIGRATIONS` | pooler em modo sessão (porta 5432), usuário `postgres` (só no `.env.local`; não vai para a Vercel) |
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY` | cliente de Auth no servidor |
 | `SUPABASE_SERVICE_ROLE_KEY` | ações administrativas do Auth (criar conta, senha temporária) |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | assinatura de upload |
@@ -47,7 +47,7 @@ Migrations sempre aditivas; remover ou renomear coluna exige duas etapas (adicio
 O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o início; o Dockerfile é escrito quando a migração for decidida. O cron da Vercel vira um cron do servidor chamando a mesma rota. O banco continua no Supabase; só muda onde o Next roda.
 
 ## Checklist de produção
-- [ ] Data API do Supabase desligada; RLS ligado em todas as tabelas sem policy; `app_user` criado (`SECURITY.md` §4)
+- [ ] Data API do Supabase desligada; RLS ligado em todas as tabelas sem policy (`SECURITY.md` §4)
 - [ ] Confirmação de e-mail desligada no Supabase Auth (MVP sem e-mails do Auth)
 - [ ] URL do site e redirect URLs configuradas no Supabase Auth
 - [ ] Upload sem assinatura **desligado** no Cloudinary

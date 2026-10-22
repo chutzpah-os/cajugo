@@ -128,7 +128,7 @@ leads
   status (new|contacting|negotiating|sold|lost), created_at, updated_at
 
 reports                  id, vehicle_id, reason, description, ip_hash, status (open|resolved|dismissed), created_at
-activity_log             id, user_id, action, entity, entity_id, data (jsonb), created_at     # só INSERT
+activity_log             id, user_id, action, entity, entity_id, data (jsonb), created_at     # só INSERT (garantido no código no MVP)
 showcase_config          (1 linha) name, domain, support_whatsapp, require_approval,
                          installment_rate, installment_months, down_payment_pct, past_due_tolerance_days
 rate_limits              key + window_start (pk), count
