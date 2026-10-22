@@ -276,35 +276,30 @@ spec: 005
 # Tasks · 005 Favoritar anúncios
 
 ## Fase 1 — Fundação
-- [ ] **T001** Migration: tabela `favorites` + `listings.favoritesCount` + índices · _FAV-NFR-001_
-- [ ] **T002** [P] Criar módulo `favorites` pelo golden path (`module-info.yaml`, `@ApiModule`) · _—_
+- [ ] **T001** Migration: tabela `favorites` + `vehicles.favorites_count` + índices · _FAV-NFR-001_
 
-## Fase 2 — Testes primeiro
-- [ ] **T003** e2e: favoritar e listar · _FAV-FR-001, FAV-FR-003_
-- [ ] **T004** [P] e2e: favoritar duas vezes não duplica · _FAV-FR-004_
-- [ ] **T005** [P] e2e: usuário B não acessa favoritos de A · _FAV-SEC-001_
-- [ ] **T006** [P] e2e: limite de 1.000 · _FAV-NFR-002_
+## Fase 2 — Fatias verticais (cada task: teste falhando → código → verde)
+- [ ] **T002** Favoritar veículo publicado e listar · _FAV-FR-001, FAV-FR-003_
+- [ ] **T003** Favoritar duas vezes não duplica · _FAV-FR-004_
+- [ ] **T004** Usuário B não acessa favoritos de A · _FAV-SEC-001_
+- [ ] **T005** Limite de 1.000 favoritos · _FAV-NFR-002_
+- [ ] **T006** Remover dos favoritos · _FAV-FR-002_
 
-## Fase 3 — Implementação API
-- [ ] **T007** Repository + service com upsert transacional · _FAV-FR-001, FAV-FR-004_
-- [ ] **T008** Controller + DTOs · _FAV-FR-001..005_
-- [ ] **T009** Conferir migration, índices e a tabela de rotas do `API.md`
+## Fase 3 — Telas
+- [ ] **T007** `FavoriteButton` com estado otimista · _FAV-FR-001, FAV-FR-002_
+- [ ] **T008** Página `/conta/favoritos` · _FAV-FR-003, FAV-FR-005_
+- [ ] **T009** e2e: visitante favorita, faz login e o favorito é aplicado · _FAV-FR-006_
 
-## Fase 4 — Web
-- [ ] **T010** `FavoriteButton` com estado otimista · _FAV-FR-001, FAV-FR-002_
-- [ ] **T011** Intent pós-login · _FAV-FR-006_
-- [ ] **T012** Página `/conta/favoritos` · _FAV-FR-003, FAV-FR-005_
-
-## Fase 5 — Fechamento
-- [ ] **T013** Teste de carga da listagem (500 favoritos) · _FAV-NFR-001_
-- [ ] **T014** Relatório de rastreabilidade verde; atualizar status da spec
+## Fase 4 — Fechamento
+- [ ] **T010** Teste de carga da listagem (500 favoritos) · _FAV-NFR-001_
+- [ ] **T011** `/verify`: rastreabilidade verde; atualizar status da spec
 ```
 
 ### Regras 🤖
 - Use IDs `T001`, `T002`… sequenciais por spec.
 - `[P]` marca tasks paralelizáveis, isto é, sem dependência entre si nem arquivo em comum.
 - **Toda task cita os requisitos que atende.** Tasks de infraestrutura usam `—`.
-- **Testes vêm antes da implementação** que eles cobrem.
+- **Fatias verticais, testes primeiro** (skill `tdd`): cada task de comportamento é um ciclo completo — escreve o teste do requisito, vê falhar, implementa o mínimo, vê passar, refatora. **Não** separe "todos os testes" numa fase e "toda a implementação" em outra: os testes ficariam presos a um desenho imaginado antes de o problema ser entendido.
 - Cada task é pequena o suficiente para um commit, com no máximo ~300 linhas alteradas.
 - A última task é sempre a verificação de rastreabilidade.
 
@@ -468,61 +463,35 @@ disable-model-invocation: true
 ---
 ```
 
-O corpo de cada skill está abaixo. A lista completa de skills do projeto (inclusive as técnicas, que o agente usa sozinho) está no `CLAUDE.md`.
+As skills ficam versionadas em `.claude/skills/<nome>/SKILL.md`, que é a fonte da verdade (este documento não repete o conteúdo delas):
 
-**`/spec`**: `.claude/skills/spec/SKILL.md`
-```markdown
-Crie uma nova spec a partir da descrição: $ARGUMENTS
+| Comando | Arquivo | Etapa |
+|---|---|---|
+| `/spec <descrição>` | `.claude/skills/spec/SKILL.md` | 1. Specify (§4) |
+| `/clarify <NNN-slug>` | `.claude/skills/clarify/SKILL.md` | 2. Clarify (§5) |
+| `/plan <NNN-slug>` | `.claude/skills/plan/SKILL.md` | 3. Plan (§6) |
+| `/tasks <NNN-slug>` | `.claude/skills/tasks/SKILL.md` | 4. Tasks (§7) |
+| `/implement <NNN-slug>` | `.claude/skills/implement/SKILL.md` | 5. Implement (§8) |
+| `/verify <NNN-slug>` | `.claude/skills/verify/SKILL.md` | 6. Verify (§9) |
 
-1. Descubra o próximo número livre em docs/specs/ e gere o slug.
-2. Crie docs/specs/NNN-slug/spec.md seguindo SDD.md §4.
-3. Escreva só comportamento; nada de tecnologia.
-4. Toda dúvida vira [PENDENTE]. Não invente respostas.
-5. Inclua ao menos um requisito SEC de isolamento se houver dado de usuário.
-6. Status: draft. Ao final, liste as pendências.
-```
+A lista completa de skills do projeto (inclusive as técnicas, que o agente usa sozinho) está no `CLAUDE.md`.
 
-**`/clarify`**: `.claude/skills/clarify/SKILL.md`
-```markdown
-Leia docs/specs/$ARGUMENTS/spec.md e faça até 5 perguntas, priorizando escopo, dados e segurança.
-Depois que eu responder, incorpore as respostas na spec, remova os [PENDENTE] resolvidos
-e, se não restar nenhum, mude o status para clarified.
-```
+### 12.2 Skills do Matt Pocock dentro das etapas
+O plugin `mattpocock-skills` complementa o SDD; ele não o substitui. Cada skill entra dentro de uma etapa:
 
-**`/plan`**: `.claude/skills/plan/SKILL.md`
-```markdown
-Leia docs/specs/$ARGUMENTS/spec.md (status deve ser clarified), ARCHITECTURE.md,
-API.md e SECURITY.md. Gere plan.md (e contract.md, se houver Route Handler) seguindo SDD.md §6.
-Todo requisito deve aparecer no mapa requisito → solução.
-Preencha a checagem de conformidade (§6.3) e aponte qualquer item que não passe.
-Não escreva código de produção.
-```
+| Etapa | Skill | Para quê |
+|---|---|---|
+| 2. Clarify | `grilling` | perguntar em rodadas pela árvore de decisões até não sobrar furo |
+| 3. Plan | `domain-modeling` | manter `GLOSSARY.md` e registrar ADRs em `docs/adr/` quando surgir termo ou decisão difícil de reverter |
+| 3. Plan | `codebase-design` | desenhar `src/domains/*` como módulos profundos (interface pequena, muita lógica escondida) |
+| 5. Implement | `tdd` | ciclo vermelho → verde → refatorar em fatias verticais |
+| 6. Verify | `code-review` | revisão em dois eixos: padrões do repositório e aderência à spec |
+| Bugs | `diagnosing-bugs` | achar a causa antes de corrigir (e o teste que reproduz o bug) |
+| Ocasional | `improve-codebase-architecture` | procurar melhorias de arquitetura no código existente |
 
-**`/tasks`**: `.claude/skills/tasks/SKILL.md`
-```markdown
-Leia spec.md, plan.md e contract.md de docs/specs/$ARGUMENTS e gere tasks.md seguindo SDD.md §7.
-Testes antes da implementação; toda task cita requisitos; marque [P] o que é paralelizável;
-última task = rastreabilidade.
-```
+**Não use** as skills dele que concorrem com o SDD ou com as regras de git: `to-spec`, `to-tickets`, `implement`, `implement-spec`, `wayfinder`, `pr` e `wizard`. A spec vive em `docs/specs/`, não em issue.
 
-**`/implement`**: `.claude/skills/implement/SKILL.md`
-```markdown
-Implemente docs/specs/$ARGUMENTS seguindo SDD.md §8.
-Execute uma task por vez na ordem do tasks.md: implemente, rode os checks e marque [x].
-Só rode git commit/push se eu pedir; nunca merge, rebase ou gh pr create. Ao fim de cada task, liste os arquivos
-alterados, sugira a mensagem no formato "<tipo>(<escopo>): <descrição> [<spec>/<task>]",
-sem Co-Authored-By nem qualquer menção ao Claude, e espere o commit antes da próxima task.
-Pare e pergunte nas situações do §8.2. Não altere spec.md sem minha aprovação.
-```
-
-**`/verify`**: `.claude/skills/verify/SKILL.md`
-```markdown
-Para docs/specs/$ARGUMENTS: monte o relatório de rastreabilidade (§9.1), confira as rotas (§9.2) e liste: requisitos sem teste, testes falhando, endpoints fora do contrato, desvios do plano.
-Se estiver tudo verde, atualize o status da spec para implemented e redija a descrição do PR (§8.4),
-sem rodapé de atribuição ao Claude. Não abra o PR: eu abro.
-```
-
-### 12.2 Fluxo típico numa sessão
+### 12.3 Fluxo típico numa sessão
 
 ```
 /spec  usuário pode favoritar anúncios e ver a lista depois
@@ -537,12 +506,12 @@ sem rodapé de atribuição ao Claude. Não abra o PR: eu abro.
 
 **Onde você revisa:** depois de `/spec` + `/clarify` (intenção) e depois de `/plan` (abordagem). Revisar ali custa minutos; corrigir depois do código custa horas.
 
-### 12.3 Regras para o agente fora dos comandos
+### 12.4 Regras para o agente fora dos comandos
 - Pedido de feature sem spec: **sugira criar a spec** antes de escrever código. Exceção: o usuário dizer explicitamente "sem spec" para um protótipo descartável numa branch `spike/*`.
 - Pedido de mudança de comportamento: localize a spec afetada e proponha a alteração **antes** do código.
 - Código em branch `spike/*` nunca vai para `main`. Se o protótipo valer a pena, vira spec e é reimplementado.
 
-### 12.4 Alternativa pronta
+### 12.5 Alternativa pronta
 O **GitHub Spec Kit** (open source) implementa um fluxo parecido, com constituição, specify, plan, tasks e implement, e tem integração com o Claude Code. Este documento segue a mesma lógica, adaptada às regras do `API.md` e do `SECURITY.md`.
 
 ---

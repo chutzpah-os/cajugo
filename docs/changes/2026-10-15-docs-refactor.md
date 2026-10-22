@@ -71,3 +71,9 @@
 
 # 2026-10-22 · Usuário do banco no MVP
 - SECURITY §4, DEPLOYMENT e PLAN: app e migrations usam o usuário postgres no MVP; app_user foi para a fase 2. F05 (staging) concluída.
+
+# 2026-10-22 · F13
+- Criadas as skills /spec, /clarify, /plan, /tasks, /implement, /verify em .claude/skills; SDD §12.1 aponta para elas em vez de repetir o texto.
+
+# 2026-10-22 · SDD + skills do Matt Pocock
+- SDD §7 passa a fatias verticais (tdd); §12.2 mapeia skills do plugin por etapa; skills /clarify,/plan,/tasks,/implement,/verify, CLAUDE.md e TESTING atualizados.

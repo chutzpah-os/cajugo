@@ -43,3 +43,6 @@
 
 # 2026-10-22 · Por que postgres no MVP
 - Decisão do dono: já funciona e evita configurar permissões agora. A proteção fica na camada de serviço; app_user entra na fase 2.
+
+# 2026-10-22 · Por que fatias verticais
+- A skill tdd mostra que "todos os testes antes" prende os testes a um desenho imaginado; um teste por vez continua sendo teste primeiro e acompanha o aprendizado.

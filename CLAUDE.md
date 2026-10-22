@@ -67,7 +67,7 @@ Ficam em `.claude/skills/<nome>/SKILL.md` e viram o comando `/<nome>`. Antes de 
 
 ### Skills externas
 - **find-skills:** `npx skills add https://github.com/vercel-labs/skills --skill find-skills`
-- **mattpocock-skills** (plugin, inclui `tdd` e `improve-codebase-architecture`): `claude plugin install mattpocock-skills@claude-plugins-official` — ✅ instalado em 2026-10-22 (v1.3.1, escopo usuário). As skills dele `implement`, `implement-spec`, `pr` e `wizard` fazem commit, abrem PR ou gravam segredos: **não use**; aqui valem o `/implement` do SDD e a seção Git.
+- **mattpocock-skills** (plugin): `claude plugin install mattpocock-skills@claude-plugins-official` — ✅ instalado em 2026-10-22 (v1.3.1, escopo usuário). **Usado dentro das etapas do SDD** (`docs/SDD.md` §12.2): `grilling`, `domain-modeling`, `codebase-design`, `tdd`, `code-review`, `diagnosing-bugs`, `improve-codebase-architecture`. **Não use** `to-spec`, `to-tickets`, `implement`, `implement-spec`, `wayfinder`, `pr` e `wizard` (concorrem com o SDD, commitam, abrem PR ou gravam segredos).
 - **frontend-design:** `npx skills add https://github.com/anthropics/skills --skill frontend-design`
 - **systematic-debugging** e **brainstorming:** https://github.com/obra/superpowers
 - **Regra:** skill externa é código de terceiros. Antes de instalar, leia o `SKILL.md` e os scripts; nunca instale skill que peça segredos, rede irrestrita ou comandos de git. Mantenha a lista das instaladas.

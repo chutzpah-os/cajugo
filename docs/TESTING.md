@@ -68,6 +68,7 @@ it('[LEA-FR-002] avança lead de Novo para Em contato', async () => {
 Toda action ou serviço que recebe um id tem um teste "loja B tenta acessar o recurso da loja A" e espera **404** (`SECURITY.md` §4).
 
 ### E. Correção de bugs
+Use a skill `mattpocock-skills:diagnosing-bugs` para achar a causa antes de corrigir.
 1. **Escreva primeiro o teste que reproduz o bug.** Ele deve falhar.
 2. Corrija o código até o teste passar.
 3. O teste fica na suíte para sempre, com o ID do requisito violado no nome.
