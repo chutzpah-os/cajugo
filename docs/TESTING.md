@@ -17,17 +17,26 @@ Garantir a integridade do sistema, prevenir regressões e assegurar a qualidade 
 - O **Husky** (gratuito, open source) gerencia os git hooks. Ele é ativado sozinho no `pnpm install` (script `prepare`).
 - O hook `.husky/pre-commit` roda **`pnpm check`** (lint, tipos, formatação e testes) a cada `git commit`. **Se qualquer etapa falhar, o commit é interrompido** até o erro ser corrigido.
 - **Proibido pular o hook** (`git commit --no-verify` / `-n`). Se o hook atrapalhar de verdade, ajuste o hook, não o ignore.
-- Os testes de integração usam o Postgres local: rode `pnpm db:up` antes de commitar. Banco fora do ar faz o teste falhar com mensagem clara, nunca passar em silêncio.
+- Os testes de integração usam **PGlite** (Postgres em memória): não precisa de Docker nem de banco ligado; o hook roda em qualquer máquina.
 
 ## 4. Tipos de teste no CajuGo
 
 | Tipo | Ferramenta | O que cobre | Onde fica | Quando roda |
 |---|---|---|---|---|
 | Unitário | Vitest | funções puras: cálculo de parcela, validação de slug, máquinas de estado, schemas zod | ao lado do código: `src/**/*.test.ts` | a cada commit |
-| Integração | Vitest + Postgres local (Docker) | `service.ts` e Server Actions com banco real: regras, posse, transações | `src/domains/<domínio>/*.test.ts` | a cada commit |
+| Integração | Vitest + PGlite (Postgres em memória) | `service.ts` e Server Actions com banco real: regras, posse, transações | `src/domains/<domínio>/*.test.ts` | a cada commit |
 | Ponta a ponta (e2e) | Playwright, viewport de celular | fluxos de tela: vitrine → veículo → lead, cadastro de veículo, login | `tests/e2e/` | antes de concluir cada spec e antes de deploy em produção (lento demais para todo commit) |
 
 Integração usa banco de verdade, sem mock do banco: a regra mais importante (posse por loja) só é testada de fato com SQL real. Serviços externos (Cloudinary, gateway, Supabase Auth) são substituídos por versões falsas nos testes.
+
+### Banco nos testes de integração
+`createTestDb()` (`src/platform/db/testing/test-db.ts`) cria um **PGlite novo e vazio** e aplica todas as migrations de `drizzle/`. Um banco por teste: nenhum teste vê dados de outro, e a própria migration é testada a cada execução. Exemplo em `src/platform/db/schema.test.ts`.
+```ts
+let t: Awaited<ReturnType<typeof createTestDb>>;
+beforeEach(async () => { t = await createTestDb(); });
+afterEach(async () => { await t.close(); });
+```
+O PGlite é Postgres 17 de verdade compilado para WebAssembly. As migrations também são aplicadas no Supabase de staging antes de produção (`DEPLOYMENT.md`), o que pega qualquer diferença rara de extensão.
 
 ## 5. Como escrever testes 🤖
 

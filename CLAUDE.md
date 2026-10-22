@@ -94,10 +94,9 @@ Single-context: `GLOSSARY.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/do
 | `pnpm build` | build de produção (`output: 'standalone'`) |
 | `pnpm lint` | ESLint (Next + TypeScript + Prettier) |
 | `pnpm typecheck` | `next typegen` + `tsc --noEmit` |
-| `pnpm test` | Vitest (`src/**/*.test.ts`) |
+| `pnpm test` | Vitest (`src/**/*.test.ts`); integração usa PGlite via `createTestDb()` |
 | `pnpm format` / `pnpm format:check` | Prettier (ignora `docs/` e `.md`) |
 | `pnpm check` | lint + typecheck + format:check + test — rode antes de todo commit |
-| `pnpm db:up` / `pnpm db:down` | sobe/derruba o Postgres local (Docker) |
 | `pnpm db:generate --name <nome>` | gera migration em `drizzle/` a partir de `src/platform/db/schema.ts` |
 | `pnpm db:migrate` | aplica migrations no banco de `DATABASE_URL_MIGRATIONS` (ou `DATABASE_URL`) |
 | `pnpm db:studio` | Drizzle Studio para inspecionar o banco |

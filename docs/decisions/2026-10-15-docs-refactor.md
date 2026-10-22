@@ -34,3 +34,6 @@
 
 # 2026-10-22 · Por que Husky no pre-commit
 - Pedido do dono: testes automáticos antes de cada commit. Sem GitHub Actions, o hook local é a barreira; e2e fica fora do hook por ser lento.
+
+# 2026-10-22 · Por que PGlite
+- Sem Docker: nada para instalar nem ligar antes do commit; banco novo por teste. Diferenças raras são pegas ao migrar o staging.

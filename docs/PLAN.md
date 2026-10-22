@@ -12,7 +12,7 @@
 |---|---|---|---|
 | D1 | Gerenciador de pacotes | Fase 0 | ✅ **pnpm** |
 | D2 | Lint/format | Fase 0 | ✅ **ESLint + Prettier** |
-| D3 | Testes | Fase 0 | ✅ **Vitest** (serviços contra Postgres local em Docker) + **Playwright** (e2e) |
+| D3 | Testes | Fase 0 | ✅ **Vitest** (serviços contra PGlite, sem Docker) + **Playwright** (e2e) |
 | D4 | Validação de schema | Fase 0 | ✅ **zod** |
 | D5 | CSS / componentes | Fase 0 | ✅ **Tailwind** com os tokens do `DESIGN.md` |
 | D6 | Fonte da FIPE | spec 003 | API pública gratuita da FIPE (parallelum) com cache no banco; ou lista manual |
@@ -29,8 +29,7 @@
 - [x] **F03** Definir a estrutura de pastas e registrá-la em `ARCHITECTURE.md` §3 e no `CLAUDE.md`.
 - [x] **F04** Criar o app Next.js (TypeScript, App Router) e os comandos `dev`, `lint`, `typecheck`, `test`; registrar em `CLAUDE.md` › Comandos.
 - [ ] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, criar `app_user`, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
-- [~] **F06** Drizzle + Drizzle Kit: conexão pelo pooler, primeira migration (enums, `profiles`, `stores`, RLS ligado sem policy) e Postgres local em Docker para desenvolvimento e testes.
-  - Feito: Drizzle + postgres.js, schema `profiles`/`stores` com RLS, migration `0000_init`, `docker-compose.yml`, `.env.example`. Falta: aplicar a migration no Postgres local (precisa de acesso ao Docker).
+- [x] **F06** Drizzle + Drizzle Kit (postgres.js no runtime, pooler sem prepared statements), primeira migration (`profiles`, `stores`, RLS ligado sem policy) e testes de integração com **PGlite** (Postgres em memória, sem Docker).
 - [ ] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
 - [ ] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
 - [ ] **F09** Tokens de design (cores, tipografia Archivo/JetBrains Mono, raios) e componentes base do `DESIGN.md` §3: botão, input, chip, selo, toggle, segmentado, bottom sheet, nav inferior, cabeçalho escuro/claro, estado vazio, skeleton, toast.

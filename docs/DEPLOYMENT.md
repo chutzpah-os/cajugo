@@ -3,7 +3,7 @@
 ## Ambientes
 | Ambiente | Web | Banco + Auth | Cloudinary |
 |---|---|---|---|
-| Local | `next dev` | Postgres em Docker (testes) + projeto Supabase `cajugo-staging` (Auth) | pasta `staging/` |
+| Local | `next dev` | projeto Supabase `cajugo-staging` (banco + Auth); testes usam PGlite em memória | pasta `staging/` |
 | Preview (cada PR) | Vercel, protegido por senha | `cajugo-staging` | pasta `staging/` |
 | Produção | Vercel, branch `main` | `cajugo-prod` | pasta `prod/` |
 
@@ -38,7 +38,7 @@ Migrations sempre aditivas; remover ou renomear coluna exige duas etapas (adicio
 - **Domínio** `cajugo.com.br`: registro.br, DNS para a Vercel.
 
 ## Saída da Vercel (futuro)
-O Next roda em qualquer Node: `output: 'standalone'` no `next.config` e um Dockerfile mantidos desde o início. O cron da Vercel vira um cron do servidor chamando a mesma rota. O banco continua no Supabase; só muda onde o Next roda.
+O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o início; o Dockerfile é escrito quando a migração for decidida. O cron da Vercel vira um cron do servidor chamando a mesma rota. O banco continua no Supabase; só muda onde o Next roda.
 
 ## Checklist de produção
 - [ ] Data API do Supabase desligada; RLS ligado em todas as tabelas sem policy; `app_user` criado (`SECURITY.md` §4)

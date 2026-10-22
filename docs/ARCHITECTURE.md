@@ -13,7 +13,7 @@
 | Jobs agendados | **Vercel Cron** chamando uma rota interna | 1×/dia no Hobby, o que basta para o MVP |
 | App mobile (Expo) | Fase futura | — |
 
-**Ferramentas:** pnpm, TypeScript, ESLint + Prettier, Vitest (serviços contra Postgres local em Docker) + Playwright (e2e, viewport de celular), zod (entrada das actions), Tailwind (tokens do `design/DESIGN.md`).
+**Ferramentas:** pnpm, TypeScript, ESLint + Prettier, Vitest (serviços contra PGlite, Postgres em memória, sem Docker) + Playwright (e2e, viewport de celular), zod (entrada das actions), Tailwind (tokens do `design/DESIGN.md`).
 
 **Ainda não definido:** gateway de pagamento, e-mail transacional, fonte da FIPE. Não escolha sem perguntar.
 
@@ -85,7 +85,7 @@ Regras:
 Tabelas e colunas em inglês, `snake_case` no banco (camelCase no TypeScript). IDs `uuid` v7 gerados pela aplicação (`src/platform/db/uuid.ts`; o Postgres 17 não gera v7). Dinheiro em centavos (`integer`). Datas `timestamptz`. Enums do Postgres para status.
 
 ```
-profiles                 # 1:1 com auth.users (mesmo id; sem FK, porque o schema auth é do Supabase e não existe no Postgres local)
+profiles                 # 1:1 com auth.users (mesmo id; sem FK, porque o schema auth é do Supabase e não existe no PGlite dos testes)
   id (pk = auth.users.id), name, email, phone, role (store_owner|admin|support), must_change_password (bool),
   store_id (fk stores, null para equipe CajuGo), notify_email (bool), created_at, last_login_at
 
