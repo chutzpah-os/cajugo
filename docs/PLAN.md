@@ -28,11 +28,13 @@
 - [x] **F02b** `git init` e `.gitignore` (com `.env*`, `node_modules`, `.next`).
 - [x] **F03** Definir a estrutura de pastas e registrá-la em `ARCHITECTURE.md` §3 e no `CLAUDE.md`.
 - [x] **F04** Criar o app Next.js (TypeScript, App Router) e os comandos `dev`, `lint`, `typecheck`, `test`; registrar em `CLAUDE.md` › Comandos.
-- [ ] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, criar `app_user`, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
+- [~] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, criar `app_user`, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
+  - Feito: `cajugo-staging` (Free, São Paulo, Postgres 17), Data API desligada, RLS automático, Confirm email desligado, senha mínima 8, conexões pelo pooler no `.env.local` testadas; migration `0000_init` aplicada (tabelas com RLS, 0 policies). Falta: decidir o `app_user`. `cajugo-prod` fica para o lançamento.
 - [x] **F06** Drizzle + Drizzle Kit (postgres.js no runtime, pooler sem prepared statements), primeira migration (`profiles`, `stores`, RLS ligado sem policy) e testes de integração com **PGlite** (Postgres em memória, sem Docker).
 - [ ] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
 - [ ] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
-- [ ] **F09** Tokens de design (cores, tipografia Archivo/JetBrains Mono, raios) e componentes base do `DESIGN.md` §3: botão, input, chip, selo, toggle, segmentado, bottom sheet, nav inferior, cabeçalho escuro/claro, estado vazio, skeleton, toast.
+- [~] **F09** Tokens de design (cores, tipografia Archivo/JetBrains Mono, raios) e componentes base do `DESIGN.md` §3: botão, input, chip, selo, toggle, segmentado, bottom sheet, nav inferior, cabeçalho escuro/claro, estado vazio, skeleton, toast.
+  - Feito: tokens no Tailwind, fontes Archivo/JetBrains Mono, `src/ui/` (Logo, Button, Badge, Chip, TextField, Toggle, YesNo, EmptyState, Skeleton) com testes de acessibilidade; vitrine em `/dev/ui` (só em desenvolvimento). Falta, junto com as telas que usam: bottom sheet, nav inferior, cabeçalhos, toast, slider, opção de rádio.
 - [ ] **F10** Infra de servidor comum: `requireSession`, helper de erro (problem+json / `{ ok:false, errors }`), rate limit por IP (`rate_limits`), honeypot, `activity_log`, logger JSON.
 - [x] **F11** Verificação local única (`pnpm check`) rodada pelo Husky no pre-commit (`docs/TESTING.md`); comandos de migration. Sem GitHub Actions.
 - [ ] **F12** Script de seed com lojas e veículos de exemplo (fotos de `design/carexamplesimages/`).

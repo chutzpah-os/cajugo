@@ -23,6 +23,12 @@ Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Ve
 
 `.env.example` no repositório só com os nomes.
 
+### Onde ficam os segredos
+- **Na sua máquina:** `.env.local` na raiz (no `.gitignore`, permissão `600`). Contém a senha do banco do `cajugo-staging` e, depois, as URLs de conexão e as chaves. Copie o modelo do `.env.example`.
+- **Cópia de segurança:** num gerenciador de senhas (ex.: Bitwarden, gratuito). Se o `.env.local` se perder, é de lá que você recupera.
+- **Na Vercel:** variáveis de ambiente do projeto, por ambiente.
+- **Nunca** em documentação, issue, commit ou chat: o repositório é público.
+
 ## Ordem do deploy
 Sem GitHub Actions: as verificações rodam na sua máquina.
 1. A cada commit, o Husky roda `pnpm check` (lint, tipos, formatação, testes) e bloqueia se falhar (`TESTING.md`).

@@ -56,3 +56,15 @@
 
 # 2026-10-22 · Docker → PGlite
 - Testes de integração com PGlite (createTestDb + schema.test.ts); removidos docker-compose.yml e db:up/db:down; dev local usa o Supabase de staging. Docs atualizados (TESTING, ARCHITECTURE, DEPLOYMENT, PLAN, CLAUDE). F06 concluída.
+
+# 2026-10-22 · F09 (parcial)
+- Tokens do DESIGN.md no Tailwind, fontes via next/font, componentes base em src/ui com testes (renderToStaticMarkup) e vitrine /dev/ui.
+
+# 2026-10-22 · Segredos locais
+- Criado .env.local (ignorado, 600) com a senha do banco do staging; DEPLOYMENT documenta onde ficam os segredos, sem os valores.
+
+# 2026-10-22 · F05 (staging)
+- Projeto Supabase cajugo-staging criado e configurado; DATABASE_URL e DATABASE_URL_MIGRATIONS (pooler) testadas.
+
+# 2026-10-22 · Migration no staging
+- `pnpm db:migrate` aplicou 0000_init no cajugo-staging; conferido: profiles e stores com RLS e sem policies.
