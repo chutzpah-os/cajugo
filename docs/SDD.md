@@ -331,6 +331,8 @@ spec: 005
 Nesses casos, **não improvise:** proponha a alteração na spec ou no plano e espere aprovação.
 
 ### 8.3 Rastreabilidade no código
+Como escrever os testes (AAA, exceções, caso "loja B", bugs) e o bloqueio no commit: `TESTING.md`.
+
 Os requisitos aparecem **nos testes**, não espalhados em comentários pelo código.
 
 ```ts

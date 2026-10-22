@@ -47,3 +47,9 @@
 
 # 2026-10-22 · Commit liberado para o Claude
 - Removido o deny de git commit/push; Claude commita e sobe só quando pedido. Merge, rebase, tag, PR e gh secret continuam bloqueados (settings, CLAUDE.md, SDD, SECURITY).
+
+# 2026-10-22 · F06 (parcial)
+- Drizzle 0.45 + postgres.js; schema profiles/stores (RLS ligado); migration drizzle/0000_init.sql; docker-compose (Postgres 17); .env.example; uuidv7 com teste; scripts db:*. esbuild liberado no pnpm-workspace.
+
+# 2026-10-22 · Rotina de testes
+- Criado docs/TESTING.md (princípios, Husky, tipos de teste, AAA, bugs, prioridades, checklist). Husky 9 roda `pnpm check` no pre-commit; --no-verify bloqueado. F11 concluída.

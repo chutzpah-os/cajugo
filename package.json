@@ -11,10 +11,18 @@
     "test": "vitest run --passWithNoTests",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm test"
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm test",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "prepare": "husky"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.4",
     "next": "16.4.2",
+    "postgres": "^3.4.9",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
@@ -23,9 +31,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "prettier": "^3.9.10",
     "tailwindcss": "^4",
     "typescript": "^5",

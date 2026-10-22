@@ -27,3 +27,10 @@
 
 # 2026-10-22 · Por que liberar commit
 - Pedido do dono; o controle continua com ele (commit só quando pedido) e as operações que mexem em histórico/PR seguem bloqueadas.
+
+# 2026-10-22 · Banco (F06)
+- postgres.js: driver indicado pelo Drizzle para Supabase; prepare:false por causa do pooler em modo transação.
+- Sem FK para auth.users e slug sem citext: mantém o schema igual no Postgres local e no Supabase.
+
+# 2026-10-22 · Por que Husky no pre-commit
+- Pedido do dono: testes automáticos antes de cada commit. Sem GitHub Actions, o hook local é a barreira; e2e fica fora do hook por ser lento.

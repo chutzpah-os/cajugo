@@ -29,12 +29,13 @@
 - [x] **F03** Definir a estrutura de pastas e registrá-la em `ARCHITECTURE.md` §3 e no `CLAUDE.md`.
 - [x] **F04** Criar o app Next.js (TypeScript, App Router) e os comandos `dev`, `lint`, `typecheck`, `test`; registrar em `CLAUDE.md` › Comandos.
 - [ ] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, criar `app_user`, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
-- [ ] **F06** Drizzle + Drizzle Kit: conexão pelo pooler, primeira migration (enums, `profiles`, `stores`, RLS ligado sem policy) e Postgres local em Docker para desenvolvimento e testes.
+- [~] **F06** Drizzle + Drizzle Kit: conexão pelo pooler, primeira migration (enums, `profiles`, `stores`, RLS ligado sem policy) e Postgres local em Docker para desenvolvimento e testes.
+  - Feito: Drizzle + postgres.js, schema `profiles`/`stores` com RLS, migration `0000_init`, `docker-compose.yml`, `.env.example`. Falta: aplicar a migration no Postgres local (precisa de acesso ao Docker).
 - [ ] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
 - [ ] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
 - [ ] **F09** Tokens de design (cores, tipografia Archivo/JetBrains Mono, raios) e componentes base do `DESIGN.md` §3: botão, input, chip, selo, toggle, segmentado, bottom sheet, nav inferior, cabeçalho escuro/claro, estado vazio, skeleton, toast.
 - [ ] **F10** Infra de servidor comum: `requireSession`, helper de erro (problem+json / `{ ok:false, errors }`), rate limit por IP (`rate_limits`), honeypot, `activity_log`, logger JSON.
-- [ ] **F11** Comando único de verificação local (`pnpm check`: lint, typecheck, testes com Postgres em Docker) e comando de migration. Sem GitHub Actions.
+- [x] **F11** Verificação local única (`pnpm check`) rodada pelo Husky no pre-commit (`docs/TESTING.md`); comandos de migration. Sem GitHub Actions.
 - [ ] **F12** Script de seed com lojas e veículos de exemplo (fotos de `design/carexamplesimages/`).
 - [ ] **F13** Criar as skills de processo SDD (`/spec`, `/clarify`, `/plan`, `/tasks`, `/implement`, `/verify`) a partir do `SDD.md` §12.
 

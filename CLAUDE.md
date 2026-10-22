@@ -11,6 +11,7 @@
 | `docs/API.md` | como escrever código de servidor; mapa de rotas e actions |
 | `docs/SECURITY.md` | regras de segurança e LGPD |
 | `docs/SDD.md` | processo spec → plan → tasks → implement → verify |
+| `docs/TESTING.md` | rotina de testes automatizados e bloqueio no commit (Husky) |
 | `docs/PLAN.md` | roadmap e ordem das specs |
 | `docs/DEPLOYMENT.md` / `docs/OBSERVABILITY.md` | deploy e monitoramento |
 | `GLOSSARY.md` | vocabulário do produto (pt-BR) e nomes no código |
@@ -96,12 +97,18 @@ Single-context: `GLOSSARY.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/do
 | `pnpm test` | Vitest (`src/**/*.test.ts`) |
 | `pnpm format` / `pnpm format:check` | Prettier (ignora `docs/` e `.md`) |
 | `pnpm check` | lint + typecheck + format:check + test — rode antes de todo commit |
+| `pnpm db:up` / `pnpm db:down` | sobe/derruba o Postgres local (Docker) |
+| `pnpm db:generate --name <nome>` | gera migration em `drizzle/` a partir de `src/platform/db/schema.ts` |
+| `pnpm db:migrate` | aplica migrations no banco de `DATABASE_URL_MIGRATIONS` (ou `DATABASE_URL`) |
+| `pnpm db:studio` | Drizzle Studio para inspecionar o banco |
+
+Variáveis em `.env.local` (modelo em `.env.example`).
 
 ## Next.js 16
 Esta versão do Next mudou em relação ao que o modelo conhece. Antes de escrever código de Next, leia o guia correspondente em `node_modules/next/dist/docs/` (ver `AGENTS.md`, gerado e mantido pelo próprio `next dev`).
 
 ## Ao terminar uma mudança
-1. Rode `pnpm check`.
+1. Crie ou atualize os testes (`docs/TESTING.md` §5–6) e rode `pnpm check`. O commit é bloqueado pelo Husky se algo falhar.
 2. **Código morto:** procure funções, componentes, imports, arquivos, rotas, variáveis de ambiente e dependências sem uso nas suas alterações e ao redor. Remova o que for confirmado (busque todas as referências antes). Na dúvida, não remova: liste como suspeito no resumo.
 3. Só conclua com tudo verde.
 
@@ -109,6 +116,7 @@ Esta versão do Next mudou em relação ao que o modelo conhece. Antes de escrev
 **O Claude Code commita e faz push só quando eu pedir** ("pode comitar", "commita e sobe"). Nunca por conta própria, nem ao fim de uma task sem eu pedir.
 - Ao terminar uma task: rode `pnpm check`, liste os arquivos alterados, sugira a mensagem de commit e pare. Eu reviso e peço o commit (ou commito eu mesmo).
 - Nunca execute `git merge`, `git rebase`, `git tag`, `gh pr create`/`gh pr merge`, `push --force`, nem reescreva histórico.
+- Nunca pule o hook de pre-commit (`--no-verify` / `-n`). Se falhar, corrija.
 - **Sem coautoria:** a mensagem nunca leva `Co-Authored-By`, "Generated with Claude Code", link de sessão nem qualquer menção ao Claude. O mesmo vale para descrições de PR.
 - Formato: Conventional Commits com referência à spec e à task, ex.: `feat(vehicles): publicar veículo [003/T007]`.
 - Pode usar `git status`, `git diff` e `git log` para ler o estado do repositório.
@@ -123,7 +131,8 @@ Isso é reforçado no `.claude/settings.json` (versionado):
       "Read(./.env)", "Read(./.env.*)", "Bash(supabase db reset*)",
       "Bash(git merge:*)", "Bash(git rebase:*)", "Bash(git tag:*)",
       "Bash(gh pr create:*)", "Bash(gh pr merge:*)",
-      "Bash(gh secret set:*)"
+      "Bash(gh secret set:*)",
+      "Bash(git commit --no-verify:*)", "Bash(git commit -n:*)"
     ]
   }
 }

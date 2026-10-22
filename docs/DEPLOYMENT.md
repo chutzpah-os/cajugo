@@ -25,7 +25,7 @@ Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Ve
 
 ## Ordem do deploy
 Sem GitHub Actions: as verificações rodam na sua máquina.
-1. Antes de cada commit: lint, typecheck e testes (`CLAUDE.md` › Ao terminar uma mudança).
+1. A cada commit, o Husky roda `pnpm check` (lint, tipos, formatação, testes) e bloqueia se falhar (`TESTING.md`).
 2. Se houver migration nova: rode as **migrations do Drizzle** contra staging e, antes do merge em `main`, contra produção (`DATABASE_URL_MIGRATIONS`).
 3. Push → a Vercel faz o build e o deploy (Preview nos branches, Produção na `main`). Build quebrado não vai ao ar.
 

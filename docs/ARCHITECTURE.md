@@ -82,15 +82,15 @@ Regras:
 
 ## 4. Modelo de dados (Postgres)
 
-Tabelas e colunas em inglês, `snake_case` no banco (camelCase no TypeScript). IDs `uuid` (v7, gerados pela aplicação). Dinheiro em centavos (`integer`). Datas `timestamptz`. Enums do Postgres para status.
+Tabelas e colunas em inglês, `snake_case` no banco (camelCase no TypeScript). IDs `uuid` v7 gerados pela aplicação (`src/platform/db/uuid.ts`; o Postgres 17 não gera v7). Dinheiro em centavos (`integer`). Datas `timestamptz`. Enums do Postgres para status.
 
 ```
-profiles                 # 1:1 com auth.users
+profiles                 # 1:1 com auth.users (mesmo id; sem FK, porque o schema auth é do Supabase e não existe no Postgres local)
   id (pk = auth.users.id), name, email, phone, role (store_owner|admin|support), must_change_password (bool),
   store_id (fk stores, null para equipe CajuGo), notify_email (bool), created_at, last_login_at
 
 stores
-  id, name, slug (citext, unique), city, state, whatsapp, address, about, instagram,
+  id, name, slug (text, unique; só [a-z0-9-], validado na entrada), city, state, whatsapp, address, about, instagram,
   logo_public_id, cover_public_id, hours (jsonb), share_by_default (bool, default true),
   owner_id (fk profiles), created_at, updated_at
 

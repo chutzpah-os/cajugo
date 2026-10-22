@@ -1,0 +1,3 @@
+# Bloqueia o commit se qualquer verificação falhar (docs/TESTING.md).
+echo "pre-commit: rodando pnpm check (lint, tipos, formatação, testes)..."
+pnpm check
