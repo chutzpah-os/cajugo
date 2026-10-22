@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<meta name="ext-resource-dependency" content="images/u-1549317661-bd32c8ce0db2.jpg" data-resource-id="car1">
+<meta name="ext-resource-dependency" content="images/u-1502877338535-766e1452684a.jpg" data-resource-id="car2">
+<meta name="ext-resource-dependency" content="images/u-1606664515524-ed2f786a0bd6.jpg" data-resource-id="car3">
+<meta name="ext-resource-dependency" content="images/u-1503376780353-7e6692767b70.jpg" data-resource-id="car4">
+<meta name="ext-resource-dependency" content="images/u-1492144534655-ae79c964c9d7.jpg" data-resource-id="car5">
+<template id="__bundler_thumbnail" data-bg-color="#1C1B20"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1C1B20"/><circle cx="50" cy="52" r="18" fill="#E8551E"/><circle cx="60" cy="36" r="7" fill="#F5B400"/></svg></template>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#E9E6E1;font-family:'Archivo',system-ui,sans-serif;color:#1C1B20;-webkit-font-smoothing:antialiased}
+a{color:#C8431A;text-decoration:none}a:hover{color:#9E3312;text-decoration:underline}
+*{box-sizing:border-box}
+</style>
+</helmet>
+<section style="padding:48px 56px 0;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:760px">
+    <div style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6872">Turno 6 · Telas essenciais do MVP · 390px</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.02em">Login, Pix, filtros, confirmações, edição e detalhe da loja</div>
+    <div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">"Entrar" em <a href="#5a">5a</a> leva a <a href="#6a">6a</a>. "Gerar Pix" em <a href="#5d">5d</a> leva a <a href="#6c">6c</a>. Filtros, marcas e confirmações são clicáveis.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+  <div id="6a" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6a</span><span style="font-weight:700;font-size:15px">Entrar</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#fff;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;padding:52px 20px 32px;display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;align-items:center;gap:4px;margin-left:-12px">
+          <a href="#5a" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+          <div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:26px;font-weight:800;letter-spacing:-.02em">Entrar</div><div style="font-size:15px;color:#4A4750;line-height:1.45">Acesse o painel da sua loja ou da CajuGo.</div></div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">E-mail</div>
+            <div style="height:50px;border-radius:10px;border:1.5px solid #1C1B20;padding:0 14px;display:flex;align-items:center;font-size:15px">ricardo@autocentersilva.com.br</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">Senha</div>
+            <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px"><span style="letter-spacing:.2em">••••••••</span><span style="font-size:13px;font-weight:700;color:#C8431A">Mostrar</span></div>
+          </div>
+          <a href="#6b" style="align-self:flex-end;font-size:13px;font-weight:700;color:#C8431A;text-decoration:none;min-height:32px;display:flex;align-items:center">Esqueci minha senha</a>
+        </div>
+        <div style="height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Entrar</div>
+        <div style="flex:1"></div>
+        <div style="border-top:1px solid #E6E2DC;padding-top:20px;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center">
+          <div style="font-size:14px;color:#4A4750">Ainda não tem conta de lojista?</div>
+          <a href="#5b" style="width:100%;height:50px;border-radius:12px;border:1.5px solid #1C1B20;color:#1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none">Divulgar meus veículos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="6b" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6b</span><span style="font-weight:700;font-size:15px">Recuperar senha</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#fff;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;padding:52px 20px 32px;display:flex;flex-direction:column;gap:24px">
+        <a href="#6a" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-left:-12px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:26px;font-weight:800;letter-spacing:-.02em">Recuperar senha</div><div style="font-size:15px;color:#4A4750;line-height:1.45;text-wrap:pretty">Informe o e-mail da sua conta. Vamos enviar um link para criar uma nova senha.</div></div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:13px;font-weight:600">E-mail</div>
+          <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px">ricardo@autocentersilva.com.br</div>
+        </div>
+        <div style="height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Enviar link</div>
+        <div style="background:#E3F3EA;border-radius:12px;padding:14px;display:flex;gap:10px;align-items:flex-start">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#146B45" stroke-width="2.4" style="flex:none;margin-top:1px"><path d="m5 12 5 5 9-10"></path></svg>
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:800;color:#146B45">Link enviado</div><div style="font-size:13px;color:#146B45;line-height:1.45">Confira sua caixa de entrada e o spam. O link vale por 1 hora.</div></div>
+        </div>
+        <div style="font-size:13px;color:#6B6872;text-align:center">Não recebeu? <span style="font-weight:700;color:#C8431A">Reenviar em 0:45</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="6c" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6c</span><span style="font-weight:700;font-size:15px">Pix gerado · aguardando pagamento</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:104px">
+        <div style="background:#fff;border-bottom:1px solid #E6E2DC;padding:52px 8px 12px;display:flex;align-items:center;gap:4px">
+          <a href="#5d" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+          <div style="flex:1;font-size:17px;font-weight:800">Pague com Pix</div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+          <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:16px;background:#FFF3D1;color:#8A5A00;font-size:12px;font-weight:700"><span style="width:8px;height:8px;border-radius:50%;background:#8A5A00"></span>Aguardando pagamento · expira em 29:12</div>
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:13px;color:#6B6872">Primeira mensalidade · Plano Catálogo</div><div style="font-size:30px;font-weight:800;letter-spacing:-.02em">R$ 100,00</div></div>
+          <div style="width:200px;height:200px;border-radius:14px;border:1px solid #E6E2DC;padding:14px;display:grid;grid-template-columns:repeat(11,1fr);gap:2px">
+            <sc-for list="{{ pixQr }}" as="q" hint-placeholder-count="121"><div style="background:{{ q }};border-radius:1px"></div></sc-for>
+          </div>
+          <div style="width:100%;display:flex;flex-direction:column;gap:6px;text-align:left">
+            <div style="font-size:13px;font-weight:600">Pix copia e cola</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;min-width:0;height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:13px;font-family:'JetBrains Mono',monospace;color:#4A4750;overflow:hidden;white-space:nowrap">00020126580014br.gov.bcb.pix0136…</div>
+              <div onClick="{{ copyPix }}" style="height:50px;padding:0 14px;border-radius:10px;background:#1C1B20;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;cursor:pointer">{{ pixCopyLabel }}</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Como pagar</div>
+          <sc-for list="{{ pixSteps }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px;align-items:flex-start">
+              <div style="width:26px;height:26px;flex:none;border-radius:8px;background:#FDEBE3;color:#C8431A;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">{{ s.n }}</div>
+              <div style="font-size:14px;color:#2B2930;line-height:1.45;padding-top:3px">{{ s.t }}</div>
+            </div>
+          </sc-for>
+          <div style="font-size:12px;color:#6B6872;line-height:1.45;padding-top:4px;border-top:1px solid #EFECE7">Você pode cancelar a assinatura a qualquer momento. Esta tela atualiza sozinha quando o pagamento for confirmado.</div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px">
+        <a href="#5e" style="height:50px;border-radius:12px;border:1.5px solid #1C1B20;color:#1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none">Já paguei</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="6d" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6d</span><span style="font-weight:700;font-size:15px">Filtros e ordenação · Catálogo</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="position:absolute;inset:0;background:#fff;padding:52px 16px 0;display:flex;flex-direction:column;gap:12px">
+        <div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div>
+        <div style="height:48px;border-radius:12px;background:#F4F2EF"></div>
+      </div>
+      <div style="position:absolute;inset:0;background:rgba(28,27,32,.55)"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;top:96px;background:#fff;border-radius:20px 20px 0 0;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:center;padding-top:8px"><div style="width:40px;height:4px;border-radius:2px;background:#D9D4CC"></div></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 8px 8px 16px;border-bottom:1px solid #EFECE7">
+          <div style="font-size:18px;font-weight:800">Filtros</div>
+          <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"></path></svg></div>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:16px 16px 24px;display:flex;flex-direction:column;gap:22px">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:15px;font-weight:800">Ordenar por</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ fOrdem }}" as="c" hint-placeholder-count="6">
+                <div onClick="{{ c.onClick }}" style="min-height:36px;padding:0 12px;border-radius:18px;font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:800">Marca</div><div style="font-size:12px;font-weight:700;color:#C8431A">Ver todas</div></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ fMarcas }}" as="c" hint-placeholder-count="8">
+                <div onClick="{{ c.onClick }}" style="min-height:36px;padding:0 12px;border-radius:18px;font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.mark }}{{ c.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:15px;font-weight:800">Preço</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 12px;display:flex;align-items:center;gap:6px;font-size:15px"><span style="font-size:12px;color:#6B6872">De R$</span>40.000</div>
+              <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 12px;display:flex;align-items:center;gap:6px;font-size:15px;color:#8A857D"><span style="font-size:12px;color:#6B6872">Até R$</span>Sem limite</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:15px;font-weight:800">Ano</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 12px;display:flex;align-items:center;justify-content:space-between;font-size:15px">2018<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></div>
+              <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 12px;display:flex;align-items:center;justify-content:space-between;font-size:15px;color:#8A857D">Até<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:800">Quilometragem</div><div style="font-size:13px;font-weight:700">Até 60.000 km</div></div>
+            <div style="position:relative;height:28px;display:flex;align-items:center"><div style="position:absolute;left:0;right:0;height:4px;border-radius:2px;background:#E6E2DC"></div><div style="position:absolute;left:0;width:40%;height:4px;border-radius:2px;background:#E8551E"></div><div style="position:absolute;left:calc(40% - 12px);width:24px;height:24px;border-radius:50%;background:#fff;border:2px solid #E8551E;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:15px;font-weight:800">Câmbio</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ fCambio }}" as="c" hint-placeholder-count="3">
+                <div onClick="{{ c.onClick }}" style="min-height:36px;padding:0 12px;border-radius:18px;font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.mark }}{{ c.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:15px;font-weight:800">Combustível</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ fComb }}" as="c" hint-placeholder-count="5">
+                <div onClick="{{ c.onClick }}" style="min-height:36px;padding:0 12px;border-radius:18px;font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.bd }}">{{ c.mark }}{{ c.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px;display:flex;gap:10px">
+          <div onClick="{{ clearFiltros }}" style="flex:1;height:50px;border-radius:12px;border:1.5px solid #1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer">Limpar</div>
+          <div style="flex:1.6;height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">{{ fResultado }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="6e" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6e</span><span style="font-weight:700;font-size:15px">Editar veículo</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:104px">
+        <div style="position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #E6E2DC;padding:52px 8px 10px;display:flex;align-items:center;gap:4px">
+          <a href="#1c" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+          <div style="flex:1;font-size:17px;font-weight:800">Editar veículo</div>
+          <div style="font-size:12px;color:#6B6872;padding-right:12px">Alterado há 2 min</div>
+        </div>
+        <div style="background:#fff;padding:16px;display:flex;gap:12px;align-items:center">
+          <div style="width:88px;height:68px;flex:none;border-radius:10px;overflow:hidden;position:relative;background:#E4E0D9"><img src="images/u-1502877338535-766e1452684a.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+            <div style="font-size:15px;font-weight:800">BMW 420i</div>
+            <div style="font-size:12px;color:#6B6872">2019/2020 · 42.000 km · R$ 189.900</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:#E3F3EA;color:#146B45">Publicado</span><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:#1C1B20;color:#fff">Na CajuGo</span></div>
+          </div>
+        </div>
+        <div style="background:#fff;border-top:1px solid #EFECE7;padding:12px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">
+          <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:800">1.240</span><span style="font-size:11px;color:#6B6872">Visualizações</span></div>
+          <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:800">9</span><span style="font-size:11px;color:#6B6872">Leads</span></div>
+          <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:18px;font-weight:800">18 dias</span><span style="font-size:11px;color:#6B6872">No ar</span></div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:8px 16px;display:flex;flex-direction:column">
+          <sc-for list="{{ editSecs }}" as="s" hint-placeholder-count="8">
+            <div style="display:flex;align-items:center;gap:12px;min-height:60px;border-bottom:1px solid #EFECE7">
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700">{{ s.t }}</div><div style="font-size:13px;color:#6B6872;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.v }}</div></div>
+              <span style="font-size:13px;font-weight:700;color:#C8431A">Editar</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div onClick="{{ toggleEditShare }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700">Divulgar na CajuGo</div><div style="font-size:12px;color:#6B6872">{{ editShareCap }}</div></div>
+            <div style="width:44px;height:26px;flex:none;border-radius:13px;position:relative;background:{{ editShareBg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ editShareKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+          </div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:8px 16px;display:flex;flex-direction:column">
+          <a href="#6f" style="display:flex;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid #EFECE7;text-decoration:none;color:#1C1B20"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#146B45" stroke-width="2.2"><path d="m5 12 5 5 9-10"></path></svg><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font-size:15px;font-weight:700">Marcar como vendido</span><span style="font-size:12px;color:#6B6872">Sai do seu catálogo e da vitrine CajuGo</span></div></a>
+          <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid #EFECE7"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4A4750" stroke-width="2"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 22 12a10 10 0 0 1-3 3.9M6.6 6.6A10 10 0 0 0 2 12a10 10 0 0 0 13.4 5.4"></path></svg><div style="flex:1;display:flex;flex-direction:column;gap:1px"><span style="font-size:15px;font-weight:700">Despublicar</span><span style="font-size:12px;color:#6B6872">Volta para rascunho. Você pode publicar de novo.</span></div></div>
+          <div style="display:flex;align-items:center;gap:12px;min-height:56px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B23C12" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg><span style="font-size:15px;font-weight:700;color:#B23C12">Excluir veículo</span></div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px;display:flex;gap:10px">
+        <div style="flex:1;height:50px;border-radius:12px;border:1.5px solid #1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Ver anúncio</div>
+        <div style="flex:1.3;height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Salvar alterações</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="6f" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6f</span><span style="font-weight:700;font-size:15px">Diálogos de confirmação</span></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;max-width:390px">
+      <sc-for list="{{ dlgTabs }}" as="t" hint-placeholder-count="4">
+        <div onClick="{{ t.onClick }}" style="height:32px;padding:0 12px;border-radius:16px;font-size:12px;font-weight:700;display:flex;align-items:center;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }}">{{ t.label }}</div>
+      </sc-for>
+    </div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="position:absolute;inset:0;padding:52px 16px 0;display:flex;flex-direction:column;gap:12px">
+        <div style="height:120px;border-radius:16px;background:#1C1B20"></div>
+        <div style="height:150px;border-radius:16px;background:#fff"></div>
+        <div style="height:150px;border-radius:16px;background:#fff"></div>
+      </div>
+      <div style="position:absolute;inset:0;background:rgba(28,27,32,.55)"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;padding:8px 20px 32px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:center"><div style="width:40px;height:4px;border-radius:2px;background:#D9D4CC"></div></div>
+        <div style="width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;background:{{ dlg.iconBg }};color:{{ dlg.iconFg }}">{{ dlg.icon }}</div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="font-size:20px;font-weight:800;letter-spacing:-.01em">{{ dlg.title }}</div><div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">{{ dlg.text }}</div></div>
+        <sc-if value="{{ dlg.hasMotivos }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:13px;font-weight:600">{{ dlg.motivoLabel }}</div>
+            <sc-for list="{{ dlgMotivos }}" as="m" hint-placeholder-count="4">
+              <div onClick="{{ m.onClick }}" style="min-height:44px;border-radius:10px;padding:0 14px;display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;border:1.5px solid {{ m.bd }};background:{{ m.bg }}"><div style="width:18px;height:18px;flex:none;border-radius:50%;border:1.5px solid {{ m.dotBd }};display:flex;align-items:center;justify-content:center"><div style="width:10px;height:10px;border-radius:50%;background:{{ m.dot }}"></div></div>{{ m.label }}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ dlg.hasNote }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#F4F2EF;border-radius:12px;padding:12px 14px;font-size:13px;color:#2B2930;line-height:1.45">{{ dlg.note }}</div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:4px">
+          <div style="height:50px;border-radius:12px;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;background:{{ dlg.btnBg }};color:#fff">{{ dlg.confirm }}</div>
+          <div style="height:50px;border-radius:12px;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;border:1.5px solid #D9D4CC">{{ dlg.cancel }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="6g" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">6g</span><span style="font-weight:700;font-size:15px">Detalhe da loja · Admin</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#fff;border-bottom:1px solid #E6E2DC;padding:52px 16px 20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;gap:4px;margin-left:-12px">
+            <a href="#1d" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+            <div style="flex:1;font-size:15px;font-weight:700;color:#6B6872">Lojas</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:56px;height:56px;flex:none;border-radius:14px;background:#1C1B20;color:#fff;font-weight:800;font-size:18px;display:flex;align-items:center;justify-content:center">AS</div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:20px;font-weight:800;letter-spacing:-.01em">Auto Center Silva</div><div style="font-size:13px;color:#6B6872">Campinas (SP) · cliente desde mar/2026</div></div>
+            <span style="flex:none;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:#E3F3EA;color:#146B45">Em dia</span>
+          </div>
+          <div style="font-size:13px;font-family:'JetBrains Mono',monospace;color:#C8431A">cajugo.com.br/autocentersilva</div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <sc-for list="{{ ljKpis }}" as="k" hint-placeholder-count="3">
+              <div style="background:#fff;border:1px solid #E6E2DC;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:20px;font-weight:800">{{ k.n }}</div><div style="font-size:11px;color:#6B6872">{{ k.l }}</div></div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:800;padding-bottom:6px">Dono</div>
+            <sc-for list="{{ ljDono }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;gap:12px;min-height:40px;align-items:center;border-bottom:1px solid #EFECE7;font-size:14px"><span style="color:#6B6872">{{ d.k }}</span><span style="font-weight:600;text-align:right">{{ d.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6px"><div style="font-size:16px;font-weight:800">Assinatura</div><div style="font-size:13px;font-weight:700;color:#C8431A">Faturas</div></div>
+            <sc-for list="{{ ljAssin }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex;justify-content:space-between;gap:12px;min-height:40px;align-items:center;border-bottom:1px solid #EFECE7;font-size:14px"><span style="color:#6B6872">{{ d.k }}</span><span style="font-weight:600;text-align:right">{{ d.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6px"><div style="font-size:16px;font-weight:800">Veículos</div><div style="font-size:13px;font-weight:700;color:#C8431A">Ver todos (24)</div></div>
+            <sc-for list="{{ ljVeic }}" as="m" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;min-height:66px;border-bottom:1px solid #EFECE7">
+                <div style="width:64px;height:50px;flex:none;border-radius:8px;overflow:hidden;position:relative;background:#E4E0D9"><div style="position:absolute;inset:0;background-size:cover;background-position:center;background-image:{{ m.bgImg }}"></div></div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:800">{{ m.marca }} {{ m.modelo }}</div><div style="font-size:12px;color:#6B6872">R$ {{ m.preco }}</div></div>
+                <span style="font-size:12px;font-weight:700;color:#4A4750">Ocultar</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:8px 16px;display:flex;flex-direction:column">
+            <sc-for list="{{ ljAcoes }}" as="a" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-bottom:1px solid #EFECE7;font-size:15px;font-weight:600">{{ a }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2"><path d="m9 6 6 6-6 6"></path></svg></div>
+            </sc-for>
+            <a href="#6f" style="display:flex;align-items:center;min-height:52px;font-size:15px;font-weight:700;color:#B23C12;text-decoration:none">Suspender loja</a>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navAdmLojas }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+<section style="padding:48px 56px 0;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:760px">
+    <div style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6872">Turno 5 · Fluxo de assinatura do lojista · 390px</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.02em">Do menu da CajuGo ao catálogo da loja</div>
+    <div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">Menu <a href="#5a">5a</a> → landing <a href="#5b">5b</a> → cadastro <a href="#5c">5c</a> → pagamento <a href="#5d">5d</a> → catálogo da loja <a href="#5e">5e</a>. Os botões principais levam à próxima tela.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+  <div id="5a" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">5a</span><span style="font-weight:700;font-size:15px">Menu aberto · Catálogo CajuGo</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="position:absolute;inset:0;background:#fff;padding:52px 16px 0;display:flex;flex-direction:column;gap:12px">
+        <div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div>
+        <div style="height:48px;border-radius:12px;background:#F4F2EF"></div>
+        <div style="height:220px;border-radius:16px;background:repeating-linear-gradient(135deg,#E4E0D9 0 10px,#DDD8D0 10px 20px);overflow:hidden;position:relative"><img src="images/u-1492144534655-ae79c964c9d7.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>
+      </div>
+      <div style="position:absolute;inset:0;background:rgba(28,27,32,.55)"></div>
+      <div style="position:absolute;top:0;right:0;bottom:0;width:318px;background:#fff;padding:52px 20px 32px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div>
+          <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin-right:-10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"></path></svg></div>
+        </div>
+        <a href="#6a" style="text-decoration:none;color:#1C1B20;height:50px;border-radius:12px;border:1.5px solid #1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>Entrar</a>
+        <a href="#5b" style="text-decoration:none;color:#fff;background:#1C1B20;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#F5B400">Para lojistas</span>
+          <span style="font-size:19px;font-weight:800;line-height:1.2">Divulgar meus veículos</span>
+          <span style="font-size:13px;color:#B7B3BC;line-height:1.4">Catálogo próprio da sua loja e vitrine na CajuGo por R$ 100/mês.</span>
+          <span style="font-size:13px;font-weight:700;color:#E8551E;display:flex;align-items:center;gap:4px">Conhecer<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8551E" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+        </a>
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ menuLinks }}" as="m" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-bottom:1px solid #EFECE7;font-size:15px;font-weight:600">{{ m }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2"><path d="m9 6 6 6-6 6"></path></svg></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="5b" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">5b</span><span style="font-weight:700;font-size:15px">Landing · Catálogo para lojistas</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#1C1B20;color:#fff;padding:52px 20px 28px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px"><div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div><span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid #4A4750;color:#B7B3BC;padding:3px 7px;border-radius:5px">Lojistas</span></div>
+            <div style="font-size:14px;font-weight:700">Entrar</div>
+          </div>
+          <div style="font-size:32px;font-weight:800;letter-spacing:-.03em;line-height:1.05;text-wrap:balance">Seu estoque online hoje, com vitrine na <span style="color:#E8551E">CajuGo</span>.</div>
+          <div style="font-size:15px;color:#B7B3BC;line-height:1.5;text-wrap:pretty">Cadastre seus veículos uma vez. Eles aparecem no catálogo da sua loja e, se você quiser, na vitrine CajuGo.</div>
+          <div style="height:190px;border-radius:16px;overflow:hidden;position:relative;background:#3A3840"><img src="images/u-1552519507-da3b142c6e3d.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>
+        </div>
+        <div style="padding:24px 20px;display:flex;flex-direction:column;gap:18px;background:#fff">
+          <div style="font-size:20px;font-weight:800;letter-spacing:-.02em">O que você recebe</div>
+          <sc-for list="{{ lpBenefits }}" as="b" hint-placeholder-count="4">
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:28px;height:28px;flex:none;border-radius:8px;background:#FDEBE3;color:#C8431A;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center">{{ b.n }}</div>
+              <div style="display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:800">{{ b.t }}</div><div style="font-size:14px;color:#4A4750;line-height:1.45">{{ b.s }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin:16px 16px 0;background:#fff;border:2px solid #1C1B20;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B6872">Plano Catálogo</div>
+          <div style="display:flex;align-items:baseline;gap:4px"><span style="font-size:40px;font-weight:800;letter-spacing:-.03em">R$ 100</span><span style="font-size:15px;color:#6B6872">/mês</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ lpIncl }}" as="i" hint-placeholder-count="4">
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#146B45" stroke-width="2.6"><path d="m5 12 5 5 9-10"></path></svg>{{ i }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size:12px;color:#6B6872">Sem fidelidade. Cancele quando quiser.</div>
+        </div>
+        <div style="padding:24px 20px 8px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:20px;font-weight:800;letter-spacing:-.02em;padding-bottom:8px">Perguntas frequentes</div>
+          <sc-for list="{{ lpFaq }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;gap:4px;padding:12px 0;border-bottom:1px solid #E6E2DC"><div style="font-size:15px;font-weight:700">{{ f.q }}</div><div style="font-size:14px;color:#4A4750;line-height:1.45">{{ f.a }}</div></div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px;display:flex;align-items:center;gap:12px">
+        <div style="display:flex;flex-direction:column"><span style="font-size:18px;font-weight:800">R$ 100/mês</span><span style="font-size:11px;color:#6B6872">Plano Catálogo</span></div>
+        <a href="#5c" style="flex:1;height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none">Prosseguir</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="5c" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">5c</span><span style="font-weight:700;font-size:15px">Cadastro · Passo 1 de 2</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:104px">
+        <div style="position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #E6E2DC;padding:52px 8px 12px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:4px">
+            <a href="#5b" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+            <div style="flex:1;font-size:17px;font-weight:800">Criar conta da loja</div>
+            <div style="font-size:12px;color:#6B6872;padding-right:12px">1 de 2</div>
+          </div>
+          <div style="display:flex;gap:6px;padding:0 12px"><div style="flex:1;height:4px;border-radius:2px;background:#E8551E"></div><div style="flex:1;height:4px;border-radius:2px;background:#E6E2DC"></div></div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Sua loja</div>
+          <sc-for list="{{ cadLoja }}" as="f" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+              <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px;color:{{ f.color }}">{{ f.val }}</div>
+            </div>
+          </sc-for>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">Endereço do seu catálogo</div>
+            <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;display:flex;align-items:center;font-size:15px;overflow:hidden"><span style="background:#F4F2EF;height:100%;display:flex;align-items:center;padding:0 10px;color:#6B6872;font-size:13px;border-right:1px solid #D9D4CC">cajugo.com.br/</span><span style="padding:0 10px;font-family:'JetBrains Mono',monospace;font-size:14px">autocentersilva</span></div>
+            <div style="font-size:12px;color:#146B45;font-weight:600">Disponível</div>
+          </div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Responsável</div>
+          <sc-for list="{{ cadResp }}" as="f" hint-placeholder-count="4">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+              <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px;color:{{ f.color }}">{{ f.val }}</div>
+            </div>
+          </sc-for>
+          <div onClick="{{ toggleTermos }}" style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding-top:4px">
+            <div style="width:22px;height:22px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center;background:{{ termosBg }};border:1.5px solid {{ termosBd }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="m5 12 5 5 9-10"></path></svg></div>
+            <div style="font-size:13px;color:#4A4750;line-height:1.45">Li e aceito os <a href="#5c">Termos de uso</a> e a <a href="#5c">Política de privacidade</a>.</div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px">
+        <a href="#5d" style="height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none">Continuar para pagamento</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="5d" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">5d</span><span style="font-weight:700;font-size:15px">Pagamento · Passo 2 de 2</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:104px">
+        <div style="position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #E6E2DC;padding:52px 8px 12px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:4px">
+            <a href="#5c" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></a>
+            <div style="flex:1;font-size:17px;font-weight:800">Pagamento</div>
+            <div style="font-size:12px;color:#6B6872;padding-right:12px">2 de 2</div>
+          </div>
+          <div style="display:flex;gap:6px;padding:0 12px"><div style="flex:1;height:4px;border-radius:2px;background:#E8551E"></div><div style="flex:1;height:4px;border-radius:2px;background:#E8551E"></div></div>
+        </div>
+        <div style="margin:12px 16px 0;background:#1C1B20;color:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#B7B3BC">Resumo</span><span style="font-size:17px;font-weight:800">Plano Catálogo</span></div><div style="display:flex;align-items:baseline;gap:2px"><span style="font-size:22px;font-weight:800">R$ 100</span><span style="font-size:12px;color:#B7B3BC">/mês</span></div></div>
+          <div style="font-size:13px;color:#B7B3BC;line-height:1.45">Auto Center Silva · cobrança recorrente todo dia 26. Sem fidelidade.</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#fff;padding-top:10px;border-top:1px solid #3A3840"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F5B400" stroke-width="2.4"><path d="m5 12 5 5 9-10"></path></svg>Você pode cancelar a assinatura a qualquer momento.</div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Forma de pagamento</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <sc-for list="{{ payOpts }}" as="p" hint-placeholder-count="2">
+              <div onClick="{{ p.onClick }}" style="border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px;cursor:pointer;border:1.5px solid {{ p.bd }};background:{{ p.bg }}"><span style="font-size:15px;font-weight:800">{{ p.t }}</span><span style="font-size:12px;color:#6B6872">{{ p.s }}</span></div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ isCard }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px">
+              <sc-for list="{{ cardFields }}" as="f" hint-placeholder-count="4">
+                <div style="display:flex;flex-direction:column;gap:6px;grid-column:{{ f.span }}">
+                  <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+                  <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A857D">{{ f.ph }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isPix }}" hint-placeholder-val="{{ true }}">
+            <div style="background:#F4F2EF;border-radius:12px;padding:14px;font-size:13px;color:#4A4750;line-height:1.5">Ao confirmar, geramos um QR code Pix para a primeira mensalidade e a autorização do Pix automático para os próximos meses. Você aprova tudo no app do seu banco.</div>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">CPF ou CNPJ para a nota fiscal</div>
+            <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px">12.345.678/0001-90</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;padding:16px;font-size:12px;color:#6B6872"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Pagamento processado com segurança</div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px">
+        <a href="{{ payHref }}" style="height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none">{{ payCta }}</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="5e" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">5e</span><span style="font-weight:700;font-size:15px">Assinatura ativa · Catálogo da loja</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#1C1B20;color:#fff;padding:52px 16px 20px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#B7B3BC">Auto Center Silva</div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Meus veículos</div></div>
+            <div style="width:40px;height:40px;border-radius:50%;background:#3A3840;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">RS</div>
+          </div>
+          <div style="background:#E3F3EA;color:#146B45;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:14px;font-weight:800">Assinatura ativa. Sua loja está no ar.</div>
+            <div style="font-size:13px;font-family:'JetBrains Mono',monospace">cajugo.com.br/autocentersilva</div>
+          </div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:6px"><div style="font-size:16px;font-weight:800">Primeiros passos</div><div style="font-size:12px;color:#6B6872">1 de 3</div></div>
+            <sc-for list="{{ onboard }}" as="o" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;min-height:54px;border-bottom:1px solid #EFECE7">
+                <div style="width:24px;height:24px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:{{ o.bg }};border:1.5px solid {{ o.bd }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="m5 12 5 5 9-10"></path></svg></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:1px"><div style="font-size:14px;font-weight:700;color:{{ o.fg }}">{{ o.t }}</div><div style="font-size:12px;color:#6B6872">{{ o.s }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1.5px dashed #C9C3BA;border-radius:16px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+            <div style="width:56px;height:56px;border-radius:16px;background:#FDEBE3;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C8431A" stroke-width="1.8"><path d="M3 16v-3l2-5h14l2 5v3M3 16h18M3 16v2h3v-2M18 16v2h3v-2"></path><circle cx="7.5" cy="13" r="1"></circle><circle cx="16.5" cy="13" r="1"></circle></svg></div>
+            <div style="font-size:17px;font-weight:800">Seu catálogo está vazio</div>
+            <div style="font-size:14px;color:#4A4750;line-height:1.45;max-width:260px">Cadastre o primeiro veículo para ele aparecer no seu link e, se quiser, na vitrine CajuGo.</div>
+            <a href="#2a" style="height:48px;padding:0 20px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;text-decoration:none;margin-top:4px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>Cadastrar primeiro veículo</a>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navLoj }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+<section style="padding:48px 56px 0;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:760px">
+    <div style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6872">Turno 4 · Administrador CajuGo · 390px</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.02em">Painel, Assinaturas e Conta</div>
+    <div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">As demais abas da barra inferior de <a href="#1d">1d</a>.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+  <div id="4a" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">4a</span><span style="font-weight:700;font-size:15px">Painel</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#fff;padding:52px 16px 16px;border-bottom:1px solid #E6E2DC;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px"><div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div><span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#1C1B20;color:#fff;padding:3px 7px;border-radius:5px">Admin</span></div>
+            <div style="width:40px;height:40px;border-radius:50%;background:#F4F2EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">AD</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:13px;color:#6B6872">Setembro 2026</div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Olá, Ana</div></div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <sc-for list="{{ admKpis }}" as="k" hint-placeholder-count="4">
+              <div style="background:#fff;border:1px solid #E6E2DC;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px">
+                <div style="font-size:22px;font-weight:800;letter-spacing:-.01em">{{ k.n }}</div>
+                <div style="font-size:12px;color:#6B6872">{{ k.l }}</div>
+                <div style="font-size:11px;font-weight:700;color:#146B45;margin-top:2px">{{ k.d }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:800;padding-bottom:6px">Precisa de atenção</div>
+            <sc-for list="{{ admAlerts }}" as="a" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid #EFECE7">
+                <div style="width:32px;height:32px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;background:{{ a.bg }};color:{{ a.fg }}">{{ a.n }}</div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:1px"><div style="font-size:14px;font-weight:700">{{ a.t }}</div><div style="font-size:12px;color:#6B6872">{{ a.s }}</div></div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2"><path d="m9 6 6 6-6 6"></path></svg>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:16px;font-weight:800">Origem dos leads</div><div style="font-size:12px;color:#6B6872">318 no mês</div></div>
+            <div style="display:flex;height:12px;border-radius:6px;overflow:hidden;gap:2px"><div style="width:62%;background:#E8551E"></div><div style="flex:1;background:#1C1B20"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#E8551E"></span>Vitrine CajuGo <strong>62%</strong></span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:#1C1B20"></span>Catálogos <strong>38%</strong></span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:16px;font-weight:800;padding-bottom:6px">Lojas com mais leads</div>
+            <sc-for list="{{ admTop }}" as="t" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:12px;min-height:52px;border-bottom:1px solid #EFECE7">
+                <div style="width:34px;height:34px;flex:none;border-radius:9px;background:#1C1B20;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center">{{ t.sigla }}</div>
+                <div style="flex:1;font-size:14px;font-weight:700">{{ t.nome }}</div>
+                <div style="font-size:14px;font-weight:800">{{ t.leads }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navAdmPainel }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div id="4b" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">4b</span><span style="font-weight:700;font-size:15px">Assinaturas</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#1C1B20;color:#fff;padding:52px 16px 20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#B7B3BC">CajuGo Admin</div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Assinaturas</div></div>
+          <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:30px;font-weight:800">R$ 4.200</span><span style="font-size:13px;color:#B7B3BC">receita mensal recorrente</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <sc-for list="{{ subStats }}" as="s" hint-placeholder-count="3">
+              <div style="background:#2B2930;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:20px;font-weight:800">{{ s.n }}</div><div style="font-size:11px;color:#B7B3BC">{{ s.l }}</div></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="background:#fff;border:1px solid #E6E2DC;border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <div style="display:flex;flex-direction:column;gap:1px"><div style="font-size:14px;font-weight:800">Plano Catálogo</div><div style="font-size:12px;color:#6B6872">R$ 100/mês · cobrança todo dia 5</div></div>
+            <div style="font-size:13px;font-weight:700;color:#C8431A">Editar plano</div>
+          </div>
+          <div style="display:flex;gap:8px;overflow-x:auto">
+            <sc-for list="{{ subTabs }}" as="t" hint-placeholder-count="4">
+              <div onClick="{{ t.onClick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }}">{{ t.label }}<span style="opacity:.6">{{ t.count }}</span></div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ subList }}" as="s" hint-placeholder-count="4">
+            <div style="background:#fff;border-radius:16px;border:1px solid #E6E2DC;padding:14px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:12px;align-items:center">
+                <div style="width:42px;height:42px;flex:none;border-radius:11px;background:#1C1B20;color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">{{ s.sigla }}</div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><div style="font-size:15px;font-weight:800">{{ s.nome }}</div><div style="font-size:12px;color:#6B6872">{{ s.dono }} · desde {{ s.desde }}</div></div>
+                <span style="flex:none;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:{{ s.bg }};color:{{ s.fg }}">{{ s.plano }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:10px;border-top:1px solid #EFECE7">
+                <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:12px;color:#6B6872">{{ s.infoLabel }}</span><span style="font-size:14px;font-weight:700;color:{{ s.infoColor }}">{{ s.info }}</span></div>
+                <div onClick="{{ s.onAction }}" style="height:36px;padding:0 12px;border-radius:10px;font-size:12px;font-weight:700;display:flex;align-items:center;cursor:pointer;background:{{ s.btnBg }};color:{{ s.btnFg }};border:1px solid {{ s.btnBd }}">{{ s.action }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navAdmSub }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div id="4c" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">4c</span><span style="font-weight:700;font-size:15px">Conta · Admin</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#fff;padding:52px 16px 20px;display:flex;flex-direction:column;gap:16px;border-bottom:1px solid #E6E2DC">
+          <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Conta</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:52px;height:52px;border-radius:50%;background:#1C1B20;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">AD</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:1px"><div style="font-size:16px;font-weight:800">Ana Duarte</div><div style="font-size:13px;color:#6B6872">ana@cajugo.com.br</div></div>
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:#1C1B20;color:#fff">Admin</span>
+          </div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px 8px;display:flex;flex-direction:column">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px"><div style="font-size:16px;font-weight:800">Equipe CajuGo</div><div style="font-size:13px;font-weight:700;color:#C8431A">+ Convidar</div></div>
+          <sc-for list="{{ equipe }}" as="e" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:12px;min-height:56px;border-bottom:1px solid #EFECE7">
+              <div style="width:36px;height:36px;border-radius:50%;background:#F4F2EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">{{ e.sigla }}</div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:1px"><div style="font-size:14px;font-weight:700">{{ e.nome }}</div><div style="font-size:12px;color:#6B6872">{{ e.email }}</div></div>
+              <span style="font-size:12px;color:#4A4750;font-weight:600">{{ e.papel }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Vitrine CajuGo</div>
+          <sc-for list="{{ vitrineFields }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+              <div style="min-height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:14px;display:flex;align-items:center;font-size:15px">{{ f.val }}</div>
+            </div>
+          </sc-for>
+          <div onClick="{{ toggleAprov }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700">Aprovar veículos antes de publicar</div><div style="font-size:12px;color:#6B6872">Anúncios liberados pelos lojistas entram numa fila de revisão.</div></div>
+            <div style="width:44px;height:26px;flex:none;border-radius:13px;position:relative;background:{{ aprovBg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ aprovKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+          </div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:16px;font-weight:800">Comissão de vendedores</div><span style="font-size:10px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:6px;background:#EEECEA;color:#4A4750">Em breve</span></div>
+          <div style="font-size:13px;color:#4A4750;line-height:1.45">Percentual pago ao vendedor que indicar ou fechar a venda de um veículo da vitrine CajuGo.</div>
+          <div style="height:50px;border-radius:10px;border:1px dashed #C9C3BA;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A857D">% por venda</div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:8px 16px;display:flex;flex-direction:column">
+          <sc-for list="{{ admLinks }}" as="c" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-bottom:1px solid #EFECE7;font-size:15px;font-weight:500">{{ c }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2"><path d="m9 6 6 6-6 6"></path></svg></div>
+          </sc-for>
+        </div>
+        <div style="padding:16px"><div style="height:48px;border-radius:12px;border:1.5px solid #D9D4CC;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Sair</div></div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navAdmConta }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+<section style="padding:48px 56px 0;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:760px">
+    <div style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6872">Turno 3 · Painel do lojista · 390px</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.02em">Leads, Minha loja e Conta</div>
+    <div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">As demais abas da barra inferior de <a href="#1c">1c</a>.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+  <div id="3a" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">3a</span><span style="font-weight:700;font-size:15px">Leads</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#1C1B20;color:#fff;padding:52px 16px 20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#B7B3BC">Auto Center Silva</div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Leads</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="background:#2B2930;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:22px;font-weight:800">4</div><div style="font-size:11px;color:#B7B3BC">Novos, sem resposta</div></div>
+            <div style="background:#2B2930;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:22px;font-weight:800">62%</div><div style="font-size:11px;color:#B7B3BC">Vieram da vitrine CajuGo</div></div>
+          </div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:8px;overflow-x:auto">
+            <sc-for list="{{ leadTabs }}" as="t" hint-placeholder-count="4">
+              <div onClick="{{ t.onClick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }}">{{ t.label }}<span style="opacity:.6">{{ t.count }}</span></div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ leadList }}" as="l" hint-placeholder-count="4">
+            <div style="background:#fff;border-radius:16px;border:1px solid #E6E2DC;padding:14px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <div style="width:40px;height:40px;flex:none;border-radius:50%;background:#F4F2EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ l.sigla }}</div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <div style="display:flex;justify-content:space-between;gap:8px"><div style="font-size:15px;font-weight:800">{{ l.nome }}</div><div style="font-size:12px;color:#6B6872;flex:none">{{ l.quando }}</div></div>
+                  <div style="font-size:13px;color:#4A4750">{{ l.veiculo }}</div>
+                  <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap">
+                    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:{{ l.stBg }};color:{{ l.stFg }}">{{ l.status }}</span>
+                    <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:{{ l.orBg }};color:{{ l.orFg }}">{{ l.origem }}</span>
+                  </div>
+                </div>
+              </div>
+              <div style="font-size:13px;color:#2B2930;line-height:1.45;background:#F4F2EF;border-radius:10px;padding:10px 12px">{{ l.msg }}</div>
+              <div style="display:flex;gap:8px">
+                <div style="flex:1;height:40px;border-radius:10px;background:#1FA855;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"></path></svg>WhatsApp</div>
+                <div style="width:40px;height:40px;border-radius:10px;border:1px solid #D9D4CC;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"></path></svg></div>
+                <div onClick="{{ l.onNext }}" style="flex:1;height:40px;border-radius:10px;border:1px solid #D9D4CC;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer">{{ l.nextLabel }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navLeads }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div id="3b" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">3b</span><span style="font-weight:700;font-size:15px">Minha loja</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="position:relative;height:170px;background:#3A3840;overflow:hidden"><img src="images/u-1503376780353-7e6692767b70.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          
+          <div style="position:absolute;top:52px;right:16px;height:34px;padding:0 12px;border-radius:17px;background:rgba(255,255,255,.92);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>Trocar capa</div>
+        </div>
+        <div style="background:#fff;padding:0 16px 20px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:flex-end;gap:12px;margin-top:-32px;position:relative">
+            <div style="width:72px;height:72px;border-radius:18px;background:#1C1B20;color:#fff;font-weight:800;font-size:24px;display:flex;align-items:center;justify-content:center;border:4px solid #fff">AS</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:1px;padding-bottom:4px"><div style="font-size:19px;font-weight:800">Auto Center Silva</div><div style="font-size:12px;color:#6B6872">Campinas (SP) · 24 veículos</div></div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div style="flex:1;height:44px;border-radius:12px;background:#1C1B20;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">Ver como cliente</div>
+            <div style="flex:1;height:44px;border-radius:12px;border:1.5px solid #1C1B20;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">Compartilhar</div>
+          </div>
+        </div>
+        <div style="margin:12px 16px 0;background:#FDEBE3;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px">
+          <div style="width:64px;height:64px;flex:none;border-radius:10px;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px">
+            <sc-for list="{{ qr }}" as="q" hint-placeholder-count="25"><div style="background:{{ q }};border-radius:1px"></div></sc-for>
+          </div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:12px;color:#B23C12;font-weight:600">Link do seu catálogo</div>
+            <div style="font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;word-break:break-all">cajugo.com.br/autocentersilva</div>
+            <div style="font-size:12px;font-weight:700;color:#C8431A">Copiar link · Baixar QR code</div>
+          </div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Informações públicas</div>
+          <sc-for list="{{ lojaFields }}" as="f" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+              <div style="min-height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:14px;display:flex;align-items:center;font-size:15px;line-height:1.4">{{ f.val }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:6px">
+          <div style="font-size:16px;font-weight:800;padding-bottom:6px">Horário de atendimento</div>
+          <sc-for list="{{ horarios }}" as="h" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;min-height:40px;align-items:center;border-bottom:1px solid #EFECE7;font-size:14px"><span style="font-weight:600">{{ h.d }}</span><span style="color:#4A4750">{{ h.h }}</span></div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Preferências</div>
+          <div onClick="{{ toggleDefShare }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700">Divulgar novos veículos na CajuGo</div><div style="font-size:12px;color:#6B6872">Vem ligado ao cadastrar. Pode mudar em cada veículo.</div></div>
+            <div style="width:44px;height:26px;flex:none;border-radius:13px;position:relative;background:{{ defShareBg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ defShareKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+          </div>
+        </div>
+        <div style="padding:16px"><div style="height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Salvar alterações</div></div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navLoja }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div id="3c" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">3c</span><span style="font-weight:700;font-size:15px">Conta</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#fff;padding:52px 16px 20px;display:flex;flex-direction:column;gap:16px;border-bottom:1px solid #E6E2DC">
+          <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Conta</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:52px;height:52px;border-radius:50%;background:#1C1B20;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">RS</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:1px"><div style="font-size:16px;font-weight:800">Ricardo Silva</div><div style="font-size:13px;color:#6B6872">ricardo@autocentersilva.com.br</div></div>
+            <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:#FDEBE3;color:#B23C12">Lojista</span>
+          </div>
+        </div>
+        <div style="margin:12px 16px 0;background:#1C1B20;color:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#B7B3BC">Sua assinatura</div><div style="font-size:18px;font-weight:800">Plano Catálogo</div></div>
+            <span style="font-size:11px;font-weight:700;background:#E3F3EA;color:#146B45;padding:4px 8px;border-radius:6px;text-transform:uppercase">Ativo</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:4px"><span style="font-size:28px;font-weight:800">R$ 100</span><span style="font-size:13px;color:#B7B3BC">/mês</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="color:#B7B3BC">Próxima cobrança</span><span style="font-size:14px;font-weight:700">05/10/2026</span></div>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="color:#B7B3BC">Pagamento</span><span style="font-size:14px;font-weight:700">Pix automático</span></div>
+          </div>
+          <div style="height:42px;border-radius:10px;background:#2B2930;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">Alterar forma de pagamento</div>
+          <div style="font-size:12px;color:#B7B3BC;line-height:1.45">Você pode cancelar a assinatura a qualquer momento. O catálogo fica no ar até o fim do mês já pago.</div>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px 8px;display:flex;flex-direction:column">
+          <div style="font-size:16px;font-weight:800;padding-bottom:8px">Faturas</div>
+          <sc-for list="{{ faturas }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-bottom:1px solid #EFECE7;gap:10px">
+              <div style="display:flex;flex-direction:column;gap:1px"><span style="font-size:14px;font-weight:700">{{ f.mes }}</span><span style="font-size:12px;color:#6B6872">R$ 100,00 · {{ f.data }}</span></div>
+              <div style="display:flex;align-items:center;gap:10px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;padding:3px 7px;border-radius:6px;background:#E3F3EA;color:#146B45">Pago</span><span style="font-size:12px;font-weight:700;color:#C8431A">Recibo</span></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:20px 16px 8px;display:flex;flex-direction:column">
+          <div style="font-size:16px;font-weight:800;padding-bottom:8px">Notificações de novo lead</div>
+          <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="3">
+            <div onClick="{{ n.onClick }}" style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-bottom:1px solid #EFECE7;cursor:pointer">
+              <span style="font-size:15px;font-weight:500">{{ n.label }}</span>
+              <div style="width:44px;height:26px;flex:none;border-radius:13px;position:relative;background:{{ n.bg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ n.knob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;margin-top:12px;padding:8px 16px;display:flex;flex-direction:column">
+          <sc-for list="{{ contaLinks }}" as="c" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;justify-content:space-between;min-height:52px;border-bottom:1px solid #EFECE7;font-size:15px;font-weight:500">{{ c }}<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A857D" stroke-width="2"><path d="m9 6 6 6-6 6"></path></svg></div>
+          </sc-for>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px;align-items:center">
+          <div style="width:100%;height:48px;border-radius:12px;border:1.5px solid #D9D4CC;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Sair</div>
+          <div style="font-size:12px;font-weight:600;color:#B23C12">Cancelar assinatura</div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navConta }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+<section style="padding:48px 56px 0;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:760px">
+    <div style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6872">Turno 2 · Mobile first · 390px</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.02em">Cadastro de novo veículo</div>
+    <div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">Aberto pelo botão "Novo veículo" em <a href="#1c">1c</a>. Itens, condições e divulgação são clicáveis.</div>
+  </div>
+  <div id="2a" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">2a</span><span style="font-weight:700;font-size:15px">Novo veículo · Lojista</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:104px">
+        <div style="position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #E6E2DC;padding:52px 8px 10px;display:flex;align-items:center;gap:4px">
+          <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"></path></svg></div>
+          <div style="flex:1;font-size:17px;font-weight:800">Novo veículo</div>
+          <div style="font-size:12px;color:#6B6872;padding-right:12px">Rascunho salvo</div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:16px;font-weight:800">Fotos</div><div style="font-size:12px;color:#6B6872">3 de 20</div></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <div style="grid-column:span 2;grid-row:span 2;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,#E4E0D9 0 10px,#DDD8D0 10px 20px);position:relative;min-height:200px"><img src="images/u-1494976388531-d1058494cdd8.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><span style="position:absolute;left:8px;bottom:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:#1C1B20;color:#fff;padding:3px 7px;border-radius:5px">Capa</span></div>
+            <div style="aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#E4E0D9 0 10px,#DDD8D0 10px 20px)"><img src="images/u-1494976388531-d1058494cdd8.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 70%;transform:scale(1.8)"></div>
+            <div style="aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#E4E0D9 0 10px,#DDD8D0 10px 20px)"><img src="images/u-1494976388531-d1058494cdd8.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:75% 55%;transform:scale(2)"></div>
+            <div style="aspect-ratio:1;border-radius:12px;border:1.5px dashed #C9C3BA;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:700;color:#C8431A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8431A" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>Adicionar</div>
+          </div>
+          <div style="font-size:12px;color:#6B6872;line-height:1.4">Arraste para reordenar. A primeira foto é a capa do anúncio.</div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Identificação</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">Placa</div>
+            <div style="display:flex;gap:8px">
+              <div style="flex:1;height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px;font-family:'JetBrains Mono',monospace;letter-spacing:.06em">ABC1D23</div>
+              <div style="height:50px;padding:0 14px;border-radius:10px;background:#1C1B20;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center">Buscar dados</div>
+            </div>
+            <div style="font-size:12px;color:#6B6872">A placa não aparece no anúncio. Só o final é exibido.</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px">
+            <sc-for list="{{ fIdent }}" as="f" hint-placeholder-count="5">
+              <div style="display:flex;flex-direction:column;gap:6px;grid-column:{{ f.span }}">
+                <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+                <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 12px 0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px;color:{{ f.color }}">{{ f.val }}<sc-if value="{{ f.select }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></sc-if></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Ficha técnica</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 10px">
+            <sc-for list="{{ fFicha }}" as="f" hint-placeholder-count="8">
+              <div style="display:flex;flex-direction:column;gap:6px;grid-column:{{ f.span }}">
+                <div style="font-size:13px;font-weight:600">{{ f.label }}</div>
+                <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 12px 0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px;color:{{ f.color }}">{{ f.val }}<sc-if value="{{ f.select }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></sc-if></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Preço</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">Preço de venda</div>
+            <div style="height:56px;border-radius:10px;border:1.5px solid #1C1B20;padding:0 14px;display:flex;align-items:center;gap:6px;font-size:20px;font-weight:800"><span style="color:#6B6872;font-weight:600;font-size:16px">R$</span>349.900</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:12px;background:#E3F3EA">
+            <div style="display:flex;flex-direction:column;gap:1px"><div style="font-size:12px;color:#146B45">Tabela FIPE (set/2026)</div><div style="font-size:15px;font-weight:800;color:#146B45">R$ 366.000</div></div>
+            <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#146B45">4,4% abaixo</span>
+          </div>
+          <div onClick="{{ toggleParcela }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer">
+            <div style="display:flex;flex-direction:column;gap:1px"><div style="font-size:14px;font-weight:700">Exibir parcela estimada</div><div style="font-size:12px;color:#6B6872">"a partir de R$ 6.890/mês*"</div></div>
+            <div style="width:44px;height:26px;flex:none;border-radius:13px;position:relative;background:{{ parcelaBg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ parcelaKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+          </div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:16px;font-weight:800;padding-bottom:8px">Condições</div>
+          <sc-for list="{{ conds }}" as="c" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;border-bottom:1px solid #EFECE7">
+              <div style="font-size:15px;font-weight:500">{{ c.label }}</div>
+              <div style="display:flex;background:#F4F2EF;border-radius:10px;padding:3px;gap:2px">
+                <div onClick="{{ c.onYes }}" style="width:52px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;background:{{ c.yesBg }};color:{{ c.yesFg }}">Sim</div>
+                <div onClick="{{ c.onNo }}" style="width:52px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;background:{{ c.noBg }};color:{{ c.noFg }}">Não</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:16px;font-weight:800">Itens do veículo</div><div style="font-size:12px;color:#6B6872">{{ itensCount }}</div></div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ itensSel }}" as="i" hint-placeholder-count="10">
+              <div onClick="{{ i.onClick }}" style="min-height:38px;padding:0 12px;border-radius:19px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;background:{{ i.bg }};color:{{ i.fg }};border:1px solid {{ i.bd }}">{{ i.mark }}{{ i.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:8px">
+          <div style="font-size:16px;font-weight:800">Descrição</div>
+          <div style="min-height:132px;border-radius:10px;border:1px solid #D9D4CC;padding:12px 14px;font-size:15px;color:#8A857D;line-height:1.45">Conte o estado do veículo, revisões, diferenciais e condições de pagamento.</div>
+          <div style="font-size:12px;color:#6B6872;text-align:right">0 / 2.000</div>
+        </div>
+
+        <div style="background:#fff;margin-top:12px;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:16px;font-weight:800">Divulgação</div>
+          <div onClick="{{ toggleShare }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-radius:12px;border:1.5px solid {{ shareBd }};cursor:pointer">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700">Divulgar na CajuGo</div><div style="font-size:12px;color:#6B6872;line-height:1.4">O veículo aparece também na vitrine CajuGo. Vendas e edições feitas aqui atualizam os dois catálogos.</div></div>
+            <div style="width:44px;height:26px;flex:none;border-radius:13px;position:relative;background:{{ shareBg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ shareKnob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:13px;font-weight:600">Contato do anúncio (WhatsApp)</div>
+            <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px">(19) 99812-2015</div>
+          </div>
+        </div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px;display:flex;gap:10px">
+        <div style="flex:1;height:50px;border-radius:12px;border:1.5px solid #1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Salvar rascunho</div>
+        <div style="flex:1.3;height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Publicar</div>
+      </div>
+    </div>
+  </div>
+</section>
+<section style="padding:48px 56px 80px;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;flex-direction:column;gap:6px;max-width:760px">
+    <div style="font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B6872">Turno 1 · Mobile first · 390px</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-.02em">CajuGo — catálogo, veículo e gestão</div>
+    <div style="font-size:15px;color:#4A4750;line-height:1.5;text-wrap:pretty">Use o painel Tweaks para alternar o catálogo entre a vitrine CajuGo e a vitrine de um lojista. <a href="#1c">1c</a> é o painel do lojista; <a href="#1d">1d</a> é o painel do administrador CajuGo.</div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+  <!-- 1a CATÁLOGO -->
+  <div id="1a" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">1a</span><span style="font-weight:700;font-size:15px">Catálogo de veículos</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto">
+        <div style="position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #E6E2DC">
+          <div style="height:44px"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 16px 12px">
+            <sc-if value="{{ isCajucar }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="width:30px;height:30px;border-radius:50%;background:#E8551E;display:flex;align-items:center;justify-content:center"><div style="width:10px;height:10px;border-radius:50%;background:#F5B400;margin:-10px 0 0 10px"></div></div>
+                <div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ isLojista }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:34px;height:34px;border-radius:10px;background:#1C1B20;color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">AS</div>
+                <div style="display:flex;flex-direction:column;gap:1px"><div style="font-weight:800;font-size:16px;line-height:1.1">Auto Center Silva</div><div style="font-size:11px;color:#6B6872">Campinas (SP) · catálogo CajuGo</div></div>
+              </div>
+            </sc-if>
+            <div style="display:flex;gap:4px">
+              <div style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z"></path></svg></div>
+              <a href="#5a" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></a>
+            </div>
+          </div>
+          <div style="padding:0 16px 12px">
+            <div style="height:48px;border-radius:12px;background:#F4F2EF;display:flex;align-items:center;gap:10px;padding:0 14px;color:#6B6872;font-size:15px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              Buscar marca, modelo ou versão
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto">
+            <div style="flex:none;height:36px;padding:0 14px;border-radius:18px;background:#1C1B20;color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>Filtros<span style="background:#E8551E;border-radius:9px;min-width:18px;height:18px;font-size:11px;display:flex;align-items:center;justify-content:center">1</span></div>
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+              <div style="flex:none;height:36px;padding:0 14px;border-radius:18px;border:1px solid #D9D4CC;background:#fff;font-size:14px;font-weight:500;display:flex;align-items:center;gap:4px">{{ c }}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <div style="font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.2;text-wrap:pretty">{{ catalogTitle }}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#6B6872;margin-top:6px"><span>{{ countLabel }}</span><span style="display:flex;align-items:center;gap:4px;color:#1C1B20;font-weight:600">Mais relevantes<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></span></div>
+          </div>
+          <sc-for list="{{ catalogList }}" as="v" hint-placeholder-count="3">
+            <div style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #E6E2DC">
+              <div style="position:relative;height:220px;background:repeating-linear-gradient(135deg,#E4E0D9 0 12px,#DDD8D0 12px 24px);display:flex;align-items:center;justify-content:center"><div style="position:absolute;inset:0;background-size:cover;background-position:center;background-image:{{ v.bgImg }}"></div>
+                
+                <div style="position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z"></path></svg></div>
+                <div style="position:absolute;left:10px;bottom:10px;background:rgba(28,27,32,.72);color:#fff;font-size:12px;font-weight:600;padding:4px 9px;border-radius:12px">{{ v.fotosLabel }}</div>
+              </div>
+              <div style="padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px">
+                <sc-if value="{{ v.hasBadge }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:6px"><span style="background:#E3F3EA;color:#146B45;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:4px 8px;border-radius:6px">{{ v.badge }}</span></div>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="font-size:18px;font-weight:800;letter-spacing:-.01em">{{ v.nome }}</div>
+                  <div style="font-size:14px;color:#4A4750">{{ v.versao }}</div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:#4A4750">
+                  <span style="display:flex;align-items:center;gap:5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>{{ v.ano }}</span>
+                  <span style="display:flex;align-items:center;gap:5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="1.8"><path d="M4 18a8 8 0 1 1 16 0M12 18l4-5"></path></svg>{{ v.kmLabel }}</span>
+                  <span style="display:flex;align-items:center;gap:5px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="1.8"><path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>{{ v.cidade }}</span>
+                </div>
+                <sc-if value="{{ isCajucar }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:12px;color:#6B6872">Anunciado por <span style="color:#1C1B20;font-weight:600">{{ v.loja }}</span></div>
+                </sc-if>
+                <div style="display:flex;flex-direction:column;gap:2px;margin-top:2px">
+                  <div style="font-size:24px;font-weight:800;letter-spacing:-.02em">R$ {{ v.preco }}</div>
+                  <div style="font-size:13px;color:#4A4750">a partir de <strong>R$ {{ v.parcela }}/mês*</strong></div>
+                </div>
+                <div style="height:48px;border-radius:12px;background:#1C1B20;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer">Ver detalhes</div>
+              </div>
+            </div>
+          </sc-for>
+          <div style="height:48px;border-radius:12px;border:1.5px solid #1C1B20;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Carregar mais veículos</div>
+          <div style="font-size:11px;color:#8A857D;text-align:center;padding:4px 0 24px">*Valor estimado. Simule a sua parcela.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1b VEÍCULO -->
+  <div id="1b" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">1b</span><span style="font-weight:700;font-size:15px">Página do veículo</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:96px">
+        <div style="position:relative;height:300px;background:repeating-linear-gradient(135deg,#E4E0D9 0 12px,#DDD8D0 12px 24px);display:flex;align-items:center;justify-content:center"><img src="images/u-1549317661-bd32c8ce0db2.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+          
+          <div style="position:absolute;top:52px;left:16px;right:16px;display:flex;justify-content:space-between">
+            <div style="width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="2"><path d="M15 6l-6 6 6 6"></path></svg></div>
+            <div style="display:flex;gap:8px">
+              <div style="width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"></path></svg></div>
+              <div style="width:44px;height:44px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z"></path></svg></div>
+            </div>
+          </div>
+          <div style="position:absolute;right:16px;bottom:28px;background:rgba(28,27,32,.72);color:#fff;font-size:12px;font-weight:600;padding:4px 9px;border-radius:12px">1/15</div>
+        </div>
+        <div style="background:#fff;border-radius:20px 20px 0 0;margin-top:-18px;position:relative;padding:20px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:6px;flex-wrap:wrap"><span style="background:#E3F3EA;color:#146B45;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:4px 8px;border-radius:6px">Abaixo da FIPE</span><span style="background:#FDEBE3;color:#B23C12;font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:4px 8px;border-radius:6px">Aceita troca</span></div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <div style="font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1">FIAT <span style="color:#E8551E">500</span></div>
+            <div style="font-size:13px;font-weight:500;color:#4A4750;text-transform:uppercase;letter-spacing:.02em">1.4 Cult Flex Manual</div>
+          </div>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:14px;border-radius:14px;background:#F4F2EF">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:28px;font-weight:800;letter-spacing:-.02em">R$ 49.900</div><div style="font-size:13px;color:#4A4750">a partir de <strong>R$ 985/mês*</strong></div></div>
+            <div style="font-size:13px;font-weight:700;color:#C8431A;padding-bottom:3px">Simular</div>
+          </div>
+        </div>
+        <div style="background:#fff;padding:4px 16px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;border-bottom:1px solid #E6E2DC">
+          <div style="grid-column:1 / -1;display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#6B6872">Cidade</div><div style="font-size:16px;font-weight:700">São José do Rio Preto - SP</div></div>
+          <sc-for list="{{ specs }}" as="s" hint-placeholder-count="10">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#6B6872">{{ s.k }}</div><div style="font-size:16px;font-weight:700">{{ s.v }}</div></div>
+          </sc-for>
+        </div>
+        <div style="background:#fff;padding:20px 16px;display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #E6E2DC">
+          <div style="font-size:12px;color:#6B6872">Sobre este carro</div>
+          <div style="font-size:15px;line-height:1.55;color:#2B2930;text-wrap:pretty">Fiat 500 Cult COMPLETO, ÚNICO DONO, AR CONDICIONADO, DIREÇÃO ELÉTRICA, VIDROS E TRAVAS ELÉTRICAS, RODAS DE LIGA LEVE, REVISÕES EM DIA. FINANCIAMOS E ACEITAMOS TROCAS. Outros opcionais: computador de bordo, freios ABS com EBD, pára-choques na cor do veículo.</div>
+        </div>
+        <div style="background:#fff;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:12px;color:#6B6872">Itens do veículo</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ itens }}" as="i" hint-placeholder-count="8">
+              <span style="font-size:13px;font-weight:600;padding:7px 11px;border-radius:8px;background:#F4F2EF">{{ i }}</span>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin:12px 16px 0;background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px;border:1px solid #E6E2DC">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:48px;height:48px;border-radius:12px;background:#1C1B20;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center">LV</div>
+            <div style="display:flex;flex-direction:column;gap:2px;flex:1"><div style="font-weight:800;font-size:16px">Líder Veículos</div><div style="font-size:13px;color:#6B6872">São José do Rio Preto (SP)</div></div>
+          </div>
+          <div style="height:44px;border-radius:12px;border:1.5px solid #1C1B20;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center">Ver estoque da loja</div>
+        </div>
+        <div style="margin:12px 16px 0;background:#fff;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;border:1px solid #E6E2DC">
+          <div style="font-size:17px;font-weight:800">Envie uma mensagem à loja</div>
+          <sc-for list="{{ campos }}" as="f" hint-placeholder-count="3">
+            <div style="height:50px;border-radius:10px;border:1px solid #D9D4CC;padding:0 14px;display:flex;align-items:center;font-size:15px;color:#8A857D">{{ f }}</div>
+          </sc-for>
+          <div style="min-height:92px;border-radius:10px;border:1px solid #D9D4CC;padding:12px 14px;font-size:15px;color:#2B2930;line-height:1.4">Olá, tenho interesse no veículo. Por favor entre em contato.</div>
+          <div style="height:50px;border-radius:12px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Enviar mensagem</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;padding:20px 16px 12px;font-size:13px;color:#4A4750"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A4750" stroke-width="1.8"><path d="M5 21V4h11l-2 4 2 4H5"></path></svg>Denunciar anúncio do veículo</div>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:12px 16px 28px;display:flex;gap:10px">
+        <div style="flex:1;height:50px;border-radius:12px;background:#1FA855;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"></path></svg>WhatsApp</div>
+        <div style="flex:1;height:50px;border-radius:12px;background:#1C1B20;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center">Ver parcelas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1c GESTÃO LOJISTA -->
+  <div id="1c" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">1c</span><span style="font-weight:700;font-size:15px">Gestão do catálogo · Lojista</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#1C1B20;color:#fff;padding:52px 16px 20px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:#B7B3BC">Auto Center Silva</div><div style="font-size:24px;font-weight:800;letter-spacing:-.02em">Meus veículos</div></div>
+            <div style="width:40px;height:40px;border-radius:50%;background:#3A3840;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">RS</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <sc-for list="{{ lojStats }}" as="st" hint-placeholder-count="3">
+              <div style="background:#2B2930;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:22px;font-weight:800">{{ st.n }}</div><div style="font-size:11px;color:#B7B3BC;line-height:1.25">{{ st.l }}</div></div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:#2B2930;border-radius:12px;padding:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:13px;font-weight:700">Plano Catálogo · R$ 100/mês</div><div style="font-size:12px;color:#B7B3BC">Ativo · próxima cobrança 05/10</div></div>
+            <span style="font-size:11px;font-weight:700;background:#E3F3EA;color:#146B45;padding:4px 8px;border-radius:6px;text-transform:uppercase">Em dia</span>
+          </div>
+        </div>
+        <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+          <div style="height:46px;border-radius:12px;background:#fff;border:1px solid #E6E2DC;display:flex;align-items:center;gap:10px;padding:0 14px;color:#6B6872;font-size:15px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6872" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>Buscar por modelo ou placa</div>
+          <div style="display:flex;gap:8px;overflow-x:auto">
+            <sc-for list="{{ filterTabs }}" as="t" hint-placeholder-count="4">
+              <div onClick="{{ t.onClick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};border:1px solid {{ t.bd }}">{{ t.label }}<span style="opacity:.6">{{ t.count }}</span></div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ manageList }}" as="m" hint-placeholder-count="3">
+            <div style="background:#fff;border-radius:16px;border:1px solid #E6E2DC;padding:12px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:12px">
+                <div style="width:88px;height:68px;flex:none;border-radius:10px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#E4E0D9 0 10px,#DDD8D0 10px 20px)"><div style="position:absolute;inset:0;background-size:cover;background-position:center;background-image:{{ m.bgImg }}"></div></div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">
+                    <div style="font-size:15px;font-weight:800;line-height:1.2">{{ m.nome }}</div>
+                    <span style="flex:none;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:{{ m.stBg }};color:{{ m.stFg }}">{{ m.status }}</span>
+                  </div>
+                  <div style="font-size:12px;color:#6B6872">{{ m.ano }} · {{ m.kmLabel }}</div>
+                  <div style="font-size:16px;font-weight:800">R$ {{ m.preco }}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px solid #EFECE7">
+                <div onClick="{{ m.onToggle }}" style="display:flex;align-items:center;gap:10px;cursor:pointer;opacity:{{ m.toggleOpacity }}">
+                  <div style="width:44px;height:26px;border-radius:13px;position:relative;background:{{ m.tgBg }};transition:background .2s"><div style="position:absolute;top:3px;left:{{ m.knob }};width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s"></div></div>
+                  <div style="display:flex;flex-direction:column;gap:1px"><div style="font-size:13px;font-weight:700">Divulgar na CajuGo</div><div style="font-size:11px;color:#6B6872">{{ m.shareNote }}</div></div>
+                </div>
+                <div style="display:flex;gap:6px">
+                  <sc-if value="{{ m.canSell }}" hint-placeholder-val="{{ true }}">
+                    <div onClick="{{ m.onSell }}" style="height:34px;padding:0 10px;border-radius:9px;border:1px solid #D9D4CC;font-size:12px;font-weight:700;display:flex;align-items:center;cursor:pointer">Vendido</div>
+                  </sc-if>
+                  <div style="width:34px;height:34px;border-radius:9px;border:1px solid #D9D4CC;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C1B20" stroke-width="1.8"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg></div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:absolute;right:16px;bottom:96px;height:54px;padding:0 20px;border-radius:27px;background:#E8551E;color:#fff;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;box-shadow:0 10px 24px -8px rgba(232,85,30,.6)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>Novo veículo</div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navLoj }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1d GESTÃO ADMIN -->
+  <div id="1d" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#1C1B20;color:#fff;padding:3px 8px;border-radius:6px">1d</span><span style="font-weight:700;font-size:15px">Gestão · Administrador CajuGo</span></div>
+    <div style="width:390px;height:844px;border-radius:36px;overflow:hidden;background:#F4F2EF;position:relative;box-shadow:0 30px 60px -20px rgba(28,27,32,.35),0 0 0 8px #1C1B20">
+      <div style="height:100%;overflow-y:auto;padding-bottom:100px">
+        <div style="background:#fff;padding:52px 16px 0;border-bottom:1px solid #E6E2DC;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="font-weight:800;font-size:21px;letter-spacing:-.03em">caju<span style="color:#E8551E">go</span></div>
+              <span style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:#1C1B20;color:#fff;padding:3px 7px;border-radius:5px">Admin</span>
+            </div>
+            <div style="width:40px;height:40px;border-radius:50%;background:#F4F2EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">AD</div>
+          </div>
+          <div style="display:flex;gap:20px">
+            <sc-for list="{{ adminTabs }}" as="t" hint-placeholder-count="3">
+              <div onClick="{{ t.onClick }}" style="padding:10px 0 12px;font-size:14px;font-weight:700;cursor:pointer;color:{{ t.fg }};border-bottom:2.5px solid {{ t.bd }}">{{ t.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ showLojas }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div style="background:#fff;border:1px solid #E6E2DC;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:22px;font-weight:800">42</div><div style="font-size:12px;color:#6B6872">Assinaturas ativas</div></div>
+              <div style="background:#fff;border:1px solid #E6E2DC;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px"><div style="font-size:22px;font-weight:800">R$ 4.200</div><div style="font-size:12px;color:#6B6872">Receita mensal</div></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:16px;font-weight:800">Lojas</div><div style="height:36px;padding:0 12px;border-radius:10px;background:#1C1B20;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14"></path></svg>Nova loja</div></div>
+            <sc-for list="{{ lojas }}" as="l" hint-placeholder-count="4">
+              <div style="background:#fff;border-radius:16px;border:1px solid #E6E2DC;padding:14px;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;gap:12px;align-items:center">
+                  <div style="width:42px;height:42px;flex:none;border-radius:11px;background:#1C1B20;color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center">{{ l.sigla }}</div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><div style="font-size:15px;font-weight:800">{{ l.nome }}</div><div style="font-size:12px;color:#6B6872">{{ l.dono }} · {{ l.cidade }}</div></div>
+                  <span style="flex:none;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:{{ l.bg }};color:{{ l.fg }}">{{ l.plano }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#4A4750;padding-top:10px;border-top:1px solid #EFECE7">
+                  <span><strong style="color:#1C1B20">{{ l.veiculos }}</strong> veículos · <strong style="color:#1C1B20">{{ l.cajugo }}</strong> na CajuGo</span>
+                  <span style="font-weight:700;color:#C8431A">Gerenciar</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showVeic }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
+            <div style="font-size:13px;color:#4A4750;line-height:1.45">Veículos liberados pelos lojistas. Alterações e vendas feitas pela loja atualizam esta lista automaticamente.</div>
+            <sc-for list="{{ sharedList }}" as="m" hint-placeholder-count="3">
+              <div style="background:#fff;border-radius:14px;border:1px solid #E6E2DC;padding:12px;display:flex;gap:12px;align-items:center">
+                <div style="width:64px;height:50px;flex:none;border-radius:8px;overflow:hidden;position:relative;background:repeating-linear-gradient(135deg,#E4E0D9 0 10px,#DDD8D0 10px 20px)"><div style="position:absolute;inset:0;background-size:cover;background-position:center;background-image:{{ m.bgImg }}"></div></div>
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:800">{{ m.nome }}</div><div style="font-size:12px;color:#6B6872">{{ m.loja }} · R$ {{ m.preco }}</div></div>
+                <div style="font-size:12px;font-weight:700;color:#C8431A">Ocultar</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showUsers }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px;display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ users }}" as="u" hint-placeholder-count="3">
+              <div style="background:#fff;border-radius:14px;border:1px solid #E6E2DC;padding:12px 14px;display:flex;align-items:center;gap:12px">
+                <div style="width:38px;height:38px;border-radius:50%;background:#F4F2EF;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">{{ u.sigla }}</div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:1px"><div style="font-size:14px;font-weight:700">{{ u.nome }}</div><div style="font-size:12px;color:#6B6872">{{ u.info }}</div></div>
+                <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:3px 7px;border-radius:6px;background:{{ u.bg }};color:{{ u.fg }}">{{ u.papel }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E6E2DC;padding:8px 8px 26px;display:grid;grid-template-columns:repeat(4,1fr)">
+        <sc-for list="{{ navAdm }}" as="n" hint-placeholder-count="4">
+          <div style="height:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:600;color:{{ n.c }}"><div style="width:22px;height:4px;border-radius:2px;background:{{ n.c }};opacity:{{ n.o }}"></div>{{ n.l }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;catalogo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;CajuGo&quot;,&quot;Lojista&quot;],&quot;default&quot;:&quot;CajuGo&quot;,&quot;tsType&quot;:&quot;'CajuGo'|'Lojista'&quot;,&quot;section&quot;:&quot;Catálogo&quot;}}">
+const V = [
+  {id:1,marca:'FIAT',modelo:'500',versao:'1.4 Cult Flex Manual',ano:'2014/2015',km:'68.000',cidade:'São José do Rio Preto (SP)',loja:'Líder Veículos',preco:'49.900',parcela:'985',fotos:15,badge:'Abaixo da FIPE'},
+  {id:2,marca:'BMW',modelo:'420i',versao:'2.0 Sport GP Automático',ano:'2019/2020',km:'42.000',cidade:'Campinas (SP)',loja:'Auto Center Silva',preco:'189.900',parcela:'3.745',fotos:10,badge:''},
+  {id:3,marca:'AUDI',modelo:'A5',versao:'2.0 TFSI Sportback Prestige Plus',ano:'2021/2022',km:'35.000',cidade:'Campinas (SP)',loja:'Auto Center Silva',preco:'229.900',parcela:'4.534',fotos:18,badge:''},
+  {id:4,marca:'PORSCHE',modelo:'PANAMERA',versao:'2.9 V6 4 PDK',ano:'2018/2019',km:'48.000',cidade:'Osasco (SP)',loja:'Garagem 77',preco:'529.900',parcela:'10.450',fotos:12,badge:'Único dono'},
+  {id:5,marca:'CHEVROLET',modelo:'CAMARO',versao:'6.2 V8 SS Automático',ano:'2019/2020',km:'22.000',cidade:'Campinas (SP)',loja:'Auto Center Silva',preco:'389.900',parcela:'7.690',fotos:14,badge:''}
+];
+const IMGS={"1":"images/u-1549317661-bd32c8ce0db2.jpg","2":"images/u-1502877338535-766e1452684a.jpg","3":"images/u-1606664515524-ed2f786a0bd6.jpg","4":"images/u-1503376780353-7e6692767b70.jpg","5":"images/u-1492144534655-ae79c964c9d7.jpg"};
+V.forEach(v=>{Object.defineProperty(v,'img',{enumerable:true,get:()=>(window.__resources||{})['car'+v.id]||IMGS[v.id]});Object.defineProperty(v,'bgImg',{enumerable:true,get:()=>'url("'+v.img+'")'})});
+const ST = {Publicado:['#E3F3EA','#146B45'],Rascunho:['#EEECEA','#4A4750'],Vendido:['#FDEBE3','#B23C12']};
+class Component extends DCLogic {
+  state = {
+    pixCopied:false, fOrd:'Mais relevantes', fMar:['BMW','Audi'], fCam:['Automático'], fCom:[], editShare:true, dlg:'vendido', dlgMot:0,
+    pay:'Pix', termos:true,
+    subFilter:'Todas', aprov:false,
+    subs:[
+      {id:1,sigla:'AS',nome:'Auto Center Silva',dono:'Ricardo Silva',desde:'mar/2026',plano:'Em dia'},
+      {id:2,sigla:'LV',nome:'Líder Veículos',dono:'Vinicius Benedeti',desde:'jan/2026',plano:'Em dia'},
+      {id:3,sigla:'G7',nome:'Garagem 77',dono:'Marta Oliveira',desde:'mai/2026',plano:'Atrasada',atraso:8},
+      {id:4,sigla:'NT',nome:'Nova Trilha Autos',dono:'Felipe Nunes',desde:'jul/2026',plano:'Atrasada',atraso:3},
+      {id:5,sigla:'MD',nome:'MD Motors',dono:'Carlos Dias',desde:'fev/2026',plano:'Suspensa'}
+    ],
+    leadFilter:'Todos', defShare:true, notifs:{'WhatsApp':true,'E-mail':true,'Notificação no celular':false},
+    leads:[
+      {id:1,sigla:'MF',nome:'Mariana Freitas',quando:'há 12 min',veiculo:'BMW 420i · R$ 189.900',origem:'CajuGo',status:'Novo',msg:'Olá, tenho interesse no veículo. Aceita troca num Gol 2015?'},
+      {id:2,sigla:'PA',nome:'Paulo Azevedo',quando:'há 2 h',veiculo:'Chevrolet Camaro · R$ 389.900',origem:'Seu catálogo',status:'Novo',msg:'Consigo financiar com 20% de entrada?'},
+      {id:3,sigla:'LC',nome:'Lucas Campos',quando:'ontem',veiculo:'Audi A5 · R$ 229.900',origem:'CajuGo',status:'Em contato',msg:'Posso ver o carro sábado de manhã?'},
+      {id:4,sigla:'BR',nome:'Beatriz Rocha',quando:'22/09',veiculo:'BMW 420i · R$ 189.900',origem:'CajuGo',status:'Negociando',msg:'Fecho em R$ 180 mil à vista.'}
+    ],
+    filter:'Todos', adminTab:'Lojas', nvShare:true, nvParcela:true,
+    nvItens:['Airbag','Ar condicionado','Freio ABS','Travas elétricas','Vidros elétricos'],
+    nvConds:{'Aceita troca':true,'Único dono':true,'IPVA pago':true,'Licenciado':true,'Revisões na concessionária':false,'Garantia de fábrica':false,'Blindado':false},
+    mine:[
+      {id:2,status:'Publicado',shared:true},{id:3,status:'Publicado',shared:false},
+      {id:5,status:'Rascunho',shared:false},{id:1,status:'Vendido',shared:false}
+    ]
+  };
+  toggle(id){this.setState(s=>({mine:s.mine.map(m=>m.id===id&&m.status==='Publicado'?{...m,shared:!m.shared}:m)}))}
+  sell(id){this.setState(s=>({mine:s.mine.map(m=>m.id===id?{...m,status:'Vendido',shared:false}:m)}))}
+  renderVals(){
+    const caju = (this.props.catalogo ?? 'CajuGo') === 'CajuGo';
+    const withLabels = v => ({...v,nome:v.marca+' '+v.modelo,kmLabel:v.km+' km',fotosLabel:'1/'+v.fotos,hasBadge:!!v.badge});
+    const cat = (caju ? V : V.filter(v=>v.loja==='Auto Center Silva')).map(withLabels);
+    const mine = this.state.mine.map(m=>{
+      const v = withLabels(V.find(x=>x.id===m.id)); const st = ST[m.status]; const pub = m.status==='Publicado';
+      return {...v,...m,stBg:st[0],stFg:st[1],tgBg:m.shared?'#E8551E':'#D9D4CC',knob:m.shared?'21px':'3px',toggleOpacity:pub?1:.45,
+        shareNote: m.status==='Vendido'?'Removido de todos os catálogos': m.status==='Rascunho'?'Publique para liberar': m.shared?'Visível na vitrine CajuGo':'Só no seu catálogo',
+        canSell:m.status!=='Vendido',onToggle:()=>this.toggle(m.id),onSell:()=>this.sell(m.id)};
+    });
+    const f = this.state.filter;
+    const tabs = ['Todos','Publicado','Rascunho','Vendido'].map(t=>{
+      const on = t===f;
+      return {label:t==='Todos'?'Todos':t+'s',count:t==='Todos'?mine.length:mine.filter(m=>m.status===t).length,
+        bg:on?'#1C1B20':'#fff',fg:on?'#fff':'#1C1B20',bd:on?'#1C1B20':'#D9D4CC',onClick:()=>this.setState({filter:t})};
+    });
+    const at = this.state.adminTab;
+    const nav = (items,active)=>items.map(l=>({l,c:l===active?'#E8551E':'#6B6872',o:l===active?1:0}));
+    const fld = (label,val,o={}) => ({label,val:val||o.ph||'',color:val?'#1C1B20':'#8A857D',select:!!o.sel,span:o.full?'1 / -1':'auto'});
+    const tg = on => ({bg:on?'#E8551E':'#D9D4CC',knob:on?'21px':'3px'});
+    const allItens = ['Airbag','Alarme','Ar quente','Ar condicionado','Computador de bordo','Desembaçador traseiro','Freio ABS','Freios ABS com EBD','Limpador traseiro','Travas elétricas','Vidros elétricos','Direção elétrica','Direção com ajuste','Sensor de estacionamento','Câmera de ré','Central multimídia','Bancos de couro','Teto solar','Rodas de liga leve','Piloto automático'];
+    const sel = this.state.nvItens;
+    const LS = {'Novo':['#FDEBE3','#B23C12','Em contato'],'Em contato':['#FFF3D1','#8A5A00','Negociando'],'Negociando':['#E6EEFB','#1E4E9C','Vendido'],'Vendido':['#E3F3EA','#146B45',null]};
+    const leads = this.state.leads, lf = this.state.leadFilter;
+    const NAV = ['Veículos','Leads','Minha loja','Conta'];
+    const NAVA = ['Painel','Lojas','Assinaturas','Conta'];
+    const subs = this.state.subs, sf = this.state.subFilter;
+    const SC = {'Em dia':['#E3F3EA','#146B45'],'Atrasada':['#FFF3D1','#8A5A00'],'Suspensa':['#EEECEA','#4A4750']};
+    const setPlano = (id,plano)=>()=>this.setState(s=>({subs:s.subs.map(x=>x.id===id?{...x,plano,atraso:undefined}:x)}));
+    const subSlug = {Todas:null,'Em dia':'Em dia',Atrasadas:'Atrasada',Suspensas:'Suspensa'};
+    const pay = this.state.pay;
+    const inp = (label,val,ph) => ({label,val:val||ph,color:val?'#1C1B20':'#8A857D'});
+    const chip = (label,on,onClick,mark) => ({label,mark:mark&&on?'✓ ':'',bg:on?'#1C1B20':'#fff',fg:on?'#fff':'#1C1B20',bd:on?'#1C1B20':'#D9D4CC',onClick});
+    const multi = (key,list,mark=true) => list.map(l=>{const on=this.state[key].includes(l);return chip(l,on,()=>this.setState(s=>({[key]:on?s[key].filter(x=>x!==l):[...s[key],l]})),mark)});
+    const nF = this.state.fMar.length+this.state.fCam.length+this.state.fCom.length;
+    const DLG = {
+      vendido:{tab:'Vendido',icon:'✓',iconBg:'#E3F3EA',iconFg:'#146B45',title:'Marcar BMW 420i como vendido?',text:'O veículo sai do seu catálogo e da vitrine CajuGo na hora. Você pode desfazer em até 7 dias.',hasNote:true,note:'2 leads abertos deste veículo serão marcados como "Perdido", exceto o que você escolher como comprador.',confirm:'Marcar como vendido',btnBg:'#1C1B20',cancel:'Voltar'},
+      cancelar:{tab:'Cancelar assinatura',icon:'!',iconBg:'#FDEBE3',iconFg:'#B23C12',title:'Cancelar assinatura?',text:'Seu catálogo e seus veículos na vitrine ficam no ar até 05/10/2026, fim do mês já pago. Depois disso saem do ar. Não há multa.',hasMotivos:true,motivoLabel:'Por que você está cancelando? (opcional)',motivos:['Vendi pouco pela plataforma','Preço da mensalidade','Vou fechar a loja','Outro motivo'],confirm:'Cancelar assinatura',btnBg:'#B23C12',cancel:'Manter assinatura'},
+      suspender:{tab:'Suspender loja',icon:'!',iconBg:'#FFF3D1',iconFg:'#8A5A00',title:'Suspender Garagem 77?',text:'O catálogo da loja e os veículos dela na vitrine CajuGo saem do ar. O lojista recebe um e-mail e só acessa a tela de Conta para regularizar.',hasNote:true,note:'Assinatura em atraso há 8 dias · R$ 100,00',confirm:'Suspender loja',btnBg:'#B23C12',cancel:'Voltar'},
+      ocultar:{tab:'Ocultar veículo',icon:'–',iconBg:'#EEECEA',iconFg:'#4A4750',title:'Ocultar da vitrine CajuGo?',text:'Porsche Panamera · Garagem 77. O veículo continua no catálogo da loja. O lojista é avisado com o motivo.',hasMotivos:true,motivoLabel:'Motivo',motivos:['Fotos inadequadas ou de baixa qualidade','Preço ou dados incorretos','Anúncio denunciado','Outro motivo'],confirm:'Ocultar da vitrine',btnBg:'#1C1B20',cancel:'Voltar'}
+    };
+    const dlg = DLG[this.state.dlg];
+    const qrBits = Array.from({length:121},(_,i)=>{const r=Math.floor(i/11),c=i%11;const f=(r<3&&c<3)||(r<3&&c>7)||(r>7&&c<3);return f?!(r===1&&(c===1||c===9))&&!(r===9&&c===1):((r*7+c*13+r*c)%3===0)});
+    return {
+      pixQr:qrBits.map(b=>b?'#1C1B20':'transparent'),
+      pixCopyLabel:this.state.pixCopied?'Copiado':'Copiar',
+      copyPix:()=>this.setState({pixCopied:true}),
+      pixSteps:[{n:'1',t:'Abra o app do seu banco e escolha pagar com Pix.'},{n:'2',t:'Escaneie o QR code ou cole o código copiado.'},{n:'3',t:'Autorize também o Pix automático para as próximas mensalidades.'}],
+      fOrdem:['Mais relevantes','Menor preço','Maior preço','Mais recentes','Menor km','Ano mais novo'].map(l=>chip(l,l===this.state.fOrd,()=>this.setState({fOrd:l}))),
+      fMarcas:multi('fMar',['Audi','BMW','Chevrolet','Fiat','Ford','Hyundai','Porsche','Volkswagen']),
+      fCambio:multi('fCam',['Automático','Manual','CVT']),
+      fComb:multi('fCom',['Flex','Gasolina','Diesel','Híbrido','Elétrico']),
+      clearFiltros:()=>this.setState({fMar:[],fCam:[],fCom:[],fOrd:'Mais relevantes'}),
+      fResultado: nF ? 'Ver '+(nF*37+12)+' veículos' : 'Ver 1.284 veículos',
+      editSecs:[{t:'Fotos',v:'10 fotos · capa definida'},{t:'Identificação',v:'BMW 420i 2.0 Sport GP · 2019/2020'},{t:'Ficha técnica',v:'42.000 km · Automático · Gasolina · Cupê · Branco'},{t:'Preço',v:'R$ 189.900 · FIPE R$ 195.300 · parcela exibida'},{t:'Condições',v:'Aceita troca · IPVA pago · Licenciado'},{t:'Itens do veículo',v:'14 selecionados'},{t:'Descrição',v:'BMW 420i Gran Coupé, revisões na concessionária…'},{t:'Contato do anúncio',v:'(19) 99812-2015'}],
+      editShareBg:tg(this.state.editShare).bg, editShareKnob:tg(this.state.editShare).knob, editShareCap:this.state.editShare?'Visível na vitrine CajuGo':'Só no seu catálogo', toggleEditShare:()=>this.setState(s=>({editShare:!s.editShare})),
+      dlgTabs:Object.entries(DLG).map(([k,d])=>chip(d.tab,k===this.state.dlg,()=>this.setState({dlg:k,dlgMot:0}))),
+      dlg:{...dlg,hasMotivos:!!dlg.hasMotivos,hasNote:!!dlg.hasNote},
+      dlgMotivos:(dlg.motivos||[]).map((label,i)=>{const on=i===this.state.dlgMot;return {label,bd:on?'#1C1B20':'#D9D4CC',bg:on?'#F4F2EF':'#fff',dotBd:on?'#1C1B20':'#C9C3BA',dot:on?'#1C1B20':'transparent',onClick:()=>this.setState({dlgMot:i})}}),
+      navAdmLojas:nav(NAVA,'Lojas'),
+      ljKpis:[{n:'24',l:'Veículos'},{n:'18',l:'Na CajuGo'},{n:'58',l:'Leads no mês'}],
+      ljDono:[{k:'Nome',v:'Ricardo Silva'},{k:'E-mail',v:'ricardo@autocentersilva.com.br'},{k:'Celular',v:'(19) 99812-2015'},{k:'CNPJ',v:'12.345.678/0001-90'}],
+      ljAssin:[{k:'Plano',v:'Catálogo · R$ 100/mês'},{k:'Pagamento',v:'Pix automático'},{k:'Próxima cobrança',v:'05/10/2026'},{k:'Total pago',v:'R$ 700,00'}],
+      ljVeic:V.filter(v=>v.loja==='Auto Center Silva'),
+      ljAcoes:['Editar dados da loja','Ver catálogo público','Enviar redefinição de senha','Histórico de atividade'],
+      menuLinks:['Comprar carros','Favoritos','Lojas parceiras','Ajuda'],
+      lpBenefits:[
+        {n:'1',t:'Catálogo com o nome da sua loja',s:'Um link próprio para mandar no WhatsApp, Instagram e onde quiser.'},
+        {n:'2',t:'Vitrine CajuGo',s:'Escolha quais veículos aparecem também para quem busca na CajuGo.'},
+        {n:'3',t:'Tudo sincronizado',s:'Vendeu? Marque como vendido e ele sai dos dois catálogos na hora.'},
+        {n:'4',t:'Leads no seu WhatsApp',s:'Os interessados falam direto com você, sem intermediário.'}
+      ],
+      lpIncl:['Veículos ilimitados','Até 20 fotos por veículo','Link e QR code da loja','Painel de leads'],
+      lpFaq:[
+        {q:'Preciso de CNPJ?',a:'Não. Você pode assinar com CPF ou CNPJ.'},
+        {q:'Posso cancelar quando quiser?',a:'Sim. O catálogo fica no ar até o fim do mês já pago.'},
+        {q:'A CajuGo cobra comissão?',a:'Não sobre as vendas da sua loja. Você paga só a mensalidade.'}
+      ],
+      cadLoja:[inp('Nome da loja','Auto Center Silva'),inp('Cidade','Campinas (SP)'),inp('WhatsApp da loja','(19) 99812-2015')],
+      cadResp:[inp('Seu nome','Ricardo Silva'),inp('E-mail','ricardo@autocentersilva.com.br'),inp('Celular','(19) 99812-2015'),inp('Senha','','Mínimo de 8 caracteres')],
+      termosBg:this.state.termos?'#1C1B20':'#fff', termosBd:this.state.termos?'#1C1B20':'#C9C3BA', toggleTermos:()=>this.setState(s=>({termos:!s.termos})),
+      payOpts:[{t:'Pix',s:'Automático, todo mês'},{t:'Cartão',s:'Crédito recorrente'}].map(p=>{const on=p.t===pay;return {...p,bd:on?'#E8551E':'#D9D4CC',bg:on?'#FFF6F1':'#fff',onClick:()=>this.setState({pay:p.t})}}),
+      isCard:pay==='Cartão', isPix:pay==='Pix',
+      cardFields:[{label:'Número do cartão',ph:'0000 0000 0000 0000',span:'1 / -1'},{label:'Nome impresso',ph:'Como está no cartão',span:'1 / -1'},{label:'Validade',ph:'MM/AA',span:'auto'},{label:'CVV',ph:'123',span:'auto'}],
+      payHref: pay==='Pix' ? '#6c' : '#5e',
+      payCta: pay==='Pix' ? 'Gerar Pix · R$ 100/mês' : 'Assinar · R$ 100/mês',
+      onboard:[
+        {t:'Assinatura ativa',s:'Plano Catálogo · R$ 100/mês',bg:'#146B45',bd:'#146B45',fg:'#8A857D'},
+        {t:'Cadastre seu primeiro veículo',s:'Fotos, ficha e preço',bg:'#fff',bd:'#C9C3BA',fg:'#1C1B20'},
+        {t:'Complete sua loja',s:'Logo, capa, endereço e horário',bg:'#fff',bd:'#C9C3BA',fg:'#1C1B20'}
+      ],
+      navAdmPainel:nav(NAVA,'Painel'), navAdmSub:nav(NAVA,'Assinaturas'), navAdmConta:nav(NAVA,'Conta'),
+      admKpis:[{n:'42',l:'Lojas ativas',d:'+5 no mês'},{n:'R$ 4.200',l:'Receita mensal',d:'+13% vs. agosto'},{n:'1.284',l:'Veículos na vitrine',d:'+96 no mês'},{n:'318',l:'Leads no mês',d:'+21% vs. agosto'}],
+      admAlerts:[{n:'2',t:'Assinaturas atrasadas',s:'Garagem 77, Nova Trilha Autos',bg:'#FFF3D1',fg:'#8A5A00'},{n:'3',t:'Anúncios denunciados',s:'Revisar e ocultar da vitrine',bg:'#FDEBE3',fg:'#B23C12'},{n:'1',t:'Loja aguardando ativação',s:'Cadastro concluído, sem pagamento',bg:'#EEECEA',fg:'#4A4750'}],
+      admTop:[{sigla:'LV',nome:'Líder Veículos',leads:74},{sigla:'AS',nome:'Auto Center Silva',leads:58},{sigla:'G7',nome:'Garagem 77',leads:31}],
+      subStats:[{n:subs.filter(s=>s.plano==='Em dia').length+37,l:'Em dia'},{n:subs.filter(s=>s.plano==='Atrasada').length,l:'Atrasadas'},{n:subs.filter(s=>s.plano==='Suspensa').length,l:'Suspensas'}],
+      subTabs:Object.keys(subSlug).map(t=>{const on=t===sf;return {label:t,count:subSlug[t]?subs.filter(s=>s.plano===subSlug[t]).length:subs.length,bg:on?'#1C1B20':'#fff',fg:on?'#fff':'#1C1B20',bd:on?'#1C1B20':'#D9D4CC',onClick:()=>this.setState({subFilter:t})}}),
+      subList:(subSlug[sf]?subs.filter(s=>s.plano===subSlug[sf]):subs).map(s=>{
+        const c=SC[s.plano];
+        const a = s.plano==='Em dia'?{infoLabel:'Próxima cobrança',info:'05/10 · R$ 100',infoColor:'#1C1B20',action:'Detalhes',onAction:()=>{},btnBg:'#fff',btnFg:'#1C1B20',btnBd:'#D9D4CC'}
+          : s.plano==='Atrasada'?{infoLabel:'Em atraso',info:s.atraso+' dias · R$ 100',infoColor:'#8A5A00',action:'Suspender',onAction:setPlano(s.id,'Suspensa'),btnBg:'#1C1B20',btnFg:'#fff',btnBd:'#1C1B20'}
+          : {infoLabel:'Catálogo e vitrine',info:'Fora do ar',infoColor:'#4A4750',action:'Reativar',onAction:setPlano(s.id,'Em dia'),btnBg:'#E8551E',btnFg:'#fff',btnBd:'#E8551E'};
+        return {...s,bg:c[0],fg:c[1],...a};
+      }),
+      equipe:[{sigla:'AD',nome:'Ana Duarte',email:'ana@cajugo.com.br',papel:'Admin'},{sigla:'TM',nome:'Thiago Moura',email:'thiago@cajugo.com.br',papel:'Admin'},{sigla:'CL',nome:'Camila Lopes',email:'camila@cajugo.com.br',papel:'Suporte'}],
+      vitrineFields:[{label:'Nome da vitrine',val:'CajuGo'},{label:'Endereço',val:'cajugo.com.br'},{label:'WhatsApp de atendimento',val:'(11) 4002-8922'}],
+      aprovBg:tg(this.state.aprov).bg, aprovKnob:tg(this.state.aprov).knob, toggleAprov:()=>this.setState(s=>({aprov:!s.aprov})),
+      admLinks:['Dados pessoais','Alterar senha','Gateway de pagamento','Logs de atividade'],
+      leadTabs:['Todos','Novo','Em contato','Negociando'].map(t=>{const on=t===lf;return {label:t,count:t==='Todos'?leads.length:leads.filter(l=>l.status===t).length,bg:on?'#1C1B20':'#fff',fg:on?'#fff':'#1C1B20',bd:on?'#1C1B20':'#D9D4CC',onClick:()=>this.setState({leadFilter:t})}}),
+      leadList:(lf==='Todos'?leads:leads.filter(l=>l.status===lf)).map(l=>{const s=LS[l.status];const caj=l.origem==='CajuGo';return {...l,stBg:s[0],stFg:s[1],orBg:caj?'#1C1B20':'#EEECEA',orFg:caj?'#fff':'#4A4750',origem:caj?'via CajuGo':'Seu catálogo',nextLabel:s[2]?'→ '+s[2]:'Concluído',onNext:()=>s[2]&&this.setState(st=>({leads:st.leads.map(x=>x.id===l.id?{...x,status:s[2]}:x)}))}}),
+      navLeads:nav(NAV,'Leads'), navLoja:nav(NAV,'Minha loja'), navConta:nav(NAV,'Conta'),
+      qr:[1,1,0,1,1, 1,0,1,0,1, 0,1,1,1,0, 1,0,1,0,1, 1,1,0,1,1].map(b=>b?'#1C1B20':'transparent'),
+      lojaFields:[{label:'Nome da loja',val:'Auto Center Silva'},{label:'Sobre a loja',val:'Seminovos revisados com garantia de 3 meses. Financiamos e aceitamos troca.'},{label:'Endereço',val:'Av. John Boyd Dunlop, 1520 · Campinas (SP)'},{label:'WhatsApp',val:'(19) 99812-2015'},{label:'Instagram',val:'@autocentersilva'}],
+      horarios:[{d:'Segunda a sexta',h:'08:00 – 18:00'},{d:'Sábado',h:'08:00 – 13:00'},{d:'Domingo',h:'Fechado'}],
+      defShareBg:tg(this.state.defShare).bg, defShareKnob:tg(this.state.defShare).knob, toggleDefShare:()=>this.setState(s=>({defShare:!s.defShare})),
+      faturas:[{mes:'Setembro 2026',data:'pago em 05/09'},{mes:'Agosto 2026',data:'pago em 05/08'},{mes:'Julho 2026',data:'pago em 05/07'}],
+      notifs:Object.entries(this.state.notifs).map(([label,on])=>({label,bg:tg(on).bg,knob:tg(on).knob,onClick:()=>this.setState(s=>({notifs:{...s.notifs,[label]:!on}}))})),
+      contaLinks:['Dados pessoais','Alterar senha','Usuários da loja','Central de ajuda','Termos de uso e privacidade'],
+      fIdent:[fld('Marca','Ford',{sel:1}),fld('Modelo','Mustang',{sel:1}),fld('Versão','5.0 V8 GT Premium Automático',{sel:1,full:1}),fld('Ano fabricação','2018',{sel:1}),fld('Ano modelo','2019',{sel:1})],
+      fFicha:[fld('Quilometragem','',{ph:'Ex.: 30.000'}),fld('Câmbio','Automático',{sel:1}),fld('Combustível','Gasolina',{sel:1}),fld('Carroceria','Cupê',{sel:1}),fld('Cor','Preto',{sel:1}),fld('Portas','2',{sel:1}),fld('Motor','5.0 V8',{sel:1}),fld('Final de placa','3')],
+      parcelaBg:tg(this.state.nvParcela).bg, parcelaKnob:tg(this.state.nvParcela).knob, toggleParcela:()=>this.setState(s=>({nvParcela:!s.nvParcela})),
+      shareBg:tg(this.state.nvShare).bg, shareKnob:tg(this.state.nvShare).knob, shareBd:this.state.nvShare?'#E8551E':'#E6E2DC', toggleShare:()=>this.setState(s=>({nvShare:!s.nvShare})),
+      conds:Object.entries(this.state.nvConds).map(([label,v])=>{const set=val=>()=>this.setState(s=>({nvConds:{...s.nvConds,[label]:val}}));return {label,yesBg:v?'#1C1B20':'transparent',yesFg:v?'#fff':'#6B6872',noBg:v?'transparent':'#fff',noFg:v?'#6B6872':'#1C1B20',onYes:set(true),onNo:set(false)}}),
+      itensCount:sel.length+' selecionados',
+      itensSel:allItens.map(label=>{const on=sel.includes(label);return {label,mark:on?'✓ ':'',bg:on?'#1C1B20':'#fff',fg:on?'#fff':'#1C1B20',bd:on?'#1C1B20':'#D9D4CC',onClick:()=>this.setState(s=>({nvItens:on?s.nvItens.filter(x=>x!==label):[...s.nvItens,label]}))}}),
+      isCajucar:caju, isLojista:!caju,
+      catalogTitle: caju ? 'Carros usados e seminovos à venda' : 'Estoque Auto Center Silva',
+      countLabel: caju ? '1.284 anúncios de 42 lojas' : cat.length+' veículos disponíveis',
+      chips:['Marca','Preço','Ano','Km','Câmbio'],
+      catalogList:cat,
+      specs:[{k:'Ano',v:'2014/2015'},{k:'KM',v:'68.000'},{k:'Câmbio',v:'Manual'},{k:'Carroceria',v:'Hatchback'},{k:'Combustível',v:'Gasolina e álcool'},{k:'Final de placa',v:'4'},{k:'Cor',v:'Azul'},{k:'Aceita troca',v:'Sim'},{k:'Único dono',v:'Sim'},{k:'IPVA pago',v:'Sim'}],
+      itens:['Airbag','Alarme','Ar quente','Computador de bordo','Desembaçador traseiro','Ar condicionado','Freio ABS','Limpador traseiro','Travas elétricas','Vidros elétricos','Direção com ajuste','Alarme com acionamento a distância','Freios ABS com EBD'],
+      campos:['Nome*','E-mail*','Telefone*'],
+      lojStats:[{n:mine.filter(m=>m.status==='Publicado').length,l:'Publicados'},{n:mine.filter(m=>m.shared).length,l:'Na CajuGo'},{n:mine.filter(m=>m.status==='Vendido').length,l:'Vendidos no mês'}],
+      filterTabs:tabs,
+      manageList: f==='Todos'?mine:mine.filter(m=>m.status===f),
+      navLoj:nav(['Veículos','Leads','Minha loja','Conta'],'Veículos'),
+      adminTabs:['Lojas','Veículos CajuGo','Usuários'].map(t=>({label:t,fg:t===at?'#1C1B20':'#8A857D',bd:t===at?'#E8551E':'transparent',onClick:()=>this.setState({adminTab:t})})),
+      showLojas:at==='Lojas', showVeic:at==='Veículos CajuGo', showUsers:at==='Usuários',
+      lojas:[
+        {sigla:'AS',nome:'Auto Center Silva',dono:'Ricardo Silva',cidade:'Campinas',plano:'Em dia',veiculos:24,cajugo:18},
+        {sigla:'LV',nome:'Líder Veículos',dono:'Vinicius Benedeti',cidade:'S. J. Rio Preto',plano:'Em dia',veiculos:41,cajugo:41},
+        {sigla:'G7',nome:'Garagem 77',dono:'Marta Oliveira',cidade:'Osasco',plano:'Atrasada',veiculos:12,cajugo:6},
+        {sigla:'MD',nome:'MD Motors',dono:'Carlos Dias',cidade:'Campinas',plano:'Suspensa',veiculos:9,cajugo:0}
+      ].map(l=>{const c={'Em dia':['#E3F3EA','#146B45'],'Atrasada':['#FFF3D1','#8A5A00'],'Suspensa':['#EEECEA','#4A4750']}[l.plano];return {...l,bg:c[0],fg:c[1]}}),
+      sharedList:V.map(withLabels),
+      users:[
+        {sigla:'RS',nome:'Ricardo Silva',info:'Auto Center Silva',papel:'Lojista',bg:'#FDEBE3',fg:'#B23C12'},
+        {sigla:'VB',nome:'Vinicius Benedeti',info:'Líder Veículos',papel:'Lojista',bg:'#FDEBE3',fg:'#B23C12'},
+        {sigla:'JP',nome:'João Pereira',info:'Módulo de vendedores · em breve',papel:'Vendedor',bg:'#EEECEA',fg:'#4A4750'},
+        {sigla:'AD',nome:'Ana Duarte',info:'CajuGo',papel:'Admin',bg:'#1C1B20',fg:'#fff'}
+      ],
+      navAdm:nav(['Painel','Lojas','Assinaturas','Conta'],'Lojas')
+    };
+  }
+}
+</script>
+</body>
+</html>

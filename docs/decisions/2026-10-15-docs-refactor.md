@@ -1,0 +1,29 @@
+# 2026-10-15 · Por que o stack mudou
+- Custo zero no início: serverless na Vercel + Firebase Spark + Cloudinary Free (pedido do dono).
+- Firebase Storage não está no Spark para projetos novos → imagens no Cloudinary.
+- Next.js full-stack em vez de NestJS: um deploy só, sem servidor ligado; OpenAPI só quando o app Expo existir.
+- Pagamento online fica para depois de leads/vitrine: ativação manual pelo admin permite pilotar com lojas reais antes.
+
+# 2026-10-15 · Por que Supabase em vez de Firebase
+- Filtros da vitrine, painéis e relações loja/assinatura/veículo são simples em SQL e complicados no Firestore.
+- Supabase Auth: banco e login no mesmo provedor. Drizzle só no servidor: regra no código, não em RLS, e SQL portável.
+- Vercel continua por enquanto; antes de cobrar, decidir entre Vercel Pro e migrar o Next para VPS.
+
+# 2026-10-22 · Por que senha manual
+- O e-mail nativo do Supabase Auth só serve para teste; SMTP próprio seria um provedor a mais só por isso.
+- Poucos lojistas no piloto: resolver pelo WhatsApp é suficiente e custa zero.
+
+# 2026-10-22 · Ferramentas (F01)
+- Escolhas padrão do ecossistema Next.js, todas gratuitas; zod integra com Drizzle; Tailwind recebe os tokens do DESIGN.md.
+
+# 2026-10-22 · Por que sem GitHub Actions
+- Pedido do dono: menos uma peça para configurar; projeto de uma pessoa, a Vercel já barra build quebrado.
+
+# 2026-10-22 · Pastas por domínio (F03)
+- Feature fica num lugar só (serviço, actions, schemas, UI, testes); casa com as specs por domínio e o GLOSSARY.
+
+# 2026-10-22 · AGENTS.md do Next (F04)
+- Mantido: é gerado e recriado pelo `next dev` e avisa que o Next 16 difere do conhecimento do modelo; o CLAUDE.md aponta para ele.
+
+# 2026-10-22 · Por que liberar commit
+- Pedido do dono; o controle continua com ele (commit só quando pedido) e as operações que mexem em histórico/PR seguem bloqueadas.

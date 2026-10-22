@@ -1,0 +1,19 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(supabase db reset*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+      "Bash(git tag:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh secret set:*)"
+    ]
+  }
+}

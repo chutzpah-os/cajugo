@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+/* Tokens do design (docs/design/DESIGN.md) entram na tarefa F09. */
+body {
+  background: #f4f2ef;
+  color: #1c1b20;
+}

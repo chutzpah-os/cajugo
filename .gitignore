@@ -1,0 +1,36 @@
+# dependências
+node_modules/
+
+# build do Next.js
+.next/
+out/
+build/
+
+# variáveis de ambiente (o .env.example é versionado)
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# logs e testes
+*.log
+coverage/
+playwright-report/
+test-results/
+
+# sistema e editor
+.DS_Store
+.idea/
+
+# Claude Code (config pessoal; o settings.json é versionado)
+.claude/settings.local.json
+
+# Next.js / pnpm
+*.pem
+.pnpm-debug.log*
