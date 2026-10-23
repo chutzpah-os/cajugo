@@ -1,7 +1,7 @@
 # CajuGo — Documento de Design (UI/UX)
 
-Versão 1.1 · MVP · setembro/2026
-Fonte visual: `CajuGo Telas.dc.html` (nesta pasta) (canvas com todas as telas; ids entre colchetes).
+Versão 2.0 · 23/10/2026 · MVP (incorpora as telas 7a–15c do PRD v2)
+Fonte visual: `CajuGo Telas.dc.html` (nesta pasta, telas 1a–6g) e as capturas em `telas/` (todas, incluindo 7a–15c); ids entre colchetes.
 Requisitos de produto: `../PRD.md`.
 
 ---
@@ -93,7 +93,7 @@ Traço 1,8–2,4 px, cantos arredondados, 14–22 px (estilo Lucide/Feather). Í
 | **Botão pequeno** | 34–40 px, raio 9–10, borda `field` ("Vendido", "Recibo", editar). |
 | **FAB** | 54 px, pílula, `caju`, "+ Novo veículo", 16 px acima da nav. |
 | **Input** | 50 px, raio 10, borda `field`, padding 14; rótulo 13/600 acima com gap 6; texto de ajuda 12 `text-3`; placeholder `text-4`. Select tem chevron à direita. Foco: borda 1,5 `ink`. Erro: borda e ajuda em `caju-deep`. |
-| **Input com prefixo** | Prefixo em fundo `bg` com divisória ("cajugo.com.br/"). |
+| **Input com prefixo** | Prefixo em fundo `bg` com divisória ("cajugo.vercel.app/" no MVP; na fase 2 vira sufixo ".cajugo.com.br"). |
 | **Input de preço** | 56 px, borda 1,5 `ink`, "R$" em `text-3` + valor 20/800. |
 | **Textarea** | Altura mínima 92–132, contador à direita abaixo. |
 | **Chip de filtro** | 34–36 px, pílula; inativo: fundo branco, borda `field`; ativo: fundo e borda `ink`, texto branco; contagem com opacidade 0,6. |
@@ -156,7 +156,7 @@ Para cada tela: objetivo · estrutura (de cima para baixo) · interações · es
 **Interações:** swipe na galeria; tocar na foto abre tela cheia com zoom; WhatsApp abre o app; formulário envia lead.
 **Estados:** enviando/enviado/erro no formulário; veículo indisponível.
 
-### [5a] Menu
+### [5a] Menu (substituído por [11a])
 **Objetivo:** entrada para login e para vender com a CajuGo.
 **Estrutura:** logo + fechar → Entrar (contorno) → card escuro "Para lojistas · Divulgar meus veículos" → links.
 **Interações:** toque fora ou X fecha; card leva a [5b].
@@ -173,8 +173,8 @@ Para cada tela: objetivo · estrutura (de cima para baixo) · interações · es
 
 ### [5d] Pagamento 2/2
 **Objetivo:** assinar com confiança.
-**Estrutura:** cabeçalho com "2 de 2" → card escuro de resumo (plano, R$ 100/mês, dia de cobrança, sem fidelidade, ✓ cancelar a qualquer momento) → "Forma de pagamento" com 2 opções em cartões selecionáveis → campos do cartão **ou** explicação do Pix → CPF/CNPJ → selo de segurança → barra fixa com CTA dinâmico.
-**Estados:** Pix gerado (QR + copia-e-cola + "Aguardando pagamento…" com verificação automática); cartão recusado; sucesso → [5e].
+**Estrutura (MVP):** cabeçalho com "2 de 2" → card escuro de resumo (plano, R$ 100/mês, vencimento, sem fidelidade, ✓ cancelar a qualquer momento) → forma de pagamento: só Pix → CPF/CNPJ → barra fixa "Pagar com Pix · R$ 100" → [6c].
+**Fase 2:** seleção Pix automático | cartão (é o que o desenho antigo da tela mostra).
 
 ### [5e] Catálogo vazio + onboarding
 **Objetivo:** levar ao primeiro veículo.
@@ -214,9 +214,9 @@ Para cada tela: objetivo · estrutura (de cima para baixo) · interações · es
 **Estrutura:** cabeçalho escuro com MRR e 3 contadores → card do plano com "Editar plano" → chips de status → cards de assinatura com ação contextual (Detalhes / Suspender / Reativar) → nav.
 
 ### [4c] Conta admin
-**Estrutura:** perfil → Equipe CajuGo (+ Convidar) → Vitrine CajuGo (campos + toggle de aprovação) → Comissão de vendedores (selo "Em breve", campo tracejado desabilitado) → links → Sair → nav.
+**Estrutura:** perfil → Equipe CajuGo (+ Convidar) → Vitrine CajuGo (campos + toggle de aprovação + mínimo de fotos) → Rede Caju (taxa CajuGo %, link para vendedores; sem selo "Em breve") → Pagamento (chave Pix, prazos, taxa do simulador) → Caju Indica (link para regras) → links → Sair → nav.
 
-### [6a] Entrar
+### [6a] Entrar (substituída por [9f])
 **Objetivo:** entrar em 2 campos.
 **Estrutura:** voltar + logo → título "Entrar" + subtítulo → E-mail (foco) → Senha com "Mostrar" → "Esqueci minha senha" à direita → botão primário → espaço → divisória e "Ainda não tem conta de lojista?" + botão contorno "Divulgar meus veículos".
 **Estados:** erro de credenciais abaixo da senha; bloqueio temporário; carregando no botão.
@@ -225,10 +225,10 @@ Para cada tela: objetivo · estrutura (de cima para baixo) · interações · es
 **MVP:** voltar → título "Recuperar senha" → texto "Para criar uma nova senha, fale com o suporte CajuGo." → botão WhatsApp. (A tela desenhada, com e-mail e "Link enviado", fica para a fase 2.)
 **Nova senha** (após login com senha temporária): título "Crie uma nova senha" → Senha → Confirmar senha → botão primário "Salvar e entrar".
 
-### [6c] Pix gerado
-**Objetivo:** pagar sem sair do fluxo.
-**Estrutura:** cabeçalho "Pague com Pix" → card central com pílula amarela de status, valor 30/800, QR 200 px, campo copia-e-cola com botão escuro "Copiar" → "Como pagar" em 3 passos numerados → nota de cancelamento e atualização automática → rodapé "Já paguei" (contorno).
-**Estados:** aguardando, copiado, expirado (pílula cinza + "Gerar novo Pix"), confirmado (transição para [5e]).
+### [6c] Pix manual
+**Objetivo:** pagar e mandar o comprovante sem sair do fluxo.
+**Estrutura:** cabeçalho "Pague com Pix" → card com valor 30/800, QR estático 200 px, chave Pix em JetBrains Mono com botão escuro "Copiar", favorecido → "Como pagar" em passos numerados → área de upload tracejada (`field-dash`) "Anexar comprovante" (foto ou PDF) com pré-visualização → nota "Conferimos o comprovante em até 1 dia útil." → rodapé "Enviar comprovante" (primário, desabilitado até ter arquivo).
+**Estados:** copiado; arquivo anexado; enviando; enviado → [10a].
 
 ### [6d] Filtros
 **Estrutura:** bottom sheet a partir de 96 px do topo → Ordenar por → Marca (+ Ver todas) → Preço de/até → Ano de/até → Km (slider) → Câmbio → Combustível → rodapé Limpar / Ver N veículos.
@@ -261,17 +261,17 @@ Para cada tela: objetivo · estrutura (de cima para baixo) · interações · es
 | Placa | A placa não aparece no anúncio. Só o final é exibido. |
 | Fotos | Arraste para reordenar. A primeira foto é a capa do anúncio. |
 | Cancelamento | Você pode cancelar a assinatura a qualquer momento. O catálogo fica no ar até o fim do mês já pago. |
-| Pix | Ao confirmar, geramos um QR code Pix para a primeira mensalidade e a autorização do Pix automático para os próximos meses. Você aprova tudo no app do seu banco. |
+| Pix | Pague com Pix usando a chave ou o QR abaixo e envie o comprovante. |
 | Sucesso da assinatura | Assinatura ativa. Sua loja está no ar. |
 | Catálogo vazio | Seu catálogo está vazio · Cadastre o primeiro veículo para ele aparecer no seu link e, se quiser, na vitrine CajuGo. |
 | Vitrine admin | Veículos liberados pelos lojistas. Alterações e vendas feitas pela loja atualizam esta lista automaticamente. |
 | Aprovação prévia | Anúncios liberados pelos lojistas entram numa fila de revisão. |
 | Recuperar senha (MVP) | Para criar uma nova senha, fale com o suporte CajuGo. |
 | Link enviado | Confira sua caixa de entrada e o spam. O link vale por 1 hora. |
-| Pix | Esta tela atualiza sozinha quando o pagamento for confirmado. |
-| Confirmar vendido | O veículo sai do seu catálogo e da vitrine CajuGo na hora. Você pode desfazer em até 7 dias. |
+| Pix (após envio) | Assim que confirmarmos o pagamento, sua loja entra no ar. |
+| Confirmar vendido | O veículo sai do seu catálogo, da vitrine CajuGo e dos links dos vendedores na hora. Você pode desfazer em até 7 dias. |
 | Confirmar cancelamento | Seu catálogo e seus veículos na vitrine ficam no ar até {data}, fim do mês já pago. Depois disso saem do ar. Não há multa. |
-| Confirmar suspensão | O catálogo da loja e os veículos dela na vitrine CajuGo saem do ar. O lojista recebe um e-mail e só acessa a tela de Conta para regularizar. |
+| Confirmar suspensão | O catálogo da loja e os veículos dela na vitrine CajuGo saem do ar. O lojista vê um alerta no painel e pode pagar para reativar. |
 | Confirmar ocultar | O veículo continua no catálogo da loja. O lojista é avisado com o motivo. |
 
 ---
@@ -287,25 +287,59 @@ Para cada tela: objetivo · estrutura (de cima para baixo) · interações · es
 
 ---
 
-## 8. Entregáveis e próximos passos de design
+## 8. Telas adicionadas no MVP v2
 
-Desenhados (22 telas): 1a, 1b, 1c, 1d, 2a, 3a, 3b, 3c, 4a, 4b, 4c, 5a, 5b, 5c, 5d, 5e, 6a, 6b, 6c, 6d, 6e, 6f (4 variações), 6g.
+| Turno | Telas | Resumo |
+|---|---|---|
+| 7 · Rede Caju | 7a–7h | Cadastro do vendedor (em análise), painel, vitrine com comissão e link, extrato, configuração de comissão do lojista, gestão de parceiros, confirmação de venda com taxa CajuGo, admin de vendedores |
+| 8 · Caju Indica | 8a–8g | Página do lojista, acompanhamento, landing do link, cadastro com código, extrato de crédito, regras e pagamentos no admin |
+| 9 · Conta de indicador | 9a–9f | Banner e rodapé na vitrine, cadastro rápido, código por celular (fase 2), painel, resgate Pix, login único (substitui 6a; no MVP só a aba "E-mail e senha") |
+| 10 · Pix manual | 10a–10c | Pagamento em análise, fila de comprovantes no admin, fatura do mês |
+| 11 · Menu | 11a | Menu da home: Comprar veículos, Produtos (Catálogo, Rede Caju), Caju Indica, Favoritos, Entrar |
+| 12 · Estados e casos | 12a–12i | Busca sem resultado, sem conexão, carregamento, veículo indisponível, comprovante recusado, loja suspensa (lojista e público), cancelar assinatura, termos e privacidade |
+| 13 · Rede Caju (lojista) | 13a–13d | Vendedores disponíveis, perfil do vendedor, conta do vendedor, denúncia |
+| 14 · Comprador e moderação | 14a–14e | Favoritos, simulador, aprovação prévia (admin), denunciar anúncio, denúncias (admin) |
+| 15 · Desktop | 15a–15c | Vitrine, painel do lojista e admin em 1280 px |
 
-Fluxos completos de ponta a ponta:
-- Comprador: 1a → 6d → 1b → WhatsApp/formulário.
-- Assinatura: 1a → 5a → 5b → 5c → 5d → 6c → 5e → 2a.
-- Login: 5a → 6a (→ 6b) → painel conforme papel.
-- Lojista: 1c ⇄ 2a/6e → 6f; 3a; 3b; 3c → 6f.
-- Admin: 4a → 1d → 6g → 6f; 4b → 6f; 4c.
+Requisitos detalhados de cada tela: `../PRD.md` §7. Capturas: `telas/`.
 
-A desenhar (fase seguinte):
+**Padrões reaproveitados:** cabeçalho escuro com KPIs (painéis), cabeçalho branco com voltar (telas internas), bottom sheet (diálogos, simulador, denúncias), selos de status (verde `ok` = confirmado/ativo; amarelo `warn` = pendente/em análise; laranja `caju-soft`/`caju-deep` = problema/recusado; cinza `neutral-soft` = neutro), campos de 50 px, CTA laranja fixo no rodapé, área de upload tracejada (comprovante), botões `wa.me` em verde `whatsapp` para os avisos manuais.
+
+**Desktop (≥ 1024 px):** vitrine com header (busca + menu), filtros em coluna lateral e grid de 3 colunas [15a]; painéis do lojista e do admin com **sidebar** no lugar da barra inferior, contadores de pendências e filas com ações inline [15b, 15c].
+
+**Microcopy novo:**
+| Contexto | Texto |
+|---|---|
+| Pagamento em análise | Comprovante recebido. Estamos conferindo. |
+| Pix manual | Conferimos o comprovante em até 1 dia útil. |
+| Comprovante recusado | Não conseguimos confirmar o pagamento: {motivo}. Envie um novo comprovante. |
+| Loja suspensa (público) | Catálogo temporariamente indisponível. |
+| Veículo indisponível | Este veículo já foi vendido. Veja outros parecidos. |
+| Caju Indica | Ganhe 30% da mensalidade de cada loja indicada. |
+| Caju Indica (detalhe) | Por até 3 meses, enquanto a loja continuar assinando. Começa a contar no 1º pagamento dela. |
+| Código aplicado | Indicação de {nome} aplicada. |
+| Vendedor (loja parceira) | Você ganha R$ {valor}. |
+| Vendedor em análise | Recebemos seu cadastro. Vamos conferir seus dados e avisar quando estiver aprovado. |
+| Simulador | Estimativa sem análise de crédito. |
+| Busca sem resultado | Não achamos esse veículo agora. Quer que a gente avise quando chegar? |
+
+---
+
+## 9. Entregáveis e próximos passos de design
+
+Desenhados: 1a–1d, 2a, 3a–3c, 4a–4c, 5a–5e, 6a–6g (6f com 4 variações), 7a–7h, 8a–8g, 9a–9f, 10a–10c, 11a, 12a–12i, 13a–13d, 14a–14e, 15a–15c.
+
+Fluxos completos de ponta a ponta (PRD §4):
+- Comprador: 11a → 1a → 6d/12a → 1b → 14b/14a/14d → WhatsApp/formulário.
+- Onboarding do lojista: 5b → 5c (8d) → 5d → 6c → 10a → 5e → 2a.
+- Mensalidade: 10c → 6c → 10a/12e → 12f/12g (atraso).
+- Rede Caju: 7a → 7h → 7c/13a → 7f → 3a → 7g → 7d.
+- Caju Indica: 8a/9d → 8c → 8d → 8e/9e → 8g.
+- Admin: 4a/15c → 10b · 7h · 14c · 14e · 8g · 6g → 6f; 4b; 4c/8f.
+
+A desenhar:
 - Nova senha (após senha temporária) e a versão de 6b sem e-mail.
-- Aviso de assinatura atrasada no painel do lojista e tela de loja suspensa com "Regularizar".
 - Página pública da loja com capa, logo e horário (hoje é o 1a em modo Lojista).
-- Veículo indisponível (link de carro vendido) com similares.
-- Filas de denúncias e de aprovação no admin.
-- Simulador de parcelas e galeria em tela cheia.
-- Estados vazios, de erro e de carregamento por lista.
-- Convite de usuário da loja/equipe e aceite.
-- Favoritos.
-- Versões desktop do catálogo, da página do veículo e dos painéis.
+- Galeria em tela cheia.
+- Convite de usuário da loja e aceite.
+- Versão do login [9f] só com e-mail e senha (o desenho tem a aba Celular, fase 2).

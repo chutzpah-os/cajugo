@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-**CajuGo** — SaaS de catálogo de veículos para lojistas (R$ 100/mês): catálogo próprio da loja + vitrine central CajuGo + leads no WhatsApp. Produto em `docs/PRD.md`, telas em `docs/design/`.
+**CajuGo** — plataforma de veículos: **Catálogo** para lojistas (R$ 100/mês, catálogo próprio + vitrine CajuGo + leads no WhatsApp), **Rede Caju** (vendedores independentes com comissão) e **Caju Indica** (indicação de lojas), sobre um estoque único. Pagamento por Pix manual com comprovante. Produto em `docs/PRD.md` (v2), telas em `docs/design/`.
 
 ## Documentos
 | Arquivo | Para quê |

@@ -16,12 +16,15 @@
 | Ameaça | Exemplo | Controle |
 |---|---|---|
 | Acesso a dado de outra loja (BOLA/IDOR) | Lojista edita veículo de outra loja trocando o id | Checagem de posse em toda action (§4) |
-| Mass assignment | Lojista envia `hiddenByAdmin: false` | Schema de entrada sem campos privilegiados (`API.md` §2) |
+| Mass assignment | Lojista envia `status: 'published'` sem aprovação, ou `roles: ['admin']` | Schema de entrada sem campos privilegiados (`API.md` §2) |
 | Spam de leads / denúncias | Bot envia milhares de formulários | Honeypot + rate limit (§6) |
 | Anúncio fraudulento | Preço muito abaixo da FIPE, fotos roubadas | Botão de denúncia + ocultar pelo admin + aviso na UI |
 | Clonagem de veículo | Usa a placa pública | Placa nunca exibida; só o último dígito |
 | Upload malicioso | SVG com script, arquivo enorme | Upload assinado no Cloudinary com formatos e tamanho fixos (§5) |
-| Fraude de pagamento | Webhook falso ativa a assinatura | Verificação de assinatura do webhook + consulta ao gateway (§7) |
+| Comprovante falso ou de valor errado | Lojista envia print editado ou paga menos | Admin confere no **extrato bancário** antes de confirmar; alerta de valor divergente; auditado (§7) |
+| Autoindicação / fraude no Caju Indica | Lojista indica a própria loja; várias contas para resgatar | Bloqueio por mesmo CPF/CNPJ/celular; CPF único por resgate; recompensa só após pagamento confirmado (§7) |
+| Vendedor golpista | Cobra sinal por fora usando o nome da loja | Curadoria manual (CPF, antecedentes), parceria aprovada pela loja, denúncia [13d], bloqueio pelo admin |
+| Mass assignment de dinheiro | Vendedor aumenta a comissão; lojista zera a taxa | Valores de comissão, taxa, saldo e recompensa calculados no servidor; nunca vêm do cliente |
 | Exposição do banco | Data API do Supabase aberta com a `anon key` | Data API desligada + RLS sem policy (§4) |
 
 ## 3. Autenticação 🤖
@@ -29,8 +32,8 @@
 - Login, logout e nova senha são **Server Actions**, que usam o cliente de servidor do Supabase (`@supabase/ssr`). O navegador não carrega o SDK do Supabase.
 - Os cookies de sessão são gravados pelo servidor com `HttpOnly; Secure; SameSite=Lax; Path=/`.
 - Para identificar o usuário no servidor, use `auth.getUser()` (ou `getClaims()`), que valida o token. **Nunca confie em `getSession()`** no servidor.
-- O middleware do Next renova a sessão expirada a cada requisição.
-- **Papel e loja ficam na tabela `profiles`**, lida no servidor junto com o usuário. O usuário não consegue alterar o próprio papel: nenhuma action aceita `role` ou `store_id`.
+- O `proxy.ts` do Next (antigo `middleware.ts`) renova a sessão expirada a cada requisição.
+- **Papéis e loja ficam na tabela `profiles`** (`roles`, vários por conta), lidos no servidor junto com o usuário. Ninguém altera os próprios papéis: nenhuma action aceita `roles` ou `store_id`. Trocar de painel (`switchRole`) só escolhe entre papéis que a conta já tem.
 - **Recuperação de senha no MVP é manual** (PRD [6b]): o admin confere a identidade pelo WhatsApp e define uma senha temporária (`auth.admin.updateUserById`). A senha é gerada pelo servidor (aleatória, ≥ 12 caracteres), exibida uma vez ao admin, nunca gravada em log, e marca `profiles.must_change_password = true`. Enquanto a marca estiver ligada, o servidor só libera a tela Nova senha. A ação grava `activity_log`.
 - Sem e-mails do Supabase Auth no MVP: confirmação de e-mail no cadastro desligada; contas criadas pelo admin já nascem com senha temporária.
 - Erro de login genérico: "E-mail ou senha incorretos". Além do limite do próprio Supabase Auth, aplique rate limit por IP na action de login (§6).
@@ -41,8 +44,10 @@
 - Helpers únicos no servidor (`src/platform/http/session.ts`): `authorize(session, roles)` e `authorizeStore(session)` checam sessão (401), troca obrigatória de senha e papel (403), e devolvem `{ userId, role, storeId }`. A sessão vem de `auth.getUser()` + `profiles` (montada na spec 001).
 - **Posse:** `storeId` vem da sessão e entra **no `where` da própria query** (`where id = $1 and store_id = $2`). Sem resultado → **404**. Não busque primeiro para checar depois.
 - Rotas `/admin` e actions de admin exigem `role` `admin` (ou `support` nas ações de leitura e moderação, conforme PRD §2.1).
-- Lojista com assinatura `suspended` ou `canceled` só acessa a Conta (PRD §5.3). Isso é checado no servidor, não só na navegação.
+- Loja `suspended`: o lojista vê o alerta de pagamento e continua editando, mas nada fica público; loja `canceled`/`archived`: só a Conta (PRD §5.2). Checado no servidor, não só na navegação.
 - Todo teste de feature inclui o caso **"loja B tenta acessar o recurso da loja A"**.
+- **Posse por papel:** vendedor só vê o próprio extrato, vendas e parcerias (`seller_id` da sessão); indicador só as próprias indicações e saldo; lojista só vê vendedores aprovados e, de cada um, só o que a parceria permite. O teste "usuário B" vale para todos esses casos.
+- **Conta com vários papéis:** a sessão carrega `roles` e o papel ativo; cada action checa o papel exigido (ex.: `markCommissionReceived` exige `seller`), não só "estar logado".
 
 ### Supabase fechado por padrão
 O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fechado:
@@ -56,9 +61,11 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 
 ## 5. Uploads (Cloudinary) 🤖
 - Só upload **assinado**; nunca habilite upload preset sem assinatura.
-- O servidor define pasta, `public_id`, formatos permitidos (`jpg,png,webp,heic`), tamanho máximo (15 MB) e remoção de metadados (EXIF/GPS). O nome do arquivo do usuário é ignorado.
-- Proibido: SVG, PDF, GIF animado.
-- Ao receber o `publicId`, o servidor confere que está na pasta do veículo da loja da sessão.
+- O servidor define pasta, `public_id`, formatos, tamanho máximo e remoção de metadados (EXIF/GPS). O nome do arquivo do usuário é ignorado.
+- Ao receber o `publicId`, o servidor confere que está na pasta do recurso da sessão (veículo/loja/comprovante do próprio usuário).
+- **Imagens públicas** (veículo, logo, capa): `jpg,png,webp,heic`, até 15 MB.
+- **Arquivos privados** (comprovante de Pix, documentos do vendedor): `type: authenticated`, sem URL pública; `jpg,png,webp,heic` **e `pdf`**, até 10 MB. Visualização só por URL assinada de curta duração, gerada no servidor para o admin ou para o dono do arquivo. **Esta é a única exceção a "nada de PDF"**: o PDF nunca é exibido em página pública nem processado pelo servidor.
+- Proibido em qualquer upload: SVG, HTML, GIF animado e PDF fora dos arquivos privados.
 - `CLOUDINARY_API_SECRET` só no servidor.
 
 ## 6. Entrada, saída e abuso 🤖
@@ -70,16 +77,21 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 - `?next=` após login só aceita caminho relativo interno.
 - A API nunca busca URL informada pelo usuário.
 
-## 7. Pagamentos 🤖
-- Dados de cartão **nunca** passam pelo nosso servidor: tokenização no front pelo SDK do gateway.
-- Webhook: valide a assinatura/segredo do gateway, **consulte o status no gateway** antes de ativar, e processe de forma idempotente (ID do evento gravado).
-- CPF/CNPJ só é coletado para a nota fiscal e nunca aparece em tela pública.
+## 7. Pagamentos, comissões e recompensas 🤖
+- **Pix manual (MVP):** só `admin` confirma ou recusa comprovante, depois de conferir no extrato bancário; a tela mostra alerta quando o valor difere do esperado. Confirmação, recusa, registro manual e pagamento de resgate gravam `activity_log` (quem, loja/usuário, valor, referência).
+- **Valores calculados no servidor:** total da fatura, taxa CajuGo, comissão, recompensa e saldo nunca vêm do cliente. Recompensa só é creditada quando o pagamento da loja indicada é confirmado, e no máximo pelo número de meses de `Config`.
+- **Caju Indica:** autoindicação bloqueada (mesmo CPF, CNPJ ou celular entre quem indica e a loja); CPF único por resgate; resgate só com saldo ≥ mínimo; o admin paga o Pix por fora e marca como pago.
+- **Rede Caju:** comissão é paga entre loja e vendedor, fora da plataforma; a CajuGo não guarda dados bancários além da chave Pix informada pelo próprio vendedor.
+- Nenhum dado de cartão ou conta bancária é guardado no MVP.
+- **Fase 2 (gateway):** cartão nunca passa pelo servidor (tokenização no front); webhook com assinatura validada, consulta ao gateway antes de ativar e processamento idempotente.
 
 ## 8. Dados pessoais e LGPD 🤖
 
 | Dado | Exibição | Log |
 |---|---|---|
-| CPF/CNPJ | só ao dono (mascarado) e ao admin | ❌ |
+| CPF/CNPJ (lojista, vendedor, indicador) | só ao dono (mascarado) e ao admin | ❌ |
+| Chave Pix (vendedor, indicador) | só ao dono, ao admin e, para o vendedor, às lojas parceiras (para pagar a comissão) | ❌ |
+| Documentos do vendedor e comprovantes de Pix | privados (Cloudinary `authenticated`), só admin e dono | ❌ |
 | E-mail e telefone do lojista | só no painel e no admin; o WhatsApp da loja é público por escolha dela | ❌ |
 | Nome, e-mail e telefone de quem envia lead | só à loja do lead e ao admin | ❌ |
 | Placa | nunca; só o último dígito | ❌ |
@@ -87,7 +99,9 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 
 - Formulário de lead com aviso de privacidade e link para a política.
 - Exclusão de dados a pedido (manual pelo admin no MVP).
-- Retenção: dados da loja 90 dias após cancelamento (PRD §5.3); leads 2 anos.
+- CPF e chave Pix só quando necessários: vendedor no cadastro; indicador só no primeiro resgate.
+- Denúncia de anúncio é anônima para a loja; o autor (se logado) só é visível ao admin.
+- Retenção: dados da loja 90 dias após cancelamento (PRD §5.1); leads 2 anos.
 - Crie o projeto Supabase na região **São Paulo (`sa-east-1`)** e fixe as functions da Vercel em `gru1` (São Paulo), para ficarem perto do banco. O que rodar fora do Brasil entra na política de privacidade como transferência internacional.
 
 ## 9. Web (Next.js) 🤖
@@ -113,6 +127,8 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 - [ ] Nenhum dado pessoal em resposta pública, log ou erro
 - [ ] Formulário público com honeypot + rate limit
 - [ ] Nada de HTML de usuário nem fetch de URL externa
+- [ ] Upload privado (comprovante/documento) com `authenticated` e URL assinada
+- [ ] Valores de dinheiro (fatura, taxa, comissão, recompensa, saldo) calculados no servidor
 - [ ] Segredo só no servidor
 - [ ] Ação relevante registrada em `activity_log`
 - [ ] Mudança de schema só por migration do Drizzle

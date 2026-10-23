@@ -95,3 +95,14 @@
 # 2026-10-23 · F08
 - Projeto cajugo na Vercel (Hobby) com deploy da main; ENABLE_EXPERIMENTAL_COREPACK=1; contas e variável documentadas no DEPLOYMENT.
 - Produção em https://cajugo.vercel.app (200, gru1; /dev/ui 404); Deployment Protection ligada nas prévias.
+
+# 2026-10-23 · Endereços das lojas
+- PRD §1.4, ARCHITECTURE §3a, DEPLOYMENT, GLOSSARY, DESIGN e ADR 0005: MVP em cajugo.vercel.app/{slug}; fase 2 em {slug}.cajugo.com.br via proxy.ts; middleware → proxy.ts (Next 16).
+
+# 2026-10-23 · Pagamento manual no MVP
+- PRD §5.6 e telas 5d/3c/4b/4c/6c/6g, PLAN (spec 007 = pagamento manual; gateway na fase 2), API, SECURITY §7, ARCHITECTURE, DEPLOYMENT e ADR 0006.
+
+# 2026-10-23 · PRD v2 incorporado (docs/exports)
+- PRD.md v2.0: produtos (Catálogo, Rede Caju, Caju Indica), papéis múltiplos, escopo, jornadas, regras (Pix com comprovante, Rede Caju, Caju Indica, simulador, favoritos, aprovação, denúncias, Config), 47 telas novas em §7, notificações manuais.
+- DESIGN.md v2.0 (telas 7a–15c, padrões, microcopy), design/README, GLOSSARY, ARCHITECTURE (modelo v2, jobs), API (ações v2, uploads privados), SECURITY (ameaças, PDF privado, papéis), PLAN (specs 001–013), DEPLOYMENT, ADRs 0006–0008.
+- Imagens movidas para design/telas/ (pastas "Turno 07…15"); pastas antigas renomeadas "Turno 01…06". docs/exports apagada.

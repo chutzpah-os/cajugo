@@ -3,9 +3,10 @@
 > Ordem de construção do MVP. Cada bloco numerado é uma **spec** (`SDD.md`): passa por `/spec → /clarify → /plan → /tasks → /implement → /verify`. As tarefas abaixo são o roteiro de alto nível; o `tasks.md` de cada spec detalha.
 
 ## Estratégia
-1. **Primeiro o valor, depois a cobrança.** Lojista cadastra veículos e recebe leads antes de existir pagamento online. Enquanto o pagamento (spec 007) não fica pronto, o **admin ativa a loja manualmente**, e os primeiros lojistas pagam por Pix fora do sistema. Assim dá para validar com lojas reais cedo.
-2. **Uma fatia vertical por spec:** dados + servidor + tela + testes.
-3. **Custo zero** até ter cliente pagando (Vercel Hobby, Supabase Free, Cloudinary Free).
+1. **Lançamento completo:** Catálogo, vitrine, Pix manual, **Rede Caju e Caju Indica** ficam prontos juntos no lançamento do MVP (PRD v2 §3.1).
+2. **Pix manual com comprovante** (PRD §5.6): sem gateway e sem taxa por cobrança. Gateway (Stripe ou outro) é fase 2.
+3. **Uma fatia vertical por spec:** dados + servidor + tela + testes.
+4. **Custo zero** até ter cliente pagando: Vercel Hobby, Supabase Free, Cloudinary Free; login só com e-mail e senha; avisos pelo painel + botões `wa.me` (sem SMS, WhatsApp automático ou e-mail obrigatório).
 
 ## Decisões pendentes (preciso de você)
 | # | Decisão | Quando é necessária | Sugestão |
@@ -15,9 +16,9 @@
 | D3 | Testes | Fase 0 | ✅ **Vitest** (serviços contra PGlite, sem Docker) + **Playwright** (e2e) |
 | D4 | Validação de schema | Fase 0 | ✅ **zod** |
 | D5 | CSS / componentes | Fase 0 | ✅ **Tailwind** com os tokens do `DESIGN.md` |
-| D6 | Fonte da FIPE | spec 003 | API pública gratuita da FIPE (parallelum) com cache no banco; ou lista manual |
-| D7 | E-mail transacional (aviso de novo lead) | spec 005 | Resend (plano gratuito) |
-| D8 | Gateway de pagamento | spec 007 | Asaas, Mercado Pago ou Efí (com Pix Automático) |
+| D6 | Fonte da FIPE | spec 005 | API pública gratuita da FIPE (parallelum) com cache no banco; ou lista manual |
+| D7 | E-mail transacional | **fase 2** (opcional antes) | Resend (plano gratuito); no MVP os avisos são no painel + `wa.me` |
+| D8 | Gateway de pagamento | **fase 2** | Stripe ou outro; MVP usa pagamento manual |
 | D9 | Pendências do PRD §12.1 | antes de cada spec afetada | — |
 
 ---
@@ -47,81 +48,80 @@
 
 ---
 
-## 001 · Auth e sessão — telas 6a, 6b (manual), nova senha
-- Login com Supabase Auth via Server Action → cookies httpOnly; middleware renova a sessão.
-- Tabela `profiles` com papel (`store_owner`, `admin`, `support`) e loja; o primeiro admin é criado por script.
-- Redirecionamento pós-login por papel e status da assinatura (PRD [6a]).
-- Recuperar senha **manual**: 6b mostra o WhatsApp do suporte; senha temporária definida pelo admin (script até a spec 006); troca obrigatória na tela "Nova senha".
-- Logout; proteção de `/painel/*` e `/admin/*` no servidor.
-- **Testes-chave:** loja B não acessa o painel da loja A; lojista não acessa `/admin`.
+> Specs grandes podem ser divididas no `/spec` (limite do `SDD.md` §3.2: 15 FR / 25 tasks). Todas ficam prontas antes do lançamento (013).
 
-## 002 · Cadastro do lojista e Minha loja — telas 5a, 5b, 5c, 3b
-- Menu (gaveta) e landing de lojistas.
-- Cadastro 1/2: loja + responsável, slug com verificação ao vivo e lista de reservados, criação de usuário + loja + assinatura `awaiting_payment` numa transação.
-- **Ativação provisória pelo admin** (botão simples) até a spec 007.
-- Minha loja: dados públicos, horário, logo e capa (Cloudinary), link + QR code (copiar/baixar), "divulgar novos veículos por padrão", troca de slug com redirecionamento por 90 dias.
+## 001 · Contas, papéis e login — telas 9f (e-mail e senha), 6b (manual), nova senha
+- Login com Supabase Auth via Server Action → cookies httpOnly; `proxy.ts` renova a sessão.
+- **Conta com vários papéis:** `profiles.role` vira `roles[]` (migration aditiva + cópia); `Session` e `authorize` passam a usar `roles` + papel ativo; `switchRole`.
+- Redirecionamento pós-login por papel e status da loja (PRD [9f]); primeiro admin criado por script.
+- Recuperar senha **manual** [6b]; senha temporária (script até a spec 012); troca obrigatória na tela "Nova senha".
+- Logout; proteção de `/painel/*`, `/rede/*`, `/indica/*` e `/admin/*` no servidor.
+- **Testes-chave:** usuário B não acessa dados de A; papel errado → 403; lojista não acessa `/admin`.
 
-## 003 · Veículos do lojista — telas 1c, 2a, 6e, 6f (vendido)
-- Formulário completo de [2a] com autosave de rascunho.
-- Fotos: upload assinado no Cloudinary, até 20, reordenar, capa = primeira.
-- Marca/modelo/versão (FIPE, D6) e valor de referência FIPE.
-- Máquina de estados: rascunho → publicado → vendido (desfazer em 7 dias) → excluído (soft delete); despublicar.
-- Toggle "Divulgar na CajuGo" com legendas por estado; `revalidateTag`.
-- Histórico de preço (`history`); lista "Meus veículos" com KPIs, busca e filtros por status; resumo [6e].
-- Estado vazio + onboarding [5e] (checklist "Primeiros passos").
+## 002 · Regras configuráveis — tabela `settings`, telas 4c (parte de regras), 8f (parte numérica)
+- Tabela `settings` (PRD §5.14) com valores provisórios; leitura com cache curto; edição pelo admin com auditoria.
+- Base para todas as specs seguintes (nada de número fixo no código).
 
-## 004 · Vitrine e catálogo público — telas 1a, 1b, 6d
-- Vitrine `/` e catálogo da loja `/{slug}` (mesmo layout, dois modos).
-- Busca textual, filtros e ordenação (bottom sheet), filtros na URL, contador ao vivo, "carregar mais" (cursor).
-- View `showcase_vehicles`, busca com full-text (`tsvector` + `unaccent`), índices; ISR + `revalidateTag`.
-- Página do veículo: galeria com swipe, ficha, itens, card da loja, parcela estimada e simulador local, compartilhar.
-- Veículo vendido/oculto: "não está mais disponível" + similares.
-- Favoritos no `localStorage`.
-- SEO: títulos, schema.org `Vehicle`/`Offer`, sitemap, `noindex` em vendidos.
-- Responsivo desktop: grade 2–4 colunas, coluna lateral de preço na página do veículo.
+## 003 · Cadastro do lojista, Minha loja e menu — telas 11a, 5b, 5c (+ código 8d), 3b
+- Menu da home [11a] e landing [5b].
+- Cadastro: loja + responsável, slug com regras de subdomínio e lista de reservados, código Caju Indica opcional (validado, bloqueia autoindicação); loja nasce `registered`.
+- Minha loja: dados públicos, horário, logo e capa (Cloudinary), link + QR code pela função única de URL, divulgar por padrão, troca de slug com redirecionamento.
 
-## 005 · Leads — telas 1b (formulário/WhatsApp), 3a
-- Formulário "Envie uma mensagem" com honeypot, rate limit e aviso de privacidade.
-- Clique no WhatsApp gera lead (`channel: whatsapp`) e abre `wa.me` com a mensagem pronta.
-- Origem: vitrine CajuGo × catálogo da loja.
-- Tela Leads: KPIs, filtros, avanço de status, "Perdido", destaque para novo há mais de 24 h, ligar/WhatsApp.
-- Lead vendido ↔ veículo vendido (sugestão cruzada).
-- E-mail de novo lead para o lojista (D7).
-- Métricas do veículo: visualizações, cliques, leads (`stats` diário).
+## 004 · Pix manual e ativação — telas 5d, 6c, 10a, 10b, 12e, 5e, 6g (registro manual)
+- [5d] só Pix → [6c] chave + **QR estático** + upload **privado** do comprovante (imagem/PDF) → [10a] "em análise" (rascunhos liberados).
+- Admin [10b]: fila com alerta de valor divergente, **Confirmar** (ativa a loja, próximo vencimento, `wa.me`) / **Recusar** com motivo → [12e].
+- Registro manual sem comprovante (exceção) em [6g]; onboarding [5e].
 
-## 006 · Admin: lojas, vitrine e moderação — telas 4a, 1d, 6g, 4c, 6f (ocultar/suspender)
-- Painel com KPIs, "Precisa de atenção" e origem dos leads.
-- Lojas: lista, detalhe [6g], criar loja com senha temporária do dono, definir senha temporária, suspender/reativar manual.
-- Veículos CajuGo: lista, ocultar com motivo (avisa o lojista), aprovação prévia (opcional, config).
-- Denúncias: botão "Denunciar" na página do veículo + fila no admin.
-- Usuários; equipe CajuGo (convidar admin/suporte); configurações da vitrine; logs de atividade.
+## 005 · Veículos do lojista e aprovação prévia — telas 1c, 2a, 6e, 6f, 14c
+- Formulário [2a] com autosave; fotos (até 20, upload assinado); FIPE (D6).
+- Estados: rascunho → (pendente de aprovação) → publicado ⇄ oculto → vendido (desfazer 7 dias) → excluído.
+- Divulgar na CajuGo; histórico de preço; lista com KPIs, busca e filtros; resumo [6e].
+- Aprovação prévia [14c]: checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi), aprovar / pedir ajuste.
+- **F12** (dados de exemplo) entra aqui.
 
-> **Marco: piloto.** Depois da 006 dá para colocar lojistas reais no ar com ativação manual.
+## 006 · Vitrine e comprador — telas 1a, 1b, 6d, 9a, 12a–12d, 12g, 14a, 14b, 15a
+- Vitrine e catálogo da loja (mesmo layout), busca full-text, filtros, ordenação, cursor; view `showcase_vehicles`; ISR + `revalidateTag`.
+- Página do veículo; guarda `?ref=` do vendedor; [12d] para vendido/oculto; [12g] para loja suspensa.
+- Simulador [14b] (Price, valores de `settings`); favoritos [14a] com selos; busca sem resultado + alerta [12a]; banner Caju Indica [9a].
+- Estados [12b, 12c]; SEO; desktop [15a].
 
-## 007 · Assinatura e pagamento — telas 5d, 6c, 5e
-- Integração com o gateway (D8): cliente, assinatura recorrente, Pix Automático e cartão (tokenizado no front).
-- Tela de pagamento, Pix gerado com expiração, copia e cola, polling de status, "Já paguei".
-- Webhook idempotente → assinatura `active` → loja no ar → onboarding [5e].
-- Remover a ativação provisória da spec 002.
+## 007 · Leads e denúncias — telas 1b (formulário/WhatsApp), 3a, 14d, 14e
+- Formulário com honeypot + rate limit; clique no WhatsApp gera lead; origem cajugo / catálogo / vendedor.
+- Tela Leads com status, origem "via vendedor {nome}", destaque de novos; métricas do veículo.
+- Denunciar anúncio [14d] (anônimo, rate limit) e fila do admin [14e] (manter / ocultar com motivo).
 
-## 008 · Ciclo de cobrança e Conta — telas 3c, 4b, 6f (cancelar)
-- Faturas e recibos; alterar forma de pagamento.
-- Atraso → banner no painel → suspensão automática após a tolerância (cron diário) → reativação ao pagar.
-- Cancelamento com data de fim, desfazer até a data, efetivação pelo cron.
-- Liberação de slug reservado sem pagamento (7 dias).
-- Admin Assinaturas: MRR, filtros, editar plano (aviso de 30 dias).
-- Conta do lojista: perfil, alterar senha, preferências de notificação.
-- E-mails de cobrança (D+1, D+5, D+9), suspensão, reativação e cancelamento.
+## 008 · Rede Caju: vendedor — telas 7a, 7b, 7c, 7d, 13c, 7h
+- Cadastro do vendedor (CPF, chave Pix, documentos privados) → em análise → admin aprova/bloqueia [7h].
+- Painel, vitrine com "Você ganha R$ X", link `?ref=`, pedir parceria; extrato com "Recebi"; conta.
 
-## 009 · Lançamento
-- Termos de uso e política de privacidade (LGPD, transferência internacional).
-- Checklist de produção do `DEPLOYMENT.md`; domínio `cajugo.com.br`; Vercel Pro.
-- Revisão de segurança completa (`SECURITY.md` §12) e de acessibilidade (`DESIGN.md` §7).
-- Performance: LCP < 2,5 s em 4G na vitrine e na página do veículo.
-- Decidir: Vercel Pro ou migração para VPS antes de cobrar.
-- Trocar as credenciais que apareceram no chat durante o setup: senha do banco do `cajugo-staging` (Supabase → Database → Reset password) e a API Key Root do Cloudinary (gerar nova e desativar a Root). Adiado por decisão do dono em 2026-10-23.
+## 009 · Rede Caju: lojista e venda — telas 7e, 7f, 7g, 13a, 13b, 13d
+- Comissão da loja (% ou fixo, ajuste por veículo); aceitar vendedores.
+- Parcerias (aprovar, recusar, convidar, encerrar); vendedores disponíveis e perfil; avaliar; denunciar vendedor.
+- **Confirmar venda** [7g]: atribuição, valor final, comissão (A receber/Paga), **taxa CajuGo** registrada para a próxima fatura; veículo sai de todos os lugares.
+
+## 010 · Caju Indica — telas 8a–8g, 9b, 9d, 9e
+- Código/link pessoal, landing [8c], aplicação no cadastro (vem da 003), indicações e status.
+- Recompensas creditadas na confirmação do pagamento da indicada (até 3 meses, pausa em atraso); crédito do lojista; saldo e resgate Pix ≥ mínimo; admin marca Pix pago; regras e links de campanha [8f].
+- Antifraude: autoindicação, CPF único por resgate.
+
+## 011 · Fatura, atraso, suspensão e cancelamento — telas 10c, 12f, 12g, 12h, 4b, 3c
+- Fatura mensal = mensalidade + taxas Rede Caju − crédito Caju Indica; pagamento pela mesma fila de comprovantes (004).
+- Jobs diários: vencimentos em 3 dias (lista + `wa.me`), `past_due`, suspensão após tolerância, reativação na confirmação, cancelamento no fim do período, arquivamento após retenção, liberação de slug.
+- Cancelar [12h] com desfazer; Assinaturas do admin [4b]; Conta do lojista [3c].
+
+## 012 · Admin: painel, lojas e equipe — telas 4a, 1d, 6g, 4c, 15b, 15c
+- Painel com KPIs e "Precisa de atenção" (comprovantes, vencimentos, atrasos, vendedores em análise, aprovações, denúncias, resgates, alertas de busca).
+- Lojas, usuários, detalhe da loja (senha temporária, suspender/reativar), equipe CajuGo, logs de atividade.
+- Desktop: painel do lojista [15b] e admin [15c] com sidebar e filas inline.
+
+## 013 · Lançamento — tela 12i
+- Termos e privacidade [12i] (rascunho para revisão jurídica): Rede Caju, Caju Indica, LGPD, encarregado.
+- Valores definitivos de `settings` (chave Pix etc.); projeto `cajugo-prod` no Supabase; checklist de produção do `DEPLOYMENT.md`.
+- Revisão de segurança (`SECURITY.md` §12) e acessibilidade (`DESIGN.md` §7); performance (LCP < 2,5 s em 4G).
+- Decidir: Vercel Pro ou migração para VPS antes de cobrar; fase 2 dos endereços (PRD §1.7) quando houver domínio.
+- Trocar as credenciais que apareceram no chat durante o setup: senha do banco do `cajugo-staging` e a API Key Root do Cloudinary. Adiado por decisão do dono em 2026-10-23.
 
 ---
 
 ## Fase 2 (depois do MVP)
-Backup do banco (Supabase Pro ou `pg_dump` agendado) quando houver lojistas pagando. Usuário de banco próprio (`app_user`) com menos permissões. Recuperação de senha automática por e-mail (SMTP próprio no Supabase Auth). Usuários da loja (funcionários), vendedores com comissão, consulta de placa, notificação por WhatsApp/push, analytics de funil, app Expo (aí entra a API com Bearer e a spec OpenAPI), motos/caminhões, versões desktop dos painéis.
+Cobrança automática com gateway (Stripe ou outro): Pix automático, cartão, webhooks, recibos e troca de forma de pagamento. Login por celular com código [9c]. Envio automático de avisos (WhatsApp Business API, SMS, e-mail) e alerta de queda de preço. Backup do banco (Supabase Pro ou `pg_dump` agendado) quando houver lojistas pagando. Usuário de banco próprio (`app_user`) com menos permissões. Recuperação de senha automática por e-mail (SMTP próprio no Supabase Auth). Pagamento de comissão intermediado pela plataforma. Consulta de placa, analytics de funil, app Expo (aí entra a API com Bearer e a spec OpenAPI), motos/caminhões.

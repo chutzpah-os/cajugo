@@ -29,7 +29,8 @@ Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerencia
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | assinatura de upload |
 | `CRON_SECRET` | protege `/api/v1/cron/*` |
 | `HASH_SECRET` | segredo do hash de IP (rate limit, denúncias); `openssl rand -hex 32` |
-| `PAYMENT_*`, `MAIL_*` | quando gateway e e-mail forem escolhidos |
+| `PAYMENT_*` | fase 2, com o gateway (MVP: pagamento manual, sem variável) |
+| `MAIL_*` | quando o e-mail transacional for escolhido |
 | `APP_URL` | links em e-mails e WhatsApp |
 | `ENABLE_EXPERIMENTAL_COREPACK=1` | só na Vercel: faz o build usar o pnpm fixado em `packageManager` (12.x) |
 
@@ -53,7 +54,7 @@ Migrations sempre aditivas; remover ou renomear coluna exige duas etapas (adicio
 - **Vercel Hobby:** gratuito, mas proíbe uso comercial. Antes de cobrar lojistas: Vercel Pro (US$ 20/mês) ou migração do Next para uma VPS.
 - **Supabase Free:** pausa após 7 dias sem atividade (relevante para staging). O Pro (US$ 25/mês) inclui backup diário; avalie quando houver lojistas pagando.
 - **Cloudinary Free:** acompanhe os créditos mensais.
-- **Domínio** `cajugo.com.br`: registro.br, DNS para a Vercel.
+- **Domínio** `cajugo.com.br` (fase 2): registro.br (~R$ 40/ano). Para as lojas em subdomínio (`lojaA.cajugo.com.br`), use os **nameservers da Vercel** e adicione `cajugo.com.br` e `*.cajugo.com.br` ao projeto (domínio curinga). Até lá, tudo roda em `cajugo.vercel.app` (PRD §1.7).
 
 ## Saída da Vercel (futuro)
 O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o início; o Dockerfile é escrito quando a migração for decidida. O cron da Vercel vira um cron do servidor chamando a mesma rota. O banco continua no Supabase; só muda onde o Next roda.
@@ -63,5 +64,6 @@ O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o in
 - [ ] Confirmação de e-mail desligada no Supabase Auth (MVP sem e-mails do Auth)
 - [ ] URL do site e redirect URLs configuradas no Supabase Auth
 - [ ] Upload sem assinatura **desligado** no Cloudinary
+- [ ] Cloudinary → Settings → Security: liberar a entrega de PDF (contas Free bloqueiam por padrão), necessária para o admin ver comprovantes em PDF por URL assinada
 - [x] Deployment Protection ligado nos Previews (Vercel Authentication, Standard Protection: prévias exigem login na Vercel; produção é pública)
 - [ ] MFA em Supabase, Vercel, Cloudinary, gateway e GitHub

@@ -1,0 +1,3 @@
+# Pagamento por Pix manual no MVP
+
+No MVP não há gateway de pagamento: o lojista paga por Pix na chave da CajuGo (QR estático gerado pelo sistema) e envia o comprovante (imagem ou PDF, guardado como arquivo privado); o admin confere no extrato bancário e confirma ou recusa com motivo. A confirmação ativa ou reativa a loja e credita as recompensas do Caju Indica; atraso, suspensão e fatura mensal (mensalidade + taxas da Rede Caju − crédito) são automáticos pelo job diário. Assim o lançamento não tem custo nem taxa de gateway, nem dado de cartão. A cobrança automática (Stripe ou outro) é fase 2.

@@ -55,3 +55,10 @@
 
 # 2026-10-23 · Credenciais expostas no chat
 - Dono decidiu não trocar agora: banco só tem dados de teste e repo não contém segredos. Troca obrigatória antes do lançamento (PLAN 009).
+
+# 2026-10-23 · Por que pagamento manual
+- Decisão do dono: MVP sem custo e sem integração; Stripe ou outro gateway entra depois, com o registro manual mantido.
+
+# 2026-10-23 · Como o PRD v2 entrou
+- Dono decidiu: login só e-mail/senha e avisos por wa.me no MVP (custo zero); comprovante aceita imagem e PDF (privado); Rede Caju e Caju Indica prontos no lançamento.
+- PRD v2 prevalece sobre o v1, exceto nesses pontos e nos endereços em duas fases (vercel.app → subdomínios).
