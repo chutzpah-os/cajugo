@@ -16,11 +16,11 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T005** [P] `safeNext`: volta só para caminho interno · _AUT-SEC-005, AUT-FR-011_
 - [x] **T006** `signIn`: sucesso, erro genérico, senha temporária vencida · _AUT-FR-001, AUT-FR-002, AUT-FR-014, AUT-SEC-003_
 - [x] **T007** Bloqueio no `signIn`: por e-mail (5 falhas / 15 min) e por rede · _AUT-FR-003_
-- [ ] **T008** `getSession`: inatividade (30 dias; equipe 1 dia), `last_seen_at` no máximo 1×/hora, flag de troca de senha · _AUT-FR-004, AUT-FR-015_
-- [ ] **T009** `signOut` e `switchPanel` (só papéis da conta; "usuário B") · _AUT-FR-005, AUT-FR-007, AUT-SEC-001, AUT-SEC-002_
-- [ ] **T010** `setTemporaryPassword`: só admin, 24 h, auditoria sem senha, suporte e lojista recusados · _AUT-FR-014, AUT-SEC-003, AUT-SEC-004, AUT-SEC-008_
-- [ ] **T011** `updatePassword`: ≥ 8 e confirmação, limpa a flag, encerra as outras sessões · _AUT-FR-015_
-- [ ] **T012** [P] Regra "cadastro público nunca dá papel de equipe" e "conta da equipe não acumula papéis" · _AUT-SEC-009_
+- [x] **T008** `getSession`: inatividade (30 dias; equipe 1 dia), `last_seen_at` no máximo 1×/hora, flag de troca de senha · _AUT-FR-004, AUT-FR-015_
+- [x] **T009** `signOut` e `switchPanel` (só papéis da conta; "usuário B") · _AUT-FR-005, AUT-FR-007, AUT-SEC-001, AUT-SEC-002_
+- [x] **T010** `setTemporaryPassword`: só admin, 24 h, auditoria sem senha, suporte e lojista recusados · _AUT-FR-014, AUT-SEC-003, AUT-SEC-004, AUT-SEC-008_
+- [x] **T011** `updatePassword`: ≥ 8 e confirmação, limpa a flag, encerra as outras sessões · _AUT-FR-015_
+- [x] **T012** [P] Regra "cadastro público nunca dá papel de equipe" e "conta da equipe não acumula papéis" · _AUT-SEC-009_
 
 ## Fase 3 — Supabase real, proxy e telas
 - [ ] **T013** Cliente Supabase de servidor (cookies `HttpOnly`, `maxAge` 30 dias) implementando `AuthProvider`; `src/proxy.ts` com renovação deslizante e `/entrar?next=` · _AUT-FR-004, AUT-FR-011, AUT-SEC-006_

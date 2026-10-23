@@ -125,3 +125,7 @@
 # 2026-10-23 · 001/T004–T007 login
 - domains/auth: landingFor/pickPanel (painel inicial por papel, último painel, status da loja, nova senha), signIn (erro genérico, temporária vencida, last_login/seen), schemas.
 - platform/http: safeNext (só caminho interno); peekRateLimit e limite loginFailuresPerEmail (5 falhas/15 min) + 5/min por rede.
+
+# 2026-10-23 · 001/T008–T012
+- domains/auth/service: getSession (inatividade 30 d / equipe 1 d, last_seen 1×/h, temporária vencida), signOut, switchPanel, setTemporaryPassword (auditoria sem senha), updatePassword (encerra outros aparelhos).
+- domains/auth/roles: grantRole, único caminho para dar papel (cadastro público sem equipe; equipe e clientes não se misturam).

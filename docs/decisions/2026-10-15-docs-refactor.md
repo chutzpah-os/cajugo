@@ -77,3 +77,6 @@
 
 # 2026-10-23 · Bloqueio só por falha (001/T007)
 - O contador por e-mail sobe só em falha e é consultado sem contar (peek), para o login certo nunca bloquear; falhas de e-mail inexistente também contam, para o bloqueio não revelar se a conta existe.
+
+# 2026-10-23 · Papéis por uma porta só (001/T012)
+- grantRole concentra as regras de AUT-SEC-009 para os cadastros das specs 003/008/010 não reimplementarem a checagem. updatePassword só exige sessão (não authorize), por ser a única ação liberada com senha temporária.
