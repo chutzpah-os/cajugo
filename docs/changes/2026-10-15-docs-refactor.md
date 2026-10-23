@@ -132,3 +132,7 @@
 
 # 2026-10-23 · AUT-FR-016 loja indisponível
 - Spec/plan/tasks 001: usuário da loja com loja sem 1º pagamento, em análise, cancelada ou arquivada → /painel/loja-indisponivel; landingFor ajustado com testes.
+
+# 2026-10-23 · 001/T013 Supabase real e proxy
+- platform/supabase/server.ts (SupabaseAuthProvider, cookies HttpOnly 30 d) e next.ts (provedor da requisição); src/proxy.ts renova a sessão e manda área logada sem sessão para /entrar?next=.
+- platform/http/protected-paths.ts; SEO.md: páginas que ranqueiam são /rede/cadastro, /indica/cadastro, /i/{codigo} (/rede e /indica são painéis).

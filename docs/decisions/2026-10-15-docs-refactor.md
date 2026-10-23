@@ -83,3 +83,6 @@
 
 # 2026-10-23 · Aviso para o usuário da loja (AUT-FR-016)
 - Dono aprovou: pagamento e Conta são só do lojista; em vez de "sem permissão", o usuário da loja vê "Loja indisponível, fale com o responsável". Leitura dos veículos nesse estado ficou fora do MVP.
+
+# 2026-10-23 · proxy com getClaims (001/T013)
+- O proxy usa getClaims (valida o token e renova quando vence) só como checagem otimista; papel e loja são conferidos no servidor. Erro 400 do Supabase vira "senha errada"; qualquer outro sobe, para uma queda do serviço não parecer credencial inválida.
