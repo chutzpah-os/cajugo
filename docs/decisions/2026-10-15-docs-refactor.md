@@ -92,3 +92,6 @@
 
 # 2026-10-23 · tsx e nome só em profiles (001/T018)
 - tsx (dev, aprovado pelo dono) para o script reaproveitar a função testada em vez de duplicar regra. O nome fica só em profiles, não no user_metadata do Supabase: uma fonte da verdade e menos dado pessoal duplicado.
+
+# 2026-10-23 · Sessão sempre por requisição (001/T015)
+- currentSession chama connection(): a inatividade depende da hora e o Next 16 recusa new Date() em pré-renderização. /recuperar não quebra sem SUPPORT_WHATSAPP (só esconde o botão), para uma variável faltando na Vercel não derrubar o build.

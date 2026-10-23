@@ -25,7 +25,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 3 — Supabase real, proxy e telas
 - [x] **T013** Cliente Supabase de servidor (cookies `HttpOnly`, `maxAge` 30 dias) implementando `AuthProvider`; `src/proxy.ts` com renovação deslizante e `/entrar?next=` · _AUT-FR-004, AUT-FR-011, AUT-SEC-006_
 - [x] **T014** Tela `/entrar` [9f] só e-mail e senha: erros, bloqueio, rodapé de cadastros · _AUT-FR-001, AUT-FR-002, AUT-FR-003, AUT-NFR-002_
-- [ ] **T015** Telas `/recuperar` [6b] (botão `wa.me` com `SUPPORT_WHATSAPP`) e `/nova-senha` · _AUT-FR-013, AUT-FR-015_
+- [x] **T015** Telas `/recuperar` [6b] (botão `wa.me` com `SUPPORT_WHATSAPP`) e `/nova-senha` · _AUT-FR-013, AUT-FR-015_
 - [ ] **T016** Layouts das áreas (`/painel`, `/rede`, `/indica`, `/admin`) com `<Suspense>`, páginas provisórias, "Sem permissão", troca de painel, alerta provisório de loja suspensa, sair · _AUT-FR-005 a AUT-FR-012, AUT-SEC-001, AUT-SEC-007, AUT-SEC-008_
 - [ ] **T017** Tela provisória do admin "Senha temporária" (busca por e-mail) · _AUT-FR-014_
 - [x] **T018** Script `pnpm admin:create <email>` (chave secreta, senha temporária) · _AUT-SEC-009_

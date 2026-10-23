@@ -1,5 +1,10 @@
 import { randomUUID } from "node:crypto";
-import type { AuthProvider, AuthUser, SignOutScope } from "./auth-provider";
+import {
+  samePassword,
+  type AuthProvider,
+  type AuthUser,
+  type SignOutScope,
+} from "./auth-provider";
 
 type Account = AuthUser & { password: string; sessions: Set<string> };
 
@@ -49,7 +54,9 @@ export class FakeAuthProvider implements AuthProvider {
   async updateOwnPassword(password: string) {
     const user = await this.getUser();
     if (!user) throw new Error("Sem sessão");
-    this.accounts.get(user.id)!.password = password;
+    const account = this.accounts.get(user.id)!;
+    if (account.password === password) throw samePassword();
+    account.password = password;
   }
 
   async adminUpdatePassword(userId: string, password: string) {

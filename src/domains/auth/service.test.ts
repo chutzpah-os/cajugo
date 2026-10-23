@@ -645,6 +645,20 @@ describe("signIn", () => {
       });
     });
 
+    it("[AUT-FR-015] recusa repetir a senha atual, com erro no campo", async () => {
+      const { session } = await withTempPassword();
+
+      await expect(
+        updatePassword(deps(), session, {
+          password: PASSWORD,
+          confirmation: PASSWORD,
+        }),
+      ).rejects.toMatchObject({
+        status: 422,
+        errors: [expect.objectContaining({ code: "same_password" })],
+      });
+    });
+
     it("sem sessão responde 401", async () => {
       await expect(
         updatePassword(deps(), null, { password: NEW, confirmation: NEW }),

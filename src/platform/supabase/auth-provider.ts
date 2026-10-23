@@ -1,3 +1,5 @@
+import { AppError } from "../http/errors";
+
 /** Usuário do provedor de login (Supabase Auth). Papéis e loja ficam em `profiles`. */
 export type AuthUser = { id: string; email: string };
 
@@ -17,4 +19,15 @@ export interface AuthProvider {
   /** Ações de administrador (chave secreta, só servidor). */
   adminUpdatePassword(userId: string, password: string): Promise<void>;
   adminCreateUser(email: string, password: string): Promise<AuthUser>;
+}
+
+/** Senha nova igual à atual: o provedor recusa; vira erro no campo, não falha genérica. */
+export function samePassword() {
+  return AppError.validation([
+    {
+      field: "password",
+      code: "same_password",
+      message: "Use uma senha diferente da atual.",
+    },
+  ]);
 }

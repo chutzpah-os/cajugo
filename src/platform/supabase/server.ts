@@ -4,7 +4,13 @@ import {
   type CookieOptions,
 } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { AuthProvider, AuthUser, SignOutScope } from "./auth-provider";
+import { AppError } from "../http/errors";
+import {
+  samePassword,
+  type AuthProvider,
+  type AuthUser,
+  type SignOutScope,
+} from "./auth-provider";
 
 /**
  * Cookies da sessão: fora do alcance de scripts (AUT-SEC-006) e válidos por 30 dias,
@@ -88,6 +94,15 @@ export class SupabaseAuthProvider implements AuthProvider {
 
   async updateOwnPassword(password: string) {
     const { error } = await this.client.auth.updateUser({ password });
+    if (error?.code === "same_password") throw samePassword();
+    if (error?.code === "weak_password")
+      throw AppError.validation([
+        {
+          field: "password",
+          code: "weak_password",
+          message: "Senha fraca. Use pelo menos 8 caracteres.",
+        },
+      ]);
     if (error) throw error;
   }
 

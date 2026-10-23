@@ -143,3 +143,6 @@
 # 2026-10-23 · 001/T018 admin:create
 - domains/auth/create-admin.ts (admin com senha temporária 24 h, auditoria sem senha) + scripts/create-admin.ts e `pnpm admin:create`; tsx (dev). Primeiro admin criado no staging.
 - withSessionMaxAge: cookie de sessão com 30 dias (o @supabase/ssr forçava 400).
+
+# 2026-10-23 · 001/T015 recuperar e nova senha
+- app/recuperar (wa.me do suporte com mensagem pronta) e app/nova-senha (updatePasswordAction, NewPasswordForm); domains/auth/current.ts (currentSession com connection()); platform/whatsapp/link.ts; senha igual à atual vira erro de campo.
