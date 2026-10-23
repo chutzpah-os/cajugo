@@ -146,3 +146,7 @@
 
 # 2026-10-23 · 001/T015 recuperar e nova senha
 - app/recuperar (wa.me do suporte com mensagem pronta) e app/nova-senha (updatePasswordAction, NewPasswordForm); domains/auth/current.ts (currentSession com connection()); platform/whatsapp/link.ts; senha igual à atual vira erro de campo.
+
+# 2026-10-23 · 001/T016 áreas logadas
+- Layouts de /painel, /rede, /indica, /admin, /lojistas/pagamento (AreaShell: sair, troca de painel, alerta de suspensa); guards.ts (requireArea, requireStorePage), store-access.ts; NoPermission, loja indisponível e páginas em construção.
+- /entrar estático: o next é lido da URL no envio (corrige perda do next).

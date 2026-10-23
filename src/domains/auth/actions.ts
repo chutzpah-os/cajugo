@@ -8,7 +8,14 @@ import { AppError } from "@/platform/http/errors";
 import { logger } from "@/platform/http/logger";
 import { loginUrl } from "@/platform/http/protected-paths";
 import { requestAuthProvider } from "@/platform/supabase/next";
-import { getSession, signIn, updatePassword } from "./service";
+import { currentSession } from "./current";
+import {
+  getSession,
+  signIn,
+  signOut,
+  switchPanel,
+  updatePassword,
+} from "./service";
 
 /** `email` volta para a tela não apagar o que a pessoa digitou. */
 export type SignInState = {
@@ -91,5 +98,24 @@ export async function updatePasswordAction(
       errors: {},
     };
   }
+  redirect(redirectTo);
+}
+
+/** Troca de painel (AUT-FR-007); papel fora da conta → 403, tratado no serviço. */
+export async function switchPanelAction(form: FormData): Promise<void> {
+  const { redirectTo } = await switchPanel(
+    { db, auth: await requestAuthProvider() },
+    await currentSession(),
+    form.get("role"),
+  );
+  redirect(redirectTo);
+}
+
+/** Sair deste aparelho e voltar à vitrine (AUT-FR-005). */
+export async function signOutAction(): Promise<void> {
+  const { redirectTo } = await signOut({
+    db,
+    auth: await requestAuthProvider(),
+  });
   redirect(redirectTo);
 }

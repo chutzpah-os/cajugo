@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Suspense } from "react";
 import { SignInForm } from "@/domains/auth/components/sign-in-form";
 import { Logo } from "@/ui/logo";
 
@@ -16,13 +15,8 @@ const SIGN_UPS = [
   { href: "/indica/cadastro", label: "Caju Indica" },
 ];
 
-async function Form({ searchParams }: PageProps<"/entrar">) {
-  const { next } = await searchParams;
-  return <SignInForm next={typeof next === "string" ? next : undefined} />;
-}
-
 /** Login único [9f]: e-mail e senha (AUT-FR-001, AUT-NFR-002). */
-export default function SignInPage(props: PageProps<"/entrar">) {
+export default function SignInPage() {
   return (
     <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pt-4 pb-6">
       <header className="flex items-center gap-2">
@@ -44,9 +38,7 @@ export default function SignInPage(props: PageProps<"/entrar">) {
       </p>
 
       <div className="mt-6">
-        <Suspense fallback={<SignInForm />}>
-          <Form {...props} />
-        </Suspense>
+        <SignInForm />
       </div>
 
       <nav

@@ -7,7 +7,7 @@ import { TextField } from "@/ui/text-field";
 import { signInAction, type SignInState } from "../actions";
 
 /** Formulário do login [9f]: só e-mail e senha no MVP. */
-export function SignInForm({ next }: { next?: string }) {
+export function SignInForm() {
   const [state, action, pending] = useActionState<SignInState, FormData>(
     signInAction,
     null,
@@ -15,8 +15,17 @@ export function SignInForm({ next }: { next?: string }) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <form action={action} className="flex flex-col gap-4" noValidate>
-      {next && <input type="hidden" name="next" value={next} />}
+    <form
+      action={(form) => {
+        // A página pedida antes do login (AUT-FR-011) vem da URL no envio:
+        // a página fica estática e nenhum envio sai sem ela.
+        const next = new URLSearchParams(window.location.search).get("next");
+        if (next) form.set("next", next);
+        return action(form);
+      }}
+      className="flex flex-col gap-4"
+      noValidate
+    >
       <TextField
         id="email"
         name="email"

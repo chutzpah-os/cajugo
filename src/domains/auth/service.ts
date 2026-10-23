@@ -31,7 +31,8 @@ function invalidCredentials() {
   return new AppError("invalid-credentials", "E-mail ou senha incorretos", 401);
 }
 
-async function storeStatusOf(db: Db, storeId: string | null) {
+/** Status da loja da sessão (`null` sem loja). */
+export async function storeStatusOf(db: Db, storeId: string | null) {
   if (!storeId) return null;
   const [store] = await db
     .select({ status: stores.status })
