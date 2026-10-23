@@ -17,7 +17,7 @@ Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerencia
 | GitHub | `chutzpah-os` | repositório público `chutzpah-os/cajugo` |
 | Supabase | organização `CajuGo` (Free) | projeto `cajugo-staging`, ref `yrjodykcnjotauyenpbu`, região `sa-east-1` (São Paulo) |
 | Cloudinary | `victorhanielbusiness@gmail.com` (Free) | cloud name `zr1zxzni` |
-| Vercel | a criar (F08) | — |
+| Vercel | `victorhanielbusiness-8743's projects` (Hobby) | projeto `cajugo`, importado de `chutzpah-os/cajugo` (branch `main`), funções em `gru1`; produção em **https://cajugo.vercel.app** |
 
 ## Variáveis de ambiente (Vercel, por ambiente; todas só no servidor)
 | Nome | Uso |
@@ -31,6 +31,7 @@ Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerencia
 | `HASH_SECRET` | segredo do hash de IP (rate limit, denúncias); `openssl rand -hex 32` |
 | `PAYMENT_*`, `MAIL_*` | quando gateway e e-mail forem escolhidos |
 | `APP_URL` | links em e-mails e WhatsApp |
+| `ENABLE_EXPERIMENTAL_COREPACK=1` | só na Vercel: faz o build usar o pnpm fixado em `packageManager` (12.x) |
 
 `.env.example` no repositório só com os nomes.
 
@@ -62,5 +63,5 @@ O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o in
 - [ ] Confirmação de e-mail desligada no Supabase Auth (MVP sem e-mails do Auth)
 - [ ] URL do site e redirect URLs configuradas no Supabase Auth
 - [ ] Upload sem assinatura **desligado** no Cloudinary
-- [ ] Deployment Protection ligado nos Previews
+- [x] Deployment Protection ligado nos Previews (Vercel Authentication, Standard Protection: prévias exigem login na Vercel; produção é pública)
 - [ ] MFA em Supabase, Vercel, Cloudinary, gateway e GitHub

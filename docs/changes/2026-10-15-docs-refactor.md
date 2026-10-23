@@ -91,3 +91,7 @@
 # 2026-10-23 · F07 concluída
 - Cloudinary testado (conexão ok, sem preset sem assinatura). Troca das credenciais expostas no chat adiada para a spec 009 (lançamento).
 - vercel.json com região gru1 (São Paulo, perto do banco).
+
+# 2026-10-23 · F08
+- Projeto cajugo na Vercel (Hobby) com deploy da main; ENABLE_EXPERIMENTAL_COREPACK=1; contas e variável documentadas no DEPLOYMENT.
+- Produção em https://cajugo.vercel.app (200, gru1; /dev/ui 404); Deployment Protection ligada nas prévias.

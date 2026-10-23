@@ -33,7 +33,8 @@
 - [x] **F06** Drizzle + Drizzle Kit (postgres.js no runtime, pooler sem prepared statements), primeira migration (`profiles`, `stores`, RLS ligado sem policy) e testes de integração com **PGlite** (Postgres em memória, sem Docker).
 - [x] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
   - Feito: conta Free (`victorhanielbusiness@gmail.com`, cloud name `zr1zxzni`), chaves no `.env.local`, conexão testada; único preset (`ml_default`) é assinado.
-- [ ] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
+- [x] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
+  - Feito: projeto `cajugo` na Vercel (Hobby), deploy automático a cada push na `main`, região `gru1`, `ENABLE_EXPERIMENTAL_COREPACK=1`. Variáveis do banco, Cloudinary e `HASH_SECRET` entram na spec 001. Produção: https://cajugo.vercel.app; prévias protegidas (Vercel Authentication).
 - [~] **F09** Tokens de design (cores, tipografia Archivo/JetBrains Mono, raios) e componentes base do `DESIGN.md` §3: botão, input, chip, selo, toggle, segmentado, bottom sheet, nav inferior, cabeçalho escuro/claro, estado vazio, skeleton, toast.
   - Feito: tokens no Tailwind, fontes Archivo/JetBrains Mono, `src/ui/` (Logo, Button, Badge, Chip, TextField, Toggle, YesNo, EmptyState, Skeleton) com testes de acessibilidade; vitrine em `/dev/ui` (só em desenvolvimento). Falta, junto com as telas que usam: bottom sheet, nav inferior, cabeçalhos, toast, slider, opção de rádio.
 - [x] **F10** Infra de servidor comum: `requireSession`, helper de erro (problem+json / `{ ok:false, errors }`), rate limit por IP (`rate_limits`), honeypot, `activity_log`, logger JSON.
