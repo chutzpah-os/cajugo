@@ -3,7 +3,8 @@ import { authorize, authorizeStore, type Session } from "./session";
 
 const owner: Session = {
   userId: "u1",
-  role: "store_owner",
+  roles: ["store_owner"],
+  activeRole: "store_owner",
   storeId: "s1",
   mustChangePassword: false,
 };
@@ -15,8 +16,17 @@ describe("authorize", () => {
     );
   });
 
-  it("papel errado responde 403", () => {
-    expect(() => authorize(owner, ["admin"])).toThrow(
+  it("[AUT-FR-012] papel que a conta não tem responde 403", () => {
+    // Arrange
+    const referrer: Session = {
+      ...owner,
+      roles: ["referrer"],
+      activeRole: "referrer",
+      storeId: null,
+    };
+
+    // Act / Assert
+    expect(() => authorize(referrer, ["admin", "support"])).toThrow(
       expect.objectContaining({ status: 403 }),
     );
   });
@@ -31,9 +41,39 @@ describe("authorize", () => {
     expect(authorize(owner, ["store_owner", "admin"])).toBe(owner);
   });
 
-  it("authorizeStore exige loja na sessão", () => {
+  it("conta com vários papéis passa por qualquer um deles, seja qual for o painel ativo", () => {
+    // Arrange
+    const ownerAndSeller: Session = {
+      ...owner,
+      roles: ["store_owner", "seller"],
+      activeRole: "store_owner",
+    };
+
+    // Act / Assert
+    expect(authorize(ownerAndSeller, ["seller"])).toBe(ownerAndSeller);
+  });
+
+  it("authorizeStore exige papel de loja e loja na sessão", () => {
     expect(authorizeStore(owner).storeId).toBe("s1");
     expect(() => authorizeStore({ ...owner, storeId: null })).toThrow(
+      expect.objectContaining({ status: 403 }),
+    );
+    expect(() =>
+      authorizeStore({ ...owner, roles: ["seller"], activeRole: "seller" }),
+    ).toThrow(expect.objectContaining({ status: 403 }));
+  });
+
+  it("[AUT-SEC-007] authorizeStore aceita o usuário da loja, salvo quando a ação é só do lojista", () => {
+    // Arrange
+    const staff: Session = {
+      ...owner,
+      roles: ["store_staff"],
+      activeRole: "store_staff",
+    };
+
+    // Act / Assert
+    expect(authorizeStore(staff).storeId).toBe("s1");
+    expect(() => authorizeStore(staff, ["store_owner"])).toThrow(
       expect.objectContaining({ status: 403 }),
     );
   });

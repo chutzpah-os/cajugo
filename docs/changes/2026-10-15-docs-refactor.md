@@ -117,3 +117,7 @@
 - Novo docs/SEO.md (regras técnicas, domínio, medição, testes, checklist); ligado em CLAUDE.md, PRD (§1.1b, escopo, NFR, pendência 7), PLAN (006, 013), ARCHITECTURE, TESTING, DEPLOYMENT.
 - 001/T002: migration 0002 (papéis múltiplos, last_panel, last_seen_at, temp_password_expires_at, store_status) com cópia role→roles e teste de migration.
 - Lojas em /loja/{slug} (ADR 0009 substitui 0005): PRD §1.7 sem fases nem lista de reservados, pendência 7 reduzida ao domínio; SEO, API, ARCHITECTURE §3a, DEPLOYMENT, PLAN, GLOSSARY, DESIGN.
+
+# 2026-10-23 · 001/T003 sessão com vários papéis
+- Session com roles + activeRole; authorize aceita qualquer papel da conta; authorizeStore aceita lojista e usuário da loja (restringível).
+- src/domains/auth/permissions.ts: AREAS (painel, rede, indica, admin) e PERMISSIONS (loja: staff só veículos/leads/venda; admin: suporte só lê e modera).

@@ -1,18 +1,25 @@
+import type { userRole } from "../db/schema";
 import { AppError } from "./errors";
 
-export type Role = "store_owner" | "admin" | "support";
+export type Role = (typeof userRole.enumValues)[number];
+
+/** Papéis que trabalham no painel de uma loja (`storeId` obrigatório). */
+export const STORE_ROLES = ["store_owner", "store_staff"] as const;
 
 /** Quem está fazendo a requisição. Montada no servidor a partir do Supabase Auth + `profiles` (spec 001). */
 export type Session = {
   userId: string;
-  role: Role;
-  /** Loja do lojista; `null` para a equipe CajuGo. */
+  /** Todos os papéis da conta (PRD §2). Permissão é checada contra eles. */
+  roles: readonly Role[];
+  /** Painel aberto agora: só navegação, nunca permissão (AUT-FR-007). */
+  activeRole: Role;
+  /** Loja do lojista ou do usuário da loja; `null` para os demais. */
   storeId: string | null;
   mustChangePassword: boolean;
 };
 
 /**
- * Checa papel e troca obrigatória de senha. Sem sessão → 401; papel errado → 403.
+ * Checa papel e troca obrigatória de senha. Sem sessão → 401; nenhum papel permitido → 403.
  * Posse de recurso não é aqui: é no `where` da query, com `storeId` da sessão (SECURITY.md §4).
  */
 export function authorize(
@@ -27,15 +34,16 @@ export function authorize(
       403,
     );
   }
-  if (!roles.includes(session.role)) throw AppError.forbidden();
+  if (!session.roles.some((r) => roles.includes(r))) throw AppError.forbidden();
   return session;
 }
 
-/** Atalho para ações do lojista: garante papel e devolve o `storeId` da sessão. */
+/** Atalho para ações da loja: garante papel de loja e devolve o `storeId` da sessão. */
 export function authorizeStore(
   session: Session | null,
+  roles: readonly Role[] = STORE_ROLES,
 ): Session & { storeId: string } {
-  const s = authorize(session, ["store_owner"]);
+  const s = authorize(session, roles);
   if (!s.storeId) throw AppError.forbidden();
   return { ...s, storeId: s.storeId };
 }
