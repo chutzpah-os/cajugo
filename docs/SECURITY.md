@@ -99,7 +99,8 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 - Nada de segredo no repositório: `.env*` no `.gitignore`, `.env.example` só com nomes.
 - Segredos de produção só nas variáveis de ambiente da Vercel, separadas por ambiente (Preview usa o projeto Supabase de **staging**).
 - MFA nas contas Supabase, Vercel, Cloudinary, gateway e GitHub.
-- O Claude Code não lê `.env*` (regra `deny` no `.claude/settings.json`) e só commita quando o dono pede.
+- O Claude Code pode ler o `.env.local` (o dono liberou em 2026-10-23), mas só o faz quando necessário: para conferir se uma variável existe ou testar uma conexão, **sem exibir valores**. Para ver um valor, pede antes. Segredos nunca vão para commit, documentação, issue ou log. Só commita quando o dono pede.
+- Quem colaborar no projeto e quiser bloquear essa leitura no próprio Claude Code coloca `"deny": ["Read(./.env)", "Read(./.env.*)"]` no seu `.claude/settings.local.json` (pessoal, fora do git). Não dá para fazer o inverso (bloquear no `settings.json` versionado e liberar no local): um `deny` sempre vence um `allow`, em qualquer arquivo.
 
 ## 11. Logs e auditoria
 - Logs do servidor em JSON (`console` estruturado na Vercel), sem PII: use IDs, nunca nome, e-mail, telefone ou placa.

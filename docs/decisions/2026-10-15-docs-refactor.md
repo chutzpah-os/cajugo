@@ -49,3 +49,6 @@
 
 # 2026-10-23 · Infra comum (F10)
 - Rate limit no próprio Postgres (sem Redis, custo zero), janela fixa com upsert atômico; IP só como HMAC; sessão do Supabase fica na spec 001 para não antecipar o login.
+
+# 2026-10-23 · Por que liberar leitura do .env
+- Decisão do dono, para permitir que o agente configure variáveis; a proteção passa a ser a regra de não exibir valores.

@@ -5,8 +5,6 @@
   },
   "permissions": {
     "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
       "Bash(supabase db reset*)",
       "Bash(git merge:*)",
       "Bash(git rebase:*)",

@@ -116,6 +116,7 @@ Esta versão do Next mudou em relação ao que o modelo conhece. Antes de escrev
 - Ao terminar uma task: rode `pnpm check`, liste os arquivos alterados, sugira a mensagem de commit e pare. Eu reviso e peço o commit (ou commito eu mesmo).
 - Nunca execute `git merge`, `git rebase`, `git tag`, `gh pr create`/`gh pr merge`, `push --force`, nem reescreva histórico.
 - Nunca pule o hook de pre-commit (`--no-verify` / `-n`). Se falhar, corrija.
+- **Segredos:** o `.env.local` pode ser lido, mas só para conferir se uma variável existe ou testar conexão, sem exibir valores; para ver um valor, pergunte antes. Nunca copie segredo para código, docs, commit ou chat.
 - **Sem coautoria:** a mensagem nunca leva `Co-Authored-By`, "Generated with Claude Code", link de sessão nem qualquer menção ao Claude. O mesmo vale para descrições de PR.
 - Formato: Conventional Commits com referência à spec e à task, ex.: `feat(vehicles): publicar veículo [003/T007]`.
 - Pode usar `git status`, `git diff` e `git log` para ler o estado do repositório.
@@ -127,7 +128,7 @@ Isso é reforçado no `.claude/settings.json` (versionado):
   "attribution": { "commit": "", "pr": "" },
   "permissions": {
     "deny": [
-      "Read(./.env)", "Read(./.env.*)", "Bash(supabase db reset*)",
+      "Bash(supabase db reset*)",
       "Bash(git merge:*)", "Bash(git rebase:*)", "Bash(git tag:*)",
       "Bash(gh pr create:*)", "Bash(gh pr merge:*)",
       "Bash(gh secret set:*)",

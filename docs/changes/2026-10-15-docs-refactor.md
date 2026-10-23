@@ -84,3 +84,6 @@
 # 2026-10-23 · Contas dos serviços
 - DEPLOYMENT: tabela de contas (GitHub, Supabase, Cloudinary de victorhanielbusiness@gmail.com, cloud zr1zxzni); F07 em andamento.
 - Migration 0001 aplicada no cajugo-staging (4 tabelas com RLS).
+
+# 2026-10-23 · Leitura do .env liberada
+- Dono removeu o deny de leitura de .env*; SECURITY §10 e CLAUDE.md passam a exigir uso mínimo (sem exibir valores).
