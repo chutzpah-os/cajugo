@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { db } from "@/platform/db/client";
+import { getDb } from "@/platform/db/client";
 import { Logo } from "@/ui/logo";
 import { signOutAction, switchPanelAction } from "../actions";
 import { requireArea } from "../guards";
@@ -28,7 +28,7 @@ export async function AreaShell({
   children: ReactNode;
 }) {
   const { session, allowed } = await requireArea(area, AREA_ROOT[area]);
-  const storeStatus = await storeStatusOf(db, session.storeId);
+  const storeStatus = await storeStatusOf(getDb(), session.storeId);
 
   return (
     <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pb-6 md:max-w-5xl">

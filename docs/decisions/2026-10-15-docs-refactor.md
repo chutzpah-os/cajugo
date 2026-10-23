@@ -101,3 +101,6 @@
 
 # 2026-10-23 · Busca por POST (001/T017)
 - A busca de conta usa action (POST), não ?email= na URL, para o e-mail não ir para logs e histórico. Suporte vê a busca sem o botão, conforme AUT-SEC-008.
+
+# 2026-10-23 · Conexão preguiçosa com o banco
+- O build só carrega as páginas e não deve depender de variáveis de runtime; a falta de DATABASE_URL continua falhando alto, mas no primeiro uso, não ao importar.

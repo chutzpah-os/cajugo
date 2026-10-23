@@ -2,7 +2,7 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { db } from "@/platform/db/client";
+import { getDb } from "@/platform/db/client";
 import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { AppError } from "@/platform/http/errors";
 import { logger } from "@/platform/http/logger";
@@ -35,7 +35,7 @@ export async function signInAction(
   let redirectTo: string;
   try {
     const result = await signIn(
-      { db, auth: await requestAuthProvider() },
+      { db: getDb(), auth: await requestAuthProvider() },
       {
         email,
         password: String(form.get("password") ?? ""),
@@ -74,7 +74,7 @@ export async function updatePasswordAction(
   _prev: NewPasswordState,
   form: FormData,
 ): Promise<NewPasswordState> {
-  const deps = { db, auth: await requestAuthProvider() };
+  const deps = { db: getDb(), auth: await requestAuthProvider() };
   const session = await getSession(deps);
   if (!session) redirect(loginUrl("/nova-senha", ""));
 
@@ -107,7 +107,7 @@ export async function updatePasswordAction(
 /** Troca de painel (AUT-FR-007); papel fora da conta → 403, tratado no serviço. */
 export async function switchPanelAction(form: FormData): Promise<void> {
   const { redirectTo } = await switchPanel(
-    { db, auth: await requestAuthProvider() },
+    { db: getDb(), auth: await requestAuthProvider() },
     await currentSession(),
     form.get("role"),
   );
@@ -117,7 +117,7 @@ export async function switchPanelAction(form: FormData): Promise<void> {
 /** Sair deste aparelho e voltar à vitrine (AUT-FR-005). */
 export async function signOutAction(): Promise<void> {
   const { redirectTo } = await signOut({
-    db,
+    db: getDb(),
     auth: await requestAuthProvider(),
   });
   redirect(redirectTo);
@@ -135,7 +135,7 @@ export async function findAccountAction(
 ): Promise<AccountSearchState> {
   try {
     const account = await findAccountByEmail(
-      { db, auth: await requestAuthProvider() },
+      { db: getDb(), auth: await requestAuthProvider() },
       await currentSession(),
       form.get("email"),
     );
@@ -159,7 +159,7 @@ export async function setTemporaryPasswordAction(
 ): Promise<TemporaryPasswordState> {
   try {
     const { password } = await setTemporaryPassword(
-      { db, auth: await requestAuthProvider() },
+      { db: getDb(), auth: await requestAuthProvider() },
       await currentSession(),
       form.get("userId"),
     );

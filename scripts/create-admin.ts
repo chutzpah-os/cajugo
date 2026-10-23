@@ -4,7 +4,7 @@
  * Usa o banco e a chave secreta do Supabase do `.env.local`. A senha aparece uma vez aqui.
  */
 import { createAdmin } from "@/domains/auth/create-admin";
-import { db } from "@/platform/db/client";
+import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
 import {
   createSupabaseServerClient,
@@ -22,7 +22,7 @@ async function main() {
     createSupabaseServerClient({ getAll: () => [], setAll: () => {} }),
   );
   const { password } = await createAdmin(
-    { db, auth },
+    { db: getDb(), auth },
     { email, name: nameParts.join(" ") || undefined },
   );
   console.log(`Admin criado: ${email.trim().toLowerCase()}`);

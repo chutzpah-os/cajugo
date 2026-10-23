@@ -153,3 +153,6 @@
 
 # 2026-10-23 · 001/T017 senha temporária no admin
 - /admin/senha-temporaria: busca por e-mail (findAccountByEmail, saída explícita; admin e suporte) e botão só para admin, senha mostrada uma vez com Copiar; labels.ts com os nomes dos painéis.
+
+# 2026-10-23 · Banco conecta no primeiro uso
+- platform/db/client.ts: getDb() no lugar de db; o build da Vercel falhava em /nova-senha sem DATABASE_URL.

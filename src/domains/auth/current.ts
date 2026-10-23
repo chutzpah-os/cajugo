@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { cache } from "react";
-import { db } from "@/platform/db/client";
+import { getDb } from "@/platform/db/client";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { getSession } from "./service";
 
@@ -8,5 +8,5 @@ import { getSession } from "./service";
 export const currentSession = cache(async () => {
   // A sessão depende da hora (inatividade): sempre por requisição, nunca pré-renderizada.
   await connection();
-  return getSession({ db, auth: await requestAuthProvider() });
+  return getSession({ db: getDb(), auth: await requestAuthProvider() });
 });
