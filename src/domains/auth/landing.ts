@@ -22,21 +22,23 @@ export function pickPanel(
   return PANEL_ORDER.find((r) => roles.includes(r)) ?? null;
 }
 
-function storeLanding(status: StoreStatus | null): string {
+function storeLanding(
+  role: "store_owner" | "store_staff",
+  status: StoreStatus | null,
+): string {
   switch (status) {
-    case "registered":
-      return "/lojistas/pagamento";
-    case "payment_review":
-      return "/painel/pagamento";
     case "active":
     case "past_due":
     case "suspended":
     case "cancel_scheduled":
       return "/painel/veiculos";
-    default:
-      // cancelada, arquivada ou sem loja: só a Conta (AUT-FR-010)
-      return "/painel/conta";
   }
+  // Pagamento e Conta são só do lojista; o usuário da loja vê o aviso (AUT-FR-016).
+  if (role === "store_staff") return "/painel/loja-indisponivel";
+  if (status === "registered") return "/lojistas/pagamento";
+  if (status === "payment_review") return "/painel/pagamento";
+  // cancelada, arquivada ou sem loja: só a Conta (AUT-FR-010)
+  return "/painel/conta";
 }
 
 const PANEL_HOME: Record<
@@ -49,7 +51,7 @@ const PANEL_HOME: Record<
   support: "/admin",
 };
 
-/** Caminho para onde a pessoa vai depois de entrar (AUT-FR-006, 008, 009, 010, 015). */
+/** Caminho para onde a pessoa vai depois de entrar (AUT-FR-006, 008, 009, 010, 015, 016). */
 export function landingFor(
   account: Pick<Session, "roles" | "mustChangePassword">,
   context: { lastPanel: Role | null; storeStatus: StoreStatus | null },
@@ -58,6 +60,6 @@ export function landingFor(
   const panel = pickPanel(account.roles, context.lastPanel);
   if (!panel) return "/";
   if (panel === "store_owner" || panel === "store_staff")
-    return storeLanding(context.storeStatus);
+    return storeLanding(panel, context.storeStatus);
   return PANEL_HOME[panel];
 }

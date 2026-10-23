@@ -100,6 +100,32 @@ describe("landingFor", () => {
     }
   });
 
+  it("[AUT-FR-016] usuário da loja com loja indisponível vê o aviso, nunca pagamento nem Conta", () => {
+    for (const storeStatus of [
+      "registered",
+      "payment_review",
+      "canceled",
+      "archived",
+    ] satisfies StoreStatus[]) {
+      expect(
+        landingFor(account(["store_staff"]), { lastPanel: null, storeStatus }),
+      ).toBe("/painel/loja-indisponivel");
+    }
+  });
+
+  it("[AUT-FR-016] usuário da loja com loja ativa, atrasada ou suspensa usa Meus veículos", () => {
+    for (const storeStatus of [
+      "active",
+      "past_due",
+      "suspended",
+      "cancel_scheduled",
+    ] satisfies StoreStatus[]) {
+      expect(
+        landingFor(account(["store_staff"]), { lastPanel: null, storeStatus }),
+      ).toBe("/painel/veiculos");
+    }
+  });
+
   it("[AUT-FR-010] loja indisponível não prende quem também é vendedor", () => {
     expect(
       landingFor(account(["store_owner", "seller"]), {

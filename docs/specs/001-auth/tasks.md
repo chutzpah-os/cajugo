@@ -12,7 +12,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T003** `Session` com `roles` + papel ativo; `authorize` por papel; mapa de áreas e ações por papel (lojista × usuário da loja; admin × suporte) · _AUT-FR-012, AUT-SEC-007, AUT-SEC-008_
 
 ## Fase 2 — Fatias verticais (domínio `auth`)
-- [x] **T004** `landingFor`: painel por papel, último painel, ordem no primeiro acesso, status da loja · _AUT-FR-006, AUT-FR-008, AUT-FR-009, AUT-FR-010_
+- [x] **T004** `landingFor`: painel por papel, último painel, ordem no primeiro acesso, status da loja; usuário da loja com loja indisponível · _AUT-FR-006, AUT-FR-008, AUT-FR-009, AUT-FR-010, AUT-FR-016_
 - [x] **T005** [P] `safeNext`: volta só para caminho interno · _AUT-SEC-005, AUT-FR-011_
 - [x] **T006** `signIn`: sucesso, erro genérico, senha temporária vencida · _AUT-FR-001, AUT-FR-002, AUT-FR-014, AUT-SEC-003_
 - [x] **T007** Bloqueio no `signIn`: por e-mail (5 falhas / 15 min) e por rede · _AUT-FR-003_

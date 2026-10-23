@@ -129,3 +129,6 @@
 # 2026-10-23 · 001/T008–T012
 - domains/auth/service: getSession (inatividade 30 d / equipe 1 d, last_seen 1×/h, temporária vencida), signOut, switchPanel, setTemporaryPassword (auditoria sem senha), updatePassword (encerra outros aparelhos).
 - domains/auth/roles: grantRole, único caminho para dar papel (cadastro público sem equipe; equipe e clientes não se misturam).
+
+# 2026-10-23 · AUT-FR-016 loja indisponível
+- Spec/plan/tasks 001: usuário da loja com loja sem 1º pagamento, em análise, cancelada ou arquivada → /painel/loja-indisponivel; landingFor ajustado com testes.

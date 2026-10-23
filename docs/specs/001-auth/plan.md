@@ -56,6 +56,7 @@ Adaptador `AuthProvider` (Supabase real × falso nos testes): `signInWithPasswor
 | AUT-FR-013 | `/recuperar` [6b] com texto e botão `wa.me/{whatsapp}?text=...`; o número vem de `SUPPORT_WHATSAPP` (env) até a spec 002 mover para `settings` |
 | AUT-FR-014 | `setTemporaryPassword`: só `admin`; gera 12+ caracteres aleatórios (crypto), `adminUpdatePassword`, `must_change_password = true`, `temp_password_expires_at = now + 24 h`, `activity_log`; devolve a senha uma vez (nunca gravada em claro). No login, temporária vencida → `signOut` + erro genérico |
 | AUT-FR-015 | `getSession` marca `mustChangePassword`; `authorize` recusa tudo com `must-change-password`, e os layouts redirecionam para `/nova-senha`. `updatePassword`: zod (≥ 8, confirmação igual), atualiza a senha, zera a flag e a expiração, `signOut('others')` |
+| AUT-FR-016 | `landingFor`: `store_staff` com loja `registered`, `payment_review`, `canceled` ou `archived` → `/painel/loja-indisponivel`; o layout do painel bloqueia o resto |
 | AUT-NFR-001 | Uma ida ao Supabase + uma consulta de `profiles`/`stores` por login; região `gru1` + banco em São Paulo |
 | AUT-NFR-002 | Telas com os componentes de `src/ui` (alvos ≥ 44 px, `TextField` com rótulo) |
 | AUT-SEC-001 | Toda consulta de painel filtra pelo `userId`/`storeId` da sessão; teste "usuário B" em cada action desta spec |
@@ -87,7 +88,7 @@ alter table stores add column status store_status not null default 'registered';
 Migration `0003` (última task, depois que nenhum código lê `role`): `alter table profiles drop column role;`. Hoje o staging não tem perfis reais, então o risco é nulo.
 
 ## Telas provisórias (até as specs donas)
-Para os redirecionamentos serem testáveis de ponta a ponta, esta spec cria páginas mínimas protegidas por papel, com o título e um aviso "em construção": `/painel/veiculos`, `/painel/conta`, `/painel/pagamento`, `/lojistas/pagamento`, `/rede`, `/indica`, `/admin`. Cada uma é substituída pela spec dona (003–012). O admin ganha uma tela provisória **"Senha temporária"** (busca por e-mail + botão) até o detalhe da loja [6g] chegar na 012.
+Para os redirecionamentos serem testáveis de ponta a ponta, esta spec cria páginas mínimas protegidas por papel, com o título e um aviso "em construção": `/painel/veiculos`, `/painel/conta`, `/painel/pagamento`, `/painel/loja-indisponivel`, `/lojistas/pagamento`, `/rede`, `/indica`, `/admin`. Cada uma é substituída pela spec dona (003–012). O admin ganha uma tela provisória **"Senha temporária"** (busca por e-mail + botão) até o detalhe da loja [6g] chegar na 012.
 
 ## Variáveis de ambiente novas
 - `SUPABASE_PUBLISHABLE_KEY` e `SUPABASE_SECRET_KEY` (o Supabase renomeou `anon` e `service_role`). Substituem `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY` em `.env.example` e `DEPLOYMENT.md`.

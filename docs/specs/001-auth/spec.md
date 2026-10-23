@@ -42,6 +42,7 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 - **AUT-FR-013** Em "Esqueci minha senha" [6b], a pessoa vê a orientação para falar com o suporte e um botão que abre o WhatsApp de atendimento com uma mensagem pronta.
 - **AUT-FR-014** O admin define uma senha temporária para uma conta [6g]; a senha é gerada pelo sistema, mostrada ao admin uma única vez e deixa de valer se não for usada em 24 horas.
 - **AUT-FR-015** Quem entra com senha temporária só consegue criar uma nova senha (senha + confirmação, mínimo de 8 caracteres) antes de usar qualquer painel; ao criar, as outras sessões da conta são encerradas.
+- **AUT-FR-016** O usuário da loja cuja loja ainda não teve o 1º pagamento confirmado, está cancelada ou arquivada vê "Loja indisponível, fale com o responsável" e não acessa o painel da loja.
 
 ## Requisitos não funcionais
 - **AUT-NFR-001** Entrar (do toque em "Entrar" até o painel aberto) leva até 2 s em 4G, no p95.
@@ -171,6 +172,12 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 - **Então** só vê a tela de nova senha, e qualquer outro endereço do painel leva de volta a ela
 - **E** ao salvar uma nova senha válida, entra no painel
 - **E** sessões abertas em outros aparelhos são encerradas
+
+### AUT-FR-016
+- **Dado** um usuário da loja cuja loja está cancelada
+- **Quando** ele entra ou abre Meus veículos
+- **Então** vê "Loja indisponível, fale com o responsável"
+- **E** não vê a Conta nem a tela de pagamento da loja
 
 ### AUT-SEC-001
 - **Dado** o lojista A e o lojista B, ambos conectados

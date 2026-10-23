@@ -80,3 +80,6 @@
 
 # 2026-10-23 · Papéis por uma porta só (001/T012)
 - grantRole concentra as regras de AUT-SEC-009 para os cadastros das specs 003/008/010 não reimplementarem a checagem. updatePassword só exige sessão (não authorize), por ser a única ação liberada com senha temporária.
+
+# 2026-10-23 · Aviso para o usuário da loja (AUT-FR-016)
+- Dono aprovou: pagamento e Conta são só do lojista; em vez de "sem permissão", o usuário da loja vê "Loja indisponível, fale com o responsável". Leitura dos veículos nesse estado ficou fora do MVP.
