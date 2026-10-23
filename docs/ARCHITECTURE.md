@@ -69,7 +69,8 @@ src/
    ├─ db/                  cliente e schema do Drizzle
    ├─ supabase/            cliente de Auth no servidor
    ├─ cloudinary/          assinatura de upload, URLs de variantes
-   └─ http/                erros (problem+json), requireSession, rate limit, activity log, logger
+   └─ http/                errors (AppError, problem+json, ActionResult), session (authorize), rate-limit,
+                           client-ip (hash), honeypot, activity-log, logger
 drizzle/                   migrations SQL geradas pelo Drizzle Kit
 tests/e2e/                 Playwright
 ```
@@ -154,6 +155,6 @@ ISR com `revalidateTag('vehicles')` e `revalidateTag('store:<slug>')`, chamados 
 - Liberar slugs reservados sem pagamento há 7 dias.
 - Passar assinaturas `past_due` para `suspended` após a tolerância.
 - Efetivar `cancel_scheduled` → `canceled` no fim do período.
-- Apagar linhas antigas de `rate_limits`.
+- Apagar linhas antigas de `rate_limits` (`purgeRateLimits`).
 
 Todo job é idempotente e protegido por `CRON_SECRET`.

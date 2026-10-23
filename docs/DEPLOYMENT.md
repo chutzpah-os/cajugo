@@ -9,6 +9,16 @@
 
 Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Vercel na região `gru1` (São Paulo), perto do banco.
 
+## Contas dos serviços
+Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerenciador de senhas).
+
+| Serviço | Conta | Identificação (não é segredo) |
+|---|---|---|
+| GitHub | `chutzpah-os` | repositório público `chutzpah-os/cajugo` |
+| Supabase | organização `CajuGo` (Free) | projeto `cajugo-staging`, ref `yrjodykcnjotauyenpbu`, região `sa-east-1` (São Paulo) |
+| Cloudinary | `victorhanielbusiness@gmail.com` (Free) | cloud name `zr1zxzni` |
+| Vercel | a criar (F08) | — |
+
 ## Variáveis de ambiente (Vercel, por ambiente; todas só no servidor)
 | Nome | Uso |
 |---|---|
@@ -18,6 +28,7 @@ Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Ve
 | `SUPABASE_SERVICE_ROLE_KEY` | ações administrativas do Auth (criar conta, senha temporária) |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | assinatura de upload |
 | `CRON_SECRET` | protege `/api/v1/cron/*` |
+| `HASH_SECRET` | segredo do hash de IP (rate limit, denúncias); `openssl rand -hex 32` |
 | `PAYMENT_*`, `MAIL_*` | quando gateway e e-mail forem escolhidos |
 | `APP_URL` | links em e-mails e WhatsApp |
 

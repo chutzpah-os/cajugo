@@ -31,11 +31,13 @@
 - [x] **F05** Criar os projetos Supabase `cajugo-staging` e `cajugo-prod` (Free, região São Paulo): desligar Data API, Auth com e-mail/senha e templates em pt-BR (`SECURITY.md` §3–4).
   - Feito: `cajugo-staging` (Free, São Paulo, Postgres 17), Data API desligada, RLS automático, Confirm email desligado, senha mínima 8, conexões pelo pooler no `.env.local` testadas; migration `0000_init` aplicada (tabelas com RLS, 0 policies). Decidido: o app usa o usuário `postgres` no MVP; `app_user` na fase 2 (`SECURITY.md` §4). `cajugo-prod` fica para o lançamento.
 - [x] **F06** Drizzle + Drizzle Kit (postgres.js no runtime, pooler sem prepared statements), primeira migration (`profiles`, `stores`, RLS ligado sem policy) e testes de integração com **PGlite** (Postgres em memória, sem Docker).
-- [ ] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
+- [~] **F07** Conta Cloudinary; desligar upload sem assinatura; pastas `staging/` e `prod/`.
+  - Feito: conta Free (`victorhanielbusiness@gmail.com`, cloud name `zr1zxzni`). Falta: gerar API key nova (a Root apareceu no chat), colocar no `.env.local` e remover presets sem assinatura.
 - [ ] **F08** Projeto na Vercel ligado ao GitHub; variáveis de ambiente (`DEPLOYMENT.md`); Preview protegido.
 - [~] **F09** Tokens de design (cores, tipografia Archivo/JetBrains Mono, raios) e componentes base do `DESIGN.md` §3: botão, input, chip, selo, toggle, segmentado, bottom sheet, nav inferior, cabeçalho escuro/claro, estado vazio, skeleton, toast.
   - Feito: tokens no Tailwind, fontes Archivo/JetBrains Mono, `src/ui/` (Logo, Button, Badge, Chip, TextField, Toggle, YesNo, EmptyState, Skeleton) com testes de acessibilidade; vitrine em `/dev/ui` (só em desenvolvimento). Falta, junto com as telas que usam: bottom sheet, nav inferior, cabeçalhos, toast, slider, opção de rádio.
-- [ ] **F10** Infra de servidor comum: `requireSession`, helper de erro (problem+json / `{ ok:false, errors }`), rate limit por IP (`rate_limits`), honeypot, `activity_log`, logger JSON.
+- [x] **F10** Infra de servidor comum: `requireSession`, helper de erro (problem+json / `{ ok:false, errors }`), rate limit por IP (`rate_limits`), honeypot, `activity_log`, logger JSON.
+  - Em `src/platform/http/`: `AppError` + problem+json + `ActionResult`, `authorize`/`authorizeStore`, `consumeRateLimit` (tabela `rate_limits`), `clientIp`/`hashIp`, honeypot (+ `HoneypotField` em `src/ui`), `logActivity` (tabela `activity_log`), `logger` com redação de dados pessoais. A leitura da sessão do Supabase Auth fica para a spec 001.
 - [x] **F11** Verificação local única (`pnpm check`) rodada pelo Husky no pre-commit (`docs/TESTING.md`); comandos de migration. Sem GitHub Actions.
 - [ ] **F12** Script de seed com lojas e veículos de exemplo (fotos de `design/carexamplesimages/`).
 - [x] **F13** Criar as skills de processo SDD (`/spec`, `/clarify`, `/plan`, `/tasks`, `/implement`, `/verify`) a partir do `SDD.md` §12.

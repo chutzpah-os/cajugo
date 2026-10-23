@@ -77,3 +77,10 @@
 
 # 2026-10-22 · SDD + skills do Matt Pocock
 - SDD §7 passa a fatias verticais (tdd); §12.2 mapeia skills do plugin por etapa; skills /clarify,/plan,/tasks,/implement,/verify, CLAUDE.md e TESTING atualizados.
+
+# 2026-10-23 · F10
+- src/platform/http: errors, session (authorize), rate-limit, client-ip/hash, honeypot, activity-log, logger, com 22 testes; migration 0001 (rate_limits, activity_log); zod 4; HASH_SECRET no .env.example.
+
+# 2026-10-23 · Contas dos serviços
+- DEPLOYMENT: tabela de contas (GitHub, Supabase, Cloudinary de victorhanielbusiness@gmail.com, cloud zr1zxzni); F07 em andamento.
+- Migration 0001 aplicada no cajugo-staging (4 tabelas com RLS).

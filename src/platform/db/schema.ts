@@ -1,8 +1,10 @@
 import {
   boolean,
+  integer,
   jsonb,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -62,4 +64,26 @@ export const stores = pgTable("stores", {
     .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
+}).enableRLS();
+
+/** Contador por janela de tempo para rate limit de formulários públicos e login. */
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    key: text("key").notNull(),
+    windowStart: timestamp("window_start", { withTimezone: true }).notNull(),
+    count: integer("count").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.key, t.windowStart] })],
+).enableRLS();
+
+/** Auditoria: só recebe insert (garantido no código, SECURITY.md §4 e §11). */
+export const activityLog = pgTable("activity_log", {
+  id: uuid("id").primaryKey().$defaultFn(uuidv7),
+  userId: uuid("user_id"),
+  action: text("action").notNull(),
+  entity: text("entity").notNull(),
+  entityId: text("entity_id"),
+  data: jsonb("data"),
+  ...timestamps,
 }).enableRLS();

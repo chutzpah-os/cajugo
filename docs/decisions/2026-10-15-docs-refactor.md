@@ -46,3 +46,6 @@
 
 # 2026-10-22 · Por que fatias verticais
 - A skill tdd mostra que "todos os testes antes" prende os testes a um desenho imaginado; um teste por vez continua sendo teste primeiro e acompanha o aprendizado.
+
+# 2026-10-23 · Infra comum (F10)
+- Rate limit no próprio Postgres (sem Redis, custo zero), janela fixa com upsert atômico; IP só como HMAC; sessão do Supabase fica na spec 001 para não antecipar o login.

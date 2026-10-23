@@ -38,7 +38,7 @@
 - Conta da equipe CajuGo só criada pelo admin (com senha temporária); não existe cadastro público de admin.
 
 ## 4. Autorização 🤖
-- Helper único no servidor: `requireSession({ roles })` devolve `{ userId, role, storeId }` (de `auth.getUser()` + `profiles`) ou encerra com 401/403.
+- Helpers únicos no servidor (`src/platform/http/session.ts`): `authorize(session, roles)` e `authorizeStore(session)` checam sessão (401), troca obrigatória de senha e papel (403), e devolvem `{ userId, role, storeId }`. A sessão vem de `auth.getUser()` + `profiles` (montada na spec 001).
 - **Posse:** `storeId` vem da sessão e entra **no `where` da própria query** (`where id = $1 and store_id = $2`). Sem resultado → **404**. Não busque primeiro para checar depois.
 - Rotas `/admin` e actions de admin exigem `role` `admin` (ou `support` nas ações de leitura e moderação, conforme PRD §2.1).
 - Lojista com assinatura `suspended` ou `canceled` só acessa a Conta (PRD §5.3). Isso é checado no servidor, não só na navegação.
