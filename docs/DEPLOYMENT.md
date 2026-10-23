@@ -5,7 +5,7 @@
 |---|---|---|---|
 | Local | `next dev` | projeto Supabase `cajugo-staging` (banco + Auth); testes usam PGlite em memória | pasta `staging/` |
 | Preview (cada PR) | Vercel, protegido por senha | `cajugo-staging` | pasta `staging/` |
-| Produção | Vercel, branch `main` | `cajugo-prod` | pasta `prod/` |
+| Produção | Vercel, branch `main` | `cajugo-staging` até a spec 013; depois `cajugo-prod` | pasta `prod/` |
 
 Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Vercel na região `gru1` (São Paulo), perto do banco.
 

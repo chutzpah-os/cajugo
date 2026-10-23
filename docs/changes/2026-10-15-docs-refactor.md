@@ -156,3 +156,6 @@
 
 # 2026-10-23 · Banco conecta no primeiro uso
 - platform/db/client.ts: getDb() no lugar de db; o build da Vercel falhava em /nova-senha sem DATABASE_URL.
+
+# 2026-10-23 · Menu do admin
+- ui/panel-nav.tsx (barra inferior no celular, lateral ≥ 1024 px) + domains/auth/navigation.ts com os itens do PRD §6; páginas em construção de Lojas, Assinaturas, Pagamentos Pix, Veículos, Rede Caju, Caju Indica e Conta. DEPLOYMENT: produção usa cajugo-staging até a 013.

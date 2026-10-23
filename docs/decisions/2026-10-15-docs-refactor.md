@@ -104,3 +104,6 @@
 
 # 2026-10-23 · Conexão preguiçosa com o banco
 - O build só carrega as páginas e não deve depender de variáveis de runtime; a falta de DATABASE_URL continua falhando alto, mas no primeiro uso, não ao importar.
+
+# 2026-10-23 · Menu do admin completo agora
+- Dono pediu navegação no /admin; o menu sai final (itens do PRD) e cada spec troca a página em construção pela real, sem mexer no menu. Produção no banco de staging até a 013: evita um 2º projeto Supabase antes do lançamento.
