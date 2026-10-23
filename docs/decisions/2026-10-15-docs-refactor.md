@@ -107,3 +107,6 @@
 
 # 2026-10-23 · Menu do admin completo agora
 - Dono pediu navegação no /admin; o menu sai final (itens do PRD) e cada spec troca a página em construção pela real, sem mexer no menu. Produção no banco de staging até a 013: evita um 2º projeto Supabase antes do lançamento.
+
+# 2026-10-23 · Fim da coluna role (001/T020)
+- Remoção em migration separada da cópia (0002 → 0003), depois que nenhum código lia mais `role`: o deploy em produção nunca dependeu da coluna removida.

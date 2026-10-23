@@ -159,3 +159,6 @@
 
 # 2026-10-23 · Menu do admin
 - ui/panel-nav.tsx (barra inferior no celular, lateral ≥ 1024 px) + domains/auth/navigation.ts com os itens do PRD §6; páginas em construção de Lojas, Assinaturas, Pagamentos Pix, Veículos, Rede Caju, Caju Indica e Conta. DEPLOYMENT: produção usa cajugo-staging até a 013.
+
+# 2026-10-23 · 001/T020 remove profiles.role
+- Migration 0003_drop_profiles_role (aplicada no staging) e teste de que só `roles` sobra.

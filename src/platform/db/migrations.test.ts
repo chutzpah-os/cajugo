@@ -69,4 +69,15 @@ describe("migrations", () => {
     );
     expect(rows[0].column_default).toContain("registered");
   });
+
+  it("0003 remove a coluna antiga profiles.role, mantendo os papéis já copiados", async () => {
+    const client = new PGlite();
+    const db = drizzle(client, { schema });
+    cleanup.push(() => client.close());
+    await migrate(db, { migrationsFolder: "drizzle" });
+    const { rows } = await client.query<{ column_name: string }>(
+      "select column_name from information_schema.columns where table_name = 'profiles' and column_name in ('role', 'roles')",
+    );
+    expect(rows.map((r) => r.column_name)).toEqual(["roles"]);
+  });
 });

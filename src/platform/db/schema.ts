@@ -48,8 +48,6 @@ export const profiles = pgTable("profiles", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone"),
-  /** @deprecated removida na migration 0003; use `roles`. */
-  role: userRole("role"),
   /** Uma conta pode ter vários papéis (PRD §2). */
   roles: userRole("roles")
     .array()

@@ -22,6 +22,13 @@
       "when": 1792768790771,
       "tag": "0002_roles_and_store_status",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792791297331,
+      "tag": "0003_drop_profiles_role",
+      "breakpoints": true
     }
   ]
 }
