@@ -89,3 +89,6 @@
 
 # 2026-10-23 · /entrar (001/T014)
 - O e-mail volta no estado da action para não sumir após erro (o React limpa o formulário); falha inesperada vai para o log e mostra mensagem neutra, nunca "senha incorreta".
+
+# 2026-10-23 · tsx e nome só em profiles (001/T018)
+- tsx (dev, aprovado pelo dono) para o script reaproveitar a função testada em vez de duplicar regra. O nome fica só em profiles, não no user_metadata do Supabase: uma fonte da verdade e menos dado pessoal duplicado.

@@ -102,6 +102,7 @@ Single-context: `GLOSSARY.md` na raiz e ADRs em `docs/adr/`. See `docs/agents/do
 | `pnpm db:generate --name <nome>` | gera migration em `drizzle/` a partir de `src/platform/db/schema.ts` |
 | `pnpm db:migrate` | aplica migrations no banco de `DATABASE_URL_MIGRATIONS` (ou `DATABASE_URL`) |
 | `pnpm db:studio` | Drizzle Studio para inspecionar o banco |
+| `pnpm admin:create <email> [nome]` | cria um admin com senha temporária (24 h); só o dono roda, a senha aparece uma vez no terminal |
 
 Variáveis em `.env.local` (modelo em `.env.example`).
 

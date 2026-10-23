@@ -18,6 +18,16 @@ export const AUTH_COOKIE_OPTIONS = {
   maxAge: 30 * 24 * 60 * 60,
 } satisfies CookieOptions;
 
+/**
+ * O `@supabase/ssr` grava todo cookie com 400 dias, ignorando `cookieOptions.maxAge`.
+ * Aplicado em todo `setAll`: mantém os 30 dias e preserva a remoção (`maxAge: 0`).
+ */
+export function withSessionMaxAge(options: CookieOptions): CookieOptions {
+  return options.maxAge
+    ? { ...options, maxAge: AUTH_COOKIE_OPTIONS.maxAge }
+    : options;
+}
+
 function env(
   name: "SUPABASE_URL" | "SUPABASE_PUBLISHABLE_KEY" | "SUPABASE_SECRET_KEY",
 ) {

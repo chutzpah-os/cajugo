@@ -1,6 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isProtectedPath, loginUrl } from "@/platform/http/protected-paths";
-import { createSupabaseServerClient } from "@/platform/supabase/server";
+import {
+  createSupabaseServerClient,
+  withSessionMaxAge,
+} from "@/platform/supabase/server";
 
 /**
  * Renova a sessão do Supabase a cada requisição (janela deslizante, AUT-FR-004) e manda
@@ -16,7 +19,7 @@ export async function proxy(request: NextRequest) {
       for (const { name, value } of list) request.cookies.set(name, value);
       response = NextResponse.next({ request });
       for (const { name, value, options } of list)
-        response.cookies.set(name, value, options);
+        response.cookies.set(name, value, withSessionMaxAge(options));
       for (const [key, value] of Object.entries(headers))
         response.headers.set(key, value);
     },

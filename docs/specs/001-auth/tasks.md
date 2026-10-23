@@ -28,7 +28,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [ ] **T015** Telas `/recuperar` [6b] (botão `wa.me` com `SUPPORT_WHATSAPP`) e `/nova-senha` · _AUT-FR-013, AUT-FR-015_
 - [ ] **T016** Layouts das áreas (`/painel`, `/rede`, `/indica`, `/admin`) com `<Suspense>`, páginas provisórias, "Sem permissão", troca de painel, alerta provisório de loja suspensa, sair · _AUT-FR-005 a AUT-FR-012, AUT-SEC-001, AUT-SEC-007, AUT-SEC-008_
 - [ ] **T017** Tela provisória do admin "Senha temporária" (busca por e-mail) · _AUT-FR-014_
-- [ ] **T018** Script `pnpm admin:create <email>` (chave secreta, senha temporária) · _AUT-SEC-009_
+- [x] **T018** Script `pnpm admin:create <email>` (chave secreta, senha temporária) · _AUT-SEC-009_
 
 ## Fase 4 — Ponta a ponta e fechamento
 - [ ] **T019** Playwright (viewport 390 px) contra o staging: login → painel; visitante → página protegida → login → volta; indicador → `/admin` = sem permissão; senha temporária → nova senha; tempo de login · _AUT-FR-001, AUT-FR-011, AUT-FR-012, AUT-FR-015, AUT-NFR-001_

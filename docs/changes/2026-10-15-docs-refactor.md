@@ -139,3 +139,7 @@
 
 # 2026-10-23 · 001/T014 tela /entrar
 - app/entrar (9f só e-mail e senha, noindex, rodapé de cadastros), domains/auth/actions.ts (signInAction) e components/sign-in-form.tsx; testado no navegador contra o staging (erro genérico e next).
+
+# 2026-10-23 · 001/T018 admin:create
+- domains/auth/create-admin.ts (admin com senha temporária 24 h, auditoria sem senha) + scripts/create-admin.ts e `pnpm admin:create`; tsx (dev). Primeiro admin criado no staging.
+- withSessionMaxAge: cookie de sessão com 30 dias (o @supabase/ssr forçava 400).

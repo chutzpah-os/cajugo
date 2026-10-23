@@ -1,6 +1,10 @@
 import { cookies } from "next/headers";
 import type { AuthProvider } from "./auth-provider";
-import { createSupabaseServerClient, SupabaseAuthProvider } from "./server";
+import {
+  createSupabaseServerClient,
+  SupabaseAuthProvider,
+  withSessionMaxAge,
+} from "./server";
 
 /**
  * `AuthProvider` da requisição atual (Server Components, Server Actions, Route Handlers).
@@ -14,7 +18,7 @@ export async function requestAuthProvider(): Promise<AuthProvider> {
       setAll: (list) => {
         try {
           for (const { name, value, options } of list)
-            store.set(name, value, options);
+            store.set(name, value, withSessionMaxAge(options));
         } catch {
           // Server Component: só leitura; o proxy.ts já renovou a sessão.
         }
