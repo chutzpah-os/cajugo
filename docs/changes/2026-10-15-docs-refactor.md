@@ -112,3 +112,8 @@
 
 # 2026-10-23 · Spec 001: plano, tasks e T001
 - plan.md (aprovado) e tasks.md (T001–T021); T001: @supabase/ssr, @supabase/supabase-js, @playwright/test, AuthProvider + FakeAuthProvider; variáveis SUPABASE_PUBLISHABLE_KEY/SECRET_KEY e SUPPORT_WHATSAPP.
+
+# 2026-10-23 · SEO como principal ativo
+- Novo docs/SEO.md (regras técnicas, domínio, medição, testes, checklist); ligado em CLAUDE.md, PRD (§1.1b, escopo, NFR, pendência 7), PLAN (006, 013), ARCHITECTURE, TESTING, DEPLOYMENT.
+- 001/T002: migration 0002 (papéis múltiplos, last_panel, last_seen_at, temp_password_expires_at, store_status) com cópia role→roles e teste de migration.
+- Lojas em /loja/{slug} (ADR 0009 substitui 0005): PRD §1.7 sem fases nem lista de reservados, pendência 7 reduzida ao domínio; SEO, API, ARCHITECTURE §3a, DEPLOYMENT, PLAN, GLOSSARY, DESIGN.

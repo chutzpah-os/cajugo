@@ -5,7 +5,7 @@ Plataforma de veículos com três produtos sobre o mesmo estoque: Catálogo (loj
 ## Lojas e pessoas
 
 **Loja** (`store`):
-Revenda de veículos que assina o CajuGo; tem um catálogo próprio no endereço da loja (`cajugo.vercel.app/{slug}` no MVP; `{slug}.cajugo.com.br` depois).
+Revenda de veículos que assina o CajuGo; tem um catálogo próprio no endereço da loja (`/loja/{slug}`: `cajugo.vercel.app/loja/{slug}` agora, `cajugo.com.br/loja/{slug}` com domínio próprio).
 _Evite_: concessionária, revenda, cliente
 
 **Lojista** (`store_owner`):

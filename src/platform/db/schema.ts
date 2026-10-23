@@ -10,6 +10,7 @@ import {
   uuid,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { uuidv7 } from "./uuid";
 
 // Modelo completo em docs/ARCHITECTURE.md §4. Cada tabela entra com a spec do seu domínio.
@@ -25,6 +26,20 @@ export const userRole = pgEnum("user_role", [
   "store_owner",
   "admin",
   "support",
+  "store_staff",
+  "seller",
+  "referrer",
+]);
+
+export const storeStatus = pgEnum("store_status", [
+  "registered",
+  "payment_review",
+  "active",
+  "past_due",
+  "suspended",
+  "cancel_scheduled",
+  "canceled",
+  "archived",
 ]);
 
 /** 1:1 com auth.users do Supabase Auth (mesmo id). */
@@ -33,12 +48,25 @@ export const profiles = pgTable("profiles", {
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone"),
-  role: userRole("role").notNull(),
+  /** @deprecated removida na migration 0003; use `roles`. */
+  role: userRole("role"),
+  /** Uma conta pode ter vários papéis (PRD §2). */
+  roles: userRole("roles")
+    .array()
+    .notNull()
+    .default(sql`'{}'::user_role[]`),
+  /** Último painel usado: é o que abre no próximo login (AUT-FR-006). */
+  lastPanel: userRole("last_panel"),
   storeId: uuid("store_id").references((): AnyPgColumn => stores.id),
   notifyEmail: boolean("notify_email").notNull().default(true),
   mustChangePassword: boolean("must_change_password").notNull().default(false),
   ...timestamps,
   lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+  /** Último uso; base da regra de inatividade (AUT-FR-004). */
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
+  tempPasswordExpiresAt: timestamp("temp_password_expires_at", {
+    withTimezone: true,
+  }),
 }).enableRLS();
 
 export const stores = pgTable("stores", {
@@ -56,6 +84,7 @@ export const stores = pgTable("stores", {
   coverPublicId: text("cover_public_id"),
   hours: jsonb("hours"),
   shareByDefault: boolean("share_by_default").notNull().default(true),
+  status: storeStatus("status").notNull().default("registered"),
   ownerId: uuid("owner_id")
     .notNull()
     .references((): AnyPgColumn => profiles.id),

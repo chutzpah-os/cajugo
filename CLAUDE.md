@@ -12,6 +12,7 @@
 | `docs/SECURITY.md` | regras de segurança e LGPD |
 | `docs/SDD.md` | processo spec → plan → tasks → implement → verify |
 | `docs/TESTING.md` | rotina de testes automatizados e bloqueio no commit (Husky) |
+| `docs/SEO.md` | **SEO, o principal ativo**: regras técnicas e checklist de toda página pública |
 | `docs/PLAN.md` | roadmap e ordem das specs |
 | `docs/DEPLOYMENT.md` / `docs/OBSERVABILITY.md` | deploy e monitoramento |
 | `GLOSSARY.md` | vocabulário do produto (pt-BR) e nomes no código |
@@ -32,6 +33,7 @@
 - Antes de mexer em servidor, leia `docs/API.md`. Antes de mexer em auth, dados pessoais, uploads ou pagamento, leia `docs/SECURITY.md` (seções 🤖 e checklist §12).
 - Resumo: valide entrada com schema; `storeId` vem da sessão; recurso de outra loja → 404; saída montada à mão; formulário público com honeypot + rate limit.
 - Respeite as cotas gratuitas: cache nas páginas públicas.
+- **SEO é o principal ativo:** toda página pública segue `docs/SEO.md` (renderizada no servidor, título/descrição/canônica/JSON-LD/Open Graph pelas funções de SEO, sitemap, checklist §6).
 
 ## Estrutura de pastas
 Por domínio: `src/app/` (rotas finas) → `src/domains/<domínio>/` (`service.ts`, `actions.ts`, `schemas.ts`, `components/`, testes) → `src/platform/` (db, supabase, cloudinary, http) e `src/ui/` (componentes base). Detalhes e regras de dependência em `docs/ARCHITECTURE.md` §3.

@@ -23,6 +23,9 @@ A CajuGo (admin e suporte) gerencia lojas, assinaturas, pagamentos, vendedores, 
 ### 1.1 Princípio central
 **Estoque único e sincronizado.** O lojista atualiza o veículo uma vez; catálogo da loja, vitrine CajuGo e links dos vendedores refletem a mudança na hora. Vendido sai de todos os lugares.
 
+### 1.1b SEO é o principal ativo
+É pela busca que compradores descobrem os veículos, as lojas e os serviços da CajuGo. Toda página pública (veículo, loja, vitrine, páginas de descoberta por marca/modelo/cidade, landings) é feita para ser encontrada e clicada: regras em `SEO.md`.
+
 ### 1.2 Problema
 - Lojistas pequenos e médios dependem de marketplaces caros ou de redes sociais sem organização de estoque.
 - Não têm um link único, bonito e atualizado para mandar aos clientes.
@@ -59,18 +62,20 @@ A CajuGo (admin e suporte) gerencia lojas, assinaturas, pagamentos, vendedores, 
 - Canal de vendas: **Rede Caju**. Indicação: **Caju Indica**. Vocabulário completo em `GLOSSARY.md`.
 - Menu da home [11a]: Comprar veículos · Produtos (Catálogo, Rede Caju) · Caju Indica · Favoritos · Entrar.
 
-### 1.7 Endereços (em duas fases)
-| | Fase 1 (MVP, agora) | Fase 2 (com domínio próprio) |
+### 1.7 Endereços
+Tudo por caminho no domínio principal (ADR 0009): concentra a autoridade de busca no CajuGo (`docs/SEO.md`). Só o domínio muda quando o próprio for registrado.
+
+| | Agora | Com domínio próprio |
 |---|---|---|
 | Vitrine CajuGo | `cajugo.vercel.app` | `cajugo.com.br` |
-| Catálogo da loja | `cajugo.vercel.app/{slug}` (ex.: `/lojaA`, `/lojaB`, `/lojaC`) | `{slug}.cajugo.com.br` (ex.: `lojaA.cajugo.com.br`) |
-| Veículo da loja | `cajugo.vercel.app/{slug}/v/{id}` | `{slug}.cajugo.com.br/v/{id}` |
+| Catálogo da loja | `cajugo.vercel.app/loja/{slug}` (ex.: `/loja/silvautocar`) | `cajugo.com.br/loja/{slug}` |
+| Veículo da loja | `cajugo.vercel.app/loja/{slug}/v/{id}` | `cajugo.com.br/loja/{slug}/v/{id}` |
 | Veículo na vitrine (link do vendedor) | `cajugo.vercel.app/v/{id}?ref={codigo}` | `cajugo.com.br/v/{id}?ref={codigo}` |
 | Link Caju Indica | `cajugo.vercel.app/i/{codigo}` | `cajugo.com.br/i/{codigo}` |
 
-- Na troca para a fase 2, os links antigos redirecionam (301): QR codes impressos e links já enviados continuam funcionando.
-- O link e o QR code mostrados ao lojista ([3b], [5e]) usam sempre o endereço da fase vigente.
-- Como o slug vira subdomínio, segue as regras de subdomínio: `[a-z0-9-]`, sem hífen no início ou no fim, e fora da lista de reservados (ex.: `www`, `api`, `admin`, `app`, `painel`, `lojistas`, `entrar`, `v`, `i`, `rede`, `indica`).
+- Na troca de domínio, os links antigos redirecionam (301): QR codes impressos e links já enviados continuam funcionando.
+- O link e o QR code mostrados ao lojista ([3b], [5e]) usam sempre o domínio vigente.
+- Slug: `[a-z0-9-]`, sem hífen no início ou no fim. Como fica sob `/loja/`, não colide com rotas do sistema e dispensa lista de reservados.
 
 ---
 
@@ -125,8 +130,9 @@ Login por **celular com código** (aba "Celular" de [9f], tela [9c]) é **fase 2
 7. **Login único com e-mail e senha** [9f], com recuperação manual de senha [6b].
 8. **Pix manual:** comprovante, conferência, recusa, atraso, suspensão, cancelamento [6c, 10a–10c, 12e–12h].
 9. **Admin:** painel, lojas, assinaturas, pagamentos, vendedores, veículos (aprovação e denúncias), indicações, regras [1d, 4a–4c, 6g, 7h, 8f, 8g, 10b, 14c, 14e, 15c].
-10. **Estados e casos:** vazio, erro, carregamento, veículo indisponível, termos e privacidade [12a–12d, 12i].
-11. **Regras numéricas editáveis** pelo admin (tabela `Config`, §5.14).
+10. **SEO:** páginas públicas renderizadas no servidor, URLs amigáveis, dados estruturados, sitemap e **páginas de descoberta** por marca, modelo e cidade (`SEO.md`).
+11. **Estados e casos:** vazio, erro, carregamento, veículo indisponível, termos e privacidade [12a–12d, 12i].
+12. **Regras numéricas editáveis** pelo admin (tabela `Config`, §5.14).
 
 ### 3.2 Fora do MVP (fase 2+)
 - Gateway de pagamento (cartão, Pix automático, boleto) e recibos/NF automáticos.
@@ -332,8 +338,8 @@ Viram requisitos e testes nas specs (`SDD.md`):
 
 | Id | Tela | Público | Rota sugerida |
 |---|---|---|---|
-| 1a | Vitrine / catálogo da loja | Visitante | `/` e `/{slug}` |
-| 1b | Página do veículo (simular, denunciar) | Visitante | `/v/{id}-{marca}-{modelo}` e `/{slug}/v/{id}` |
+| 1a | Vitrine / catálogo da loja | Visitante | `/` e `/loja/{slug}` |
+| 1b | Página do veículo (simular, denunciar) | Visitante | `/v/{id}-{marca}-{modelo}` e `/loja/{slug}/v/{id}` |
 | 1c | Meus veículos | Lojista | `/painel/veiculos` |
 | 1d | Lojas / Veículos CajuGo / Usuários | Admin | `/admin/lojas`, `/admin/veiculos`, `/admin/usuarios` |
 | 2a | Novo / editar veículo | Lojista | `/painel/veiculos/novo`, `/painel/veiculos/{id}` |
@@ -345,7 +351,7 @@ Viram requisitos e testes nas specs (`SDD.md`):
 | 6a | Entrar (substituída por 9f) | — | — |
 | 6b | Recuperar senha (manual) | Todos | `/recuperar` |
 | 6c | Pix manual: chave, QR estático, comprovante | Lojista | `/lojistas/pagamento/pix` |
-| 6d | Filtros e ordenação | Visitante | overlay em `/` e `/{slug}` |
+| 6d | Filtros e ordenação | Visitante | overlay em `/` e `/loja/{slug}` |
 | 6e · 6f · 6g | Editar veículo · Diálogos · Detalhe da loja | Lojista/Admin | `/painel/veiculos/{id}`, overlay, `/admin/lojas/{id}` |
 | 7a–7d | Cadastro · Painel · Vitrine/compartilhar · Extrato | Vendedor | `/rede/cadastro`, `/rede`, `/rede/vitrine`, `/rede/extrato` |
 | 7e–7g | Comissão · Vendedores · Confirmar venda | Lojista | `/painel/rede/comissao`, `/painel/rede/vendedores`, overlay |
@@ -445,7 +451,7 @@ Campos:
 | Nome da loja | texto | obrigatório, 2–60 |
 | Cidade | autocomplete cidade/UF | obrigatório |
 | WhatsApp da loja | telefone BR | obrigatório, máscara (99) 99999-9999 |
-| Endereço do catálogo (slug) | texto com prefixo do endereço da fase vigente (§1.7: `cajugo.vercel.app/`; depois `.cajugo.com.br` como sufixo) | obrigatório, `[a-z0-9-]{3,40}`, sem hífen no início/fim, único, lista de reservados; sugestão automática a partir do nome; feedback "Disponível"/"Indisponível" em tempo real |
+| Endereço do catálogo (slug) | texto com prefixo do endereço vigente (§1.7: `cajugo.vercel.app/loja/`) | obrigatório, `[a-z0-9-]{3,40}`, sem hífen no início/fim, único; sugestão automática a partir do nome; feedback "Disponível"/"Indisponível" em tempo real |
 | Seu nome | texto | obrigatório |
 | E-mail | e-mail | obrigatório, único |
 | Celular | telefone BR | obrigatório |
@@ -828,7 +834,7 @@ Ver `API.md` §5 (mapa de rotas).
 - **Estados obrigatórios em toda lista:** carregando (skeleton), vazio, erro com "Tentar de novo"; erro de ação em barra inferior sem sair da tela.
 - **Rascunhos de formulário** salvos localmente.
 - **Performance**: LCP < 2,5 s em 4G; imagens responsivas; listagem com SSR/ISR para SEO.
-- **SEO**: páginas públicas renderizadas no servidor; títulos "Marca Modelo Versão Ano – Cidade | CajuGo"; schema.org `Vehicle`/`Offer`; sitemap; `noindex` em vendidos.
+- **SEO (principal ativo)**: ver `SEO.md` — renderização no servidor, títulos e descrições únicos, URL amigável e canônica, JSON-LD (`Car`/`Offer`, `AutoDealer`, `BreadcrumbList`), Open Graph para WhatsApp, sitemap, Core Web Vitals, Search Console.
 - **Segurança**: ver `SECURITY.md` (Supabase Auth, cookie httpOnly, papel por loja, rate limit, comprovantes privados).
 - **LGPD**: consentimento; acesso, correção e exclusão; exclusão de dados de lojas canceladas após 90 dias; CPF e chave Pix só quando necessários; encarregado `privacidade@cajugo.com.br`; termos [12i].
 - **Auditoria**: `LogAtividade` para ações de admin e mudanças de status (loja, pagamento, veículo, vendedor, indicação, resgate).
@@ -842,3 +848,4 @@ Ver `API.md` §5 (mapa de rotas).
 4. Documentos exigidos do vendedor na curadoria (CPF, antecedentes: quais e como enviar).
 5. Revisão jurídica dos termos [12i] (Rede Caju, Caju Indica, LGPD).
 6. Gateway de pagamento na fase 2: Stripe ou outro.
+7. **Antecipar o domínio próprio** (`cajugo.com.br`)? A autoridade de busca acumulada em `cajugo.vercel.app` não é nossa (`docs/SEO.md` §3). O formato do endereço das lojas já está decidido: `/loja/{slug}` (ADR 0009).

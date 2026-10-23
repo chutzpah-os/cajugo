@@ -68,3 +68,6 @@
 
 # 2026-10-23 · AuthProvider (001/T001)
 - Supabase atrás de uma interface pequena: testes do domínio auth rodam sem rede (PGlite + provedor falso), e o Supabase real fica num arquivo só.
+
+# 2026-10-23 · Por que SEO.md
+- Dono definiu o SEO como principal ativo; regras viram checklist obrigatório por página pública. Lojas por caminho em /loja/{slug} (decidido pelo dono, ADR 0009): subdomínio divide a autoridade de busca e exige DNS curinga; o prefixo evita colisão com rotas do sistema.

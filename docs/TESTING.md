@@ -82,6 +82,8 @@ Comece pela lógica central de negócio:
 
 Telas puramente visuais ficam para o e2e.
 
+**SEO** (`SEO.md` §5): funções de título, descrição, canônica e JSON-LD têm teste unitário; cada tipo de página pública tem e2e conferindo `<title>`, descrição, canônica e JSON-LD no HTML do servidor.
+
 ## 6. Checklist do agente 🤖
 Ao criar ou alterar qualquer arquivo de código:
 - [ ] Criei ou atualizei o teste correspondente (com ID do requisito, se for feature).

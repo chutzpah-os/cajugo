@@ -83,8 +83,8 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 ### Público e comprador
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| página | `/`, `/{slug}` — vitrine e catálogo da loja (filtros na query string) | 1a, 6d, 9a, 15a |
-| página | `/v/{id}-{make}-{model}`, `/{slug}/v/{id}` — detalhe (guarda `?ref=` do vendedor) | 1b, 12d |
+| página | `/`, `/loja/{slug}` — vitrine e catálogo da loja (filtros na query string) | 1a, 6d, 9a, 15a |
+| página | `/v/{id}-{make}-{model}`, `/loja/{slug}/v/{id}` — detalhe (guarda `?ref=` do vendedor) | 1b, 12d |
 | página | `/i/{codigo}` — landing do Caju Indica | 8c |
 | A | `createLead(vehicleId, form)` · `trackWhatsappClick(vehicleId)` | 1b |
 | A | `reportVehicle(vehicleId, reason, details)` | 14d |

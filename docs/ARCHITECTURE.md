@@ -51,10 +51,9 @@ Decisões:
 - **Migrations só pelo Drizzle Kit, versionadas no repositório.** Nunca crie ou altere tabela pelo painel do Supabase.
 
 ## 3a. Endereços das lojas (PRD §1.7)
-- **Fase 1 (MVP):** por caminho, `cajugo.vercel.app/{slug}`. Rota `src/app/(public)/[slug]/`.
-- **Fase 2 (domínio próprio):** por subdomínio, `{slug}.cajugo.com.br`. O `src/proxy.ts` (no Next 16, o antigo `middleware.ts` se chama `proxy.ts`) lê o host e **reescreve** `lojaA.cajugo.com.br/...` para `/lojaA/...` por dentro: as mesmas páginas atendem as duas fases. Os acessos a `cajugo.com.br/{slug}` recebem 301 para o subdomínio.
-- Na Vercel, a fase 2 exige domínio curinga (`*.cajugo.com.br`), que pede os nameservers da Vercel no registro.br. O cookie de sessão continua no domínio principal; o painel do lojista não fica no subdomínio.
-- Todo link absoluto para loja passa por **uma função só** (ex.: `storeUrl(slug)` em `src/platform/`), que lê a fase pela configuração (`APP_URL` + modo de endereço). Nada de montar URL de loja à mão.
+- Por caminho, sempre (ADR 0009): `cajugo.vercel.app/loja/{slug}` agora, `cajugo.com.br/loja/{slug}` com domínio próprio. Rota `src/app/(public)/loja/[slug]/`.
+- Sem subdomínio: nada de domínio curinga nem reescrita por host; a troca de domínio é só `APP_URL` + 301 do domínio antigo.
+- Todo link absoluto para loja passa por **uma função só** (ex.: `storeUrl(slug)` em `src/platform/`), que lê `APP_URL`. Nada de montar URL de loja à mão.
 
 ## 3. Estrutura de pastas
 Organizada **por domínio**: o que muda junto fica junto. As rotas do Next ficam finas e chamam o domínio.
@@ -62,7 +61,7 @@ Organizada **por domínio**: o que muda junto fica junto. As rotas do Next ficam
 ```
 src/
 ├─ app/                    rotas do App Router (finas: leem a sessão, chamam o domínio, renderizam)
-│  ├─ (public)/            vitrine /, catálogo /{slug}, veículo /v/..., /lojistas, /entrar
+│  ├─ (public)/            vitrine /, catálogo /loja/{slug}, veículo /v/..., /lojistas, /entrar
 │  ├─ painel/              área do lojista
 │  ├─ admin/               área da equipe CajuGo
 │  └─ api/v1/              Route Handlers: cron (fase 2: webhooks do gateway)
@@ -79,6 +78,7 @@ src/
    ├─ db/                  cliente e schema do Drizzle
    ├─ supabase/            cliente de Auth no servidor
    ├─ cloudinary/          assinatura de upload, URLs de variantes
+   ├─ seo/                 título, descrição, canônica, JSON-LD, Open Graph, sitemap (docs/SEO.md)
    └─ http/                errors (AppError, problem+json, ActionResult), session (authorize), rate-limit,
                            client-ip (hash), honeypot, activity-log, logger
 drizzle/                   migrations SQL geradas pelo Drizzle Kit
@@ -105,7 +105,7 @@ profiles ✅              # 1:1 com auth.users (mesmo id; sem FK, porque o schem
 
 # Loja e assinatura (a assinatura vive na própria loja)
 stores ✅ (+ colunas novas)
-  id, name, slug (unique, regras de subdomínio), cnpj, city, state, whatsapp, address, about, instagram,
+  id, name, slug (unique, `[a-z0-9-]`), cnpj, city, state, whatsapp, address, about, instagram,
   logo_public_id, cover_public_id, hours (jsonb), share_by_default, owner_id,
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),
   billing_day, next_due_at, past_due_since, cancel_at, active_until, slug_reserved_until,

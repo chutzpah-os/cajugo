@@ -36,7 +36,7 @@ describe("schema e migrations", () => {
       id: ownerId,
       name: "Ricardo Silva",
       email: "ricardo@example.com",
-      role: "store_owner",
+      roles: ["store_owner"],
     });
 
     // Act
@@ -64,7 +64,7 @@ describe("schema e migrations", () => {
       id: ownerId,
       name: "Dono",
       email: "dono@example.com",
-      role: "store_owner",
+      roles: ["store_owner"],
     });
     const base = {
       name: "Loja",

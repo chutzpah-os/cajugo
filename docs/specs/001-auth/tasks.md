@@ -8,7 +8,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 1 — Fundação
 - [x] **T001** Dependências (`@supabase/ssr`, `@supabase/supabase-js`, `@playwright/test`), variáveis novas no `.env.example`, interface `AuthProvider` + provedor falso para testes · _—_
-- [ ] **T002** Migration `0002` (valores novos de `user_role`, `profiles.roles/last_panel/last_seen_at/temp_password_expires_at`, `store_status` + `stores.status`, cópia `role → roles`) com teste de migration · _AUT-SEC-002_
+- [x] **T002** Migration `0002` (valores novos de `user_role`, `profiles.roles/last_panel/last_seen_at/temp_password_expires_at`, `store_status` + `stores.status`, cópia `role → roles`) com teste de migration · _AUT-SEC-002_
 - [ ] **T003** `Session` com `roles` + papel ativo; `authorize` por papel; mapa de áreas e ações por papel (lojista × usuário da loja; admin × suporte) · _AUT-FR-012, AUT-SEC-007, AUT-SEC-008_
 
 ## Fase 2 — Fatias verticais (domínio `auth`)

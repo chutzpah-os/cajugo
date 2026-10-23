@@ -93,7 +93,7 @@ Traço 1,8–2,4 px, cantos arredondados, 14–22 px (estilo Lucide/Feather). Í
 | **Botão pequeno** | 34–40 px, raio 9–10, borda `field` ("Vendido", "Recibo", editar). |
 | **FAB** | 54 px, pílula, `caju`, "+ Novo veículo", 16 px acima da nav. |
 | **Input** | 50 px, raio 10, borda `field`, padding 14; rótulo 13/600 acima com gap 6; texto de ajuda 12 `text-3`; placeholder `text-4`. Select tem chevron à direita. Foco: borda 1,5 `ink`. Erro: borda e ajuda em `caju-deep`. |
-| **Input com prefixo** | Prefixo em fundo `bg` com divisória ("cajugo.vercel.app/" no MVP; na fase 2 vira sufixo ".cajugo.com.br"). |
+| **Input com prefixo** | Prefixo em fundo `bg` com divisória ("cajugo.vercel.app/loja/"; com domínio próprio, "cajugo.com.br/loja/"). |
 | **Input de preço** | 56 px, borda 1,5 `ink`, "R$" em `text-3` + valor 20/800. |
 | **Textarea** | Altura mínima 92–132, contador à direita abaixo. |
 | **Chip de filtro** | 34–36 px, pílula; inativo: fundo branco, borda `field`; ativo: fundo e borda `ink`, texto branco; contagem com opacidade 0,6. |

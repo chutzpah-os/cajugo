@@ -55,7 +55,7 @@ Migrations sempre aditivas; remover ou renomear coluna exige duas etapas (adicio
 - **Vercel Hobby:** gratuito, mas proíbe uso comercial. Antes de cobrar lojistas: Vercel Pro (US$ 20/mês) ou migração do Next para uma VPS.
 - **Supabase Free:** pausa após 7 dias sem atividade (relevante para staging). O Pro (US$ 25/mês) inclui backup diário; avalie quando houver lojistas pagando.
 - **Cloudinary Free:** acompanhe os créditos mensais.
-- **Domínio** `cajugo.com.br` (fase 2): registro.br (~R$ 40/ano). Para as lojas em subdomínio (`lojaA.cajugo.com.br`), use os **nameservers da Vercel** e adicione `cajugo.com.br` e `*.cajugo.com.br` ao projeto (domínio curinga). Até lá, tudo roda em `cajugo.vercel.app` (PRD §1.7).
+- **Domínio** `cajugo.com.br`: registro.br (~R$ 40/ano); quanto antes, melhor para o SEO (`SEO.md` §3). Basta apontar o domínio para a Vercel (sem curinga: lojas ficam em `/loja/{slug}`, ADR 0009), trocar `APP_URL` e redirecionar `cajugo.vercel.app` com 301. Até lá, tudo roda em `cajugo.vercel.app` (PRD §1.7).
 
 ## Saída da Vercel (futuro)
 O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o início; o Dockerfile é escrito quando a migração for decidida. O cron da Vercel vira um cron do servidor chamando a mesma rota. O banco continua no Supabase; só muda onde o Next roda.
@@ -68,3 +68,4 @@ O Next roda em qualquer Node: `output: 'standalone'` no `next.config` desde o in
 - [ ] Cloudinary → Settings → Security: liberar a entrega de PDF (contas Free bloqueiam por padrão), necessária para o admin ver comprovantes em PDF por URL assinada
 - [x] Deployment Protection ligado nos Previews (Vercel Authentication, Standard Protection: prévias exigem login na Vercel; produção é pública)
 - [ ] MFA em Supabase, Vercel, Cloudinary, gateway e GitHub
+- [ ] Google Search Console e Bing Webmaster verificados, com o sitemap enviado (`SEO.md` §4)

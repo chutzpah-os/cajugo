@@ -64,7 +64,7 @@
 
 ## 003 · Cadastro do lojista, Minha loja e menu — telas 11a, 5b, 5c (+ código 8d), 3b
 - Menu da home [11a] e landing [5b].
-- Cadastro: loja + responsável, slug com regras de subdomínio e lista de reservados, código Caju Indica opcional (validado, bloqueia autoindicação); loja nasce `registered`.
+- Cadastro: loja + responsável, slug `[a-z0-9-]` (loja em `/loja/{slug}`), código Caju Indica opcional (validado, bloqueia autoindicação); loja nasce `registered`.
 - Minha loja: dados públicos, horário, logo e capa (Cloudinary), link + QR code pela função única de URL, divulgar por padrão, troca de slug com redirecionamento.
 
 ## 004 · Pix manual e ativação — telas 5d, 6c, 10a, 10b, 12e, 5e, 6g (registro manual)
@@ -83,7 +83,8 @@
 - Vitrine e catálogo da loja (mesmo layout), busca full-text, filtros, ordenação, cursor; view `showcase_vehicles`; ISR + `revalidateTag`.
 - Página do veículo; guarda `?ref=` do vendedor; [12d] para vendido/oculto; [12g] para loja suspensa.
 - Simulador [14b] (Price, valores de `settings`); favoritos [14a] com selos; busca sem resultado + alerta [12a]; banner Caju Indica [9a].
-- Estados [12b, 12c]; SEO; desktop [15a].
+- Estados [12b, 12c]; desktop [15a].
+- **SEO completo (`SEO.md`)**: funções de título/descrição/canônica/JSON-LD/Open Graph em `src/platform/seo/`, sitemap índice, `robots.txt`, **páginas de descoberta** por marca, modelo e cidade, links internos. Pode virar spec própria no `/spec` se passar do limite.
 
 ## 007 · Leads e denúncias — telas 1b (formulário/WhatsApp), 3a, 14d, 14e
 - Formulário com honeypot + rate limit; clique no WhatsApp gera lead; origem cajugo / catálogo / vendedor.
@@ -118,6 +119,7 @@
 - Termos e privacidade [12i] (rascunho para revisão jurídica): Rede Caju, Caju Indica, LGPD, encarregado.
 - Valores definitivos de `settings` (chave Pix etc.); projeto `cajugo-prod` no Supabase; checklist de produção do `DEPLOYMENT.md`.
 - Revisão de segurança (`SECURITY.md` §12) e acessibilidade (`DESIGN.md` §7); performance (LCP < 2,5 s em 4G).
+- **Auditoria de SEO** de todas as páginas públicas; Google Search Console e Bing Webmaster com sitemap enviado.
 - Decidir: Vercel Pro ou migração para VPS antes de cobrar; fase 2 dos endereços (PRD §1.7) quando houver domínio.
 - Trocar as credenciais que apareceram no chat durante o setup: senha do banco do `cajugo-staging`, a API Key Root do Cloudinary e a secret key do Supabase (`sb_secret_…`). Adiado por decisão do dono em 2026-10-23.
 
