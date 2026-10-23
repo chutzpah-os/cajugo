@@ -86,7 +86,7 @@ A CajuGo (admin e suporte) gerencia lojas, assinaturas, pagamentos, vendedores, 
 | **Admin CajuGo** | Lojas, assinaturas, pagamentos, vendedores, veículos, denúncias, indicações, regras. | E-mail e senha |
 | **Suporte CajuGo** | Admin com permissões reduzidas (leitura + ações de suporte). | E-mail e senha |
 
-**Conta única:** a mesma pessoa pode ter vários papéis (ex.: vendedor e indicador; lojista e indicador). O login [9f] mostra os painéis disponíveis e permite trocar.
+**Conta única:** a mesma pessoa pode ter vários papéis (ex.: vendedor e indicador; lojista e indicador). O login [9f] mostra os painéis disponíveis e permite trocar. Ao entrar, abre o último painel usado. **Contas da equipe CajuGo (admin e suporte) são separadas** e não acumulam papéis de lojista, vendedor ou indicador; o primeiro admin é criado pelo dono fora do site.
 Login por **celular com código** (aba "Celular" de [9f], tela [9c]) é **fase 2**: tem custo por mensagem.
 
 ### 2.1 Matriz de permissões
@@ -573,7 +573,7 @@ Validação para publicar: ≥1 foto, marca, modelo, versão, anos, km, câmbio,
 ---
 
 ### [6a] Entrar (substituída por [9f])
-> Vale o login único [9f]. Regras que continuam: bloqueio temporário após 5 tentativas erradas em 15 min; mensagem genérica "E-mail ou senha incorretos"; sessão lembrada por 30 dias.
+> Vale o login único [9f]. Regras que continuam (detalhadas na spec `001-auth`): 5 tentativas erradas em 15 min bloqueiam a conta por 15 min (e há limite por rede); mensagem genérica "E-mail ou senha incorretos"; sessão vale enquanto houver uso a cada 30 dias (admin e suporte: 1 dia); senha temporária expira em 24 h.
 
 ### [6b] Recuperar senha
 **MVP (manual, sem e-mail):**

@@ -106,3 +106,6 @@
 - PRD.md v2.0: produtos (Catálogo, Rede Caju, Caju Indica), papéis múltiplos, escopo, jornadas, regras (Pix com comprovante, Rede Caju, Caju Indica, simulador, favoritos, aprovação, denúncias, Config), 47 telas novas em §7, notificações manuais.
 - DESIGN.md v2.0 (telas 7a–15c, padrões, microcopy), design/README, GLOSSARY, ARCHITECTURE (modelo v2, jobs), API (ações v2, uploads privados), SECURITY (ameaças, PDF privado, papéis), PLAN (specs 001–013), DEPLOYMENT, ADRs 0006–0008.
 - Imagens movidas para design/telas/ (pastas "Turno 07…15"); pastas antigas renomeadas "Turno 01…06". docs/exports apagada.
+
+# 2026-10-23 · Spec 001 clarified
+- docs/specs/001-auth/spec.md: 15 FR, 2 NFR, 9 SEC; respostas do /clarify incorporadas; PRD [6a] e §2 alinhados.

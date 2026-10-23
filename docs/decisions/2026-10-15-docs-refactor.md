@@ -62,3 +62,6 @@
 # 2026-10-23 · Como o PRD v2 entrou
 - Dono decidiu: login só e-mail/senha e avisos por wa.me no MVP (custo zero); comprovante aceita imagem e PDF (privado); Rede Caju e Caju Indica prontos no lançamento.
 - PRD v2 prevalece sobre o v1, exceto nesses pontos e nos endereços em duas fases (vercel.app → subdomínios).
+
+# 2026-10-23 · Decisões do /clarify da 001
+- Bloqueio e-mail+rede 15 min; sessão 30 dias sem uso (equipe 1 dia); último painel; senha temporária 24 h; usuário da loja sem dinheiro; suporte só modera; 1º admin por script e equipe em contas separadas.
