@@ -290,3 +290,37 @@ export async function updatePassword(
     ),
   };
 }
+
+/** Conta encontrada pelo admin/suporte: só o que a tela mostra (saída explícita, API.md §2). */
+export type AccountSummary = {
+  id: string;
+  name: string;
+  email: string;
+  roles: Role[];
+};
+
+/** Busca de conta por e-mail no admin (leitura: admin e suporte, AUT-SEC-008). */
+export async function findAccountByEmail(
+  deps: AuthDeps,
+  session: Session | null,
+  email: unknown,
+): Promise<AccountSummary | null> {
+  authorizeTo(session, "admin.read");
+  const parsed = z
+    .string()
+    .trim()
+    .toLowerCase()
+    .pipe(z.email())
+    .safeParse(email);
+  if (!parsed.success) return null;
+  const [account] = await deps.db
+    .select({
+      id: profiles.id,
+      name: profiles.name,
+      email: profiles.email,
+      roles: profiles.roles,
+    })
+    .from(profiles)
+    .where(eq(profiles.email, parsed.data));
+  return account ?? null;
+}

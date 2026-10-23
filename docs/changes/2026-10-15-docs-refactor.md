@@ -150,3 +150,6 @@
 # 2026-10-23 · 001/T016 áreas logadas
 - Layouts de /painel, /rede, /indica, /admin, /lojistas/pagamento (AreaShell: sair, troca de painel, alerta de suspensa); guards.ts (requireArea, requireStorePage), store-access.ts; NoPermission, loja indisponível e páginas em construção.
 - /entrar estático: o next é lido da URL no envio (corrige perda do next).
+
+# 2026-10-23 · 001/T017 senha temporária no admin
+- /admin/senha-temporaria: busca por e-mail (findAccountByEmail, saída explícita; admin e suporte) e botão só para admin, senha mostrada uma vez com Copiar; labels.ts com os nomes dos painéis.

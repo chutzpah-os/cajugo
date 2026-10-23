@@ -5,6 +5,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import type { Role } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import {
+  findAccountByEmail,
   generateTemporaryPassword,
   getSession,
   setTemporaryPassword,
@@ -663,6 +664,61 @@ describe("signIn", () => {
       await expect(
         updatePassword(deps(), null, { password: NEW, confirmation: NEW }),
       ).rejects.toMatchObject({ status: 401 });
+    });
+  });
+
+  describe("findAccountByEmail", () => {
+    const sessionFor = (userId: string, roles: Role[]) => ({
+      userId,
+      roles,
+      activeRole: roles[0],
+      storeId: null,
+      mustChangePassword: false,
+    });
+
+    it("[AUT-SEC-008] admin e suporte encontram a conta, só com os campos da tela", async () => {
+      // Arrange
+      const target = await createAccount("lojista@x.com", [
+        "seller",
+        "referrer",
+      ]);
+
+      for (const role of ["admin", "support"] as const) {
+        // Act
+        const found = await findAccountByEmail(
+          deps(),
+          sessionFor("0192f1e0-0000-7000-8000-0000000000aa", [role]),
+          " Lojista@X.com ",
+        );
+
+        // Assert
+        expect(found).toEqual({
+          id: target.id,
+          name: "Fulano",
+          email: "lojista@x.com",
+          roles: ["seller", "referrer"],
+        });
+      }
+    });
+
+    it("e-mail sem conta ou inválido devolve null", async () => {
+      const admin = sessionFor("0192f1e0-0000-7000-8000-0000000000aa", [
+        "admin",
+      ]);
+      expect(
+        await findAccountByEmail(deps(), admin, "ninguem@x.com"),
+      ).toBeNull();
+      expect(await findAccountByEmail(deps(), admin, "nao-e-email")).toBeNull();
+    });
+
+    it("[AUT-SEC-001] lojista não busca contas", async () => {
+      await expect(
+        findAccountByEmail(
+          deps(),
+          sessionFor("0192f1e0-0000-7000-8000-0000000000bb", ["store_owner"]),
+          "x@x.com",
+        ),
+      ).rejects.toMatchObject({ status: 403 });
     });
   });
 });

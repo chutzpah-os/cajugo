@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { db } from "@/platform/db/client";
-import type { Role } from "@/platform/http/session";
 import { Logo } from "@/ui/logo";
 import { signOutAction, switchPanelAction } from "../actions";
 import { requireArea } from "../guards";
+import { PANEL_LABEL } from "../labels";
 import type { Area } from "../permissions";
 import { storeStatusOf } from "../service";
 
@@ -13,15 +13,6 @@ const AREA_ROOT: Record<Area, string> = {
   rede: "/rede",
   indica: "/indica",
   admin: "/admin",
-};
-
-export const PANEL_LABEL: Record<Role, string> = {
-  store_owner: "Minha loja",
-  store_staff: "Loja",
-  seller: "Rede Caju",
-  referrer: "Caju Indica",
-  admin: "Admin",
-  support: "Suporte",
 };
 
 /**

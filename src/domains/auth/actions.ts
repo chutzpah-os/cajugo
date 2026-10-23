@@ -10,11 +10,14 @@ import { loginUrl } from "@/platform/http/protected-paths";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { currentSession } from "./current";
 import {
+  findAccountByEmail,
   getSession,
+  setTemporaryPassword,
   signIn,
   signOut,
   switchPanel,
   updatePassword,
+  type AccountSummary,
 } from "./service";
 
 /** `email` volta para a tela não apagar o que a pessoa digitou. */
@@ -118,4 +121,54 @@ export async function signOutAction(): Promise<void> {
     auth: await requestAuthProvider(),
   });
   redirect(redirectTo);
+}
+
+export type AccountSearchState = {
+  account: AccountSummary | null;
+  message?: string;
+} | null;
+
+/** Busca de conta por e-mail na tela "Senha temporária" (admin e suporte). */
+export async function findAccountAction(
+  _prev: AccountSearchState,
+  form: FormData,
+): Promise<AccountSearchState> {
+  try {
+    const account = await findAccountByEmail(
+      { db, auth: await requestAuthProvider() },
+      await currentSession(),
+      form.get("email"),
+    );
+    return { account };
+  } catch (error) {
+    if (error instanceof AppError)
+      return { account: null, message: error.title };
+    throw error;
+  }
+}
+
+export type TemporaryPasswordState = {
+  password?: string;
+  message?: string;
+} | null;
+
+/** Admin define a senha temporária (AUT-FR-014); a senha volta só nesta resposta. */
+export async function setTemporaryPasswordAction(
+  _prev: TemporaryPasswordState,
+  form: FormData,
+): Promise<TemporaryPasswordState> {
+  try {
+    const { password } = await setTemporaryPassword(
+      { db, auth: await requestAuthProvider() },
+      await currentSession(),
+      form.get("userId"),
+    );
+    return { password };
+  } catch (error) {
+    if (error instanceof AppError) return { message: error.title };
+    logger.error("auth.temp_password_failed", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return { message: "Não foi possível definir a senha agora." };
+  }
 }

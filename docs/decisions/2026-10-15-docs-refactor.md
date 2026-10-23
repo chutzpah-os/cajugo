@@ -98,3 +98,6 @@
 
 # 2026-10-23 · Cada página checa a própria permissão (001/T016)
 - O layout sempre renderiza a página (o Next 16 não valida segmento descartado) e a página mostra "Sem permissão": nenhuma tela depende do layout para se proteger. Leitura de sessão dentro de <Suspense> por página, para navegação instantânea.
+
+# 2026-10-23 · Busca por POST (001/T017)
+- A busca de conta usa action (POST), não ?email= na URL, para o e-mail não ir para logs e histórico. Suporte vê a busca sem o botão, conforme AUT-SEC-008.
