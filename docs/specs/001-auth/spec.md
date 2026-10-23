@@ -2,7 +2,7 @@
 id: 001
 slug: auth
 title: Contas, papéis e login
-status: clarified
+status: in-progress
 owner: dono do produto
 created: 2026-10-23
 ---

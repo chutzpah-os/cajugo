@@ -109,3 +109,6 @@
 
 # 2026-10-23 · Spec 001 clarified
 - docs/specs/001-auth/spec.md: 15 FR, 2 NFR, 9 SEC; respostas do /clarify incorporadas; PRD [6a] e §2 alinhados.
+
+# 2026-10-23 · Spec 001: plano, tasks e T001
+- plan.md (aprovado) e tasks.md (T001–T021); T001: @supabase/ssr, @supabase/supabase-js, @playwright/test, AuthProvider + FakeAuthProvider; variáveis SUPABASE_PUBLISHABLE_KEY/SECRET_KEY e SUPPORT_WHATSAPP.

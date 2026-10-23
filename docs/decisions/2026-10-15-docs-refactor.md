@@ -65,3 +65,6 @@
 
 # 2026-10-23 · Decisões do /clarify da 001
 - Bloqueio e-mail+rede 15 min; sessão 30 dias sem uso (equipe 1 dia); último painel; senha temporária 24 h; usuário da loja sem dinheiro; suporte só modera; 1º admin por script e equipe em contas separadas.
+
+# 2026-10-23 · AuthProvider (001/T001)
+- Supabase atrás de uma interface pequena: testes do domínio auth rodam sem rede (PGlite + provedor falso), e o Supabase real fica num arquivo só.

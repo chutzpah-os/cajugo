@@ -24,8 +24,9 @@ Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerencia
 |---|---|
 | `DATABASE_URL` | pooler do Supabase em modo transação (porta 6543), usuário `postgres` (MVP; ver `SECURITY.md` §4) |
 | `DATABASE_URL_MIGRATIONS` | pooler em modo sessão (porta 5432), usuário `postgres` (só no `.env.local`; não vai para a Vercel) |
-| `SUPABASE_URL`, `SUPABASE_ANON_KEY` | cliente de Auth no servidor |
-| `SUPABASE_SERVICE_ROLE_KEY` | ações administrativas do Auth (criar conta, senha temporária) |
+| `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` | cliente de Auth no servidor (chave `sb_publishable_…`) |
+| `SUPABASE_SECRET_KEY` | ações administrativas do Auth: criar conta, senha temporária (chave `sb_secret_…`) |
+| `SUPPORT_WHATSAPP` | WhatsApp de atendimento (temporária, até a spec 002) |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | assinatura de upload |
 | `CRON_SECRET` | protege `/api/v1/cron/*` |
 | `HASH_SECRET` | segredo do hash de IP (rate limit, denúncias); `openssl rand -hex 32` |

@@ -25,7 +25,7 @@
 | Autoindicação / fraude no Caju Indica | Lojista indica a própria loja; várias contas para resgatar | Bloqueio por mesmo CPF/CNPJ/celular; CPF único por resgate; recompensa só após pagamento confirmado (§7) |
 | Vendedor golpista | Cobra sinal por fora usando o nome da loja | Curadoria manual (CPF, antecedentes), parceria aprovada pela loja, denúncia [13d], bloqueio pelo admin |
 | Mass assignment de dinheiro | Vendedor aumenta a comissão; lojista zera a taxa | Valores de comissão, taxa, saldo e recompensa calculados no servidor; nunca vêm do cliente |
-| Exposição do banco | Data API do Supabase aberta com a `anon key` | Data API desligada + RLS sem policy (§4) |
+| Exposição do banco | Data API do Supabase aberta com a chave pública (`publishable`) | Data API desligada + RLS sem policy (§4) |
 
 ## 3. Autenticação 🤖
 - **Supabase Auth** com e-mail e senha. Senha mínima de 8 caracteres (configurada no painel do Auth).
@@ -56,7 +56,7 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 - **Usuário de banco no MVP: o `postgres` do Supabase**, pelo pooler, tanto para a aplicação quanto para as migrations. Ele é dono das tabelas, então o RLS não se aplica a ele. A senha fica só no `.env.local` e nas variáveis da Vercel (`DEPLOYMENT.md`).
   - Consequência: o banco não impede a aplicação de alterar ou apagar qualquer tabela. A proteção é o código: toda escrita passa pela camada de serviço, e `activity_log` só recebe `insert` (nenhum serviço faz `update`/`delete` nela; revisar no `security-review`).
   - **Fase 2:** criar um usuário próprio (`app_user`) com acesso só às tabelas da aplicação e `activity_log` só com `INSERT`, deixando o `postgres` só para migrations.
-- A `service_role key` só é usada no servidor, e apenas para tarefas administrativas do Auth (criar conta, definir senha temporária). A `anon key` também fica só no servidor.
+- A chave secreta (`SUPABASE_SECRET_KEY`, antiga `service_role`) só é usada no servidor, e apenas para tarefas administrativas do Auth (criar conta, definir senha temporária). A `anon key` também fica só no servidor.
 - SSL obrigatório na conexão.
 
 ## 5. Uploads (Cloudinary) 🤖

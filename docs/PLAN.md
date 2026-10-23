@@ -119,7 +119,7 @@
 - Valores definitivos de `settings` (chave Pix etc.); projeto `cajugo-prod` no Supabase; checklist de produção do `DEPLOYMENT.md`.
 - Revisão de segurança (`SECURITY.md` §12) e acessibilidade (`DESIGN.md` §7); performance (LCP < 2,5 s em 4G).
 - Decidir: Vercel Pro ou migração para VPS antes de cobrar; fase 2 dos endereços (PRD §1.7) quando houver domínio.
-- Trocar as credenciais que apareceram no chat durante o setup: senha do banco do `cajugo-staging` e a API Key Root do Cloudinary. Adiado por decisão do dono em 2026-10-23.
+- Trocar as credenciais que apareceram no chat durante o setup: senha do banco do `cajugo-staging`, a API Key Root do Cloudinary e a secret key do Supabase (`sb_secret_…`). Adiado por decisão do dono em 2026-10-23.
 
 ---
 
