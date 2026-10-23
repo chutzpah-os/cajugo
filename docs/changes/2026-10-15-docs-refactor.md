@@ -121,3 +121,7 @@
 # 2026-10-23 · 001/T003 sessão com vários papéis
 - Session com roles + activeRole; authorize aceita qualquer papel da conta; authorizeStore aceita lojista e usuário da loja (restringível).
 - src/domains/auth/permissions.ts: AREAS (painel, rede, indica, admin) e PERMISSIONS (loja: staff só veículos/leads/venda; admin: suporte só lê e modera).
+
+# 2026-10-23 · 001/T004–T007 login
+- domains/auth: landingFor/pickPanel (painel inicial por papel, último painel, status da loja, nova senha), signIn (erro genérico, temporária vencida, last_login/seen), schemas.
+- platform/http: safeNext (só caminho interno); peekRateLimit e limite loginFailuresPerEmail (5 falhas/15 min) + 5/min por rede.

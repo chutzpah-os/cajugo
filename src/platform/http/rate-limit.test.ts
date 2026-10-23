@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createTestDb } from "../db/testing/test-db";
 import { rateLimits } from "../db/schema";
-import { consumeRateLimit, purgeRateLimits } from "./rate-limit";
+import { consumeRateLimit, peekRateLimit, purgeRateLimits } from "./rate-limit";
 
 describe("rate limit", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -42,6 +42,16 @@ describe("rate limit", () => {
       new Date("2026-10-23T12:01:00Z"),
     );
     expect(next.ok).toBe(true);
+  });
+
+  it("peek diz se o limite já foi atingido sem contar tentativa", async () => {
+    expect((await peekRateLimit(t.db, "k", rule, now)).ok).toBe(true);
+    await consumeRateLimit(t.db, "k", rule, now);
+    expect((await peekRateLimit(t.db, "k", rule, now)).ok).toBe(true);
+    await consumeRateLimit(t.db, "k", rule, now);
+    const peek = await peekRateLimit(t.db, "k", rule, now);
+    expect(peek).toEqual({ ok: false, retryAfterSeconds: 50 });
+    expect((await peekRateLimit(t.db, "k", rule, now)).ok).toBe(false);
   });
 
   it("purge apaga só janelas antigas", async () => {

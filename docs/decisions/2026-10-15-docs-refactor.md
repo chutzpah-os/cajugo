@@ -74,3 +74,6 @@
 
 # 2026-10-23 · Permissão por papéis da conta (001/T003)
 - Permissão vale para qualquer papel da conta; o painel ativo é só navegação, para que trocar de painel nunca dê nem tire acesso. Um mapa único de ações por papel serve às actions e aos botões, evitando regras espalhadas.
+
+# 2026-10-23 · Bloqueio só por falha (001/T007)
+- O contador por e-mail sobe só em falha e é consultado sem contar (peek), para o login certo nunca bloquear; falhas de e-mail inexistente também contam, para o bloqueio não revelar se a conta existe.

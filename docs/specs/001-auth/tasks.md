@@ -12,10 +12,10 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T003** `Session` com `roles` + papel ativo; `authorize` por papel; mapa de áreas e ações por papel (lojista × usuário da loja; admin × suporte) · _AUT-FR-012, AUT-SEC-007, AUT-SEC-008_
 
 ## Fase 2 — Fatias verticais (domínio `auth`)
-- [ ] **T004** `landingFor`: painel por papel, último painel, ordem no primeiro acesso, status da loja · _AUT-FR-006, AUT-FR-008, AUT-FR-009, AUT-FR-010_
-- [ ] **T005** [P] `safeNext`: volta só para caminho interno · _AUT-SEC-005, AUT-FR-011_
-- [ ] **T006** `signIn`: sucesso, erro genérico, senha temporária vencida · _AUT-FR-001, AUT-FR-002, AUT-FR-014, AUT-SEC-003_
-- [ ] **T007** Bloqueio no `signIn`: por e-mail (5 falhas / 15 min) e por rede · _AUT-FR-003_
+- [x] **T004** `landingFor`: painel por papel, último painel, ordem no primeiro acesso, status da loja · _AUT-FR-006, AUT-FR-008, AUT-FR-009, AUT-FR-010_
+- [x] **T005** [P] `safeNext`: volta só para caminho interno · _AUT-SEC-005, AUT-FR-011_
+- [x] **T006** `signIn`: sucesso, erro genérico, senha temporária vencida · _AUT-FR-001, AUT-FR-002, AUT-FR-014, AUT-SEC-003_
+- [x] **T007** Bloqueio no `signIn`: por e-mail (5 falhas / 15 min) e por rede · _AUT-FR-003_
 - [ ] **T008** `getSession`: inatividade (30 dias; equipe 1 dia), `last_seen_at` no máximo 1×/hora, flag de troca de senha · _AUT-FR-004, AUT-FR-015_
 - [ ] **T009** `signOut` e `switchPanel` (só papéis da conta; "usuário B") · _AUT-FR-005, AUT-FR-007, AUT-SEC-001, AUT-SEC-002_
 - [ ] **T010** `setTemporaryPassword`: só admin, 24 h, auditoria sem senha, suporte e lojista recusados · _AUT-FR-014, AUT-SEC-003, AUT-SEC-004, AUT-SEC-008_
