@@ -136,3 +136,6 @@
 # 2026-10-23 · 001/T013 Supabase real e proxy
 - platform/supabase/server.ts (SupabaseAuthProvider, cookies HttpOnly 30 d) e next.ts (provedor da requisição); src/proxy.ts renova a sessão e manda área logada sem sessão para /entrar?next=.
 - platform/http/protected-paths.ts; SEO.md: páginas que ranqueiam são /rede/cadastro, /indica/cadastro, /i/{codigo} (/rede e /indica são painéis).
+
+# 2026-10-23 · 001/T014 tela /entrar
+- app/entrar (9f só e-mail e senha, noindex, rodapé de cadastros), domains/auth/actions.ts (signInAction) e components/sign-in-form.tsx; testado no navegador contra o staging (erro genérico e next).

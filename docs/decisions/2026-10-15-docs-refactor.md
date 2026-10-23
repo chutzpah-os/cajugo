@@ -86,3 +86,6 @@
 
 # 2026-10-23 · proxy com getClaims (001/T013)
 - O proxy usa getClaims (valida o token e renova quando vence) só como checagem otimista; papel e loja são conferidos no servidor. Erro 400 do Supabase vira "senha errada"; qualquer outro sobe, para uma queda do serviço não parecer credencial inválida.
+
+# 2026-10-23 · /entrar (001/T014)
+- O e-mail volta no estado da action para não sumir após erro (o React limpa o formulário); falha inesperada vai para o log e mostra mensagem neutra, nunca "senha incorreta".
