@@ -52,3 +52,6 @@
 
 # 2026-10-23 · Por que liberar leitura do .env
 - Decisão do dono, para permitir que o agente configure variáveis; a proteção passa a ser a regra de não exibir valores.
+
+# 2026-10-23 · Credenciais expostas no chat
+- Dono decidiu não trocar agora: banco só tem dados de teste e repo não contém segredos. Troca obrigatória antes do lançamento (PLAN 009).

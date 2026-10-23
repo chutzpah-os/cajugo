@@ -87,3 +87,7 @@
 
 # 2026-10-23 · Leitura do .env liberada
 - Dono removeu o deny de leitura de .env*; SECURITY §10 e CLAUDE.md passam a exigir uso mínimo (sem exibir valores).
+
+# 2026-10-23 · F07 concluída
+- Cloudinary testado (conexão ok, sem preset sem assinatura). Troca das credenciais expostas no chat adiada para a spec 009 (lançamento).
+- vercel.json com região gru1 (São Paulo, perto do banco).
