@@ -100,4 +100,58 @@ describe("migrations", () => {
     await insert("0192f1e0-0000-7000-8000-000000000012", "{admin,support}");
     await insert("0192f1e0-0000-7000-8000-000000000013", "{seller,referrer}");
   });
+
+  describe("0005 regras configuráveis", () => {
+    async function migrated() {
+      const client = new PGlite();
+      const db = drizzle(client, { schema });
+      cleanup.push(() => client.close());
+      await migrate(db, { migrationsFolder: "drizzle" });
+      return client;
+    }
+
+    it("[CFG-FR-003] já vem com o valor provisório de cada regra (chave Pix vazia)", async () => {
+      // Arrange
+      const client = await migrated();
+
+      // Act
+      const { rows } = await client.query<{ key: string; value: unknown }>(
+        "select key, value from setting_values order by key",
+      );
+
+      // Assert
+      expect(Object.fromEntries(rows.map((r) => [r.key, r.value]))).toEqual({
+        cajugo_fee_bps: 100,
+        installment_rate_bps: 179,
+        min_photos: 6,
+        past_due_tolerance_days: 5,
+        payout_min_cents: 5000,
+        pix: null,
+        referral_enabled: true,
+        referral_months: 3,
+        referral_pct_bps: 3000,
+        referral_who: { store_owner: true, seller: true, referrer: true },
+        require_approval: false,
+        retention_days: 90,
+        review_business_days: 1,
+        support_whatsapp: "557981360206",
+      });
+    });
+
+    it("[CFG-SEC-003] o histórico não pode ser editado nem apagado", async () => {
+      const client = await migrated();
+
+      await expect(
+        client.query(
+          "update setting_values set value = '2' where key = 'min_photos'",
+        ),
+      ).rejects.toThrow(/só de inserção/);
+      await expect(
+        client.query("delete from setting_values where key = 'min_photos'"),
+      ).rejects.toThrow(/só de inserção/);
+      await client.query(
+        "insert into setting_values (id, key, value) values (gen_random_uuid(), 'min_photos', '8')",
+      );
+    });
+  });
 });

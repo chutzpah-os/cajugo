@@ -128,3 +128,6 @@
 
 # 2026-10-23 · Regras com histórico (002, ADR 0010)
 - Uma linha de settings sobrescreveria o passado; a spec exige quem mudou e o valor da época. Limites das regras aprovados pelo dono como trava contra erro de digitação; SUPPORT_WHATSAPP sai do ambiente; troca de senha em /conta/senha.
+
+# 2026-10-23 · Provisórios desde 2000 (002/T001)
+- Valores provisórios com vigência em 2000-01-01 (não -infinity): qualquer data consultada tem valor e o driver lê a data sem caso especial. Gatilho no banco garante o histórico mesmo para SQL manual.

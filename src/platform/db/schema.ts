@@ -1,6 +1,7 @@
 import {
-  check,
   boolean,
+  check,
+  index,
   integer,
   jsonb,
   pgEnum,
@@ -128,3 +129,24 @@ export const activityLog = pgTable("activity_log", {
   data: jsonb("data"),
   ...timestamps,
 }).enableRLS();
+
+/**
+ * Regras configuráveis (spec 002, ADR 0010): uma linha por alteração, só INSERT.
+ * Valor atual = linha mais recente da chave; valor numa data = mais recente até ela.
+ * Chaves, formatos e limites em `src/domains/settings/definitions.ts`.
+ */
+export const settingValues = pgTable(
+  "setting_values",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    key: text("key").notNull(),
+    /** `null` = "não configurado" (só a chave Pix). */
+    value: jsonb("value"),
+    validFrom: timestamp("valid_from", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    /** `null` = valor provisório da migration. */
+    changedBy: uuid("changed_by").references(() => profiles.id),
+  },
+  (t) => [index("setting_values_key_valid_from").on(t.key, t.validFrom.desc())],
+).enableRLS();

@@ -2,7 +2,7 @@
 id: 002
 slug: settings
 title: Regras configuráveis e troca de senha
-status: clarified
+status: in-progress
 owner: dono do produto
 created: 2026-10-23
 ---

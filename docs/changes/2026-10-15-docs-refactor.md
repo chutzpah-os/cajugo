@@ -182,3 +182,6 @@
 
 # 2026-10-23 · Plano 002 aprovado
 - docs/specs/002-settings/plan.md (approved); ADR 0010 (setting_values só de inserção); ARCHITECTURE §4, GLOSSARY (Vigência) e SECURITY §8 (chave Pix da CajuGo) atualizados.
+
+# 2026-10-23 · 002/T001 tabela de regras
+- tasks.md da 002 (T001–T021); migration 0005: setting_values + índice + gatilho só de inserção + 14 valores provisórios; testes de migration (CFG-FR-003, CFG-SEC-003).
