@@ -308,11 +308,11 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - **Denúncia:** Aberta → Mantido | Oculto (veículo) / Bloqueado (vendedor).
 
 ### 5.14 Regras configuráveis (`Config`)
-Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f]:
+Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f] (spec 002). Uma mudança vale só para o que acontecer depois dela: faturas, comissões e recompensas já calculadas mantêm o valor da época. Trocar a chave Pix mostra a atual e a nova lado a lado e pede a senha do admin.
 
 | Regra | Valor provisório |
 |---|---|
-| Chave Pix e favorecido da CajuGo | [a definir] |
+| Chave Pix e favorecido da CajuGo | vazio até o admin preencher em [4c] |
 | Prazo de conferência do comprovante | 1 dia útil |
 | Tolerância de atraso antes da suspensão | 5 dias |
 | Taxa CajuGo por venda via vendedor | 1% |
@@ -568,10 +568,10 @@ Validação para publicar: ≥1 foto, marca, modelo, versão, anos, km, câmbio,
 ### [4c] Conta admin
 - Perfil (papel Admin).
 - Equipe CajuGo + **Convidar** (papéis Admin, Suporte).
-- Vitrine CajuGo: nome, endereço (domínio), WhatsApp de atendimento.
+- Vitrine CajuGo: nome e endereço (domínio) só para leitura (mudam por deploy, por causa de links, QR codes e SEO); WhatsApp de atendimento editável.
 - Toggle **Aprovar veículos antes de publicar** + mínimo de fotos.
 - **Rede Caju:** "Taxa CajuGo por carro vendido via vendedor (%)" + link para [7h]. Sem selos "em breve".
-- **Pagamento:** chave Pix e favorecido, prazo de conferência, tolerância de atraso, taxa do simulador (`Config`, §5.14).
+- **Pagamento:** chave Pix e favorecido (troca com confirmação lado a lado e senha do admin), prazo de conferência, tolerância de atraso, taxa do simulador (`Config`, §5.14).
 - **Caju Indica:** link para as regras [8f].
 - Links: Dados pessoais, Alterar senha, Logs de atividade.
 - **Sair**.
@@ -842,7 +842,7 @@ Ver `API.md` §5 (mapa de rotas).
 - **Internacionalização**: pt-BR; BRL; datas dd/mm/aaaa.
 
 ### 12.1 Pendências de decisão
-1. Valores provisórios de `Config` (§5.14): chave Pix e favorecido, prazo de conferência, tolerância, resgate mínimo, taxa CajuGo, taxa do simulador.
+1. ~~Valores provisórios de `Config` (§5.14)~~ **Resolvido (spec 002):** lança com os valores provisórios do §5.14; a chave Pix começa vazia e o admin preenche em [4c]; o admin ajusta os demais quando quiser.
 2. Fonte de dados FIPE (API gratuita ou lista manual).
 3. Usuários da loja: o lojista convida pelo [3c] (convite com senha temporária, sem e-mail no MVP)?
 4. Documentos exigidos do vendedor na curadoria (CPF, antecedentes: quais e como enviar).

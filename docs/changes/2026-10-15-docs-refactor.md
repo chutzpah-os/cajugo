@@ -173,3 +173,6 @@
 # 2026-10-23 · 001/T021 verify e correções da revisão
 - Bloqueio de login em janela deslizante só com falhas (rede e e-mail); senha temporária encerra todas as sessões (adminSignOutAll) e grava perfil+auditoria em transação; /nova-senha só com senha temporária; rememberPanel (AUT-FR-006); CHECK no banco separando equipe e clientes (migration 0004, aplicada em staging e prod).
 - IDs de requisito nos testes de feature, schemas fora do serviço, loadProfile e logUnexpected; e2e de acessibilidade (AUT-NFR-002). Spec 001 implemented.
+
+# 2026-10-23 · Spec 002 clarified
+- docs/specs/002-settings/spec.md: regras configuráveis e troca de senha (10 FR, 2 NFR, 6 SEC); PRD §5.14, [4c] e §12.1 #1 ajustados com as respostas do /clarify.

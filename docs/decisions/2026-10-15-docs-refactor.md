@@ -119,3 +119,6 @@
 
 # 2026-10-23 · Ajustes da revisão da 001 (decididos pelo dono)
 - Sair encerra só este aparelho (SECURITY.md alinhado à spec); bloqueio por e-mail em janela deslizante de verdade; limite por rede conta só falhas, para lojas com Wi-Fi compartilhado. Sessões de outra conta são encerradas apagando auth.sessions (o Supabase não tem API por id; testado: token e refresh recusados).
+
+# 2026-10-23 · Spec 002 (respostas do dono)
+- Regras valem só daqui para frente; nova chave Pix pede senha; troca de senha entra na 002 (ninguém trocava a própria senha); alteração vale em até 1 min (cache); mensalidade fica no plano (011); nome e domínio só informativos; lança com os valores provisórios do PRD.
