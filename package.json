@@ -14,8 +14,10 @@
     "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
+    "db:migrate:prod": "node --env-file=.env.prod node_modules/drizzle-kit/bin.cjs migrate",
     "db:studio": "drizzle-kit studio",
     "admin:create": "tsx --env-file=.env.local scripts/create-admin.ts",
+    "admin:create:prod": "tsx --env-file=.env.prod scripts/create-admin.ts",
     "prepare": "husky"
   },
   "dependencies": {

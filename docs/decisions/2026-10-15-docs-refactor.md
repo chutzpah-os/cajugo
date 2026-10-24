@@ -110,3 +110,6 @@
 
 # 2026-10-23 · Fim da coluna role (001/T020)
 - Remoção em migration separada da cópia (0002 → 0003), depois que nenhum código lia mais `role`: o deploy em produção nunca dependeu da coluna removida.
+
+# 2026-10-23 · Produção com banco próprio já
+- Contas de teste e2e (com senha conhecida, inclusive suporte) não podem viver no banco da produção; o plano Free permite 2 projetos, então o cajugo-prod foi antecipado da 013. Staging fica para desenvolvimento, testes e Preview. Chave secreta do prod passou pelo chat: rotacionar na 013.

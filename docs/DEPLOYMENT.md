@@ -5,7 +5,7 @@
 |---|---|---|---|
 | Local | `next dev` | projeto Supabase `cajugo-staging` (banco + Auth); testes usam PGlite em memória | pasta `staging/` |
 | Preview (cada PR) | Vercel, protegido por senha | `cajugo-staging` | pasta `staging/` |
-| Produção | Vercel, branch `main` | `cajugo-staging` até a spec 013; depois `cajugo-prod` | pasta `prod/` |
+| Produção | Vercel, branch `main` | `cajugo-prod` | pasta `prod/` |
 
 Os dois projetos Supabase no plano Free, região **São Paulo**. Functions da Vercel na região `gru1` (São Paulo), perto do banco.
 
@@ -15,7 +15,7 @@ Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerencia
 | Serviço | Conta | Identificação (não é segredo) |
 |---|---|---|
 | GitHub | `chutzpah-os` | repositório público `chutzpah-os/cajugo` |
-| Supabase | organização `CajuGo` (Free) | projeto `cajugo-staging`, ref `yrjodykcnjotauyenpbu`, região `sa-east-1` (São Paulo) |
+| Supabase | organização `CajuGo` (Free, 2 projetos: o limite do plano) | `cajugo-staging`, ref `yrjodykcnjotauyenpbu` (desenvolvimento, testes e Preview); `cajugo-prod`, ref `bomhlbnniwdxavtsipkx` (Production). Ambos em `sa-east-1` (São Paulo), Data API desligada, Confirm email desligado, senha mínima 8 |
 | Cloudinary | `victorhanielbusiness@gmail.com` (Free) | cloud name `zr1zxzni` |
 | Vercel | `victorhanielbusiness-8743's projects` (Hobby) | projeto `cajugo`, importado de `chutzpah-os/cajugo` (branch `main`), funções em `gru1`; produção em **https://cajugo.vercel.app** |
 

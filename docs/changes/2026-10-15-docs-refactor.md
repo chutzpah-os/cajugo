@@ -162,3 +162,6 @@
 
 # 2026-10-23 · 001/T020 remove profiles.role
 - Migration 0003_drop_profiles_role (aplicada no staging) e teste de que só `roles` sobra.
+
+# 2026-10-23 · Supabase de produção
+- cajugo-prod criado (ref bomhlbnniwdxavtsipkx), migrations aplicadas, Vercel Production apontando para ele; admin do prod criado. Comandos db:migrate:prod e admin:create:prod (lêem só .env.prod); drizzle.config não completa com .env.local quando o banco vem de fora.
