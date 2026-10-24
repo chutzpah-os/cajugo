@@ -116,3 +116,6 @@
 
 # 2026-10-23 · Meta de tempo só em deploy (001/T019)
 - Localmente o login mede a distância até São Paulo (50–230 ms por ida e volta), não o app; a meta de 2 s só é cobrada contra um deploy. Na Vercel o mesmo caminho é ~2,6× mais rápido, mas o cold start passa de 2 s: risco anotado para a 013.
+
+# 2026-10-23 · Ajustes da revisão da 001 (decididos pelo dono)
+- Sair encerra só este aparelho (SECURITY.md alinhado à spec); bloqueio por e-mail em janela deslizante de verdade; limite por rede conta só falhas, para lojas com Wi-Fi compartilhado. Sessões de outra conta são encerradas apagando auth.sessions (o Supabase não tem API por id; testado: token e refresh recusados).

@@ -152,7 +152,7 @@ describe("pickPanel", () => {
     expect(pickPanel(["store_staff", "seller"], null)).toBe("store_staff");
   });
 
-  it("conta sem papel não tem painel", () => {
+  it("[AUT-FR-006] conta sem papel não tem painel", () => {
     expect(pickPanel([], null)).toBeNull();
   });
 });

@@ -2,7 +2,7 @@
 id: 001
 slug: auth
 title: Contas, papéis e login
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-10-23
 ---
@@ -29,10 +29,10 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 ## Requisitos funcionais
 - **AUT-FR-001** A pessoa com conta entra informando e-mail e senha [9f].
 - **AUT-FR-002** Com e-mail ou senha errados, a pessoa vê "E-mail ou senha incorretos", sem saber se o e-mail existe.
-- **AUT-FR-003** Depois de 5 tentativas erradas para o mesmo e-mail em 15 minutos, aquela conta fica bloqueada para novas tentativas por 15 minutos; além disso, cada rede tem limite de tentativas por minuto. O bloqueio nunca é permanente.
+- **AUT-FR-003** Depois de 5 tentativas erradas para o mesmo e-mail em quaisquer 15 minutos, aquela conta fica bloqueada para novas tentativas por 15 minutos contados da 5ª falha; além disso, cada rede tem limite de tentativas **erradas** por minuto (logins certos não contam, para não travar quem divide o Wi-Fi da loja). O bloqueio nunca é permanente.
 - **AUT-FR-004** A pessoa continua conectada no mesmo aparelho enquanto usar o CajuGo pelo menos uma vez a cada 30 dias (admin e suporte: a cada 1 dia); passado esse tempo sem uso, precisa entrar de novo. Não existe opção "lembrar de mim".
 - **AUT-FR-005** A pessoa pode sair; ao sair, aquele aparelho deixa de ter acesso ao painel.
-- **AUT-FR-006** Ao entrar, a pessoa vai para o último painel que usou; no primeiro acesso, vai pela ordem lojista → vendedor → indicador entre os papéis que tem. Painéis: lojista e usuário da loja → Meus veículos [1c]; vendedor → Rede Caju [7b]; indicador → Caju Indica [9d]; admin e suporte → painel admin [4a].
+- **AUT-FR-006** Ao entrar, a pessoa vai para o último painel que usou (o último aberto, por troca de painel ou por endereço); no primeiro acesso, vai pela ordem lojista → vendedor → indicador entre os papéis que tem. Painéis: lojista e usuário da loja → Meus veículos [1c]; vendedor → Rede Caju [7b]; indicador → Caju Indica [9d]; admin e suporte → painel admin [4a].
 - **AUT-FR-007** Quem tem mais de um papel troca de painel sem entrar de novo, escolhendo apenas entre os papéis que a conta tem.
 - **AUT-FR-008** O lojista cuja loja ainda não teve o 1º pagamento confirmado é levado à tela de pagamento [5d] ou de pagamento em análise [10a].
 - **AUT-FR-009** O lojista cuja loja está suspensa vê o alerta de pagamento [12f] e continua podendo entrar no painel.
@@ -40,8 +40,8 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 - **AUT-FR-011** Quem tenta abrir um painel sem estar conectado é levado ao login e, depois de entrar, volta para a página que tentou abrir.
 - **AUT-FR-012** Quem está conectado e tenta abrir um painel de um papel que não tem vê uma mensagem de "sem permissão".
 - **AUT-FR-013** Em "Esqueci minha senha" [6b], a pessoa vê a orientação para falar com o suporte e um botão que abre o WhatsApp de atendimento com uma mensagem pronta.
-- **AUT-FR-014** O admin define uma senha temporária para uma conta [6g]; a senha é gerada pelo sistema, mostrada ao admin uma única vez e deixa de valer se não for usada em 24 horas.
-- **AUT-FR-015** Quem entra com senha temporária só consegue criar uma nova senha (senha + confirmação, mínimo de 8 caracteres) antes de usar qualquer painel; ao criar, as outras sessões da conta são encerradas.
+- **AUT-FR-014** O admin define uma senha temporária para uma conta [6g]; a senha é gerada pelo sistema, mostrada ao admin uma única vez e deixa de valer se não for usada em 24 horas; ao defini-la, todas as sessões abertas da conta são encerradas.
+- **AUT-FR-015** Quem entra com senha temporária só consegue criar uma nova senha (a tela Nova senha existe só para essa situação) (senha + confirmação, mínimo de 8 caracteres) antes de usar qualquer painel; ao criar, as outras sessões da conta são encerradas.
 - **AUT-FR-016** O usuário da loja cuja loja ainda não teve o 1º pagamento confirmado, está cancelada ou arquivada vê "Loja indisponível, fale com o responsável" e não acessa o painel da loja.
 
 ## Requisitos não funcionais
@@ -75,13 +75,15 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 - **Dado** 5 tentativas erradas para o e-mail do lojista A em 15 minutos
 - **Quando** é feita a 6ª tentativa, mesmo com a senha certa
 - **Então** a entrada é recusada com aviso de bloqueio temporário
-- **E** 15 minutos depois o lojista A consegue entrar normalmente
+- **E** 15 minutos depois da 5ª falha o lojista A consegue entrar normalmente
 - **E** durante o bloqueio, o lojista B entra normalmente
+- **E** 5 falhas espalhadas em 15 minutos bloqueiam mesmo quando atravessam a virada de um horário
 
 ### AUT-FR-003 (rede)
 - **Dado** uma mesma rede tentando entrar com vários e-mails diferentes
-- **Quando** passa do limite de tentativas por minuto
+- **Quando** passa do limite de tentativas erradas por minuto
 - **Então** as novas tentativas dessa rede são recusadas com aviso para aguardar
+- **E** várias pessoas entrando certo pela mesma rede não são bloqueadas
 
 ### AUT-FR-004
 - **Dado** um lojista que entrou há 45 dias e usou o painel há 10 dias

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { NewPasswordForm } from "@/domains/auth/components/new-password-form";
-import { currentSession } from "@/domains/auth/current";
+import { currentSession, currentStoreStatus } from "@/domains/auth/current";
+import { landingFor } from "@/domains/auth/landing";
 import { loginUrl } from "@/platform/http/protected-paths";
 import { Logo } from "@/ui/logo";
 
@@ -12,7 +13,16 @@ export const metadata: Metadata = {
 };
 
 async function Form() {
-  if (!(await currentSession())) redirect(loginUrl("/nova-senha", ""));
+  const session = await currentSession();
+  if (!session) redirect(loginUrl("/nova-senha", ""));
+  // A tela existe só para quem entrou com senha temporária (AUT-FR-015).
+  if (!session.mustChangePassword)
+    redirect(
+      landingFor(session, {
+        lastPanel: session.activeRole,
+        storeStatus: await currentStoreStatus(session.storeId),
+      }),
+    );
   return <NewPasswordForm />;
 }
 

@@ -68,7 +68,7 @@ describe("createAdmin", () => {
     expect(JSON.stringify(logs)).not.toContain(password);
   });
 
-  it("sem nome, usa a parte do e-mail antes do @", async () => {
+  it("[AUT-SEC-009] sem nome, usa a parte do e-mail antes do @", async () => {
     const { userId } = await createAdmin(deps(), { email: "dono@cajugo.com" });
 
     const [p] = await t.db
@@ -78,7 +78,7 @@ describe("createAdmin", () => {
     expect(p.name).toBe("dono");
   });
 
-  it("recusa e-mail inválido ou já cadastrado", async () => {
+  it("[AUT-SEC-009] recusa e-mail inválido ou já cadastrado", async () => {
     await createAdmin(deps(), { email: "dono@cajugo.com" });
 
     await expect(

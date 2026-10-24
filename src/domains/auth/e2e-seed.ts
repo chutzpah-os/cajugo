@@ -98,7 +98,10 @@ export async function seedE2E(deps: AuthDeps, password: string) {
   await deps.db.delete(rateLimits).where(
     inArray(
       rateLimits.key,
-      Object.values(E2E_ACCOUNTS).map((a) => `login:email:${hashIp(a.email)}`),
+      Object.values(E2E_ACCOUNTS).flatMap((a) => [
+        `login:fail:email:${hashIp(a.email)}`,
+        `login:lock:email:${hashIp(a.email)}`,
+      ]),
     ),
   );
 

@@ -70,7 +70,7 @@ describe("grantRole", () => {
     expect(await rolesOf()).toEqual(["seller"]);
   });
 
-  it("admin dá papel de equipe a conta nova", async () => {
+  it("[AUT-SEC-009] admin dá papel de equipe a conta nova", async () => {
     await account([]);
 
     await grantRole(t.db, ID, "support", "admin");
@@ -78,7 +78,7 @@ describe("grantRole", () => {
     expect(await rolesOf()).toEqual(["support"]);
   });
 
-  it("conta inexistente responde 404", async () => {
+  it("[AUT-SEC-009] conta inexistente responde 404", async () => {
     await expect(
       grantRole(t.db, ID, "seller", "public-signup"),
     ).rejects.toMatchObject({ status: 404 });

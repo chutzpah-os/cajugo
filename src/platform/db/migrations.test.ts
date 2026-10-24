@@ -80,4 +80,24 @@ describe("migrations", () => {
     );
     expect(rows.map((r) => r.column_name)).toEqual(["roles"]);
   });
+
+  it("[AUT-SEC-009] o banco recusa conta que mistura papel de equipe com papel de cliente", async () => {
+    // Arrange
+    const client = new PGlite();
+    const db = drizzle(client, { schema });
+    cleanup.push(() => client.close());
+    await migrate(db, { migrationsFolder: "drizzle" });
+    const insert = (id: string, roles: string) =>
+      client.query(
+        `insert into profiles (id, name, email, roles) values ($1, 'X', $2, $3::user_role[])`,
+        [id, `${id}@x.com`, roles],
+      );
+
+    // Act / Assert
+    await expect(
+      insert("0192f1e0-0000-7000-8000-000000000011", "{admin,seller}"),
+    ).rejects.toThrow(/profiles_team_roles_separate/);
+    await insert("0192f1e0-0000-7000-8000-000000000012", "{admin,support}");
+    await insert("0192f1e0-0000-7000-8000-000000000013", "{seller,referrer}");
+  });
 });

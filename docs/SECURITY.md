@@ -37,7 +37,7 @@
 - **Recuperação de senha no MVP é manual** (PRD [6b]): o admin confere a identidade pelo WhatsApp e define uma senha temporária (`auth.admin.updateUserById`). A senha é gerada pelo servidor (aleatória, ≥ 12 caracteres), exibida uma vez ao admin, nunca gravada em log, e marca `profiles.must_change_password = true`. Enquanto a marca estiver ligada, o servidor só libera a tela Nova senha. A ação grava `activity_log`.
 - Sem e-mails do Supabase Auth no MVP: confirmação de e-mail no cadastro desligada; contas criadas pelo admin já nascem com senha temporária.
 - Erro de login genérico: "E-mail ou senha incorretos". Além do limite do próprio Supabase Auth, aplique rate limit por IP na action de login (§6).
-- Logout e troca de senha encerram as outras sessões (`signOut({ scope: 'global' })` na troca de senha).
+- Sair encerra só a sessão deste aparelho (spec 001, AUT-FR-005). Criar a nova senha encerra as outras sessões (`signOut({ scope: 'others' })`), e definir senha temporária encerra todas as sessões da conta.
 - Conta da equipe CajuGo só criada pelo admin (com senha temporária); não existe cadastro público de admin.
 
 ## 4. Autorização 🤖

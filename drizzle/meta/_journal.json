@@ -29,6 +29,13 @@
       "when": 1792791297331,
       "tag": "0003_drop_profiles_role",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792806320036,
+      "tag": "0004_profiles_team_roles_separate",
+      "breakpoints": true
     }
   ]
 }

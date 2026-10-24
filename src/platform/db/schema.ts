@@ -1,4 +1,5 @@
 import {
+  check,
   boolean,
   integer,
   jsonb,
@@ -43,29 +44,42 @@ export const storeStatus = pgEnum("store_status", [
 ]);
 
 /** 1:1 com auth.users do Supabase Auth (mesmo id). */
-export const profiles = pgTable("profiles", {
-  id: uuid("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  phone: text("phone"),
-  /** Uma conta pode ter vários papéis (PRD §2). */
-  roles: userRole("roles")
-    .array()
-    .notNull()
-    .default(sql`'{}'::user_role[]`),
-  /** Último painel usado: é o que abre no próximo login (AUT-FR-006). */
-  lastPanel: userRole("last_panel"),
-  storeId: uuid("store_id").references((): AnyPgColumn => stores.id),
-  notifyEmail: boolean("notify_email").notNull().default(true),
-  mustChangePassword: boolean("must_change_password").notNull().default(false),
-  ...timestamps,
-  lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
-  /** Último uso; base da regra de inatividade (AUT-FR-004). */
-  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
-  tempPasswordExpiresAt: timestamp("temp_password_expires_at", {
-    withTimezone: true,
-  }),
-}).enableRLS();
+export const profiles = pgTable(
+  "profiles",
+  {
+    id: uuid("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    phone: text("phone"),
+    /** Uma conta pode ter vários papéis (PRD §2). */
+    roles: userRole("roles")
+      .array()
+      .notNull()
+      .default(sql`'{}'::user_role[]`),
+    /** Último painel usado: é o que abre no próximo login (AUT-FR-006). */
+    lastPanel: userRole("last_panel"),
+    storeId: uuid("store_id").references((): AnyPgColumn => stores.id),
+    notifyEmail: boolean("notify_email").notNull().default(true),
+    mustChangePassword: boolean("must_change_password")
+      .notNull()
+      .default(false),
+    ...timestamps,
+    lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+    /** Último uso; base da regra de inatividade (AUT-FR-004). */
+    lastSeenAt: timestamp("last_seen_at", { withTimezone: true }),
+    tempPasswordExpiresAt: timestamp("temp_password_expires_at", {
+      withTimezone: true,
+    }),
+  },
+  (t) => [
+    // Equipe CajuGo e clientes não se misturam na mesma conta (AUT-SEC-009).
+    check(
+      "profiles_team_roles_separate",
+      // Compara como texto: não depende de valores do enum criados na mesma transação.
+      sql`not (${t.roles}::text[] && array['admin','support'] and ${t.roles}::text[] && array['store_owner','store_staff','seller','referrer'])`,
+    ),
+  ],
+).enableRLS();
 
 export const stores = pgTable("stores", {
   id: uuid("id").primaryKey().$defaultFn(uuidv7),

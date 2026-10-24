@@ -169,3 +169,7 @@
 # 2026-10-23 · 001/T019 e2e
 - tests/e2e (10 cenários a 390 px), playwright.config.ts, `pnpm e2e:seed` (contas e loja de teste só no staging, recusa produção, zera bloqueio das contas de teste) e `pnpm test:e2e`; E2E_PASSWORD no .env.example.
 - currentStoreStatus: status da loja consultado uma vez por requisição. PLAN 013: medir cold start e rotacionar credenciais.
+
+# 2026-10-23 · 001/T021 verify e correções da revisão
+- Bloqueio de login em janela deslizante só com falhas (rede e e-mail); senha temporária encerra todas as sessões (adminSignOutAll) e grava perfil+auditoria em transação; /nova-senha só com senha temporária; rememberPanel (AUT-FR-006); CHECK no banco separando equipe e clientes (migration 0004, aplicada em staging e prod).
+- IDs de requisito nos testes de feature, schemas fora do serviço, loadProfile e logUnexpected; e2e de acessibilidade (AUT-NFR-002). Spec 001 implemented.

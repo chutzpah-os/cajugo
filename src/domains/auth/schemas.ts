@@ -30,3 +30,13 @@ export const newPasswordSchema = z
     path: ["confirmation"],
     message: "As senhas não conferem.",
   });
+
+/** E-mail digitado na busca de conta do admin. */
+export const accountEmailSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .pipe(z.email());
+
+/** Id de conta vindo de formulário (ex.: alvo da senha temporária). */
+export const userIdSchema = z.uuid();

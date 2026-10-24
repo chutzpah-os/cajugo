@@ -20,7 +20,7 @@ describe("áreas logadas", () => {
     }
   });
 
-  it("páginas públicas e cadastros não exigem login", () => {
+  it("[AUT-FR-011] páginas públicas e cadastros não exigem login", () => {
     for (const path of [
       "/",
       "/loja/silvautocar",

@@ -18,6 +18,8 @@ export interface AuthProvider {
   updateOwnPassword(password: string): Promise<void>;
   /** Ações de administrador (chave secreta, só servidor). */
   adminUpdatePassword(userId: string, password: string): Promise<void>;
+  /** Encerra todas as sessões da conta, em qualquer aparelho. */
+  adminSignOutAll(userId: string): Promise<void>;
   adminCreateUser(email: string, password: string): Promise<AuthUser>;
 }
 

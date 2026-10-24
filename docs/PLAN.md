@@ -51,6 +51,7 @@
 > Specs grandes podem ser divididas no `/spec` (limite do `SDD.md` §3.2: 15 FR / 25 tasks). Todas ficam prontas antes do lançamento (013).
 
 ## 001 · Contas, papéis e login — telas 9f (e-mail e senha), 6b (manual), nova senha
+> ✅ **Implementada** em 2026-10-23 (`docs/specs/001-auth/`): 147 testes de unidade/integração e 13 e2e; todos os FR/SEC com teste. Extra pedido pelo dono: menu do `/admin`. Produção já no `cajugo-prod`.
 - Login com Supabase Auth via Server Action → cookies httpOnly; `proxy.ts` renova a sessão.
 - **Conta com vários papéis:** `profiles.role` vira `roles[]` (migration aditiva + cópia); `Session` e `authorize` passam a usar `roles` + papel ativo; `switchRole`.
 - Redirecionamento pós-login por papel e status da loja (PRD [9f]); primeiro admin criado por script.

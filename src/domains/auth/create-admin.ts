@@ -41,19 +41,22 @@ export async function createAdmin(
 
   const password = generateTemporaryPassword();
   const user = await deps.auth.adminCreateUser(email, password);
-  await deps.db.insert(profiles).values({
-    id: user.id,
-    email,
-    name: parsed.data.name ?? email.split("@")[0],
-    mustChangePassword: true,
-    tempPasswordExpiresAt: new Date(now.getTime() + DAY_MS),
-  });
-  await grantRole(deps.db, user.id, "admin", "admin");
-  await logActivity(deps.db, {
-    userId: null,
-    action: "auth.admin_created",
-    entity: "profile",
-    entityId: user.id,
+  // Perfil, papel e auditoria juntos (API.md §2.7).
+  await deps.db.transaction(async (tx) => {
+    await tx.insert(profiles).values({
+      id: user.id,
+      email,
+      name: parsed.data.name ?? email.split("@")[0],
+      mustChangePassword: true,
+      tempPasswordExpiresAt: new Date(now.getTime() + DAY_MS),
+    });
+    await grantRole(tx, user.id, "admin", "admin");
+    await logActivity(tx, {
+      userId: null,
+      action: "auth.admin_created",
+      entity: "profile",
+      entityId: user.id,
+    });
   });
   return { userId: user.id, password };
 }

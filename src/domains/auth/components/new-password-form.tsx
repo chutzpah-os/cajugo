@@ -15,7 +15,7 @@ export function NewPasswordForm() {
   return (
     <form action={action} className="flex flex-col gap-4" noValidate>
       <TextField
-        id="password"
+        id="new-password"
         name="password"
         label="Nova senha"
         type="password"
@@ -28,7 +28,7 @@ export function NewPasswordForm() {
         error={state?.errors.password}
       />
       <TextField
-        id="confirmation"
+        id="new-password-confirmation"
         name="confirmation"
         label="Confirmar senha"
         type="password"

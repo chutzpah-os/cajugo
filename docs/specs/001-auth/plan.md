@@ -43,10 +43,10 @@ Adaptador `AuthProvider` (Supabase real × falso nos testes): `signInWithPasswor
 |---|---|
 | AUT-FR-001 | Action `signIn` valida com zod, chama `signInWithPassword`; sucesso grava cookies e redireciona por `landingFor` |
 | AUT-FR-002 | Qualquer falha (e-mail inexistente, senha errada, senha temporária expirada, bloqueio por e-mail sem revelar) vira o mesmo erro "E-mail ou senha incorretos"; mensagem de bloqueio só fala em "aguarde" |
-| AUT-FR-003 | Antes de tentar: `consumeRateLimit` por IP (`RATE_LIMITS.login`, 5/min). Por e-mail: contador `login:email:{hash(email)}` em janela de 15 min, incrementado **só em falha**; com 5 falhas, recusa até o fim da janela (≤ 15 min). Nunca permanente |
+| AUT-FR-003 | Janela deslizante sobre `rate_limits` (um registro por falha): por rede, 5 **falhas** no último minuto recusam novas tentativas; por e-mail, a 5ª falha nos últimos 15 min grava um bloqueio que vale 15 min a partir dela. Login certo não conta. Nunca permanente |
 | AUT-FR-004 | Cookies de sessão com `maxAge` de 30 dias, renovados a cada requisição no `proxy.ts` (janela deslizante). No servidor, `getSession` compara `profiles.last_seen_at`: > 30 dias (ou > 1 dia para admin/suporte) → encerra a sessão. `last_seen_at` é atualizado no máximo 1×/hora |
 | AUT-FR-005 | Action `signOut` (escopo do aparelho) + limpa cookies → vitrine |
-| AUT-FR-006 | `landingFor`: `profiles.last_panel` se a conta ainda tem esse papel; senão a ordem lojista → vendedor → indicador; admin/suporte → `/admin` |
+| AUT-FR-006 | `landingFor`: `profiles.last_panel` (gravado na troca de painel e ao abrir uma área, `rememberPanel`) se a conta ainda tem esse papel; senão a ordem lojista → vendedor → indicador; admin/suporte → `/admin` |
 | AUT-FR-007 | Action `switchPanel(role)` só aceita papel presente em `roles`; grava `last_panel` |
 | AUT-FR-008 | `landingFor` com `stores.status` `registered` → `/lojistas/pagamento` [5d]; `payment_review` → `/painel/pagamento` [10a] |
 | AUT-FR-009 | `suspended` → painel normal + alerta [12f] (componente provisório; a tela completa vem na 011) |
@@ -54,8 +54,8 @@ Adaptador `AuthProvider` (Supabase real × falso nos testes): `signInWithPasswor
 | AUT-FR-011 | `proxy.ts`: sem cookie de sessão em `/painel`, `/rede`, `/indica`, `/admin` → `/entrar?next=<caminho>`; após login, `safeNext` |
 | AUT-FR-012 | Layout de cada área chama `authorize(session, papéisDaÁrea)`; 403 vira a tela "Sem permissão" |
 | AUT-FR-013 | `/recuperar` [6b] com texto e botão `wa.me/{whatsapp}?text=...`; o número vem de `SUPPORT_WHATSAPP` (env) até a spec 002 mover para `settings` |
-| AUT-FR-014 | `setTemporaryPassword`: só `admin`; gera 12+ caracteres aleatórios (crypto), `adminUpdatePassword`, `must_change_password = true`, `temp_password_expires_at = now + 24 h`, `activity_log`; devolve a senha uma vez (nunca gravada em claro). No login, temporária vencida → `signOut` + erro genérico |
-| AUT-FR-015 | `getSession` marca `mustChangePassword`; `authorize` recusa tudo com `must-change-password`, e os layouts redirecionam para `/nova-senha`. `updatePassword`: zod (≥ 8, confirmação igual), atualiza a senha, zera a flag e a expiração, `signOut('others')` |
+| AUT-FR-014 | `setTemporaryPassword`: só `admin`; gera 12+ caracteres aleatórios (crypto), `adminUpdatePassword`, `must_change_password = true`, `temp_password_expires_at = now + 24 h`, `activity_log` (perfil e auditoria numa transação); encerra todas as sessões da conta (`adminSignOutAll`); devolve a senha uma vez (nunca gravada em claro). No login, temporária vencida → `signOut` + erro genérico |
+| AUT-FR-015 | `getSession` marca `mustChangePassword`; `authorize` recusa tudo com `must-change-password`, e os layouts redirecionam para `/nova-senha`. `updatePassword` (só com `mustChangePassword`; `/nova-senha` manda os demais ao painel): zod (≥ 8, confirmação igual), atualiza a senha, zera a flag e a expiração, `signOut('others')` |
 | AUT-FR-016 | `landingFor`: `store_staff` com loja `registered`, `payment_review`, `canceled` ou `archived` → `/painel/loja-indisponivel`; o layout do painel bloqueia o resto |
 | AUT-NFR-001 | Uma ida ao Supabase + uma consulta de `profiles`/`stores` por login; região `gru1` + banco em São Paulo |
 | AUT-NFR-002 | Telas com os componentes de `src/ui` (alvos ≥ 44 px, `TextField` com rótulo) |
@@ -67,7 +67,7 @@ Adaptador `AuthProvider` (Supabase real × falso nos testes): `signInWithPasswor
 | AUT-SEC-006 | Cookies do Supabase com `HttpOnly; Secure; SameSite=Lax; Path=/`; o navegador não carrega o SDK do Supabase |
 | AUT-SEC-007 | Áreas do lojista divididas: `store_owner` acessa tudo; `store_staff` só veículos, leads e confirmar venda (lista de rotas e actions por papel no domínio `auth`) |
 | AUT-SEC-008 | No admin, ações sensíveis exigem `admin`; leitura aceita `admin` e `support`; moderação (aprovar veículo, denúncias) aceita os dois. Botões de ação não aparecem para suporte |
-| AUT-SEC-009 | Cadastros públicos nunca atribuem `admin`/`support` (validação + teste); `pnpm admin:create` usa a chave secreta do Supabase, só na máquina do dono; contas da equipe recusam papéis de lojista/vendedor/indicador |
+| AUT-SEC-009 | Cadastros públicos nunca atribuem `admin`/`support` (validação + teste); `pnpm admin:create` usa a chave secreta do Supabase, só na máquina do dono; contas da equipe recusam papéis de lojista/vendedor/indicador (`grantRole` + `CHECK` no banco, migration `0004`) |
 
 ## Modelo de dados (migration `0002`, aditiva)
 ```sql

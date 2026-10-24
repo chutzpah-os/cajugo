@@ -65,6 +65,10 @@ export class FakeAuthProvider implements AuthProvider {
     account.password = password;
   }
 
+  async adminSignOutAll(userId: string) {
+    this.accounts.get(userId)?.sessions.clear();
+  }
+
   async adminCreateUser(email: string, password: string) {
     const id = randomUUID();
     this.accounts.set(id, {

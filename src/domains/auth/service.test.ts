@@ -8,6 +8,7 @@ import {
   findAccountByEmail,
   generateTemporaryPassword,
   getSession,
+  rememberPanel,
   setTemporaryPassword,
   signIn,
   signOut,
@@ -271,6 +272,74 @@ describe("signIn", () => {
     ).toBe("/rede");
   });
 
+  it("[AUT-FR-003] o bloqueio dura 15 min contados da 5ª falha", async () => {
+    // Arrange: 5 falhas, uma por minuto (a 5ª aos 4 min)
+    await createAccount("a@x.com", ["seller"]);
+    for (let i = 0; i < 5; i++) {
+      now = new Date(NOW.getTime() + i * 60_000);
+      await login(
+        { email: "a@x.com", password: "errada-1" },
+        `rede-${i}`,
+      ).catch(() => {});
+    }
+
+    // Act / Assert: 14 min depois da 5ª ainda bloqueado; 15 min depois, entra
+    now = new Date(NOW.getTime() + 18 * 60_000);
+    await expect(
+      login({ email: "a@x.com", password: PASSWORD }, "rede-y"),
+    ).rejects.toMatchObject({ type: "too-many-requests" });
+    now = new Date(NOW.getTime() + 19 * 60_000);
+    expect(
+      (await login({ email: "a@x.com", password: PASSWORD }, "rede-z"))
+        .redirectTo,
+    ).toBe("/rede");
+  });
+
+  it("[AUT-FR-003] 5 falhas que atravessam a virada do horário também bloqueiam", async () => {
+    // Arrange: falhas de 12:13 a 12:17 (atravessam 12:15)
+    await createAccount("a@x.com", ["seller"]);
+    for (let i = 0; i < 5; i++) {
+      now = new Date(NOW.getTime() + (13 + i) * 60_000);
+      await login(
+        { email: "a@x.com", password: "errada-1" },
+        `rede-${i}`,
+      ).catch(() => {});
+    }
+
+    // Act / Assert
+    await expect(
+      login({ email: "a@x.com", password: PASSWORD }, "rede-y"),
+    ).rejects.toMatchObject({ type: "too-many-requests" });
+  });
+
+  it("[AUT-FR-003] falhas mais antigas que 15 min não somam", async () => {
+    await createAccount("a@x.com", ["seller"]);
+    for (const min of [0, 1, 2, 3, 16]) {
+      now = new Date(NOW.getTime() + min * 60_000);
+      await login(
+        { email: "a@x.com", password: "errada-1" },
+        `rede-${min}`,
+      ).catch(() => {});
+    }
+
+    expect(
+      (await login({ email: "a@x.com", password: PASSWORD }, "rede-y"))
+        .redirectTo,
+    ).toBe("/rede");
+  });
+
+  it("[AUT-FR-003] várias pessoas entrando certo pela mesma rede não são bloqueadas", async () => {
+    for (let i = 0; i < 7; i++) await createAccount(`p${i}@x.com`, ["seller"]);
+
+    for (let i = 0; i < 7; i++) {
+      const result = await login(
+        { email: `p${i}@x.com`, password: PASSWORD },
+        "wifi-da-loja",
+      );
+      expect(result.redirectTo).toBe("/rede");
+    }
+  });
+
   describe("getSession", () => {
     const HOUR = 60 * 60_000;
     const DAY = 24 * HOUR;
@@ -292,7 +361,7 @@ describe("signIn", () => {
           .where(eq(profiles.id, id))
       )[0].v;
 
-    it("sem login não há sessão", async () => {
+    it("[AUT-FR-004] sem login não há sessão", async () => {
       expect(await getSession(deps())).toBeNull();
     });
 
@@ -461,7 +530,7 @@ describe("signIn", () => {
       expect((await profileOf(b.userId)).lastPanel).toBe("referrer");
     });
 
-    it("sem sessão responde 401", async () => {
+    it("[AUT-FR-007] sem sessão responde 401", async () => {
       await expect(switchPanel(deps(), null, "seller")).rejects.toMatchObject({
         status: 401,
       });
@@ -480,7 +549,7 @@ describe("signIn", () => {
       };
     }
 
-    it("gera senha forte e diferente a cada vez", () => {
+    it("[AUT-FR-014] gera senha forte e diferente a cada vez", () => {
       const a = generateTemporaryPassword();
       expect(a).toMatch(/^[A-Za-z0-9]{12,}$/);
       expect(generateTemporaryPassword()).not.toBe(a);
@@ -517,6 +586,24 @@ describe("signIn", () => {
       ).toBe("/nova-senha");
     });
 
+    it("[AUT-FR-014] [AUT-FR-015] encerra todas as sessões abertas da conta", async () => {
+      // Arrange: o lojista está conectado em outro aparelho
+      const admin = await sessionOf("admin@x.com", ["admin"]);
+      const target = await createAccount("lojista@x.com", ["seller"]);
+      const phone = auth.device();
+      await signIn(
+        { ...deps(), auth: phone },
+        { email: "lojista@x.com", password: PASSWORD },
+        { ipHash: "rede-b" },
+      );
+
+      // Act
+      await setTemporaryPassword(deps(), admin, target.id);
+
+      // Assert: a sessão antiga não abre mais a troca de senha sem a temporária
+      expect(await phone.getUser()).toBeNull();
+    });
+
     it("[AUT-SEC-004] [AUT-SEC-008] suporte e lojista são recusados", async () => {
       const target = await createAccount("alvo@x.com", ["seller"]);
       for (const [email, role] of [
@@ -531,7 +618,7 @@ describe("signIn", () => {
       expect(await t.db.select().from(activityLog)).toHaveLength(0);
     });
 
-    it("conta inexistente responde 404", async () => {
+    it("[AUT-FR-014] conta inexistente responde 404", async () => {
       const admin = await sessionOf("admin@x.com", ["admin"]);
       await expect(
         setTemporaryPassword(
@@ -557,12 +644,13 @@ describe("signIn", () => {
         email: "lojista@x.com",
         password: first.password,
       });
-      const second = await setTemporaryPassword(deps(), admin, target.id);
 
-      // Assert
       await expect(expired).rejects.toMatchObject({
         title: "E-mail ou senha incorretos",
       });
+      const second = await setTemporaryPassword(deps(), admin, target.id);
+
+      // Assert
       expect(
         (
           await login(
@@ -660,7 +748,19 @@ describe("signIn", () => {
       });
     });
 
-    it("sem sessão responde 401", async () => {
+    it("[AUT-FR-015] sem senha temporária, a troca por esta tela é recusada", async () => {
+      // Arrange: conta comum, conectada
+      await createAccount("comum@x.com", ["seller"]);
+      await login({ email: "comum@x.com", password: PASSWORD }, "rede-c");
+      const session = (await getSession(deps()))!;
+
+      // Act / Assert
+      await expect(
+        updatePassword(deps(), session, { password: NEW, confirmation: NEW }),
+      ).rejects.toMatchObject({ status: 403 });
+    });
+
+    it("[AUT-FR-015] sem sessão responde 401", async () => {
       await expect(
         updatePassword(deps(), null, { password: NEW, confirmation: NEW }),
       ).rejects.toMatchObject({ status: 401 });
@@ -701,7 +801,7 @@ describe("signIn", () => {
       }
     });
 
-    it("e-mail sem conta ou inválido devolve null", async () => {
+    it("[AUT-FR-014] e-mail sem conta ou inválido devolve null", async () => {
       const admin = sessionFor("0192f1e0-0000-7000-8000-0000000000aa", [
         "admin",
       ]);
@@ -719,6 +819,46 @@ describe("signIn", () => {
           "x@x.com",
         ),
       ).rejects.toMatchObject({ status: 403 });
+    });
+  });
+
+  describe("rememberPanel", () => {
+    async function sessionWith(roles: Role[]) {
+      await createAccount("p@x.com", roles);
+      await login({ email: "p@x.com", password: PASSWORD });
+      return (await getSession(deps()))!;
+    }
+    const lastPanel = async (id: string) =>
+      (
+        await t.db
+          .select({ v: profiles.lastPanel })
+          .from(profiles)
+          .where(eq(profiles.id, id))
+      )[0].v;
+
+    it("[AUT-FR-006] abrir uma área pelo endereço vira o último painel", async () => {
+      // Arrange
+      const session = await sessionWith(["seller", "referrer"]);
+
+      // Act
+      await rememberPanel(t.db, session, "indica");
+
+      // Assert
+      expect(await lastPanel(session.userId)).toBe("referrer");
+      const again = await signIn(
+        deps(),
+        { email: "p@x.com", password: PASSWORD },
+        { ipHash: "rede-nova" },
+      );
+      expect(again.redirectTo).toBe("/indica");
+    });
+
+    it("[AUT-SEC-002] área de um papel que a conta não tem não muda nada", async () => {
+      const session = await sessionWith(["referrer"]);
+
+      await rememberPanel(t.db, session, "admin");
+
+      expect(await lastPanel(session.userId)).toBeNull();
     });
   });
 });

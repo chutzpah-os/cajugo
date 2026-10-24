@@ -1,0 +1,1 @@
+ALTER TABLE "profiles" ADD CONSTRAINT "profiles_team_roles_separate" CHECK (not ("profiles"."roles"::text[] && array['admin','support'] and "profiles"."roles"::text[] && array['store_owner','store_staff','seller','referrer']));

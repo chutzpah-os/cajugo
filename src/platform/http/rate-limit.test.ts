@@ -1,7 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createTestDb } from "../db/testing/test-db";
 import { rateLimits } from "../db/schema";
-import { consumeRateLimit, peekRateLimit, purgeRateLimits } from "./rate-limit";
+import {
+  consumeRateLimit,
+  countRecentEvents,
+  lastEvent,
+  purgeRateLimits,
+  recordEvent,
+} from "./rate-limit";
 
 describe("rate limit", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -44,14 +50,30 @@ describe("rate limit", () => {
     expect(next.ok).toBe(true);
   });
 
-  it("peek diz se o limite já foi atingido sem contar tentativa", async () => {
-    expect((await peekRateLimit(t.db, "k", rule, now)).ok).toBe(true);
-    await consumeRateLimit(t.db, "k", rule, now);
-    expect((await peekRateLimit(t.db, "k", rule, now)).ok).toBe(true);
-    await consumeRateLimit(t.db, "k", rule, now);
-    const peek = await peekRateLimit(t.db, "k", rule, now);
-    expect(peek).toEqual({ ok: false, retryAfterSeconds: 50 });
-    expect((await peekRateLimit(t.db, "k", rule, now)).ok).toBe(false);
+  it("[AUT-FR-003] janela deslizante conta só os eventos dos últimos N segundos", async () => {
+    // Arrange: eventos aos 0 s, 50 s e 70 s
+    const at = (sec: number) => new Date(Date.UTC(2026, 9, 23, 12, 0, sec));
+    for (const sec of [0, 50, 70]) await recordEvent(t.db, "k", at(sec));
+
+    // Act / Assert: aos 80 s, a janela de 60 s pega só 50 s e 70 s
+    expect(await countRecentEvents(t.db, "k", 60, at(80))).toBe(2);
+    expect(await countRecentEvents(t.db, "k", 60, at(200))).toBe(0);
+    expect(await countRecentEvents(t.db, "outra", 60, at(80))).toBe(0);
+  });
+
+  it("dois eventos no mesmo instante contam os dois", async () => {
+    await recordEvent(t.db, "k", now);
+    await recordEvent(t.db, "k", now);
+    expect(await countRecentEvents(t.db, "k", 60, now)).toBe(2);
+  });
+
+  it("lastEvent devolve o instante do evento mais recente", async () => {
+    expect(await lastEvent(t.db, "k")).toBeNull();
+    await recordEvent(t.db, "k", new Date("2026-10-23T12:00:00Z"));
+    await recordEvent(t.db, "k", new Date("2026-10-23T12:05:00Z"));
+    expect(await lastEvent(t.db, "k")).toEqual(
+      new Date("2026-10-23T12:05:00Z"),
+    );
   });
 
   it("purge apaga só janelas antigas", async () => {

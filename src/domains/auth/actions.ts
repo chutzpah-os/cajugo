@@ -21,6 +21,13 @@ import {
 } from "./service";
 
 /** `email` volta para a tela não apagar o que a pessoa digitou. */
+/** Falha inesperada: vai para o log (sem senha, `logger` redige) e a tela mostra mensagem neutra. */
+function logUnexpected(event: string, error: unknown) {
+  logger.error(event, {
+    error: error instanceof Error ? error.message : String(error),
+  });
+}
+
 export type SignInState = {
   message: string;
   email: string;
@@ -53,9 +60,7 @@ export async function signInAction(
             : error.title,
         email,
       };
-    logger.error("auth.sign_in_failed", {
-      error: error instanceof Error ? error.message : String(error),
-    });
+    logUnexpected("auth.sign_in_failed", error);
     return {
       message: "Não foi possível entrar agora. Tente de novo em instantes.",
       email,
@@ -93,9 +98,7 @@ export async function updatePasswordAction(
           error.errors.map((e) => [e.field, e.message]),
         ),
       };
-    logger.error("auth.update_password_failed", {
-      error: error instanceof Error ? error.message : String(error),
-    });
+    logUnexpected("auth.update_password_failed", error);
     return {
       message: "Não foi possível salvar agora. Tente de novo em instantes.",
       errors: {},
@@ -166,9 +169,7 @@ export async function setTemporaryPasswordAction(
     return { password };
   } catch (error) {
     if (error instanceof AppError) return { message: error.title };
-    logger.error("auth.temp_password_failed", {
-      error: error instanceof Error ? error.message : String(error),
-    });
+    logUnexpected("auth.temp_password_failed", error);
     return { message: "Não foi possível definir a senha agora." };
   }
 }

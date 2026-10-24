@@ -101,7 +101,7 @@ describe("ações do admin", () => {
       expect(can(admin, p)).toBe(true);
   });
 
-  it("lojista não tem nenhuma ação do admin", () => {
+  it("[AUT-SEC-008] lojista não tem nenhuma ação do admin", () => {
     const owner = sessionWith("store_owner");
     for (const p of [...adminOnly, "admin.read", "admin.moderate"] as const)
       expect(can(owner, p)).toBe(false);

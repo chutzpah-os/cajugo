@@ -1,9 +1,11 @@
+import { getDb } from "@/platform/db/client";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/ui/logo";
 import { PanelNav } from "@/ui/panel-nav";
 import { signOutAction, switchPanelAction } from "../actions";
 import { requireArea } from "../guards";
+import { rememberPanel } from "../service";
 import { PANEL_LABEL } from "../labels";
 import { AREA_NAV } from "../navigation";
 import type { Area } from "../permissions";
@@ -29,6 +31,8 @@ export async function AreaShell({
   children: ReactNode;
 }) {
   const { session, allowed } = await requireArea(area, AREA_ROOT[area]);
+  // Abrir a área pelo endereço também conta como último painel (AUT-FR-006).
+  if (allowed) await rememberPanel(getDb(), session, area);
   const storeStatus = await currentStoreStatus(session.storeId);
   // Menu só para quem tem a área; sem permissão, nada da área aparece.
   const nav = allowed ? AREA_NAV[area] : undefined;

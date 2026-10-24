@@ -10,7 +10,7 @@ const owner: Session = {
 };
 
 describe("authorize", () => {
-  it("sem sessão responde 401", () => {
+  it("[AUT-FR-011] sem sessão responde 401", () => {
     expect(() => authorize(null, ["store_owner"])).toThrow(
       expect.objectContaining({ status: 401 }),
     );
@@ -31,17 +31,17 @@ describe("authorize", () => {
     );
   });
 
-  it("com senha temporária só libera a troca de senha", () => {
+  it("[AUT-FR-015] com senha temporária só libera a troca de senha", () => {
     expect(() =>
       authorize({ ...owner, mustChangePassword: true }, ["store_owner"]),
     ).toThrow(expect.objectContaining({ type: "must-change-password" }));
   });
 
-  it("papel permitido devolve a sessão", () => {
+  it("[AUT-FR-012] papel permitido devolve a sessão", () => {
     expect(authorize(owner, ["store_owner", "admin"])).toBe(owner);
   });
 
-  it("conta com vários papéis passa por qualquer um deles, seja qual for o painel ativo", () => {
+  it("[AUT-FR-012] conta com vários papéis passa por qualquer um deles, seja qual for o painel ativo", () => {
     // Arrange
     const ownerAndSeller: Session = {
       ...owner,
@@ -53,7 +53,7 @@ describe("authorize", () => {
     expect(authorize(ownerAndSeller, ["seller"])).toBe(ownerAndSeller);
   });
 
-  it("authorizeStore exige papel de loja e loja na sessão", () => {
+  it("[AUT-SEC-001] authorizeStore exige papel de loja e loja na sessão", () => {
     expect(authorizeStore(owner).storeId).toBe("s1");
     expect(() => authorizeStore({ ...owner, storeId: null })).toThrow(
       expect.objectContaining({ status: 403 }),

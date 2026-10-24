@@ -4,6 +4,8 @@ import {
   type CookieOptions,
 } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { sql } from "drizzle-orm";
+import { getDb } from "../db/client";
 import { AppError } from "../http/errors";
 import {
   samePassword,
@@ -112,6 +114,17 @@ export class SupabaseAuthProvider implements AuthProvider {
         password,
       });
     if (error) throw error;
+  }
+
+  /**
+   * O Supabase não tem API para encerrar as sessões de outra conta pelo id: apagamos
+   * as sessões em `auth.sessions` (os refresh tokens caem junto, em cascata). A partir
+   * daí, `getUser` recusa os tokens dessas sessões.
+   */
+  async adminSignOutAll(userId: string) {
+    await getDb().execute(
+      sql`delete from auth.sessions where user_id = ${userId}`,
+    );
   }
 
   async adminCreateUser(email: string, password: string) {

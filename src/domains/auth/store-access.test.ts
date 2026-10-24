@@ -80,7 +80,7 @@ describe("storeAccess", () => {
     );
   });
 
-  it("pagamento do 1º mês só existe para loja recém-cadastrada", () => {
+  it("[AUT-FR-008] pagamento do 1º mês só existe para loja recém-cadastrada", () => {
     expect(storeAccess(owner, "active", "/lojistas/pagamento")).toEqual({
       ok: false,
       redirectTo: "/painel/veiculos",

@@ -1,26 +1,28 @@
 import { randomInt } from "node:crypto";
 import { eq } from "drizzle-orm";
-import { z } from "zod";
 import { profiles, stores, userRole } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { hashIp } from "@/platform/http/client-ip";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import {
-  consumeRateLimit,
-  peekRateLimit,
+  countRecentEvents,
+  lastEvent,
   RATE_LIMITS,
+  recordEvent,
 } from "@/platform/http/rate-limit";
 import { safeNext } from "@/platform/http/safe-next";
 import { authorize, type Role, type Session } from "@/platform/http/session";
 import type { AuthProvider } from "@/platform/supabase/auth-provider";
 import { landingFor, pickPanel } from "./landing";
-import { authorizeTo } from "./permissions";
+import { AREAS, authorizeTo, type Area } from "./permissions";
 import { TEAM_ROLES } from "./roles";
 import {
+  accountEmailSchema,
   newPasswordSchema,
   panelSchema,
   signInSchema,
+  userIdSchema,
   type SignInInput,
 } from "./schemas";
 
@@ -53,9 +55,28 @@ function tempPasswordExpired(
   );
 }
 
+/** Perfil da conta como o login e a sessão precisam (papéis, painel, loja, senha). */
+async function loadProfile(db: Db, userId: string) {
+  const [profile] = await db
+    .select({
+      roles: profiles.roles,
+      lastPanel: profiles.lastPanel,
+      storeId: profiles.storeId,
+      mustChangePassword: profiles.mustChangePassword,
+      tempPasswordExpiresAt: profiles.tempPasswordExpiresAt,
+      lastSeenAt: profiles.lastSeenAt,
+    })
+    .from(profiles)
+    .where(eq(profiles.id, userId));
+  return profile;
+}
+
+const LOCK_MS = RATE_LIMITS.loginFailuresPerEmail.windowSeconds * 1000;
+
 /**
  * Login por e-mail e senha (AUT-FR-001). Devolve para onde a pessoa vai.
- * Bloqueio (AUT-FR-003): por rede, 5 tentativas/min; por e-mail, 5 falhas em 15 min.
+ * Bloqueio (AUT-FR-003), em janela deslizante e só com falhas: por rede, 5 no último
+ * minuto; por e-mail, a 5ª em 15 min bloqueia por 15 min a partir dela.
  * `ctx.ipHash` é o IP já com hash (`hashIp(clientIp(headers))`).
  */
 export async function signIn(
@@ -64,40 +85,51 @@ export async function signIn(
   ctx: { ipHash: string },
 ): Promise<{ redirectTo: string }> {
   const now = deps.now?.() ?? new Date();
-  const network = await consumeRateLimit(
-    deps.db,
-    `login:ip:${ctx.ipHash}`,
-    RATE_LIMITS.login,
-    now,
-  );
-  if (!network.ok) throw AppError.tooManyRequests(network.retryAfterSeconds);
+  const network = RATE_LIMITS.loginFailuresPerNetwork;
+  const networkKey = `login:fail:ip:${ctx.ipHash}`;
+  if (
+    (await countRecentEvents(
+      deps.db,
+      networkKey,
+      network.windowSeconds,
+      now,
+    )) >= network.limit
+  )
+    throw AppError.tooManyRequests(network.windowSeconds);
 
   const parsed = signInSchema.safeParse(input);
-  if (!parsed.success) throw invalidCredentials();
+  if (!parsed.success) {
+    await recordEvent(deps.db, networkKey, now);
+    throw invalidCredentials();
+  }
   const { email, password, next } = parsed.data;
 
-  const emailKey = `login:email:${hashIp(email)}`;
-  const rule = RATE_LIMITS.loginFailuresPerEmail;
-  const lock = await peekRateLimit(deps.db, emailKey, rule, now);
-  if (!lock.ok) throw AppError.tooManyRequests(lock.retryAfterSeconds);
+  const perEmail = RATE_LIMITS.loginFailuresPerEmail;
+  const emailHash = hashIp(email);
+  const failKey = `login:fail:email:${emailHash}`;
+  const lockKey = `login:lock:email:${emailHash}`;
+  const lockedAt = await lastEvent(deps.db, lockKey);
+  if (lockedAt && now.getTime() - lockedAt.getTime() < LOCK_MS)
+    throw AppError.tooManyRequests(
+      Math.ceil((lockedAt.getTime() + LOCK_MS - now.getTime()) / 1000),
+    );
   const fail = async () => {
-    await consumeRateLimit(deps.db, emailKey, rule, now);
+    await recordEvent(deps.db, networkKey, now);
+    await recordEvent(deps.db, failKey, now);
+    const failures = await countRecentEvents(
+      deps.db,
+      failKey,
+      perEmail.windowSeconds,
+      now,
+    );
+    if (failures >= perEmail.limit) await recordEvent(deps.db, lockKey, now);
     return invalidCredentials();
   };
 
   const user = await deps.auth.signInWithPassword(email, password);
   if (!user) throw await fail();
 
-  const [profile] = await deps.db
-    .select({
-      roles: profiles.roles,
-      lastPanel: profiles.lastPanel,
-      storeId: profiles.storeId,
-      mustChangePassword: profiles.mustChangePassword,
-      tempPasswordExpiresAt: profiles.tempPasswordExpiresAt,
-    })
-    .from(profiles)
-    .where(eq(profiles.id, user.id));
+  const profile = await loadProfile(deps.db, user.id);
 
   const tempExpired = profile && tempPasswordExpired(profile, now);
   if (!profile || tempExpired) {
@@ -132,18 +164,7 @@ export async function getSession(deps: AuthDeps): Promise<Session | null> {
   const user = await deps.auth.getUser();
   if (!user) return null;
 
-  const [profile] = await deps.db
-    .select({
-      roles: profiles.roles,
-      lastPanel: profiles.lastPanel,
-      storeId: profiles.storeId,
-      mustChangePassword: profiles.mustChangePassword,
-      tempPasswordExpiresAt: profiles.tempPasswordExpiresAt,
-      lastSeenAt: profiles.lastSeenAt,
-    })
-    .from(profiles)
-    .where(eq(profiles.id, user.id));
-
+  const profile = await loadProfile(deps.db, user.id);
   const activeRole = profile && pickPanel(profile.roles, profile.lastPanel);
   const idleLimit = profile?.roles.some((r) => TEAM_ROLES.includes(r))
     ? DAY_MS
@@ -209,6 +230,25 @@ export async function switchPanel(
   };
 }
 
+/**
+ * Abrir uma área pelo endereço também conta como "último painel usado" (AUT-FR-006).
+ * Só grava papel que a conta tem e só quando muda (AUT-SEC-002).
+ */
+export async function rememberPanel(
+  db: Db,
+  session: Session,
+  area: Area,
+): Promise<void> {
+  const areaRoles: readonly Role[] = AREAS[area];
+  if (areaRoles.includes(session.activeRole)) return;
+  const role = session.roles.find((r) => areaRoles.includes(r));
+  if (!role) return;
+  await db
+    .update(profiles)
+    .set({ lastPanel: role })
+    .where(eq(profiles.id, session.userId));
+}
+
 const TEMP_PASSWORD_ALPHABET =
   "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 
@@ -222,7 +262,8 @@ export function generateTemporaryPassword(length = 12): string {
 }
 
 /**
- * Admin define uma senha temporária (AUT-FR-014): vale 24 h e obriga a troca no 1º acesso.
+ * Admin define uma senha temporária (AUT-FR-014): vale 24 h, obriga a troca no 1º acesso
+ * e encerra todas as sessões abertas da conta.
  * Só `admin` (AUT-SEC-004, AUT-SEC-008). A senha volta uma única vez e nunca é gravada
  * em claro nem na auditoria (AUT-SEC-003).
  */
@@ -233,7 +274,7 @@ export async function setTemporaryPassword(
 ): Promise<{ password: string }> {
   const admin = authorizeTo(session, "users.temporaryPassword");
   const now = deps.now?.() ?? new Date();
-  const id = z.uuid().safeParse(targetUserId);
+  const id = userIdSchema.safeParse(targetUserId);
   if (!id.success) throw AppError.notFound();
   const [target] = await deps.db
     .select({ id: profiles.id })
@@ -242,26 +283,31 @@ export async function setTemporaryPassword(
   if (!target) throw AppError.notFound();
 
   const password = generateTemporaryPassword();
-  await deps.auth.adminUpdatePassword(target.id, password);
-  await deps.db
-    .update(profiles)
-    .set({
-      mustChangePassword: true,
-      tempPasswordExpiresAt: new Date(now.getTime() + DAY_MS),
-    })
-    .where(eq(profiles.id, target.id));
-  await logActivity(deps.db, {
-    userId: admin.userId,
-    action: "auth.temp_password_set",
-    entity: "profile",
-    entityId: target.id,
+  // Perfil e auditoria juntos (API.md §2.7); se o provedor falhar, nada fica gravado.
+  await deps.db.transaction(async (tx) => {
+    await tx
+      .update(profiles)
+      .set({
+        mustChangePassword: true,
+        tempPasswordExpiresAt: new Date(now.getTime() + DAY_MS),
+      })
+      .where(eq(profiles.id, target.id));
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "auth.temp_password_set",
+      entity: "profile",
+      entityId: target.id,
+    });
+    await deps.auth.adminUpdatePassword(target.id, password);
   });
+  // Sessão aberta antes não pode criar a nova senha sem a temporária (AUT-FR-015).
+  await deps.auth.adminSignOutAll(target.id);
   return { password };
 }
 
 /**
- * Cria a nova senha (AUT-FR-015). Única ação liberada com senha temporária:
- * por isso só exige sessão, não `authorize`. Encerra as sessões dos outros aparelhos.
+ * Cria a nova senha (AUT-FR-015). Só para quem entrou com senha temporária (é a única
+ * ação liberada nesse estado, por isso não usa `authorize`). Encerra os outros aparelhos.
  */
 export async function updatePassword(
   deps: AuthDeps,
@@ -269,6 +315,7 @@ export async function updatePassword(
   input: unknown,
 ): Promise<{ redirectTo: string }> {
   if (!session) throw AppError.unauthorized();
+  if (!session.mustChangePassword) throw AppError.forbidden();
   const parsed = newPasswordSchema.safeParse(input);
   if (!parsed.success)
     throw AppError.validation(fieldErrorsFromZod(parsed.error));
@@ -306,12 +353,7 @@ export async function findAccountByEmail(
   email: unknown,
 ): Promise<AccountSummary | null> {
   authorizeTo(session, "admin.read");
-  const parsed = z
-    .string()
-    .trim()
-    .toLowerCase()
-    .pipe(z.email())
-    .safeParse(email);
+  const parsed = accountEmailSchema.safeParse(email);
   if (!parsed.success) return null;
   const [account] = await deps.db
     .select({
