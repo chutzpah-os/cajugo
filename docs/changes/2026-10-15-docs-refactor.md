@@ -191,3 +191,6 @@
 
 # 2026-10-24 · 002/T003 conferir senha
 - AuthProvider.verifyPassword (falso e Supabase); testado no staging: certa true, errada false, nenhuma sessão sobra.
+
+# 2026-10-24 · 002/T004 ler regras
+- settings/service.ts: getSettings(db, at) com distinct on (key) até a data; testes de valores provisórios e vigência por data.

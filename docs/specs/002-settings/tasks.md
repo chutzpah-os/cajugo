@@ -12,7 +12,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T003** [P] `AuthProvider.verifyPassword(email, password)`: provedor falso (compara) e Supabase (cliente sem cookie, entra e encerra a sessão de conferência) · _—_
 
 ## Fase 2 — Fatias verticais (domínios `settings` e `auth`)
-- [ ] **T004** `getSettings(db, at?)`: todas as regras tipadas, vigentes agora ou numa data · _CFG-FR-003, CFG-FR-009_
+- [x] **T004** `getSettings(db, at?)`: todas as regras tipadas, vigentes agora ou numa data · _CFG-FR-003, CFG-FR-009_
 - [ ] **T005** `publicSettings` (sem `pix`) e `currentSettings()` com `'use cache'`, `cacheTag('settings')` e `cacheLife` de 1 min · _CFG-SEC-004, CFG-NFR-001_
 - [ ] **T006** `updateSettings`: valida, grava só o que mudou numa transação, auditoria; admin grava, suporte e demais recusados · _CFG-FR-002, CFG-FR-004, CFG-SEC-001, CFG-SEC-002_
 - [ ] **T007** `verifyOwnPassword` no domínio `auth`: confere a senha da conta da sessão com o bloqueio da spec 001 (falha conta por e-mail e por rede) · _CFG-SEC-005, CFG-SEC-006_
