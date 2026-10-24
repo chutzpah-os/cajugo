@@ -113,3 +113,6 @@
 
 # 2026-10-23 · Produção com banco próprio já
 - Contas de teste e2e (com senha conhecida, inclusive suporte) não podem viver no banco da produção; o plano Free permite 2 projetos, então o cajugo-prod foi antecipado da 013. Staging fica para desenvolvimento, testes e Preview. Chave secreta do prod passou pelo chat: rotacionar na 013.
+
+# 2026-10-23 · Meta de tempo só em deploy (001/T019)
+- Localmente o login mede a distância até São Paulo (50–230 ms por ida e volta), não o app; a meta de 2 s só é cobrada contra um deploy. Na Vercel o mesmo caminho é ~2,6× mais rápido, mas o cold start passa de 2 s: risco anotado para a 013.

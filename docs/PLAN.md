@@ -117,7 +117,9 @@
 
 ## 013 · Lançamento — tela 12i
 - Termos e privacidade [12i] (rascunho para revisão jurídica): Rede Caju, Caju Indica, LGPD, encarregado.
-- Valores definitivos de `settings` (chave Pix etc.); projeto `cajugo-prod` no Supabase; checklist de produção do `DEPLOYMENT.md`.
+- Valores definitivos de `settings` (chave Pix etc.); checklist de produção do `DEPLOYMENT.md`.
+- Medir o login em produção com tráfego real (AUT-NFR-001: p95 ≤ 2 s): com a função aquecida ~0,3 s no servidor, mas o *cold start* da Vercel passa de 2 s; avaliar se pede ajuste.
+- Rotacionar as credenciais que passaram pelo chat (chave secreta e senha do banco do `cajugo-prod`, senhas das contas admin).
 - Revisão de segurança (`SECURITY.md` §12) e acessibilidade (`DESIGN.md` §7); performance (LCP < 2,5 s em 4G).
 - **Auditoria de SEO** de todas as páginas públicas; Google Search Console e Bing Webmaster com sitemap enviado.
 - Decidir: Vercel Pro ou migração para VPS antes de cobrar; fase 2 dos endereços (PRD §1.7) quando houver domínio.

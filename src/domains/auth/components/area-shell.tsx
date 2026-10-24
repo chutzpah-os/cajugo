@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { getDb } from "@/platform/db/client";
 import { Logo } from "@/ui/logo";
 import { PanelNav } from "@/ui/panel-nav";
 import { signOutAction, switchPanelAction } from "../actions";
@@ -8,7 +7,7 @@ import { requireArea } from "../guards";
 import { PANEL_LABEL } from "../labels";
 import { AREA_NAV } from "../navigation";
 import type { Area } from "../permissions";
-import { storeStatusOf } from "../service";
+import { currentStoreStatus } from "../current";
 
 const AREA_ROOT: Record<Area, string> = {
   painel: "/painel",
@@ -30,7 +29,7 @@ export async function AreaShell({
   children: ReactNode;
 }) {
   const { session, allowed } = await requireArea(area, AREA_ROOT[area]);
-  const storeStatus = await storeStatusOf(getDb(), session.storeId);
+  const storeStatus = await currentStoreStatus(session.storeId);
   // Menu só para quem tem a área; sem permissão, nada da área aparece.
   const nav = allowed ? AREA_NAV[area] : undefined;
 

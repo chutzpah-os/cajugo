@@ -165,3 +165,7 @@
 
 # 2026-10-23 · Supabase de produção
 - cajugo-prod criado (ref bomhlbnniwdxavtsipkx), migrations aplicadas, Vercel Production apontando para ele; admin do prod criado. Comandos db:migrate:prod e admin:create:prod (lêem só .env.prod); drizzle.config não completa com .env.local quando o banco vem de fora.
+
+# 2026-10-23 · 001/T019 e2e
+- tests/e2e (10 cenários a 390 px), playwright.config.ts, `pnpm e2e:seed` (contas e loja de teste só no staging, recusa produção, zera bloqueio das contas de teste) e `pnpm test:e2e`; E2E_PASSWORD no .env.example.
+- currentStoreStatus: status da loja consultado uma vez por requisição. PLAN 013: medir cold start e rotacionar credenciais.

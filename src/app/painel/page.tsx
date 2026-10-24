@@ -3,8 +3,7 @@ import { AreaPage } from "@/domains/auth/components/area-layout";
 import { redirect } from "next/navigation";
 import { requireArea } from "@/domains/auth/guards";
 import { landingFor } from "@/domains/auth/landing";
-import { storeStatusOf } from "@/domains/auth/service";
-import { getDb } from "@/platform/db/client";
+import { currentStoreStatus } from "@/domains/auth/current";
 
 /** `/painel` leva à tela inicial da loja conforme a situação (AUT-FR-006, 008, 010, 016). */
 async function Content() {
@@ -17,7 +16,7 @@ async function Content() {
         lastPanel: session.roles.includes("store_owner")
           ? "store_owner"
           : "store_staff",
-        storeStatus: await storeStatusOf(getDb(), session.storeId),
+        storeStatus: await currentStoreStatus(session.storeId),
       },
     ),
   );

@@ -31,6 +31,6 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T018** Script `pnpm admin:create <email>` (chave secreta, senha temporária) · _AUT-SEC-009_
 
 ## Fase 4 — Ponta a ponta e fechamento
-- [ ] **T019** Playwright (viewport 390 px) contra o staging: login → painel; visitante → página protegida → login → volta; indicador → `/admin` = sem permissão; senha temporária → nova senha; tempo de login · _AUT-FR-001, AUT-FR-011, AUT-FR-012, AUT-FR-015, AUT-NFR-001_
+- [x] **T019** Playwright (viewport 390 px) contra o staging: login → painel; visitante → página protegida → login → volta; indicador → `/admin` = sem permissão; senha temporária → nova senha; tempo de login · _AUT-FR-001, AUT-FR-011, AUT-FR-012, AUT-FR-015, AUT-NFR-001_
 - [x] **T020** Migration `0003`: remove `profiles.role` (nenhum código lê mais) · _—_
 - [ ] **T021** `/verify`: rastreabilidade verde; spec `implemented`; registrar em `docs/changes` e `docs/decisions` · _—_

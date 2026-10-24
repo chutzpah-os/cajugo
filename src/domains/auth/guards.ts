@@ -1,11 +1,9 @@
 import { redirect } from "next/navigation";
-import { getDb } from "@/platform/db/client";
 import { loginUrl } from "@/platform/http/protected-paths";
 import type { Session } from "@/platform/http/session";
-import { currentSession } from "./current";
+import { currentSession, currentStoreStatus } from "./current";
 import { landingFor } from "./landing";
 import { AREAS, can, type Area, type Permission } from "./permissions";
-import { storeStatusOf } from "./service";
 import { storeAccess } from "./store-access";
 
 /**
@@ -23,7 +21,7 @@ export async function requireArea(
   const roles: readonly string[] = AREAS[area];
   const home = landingFor(session, {
     lastPanel: session.activeRole,
-    storeStatus: await storeStatusOf(getDb(), session.storeId),
+    storeStatus: await currentStoreStatus(session.storeId),
   });
   return {
     session,
@@ -45,7 +43,7 @@ export async function requireStorePage(
   if (!allowed) return area;
   const access = storeAccess(
     session.roles,
-    await storeStatusOf(getDb(), session.storeId),
+    await currentStoreStatus(session.storeId),
     path,
   );
   if (!access.ok) redirect(access.redirectTo);
