@@ -8,7 +8,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 1 — Fundação
 - [x] **T001** Migration `0005`: tabela `setting_values` + índice `(key, valid_from desc)` + gatilho que recusa `UPDATE`/`DELETE` + carga dos valores provisórios; teste de migration (valores presentes, gatilho recusa) · _CFG-FR-003, CFG-SEC-003_
-- [ ] **T002** `settings/definitions.ts`: as 14 regras com grupo, rótulo, unidade, schema zod com os limites aprovados (D2) e valor provisório; conversões % ↔ centésimos de ponto e R$ ↔ centavos; máscara da chave Pix; teste de que toda chave tem definição e bate com a carga da migration · _CFG-FR-004, CFG-FR-005_
+- [x] **T002** `settings/definitions.ts`: as 14 regras com grupo, rótulo, unidade, schema zod com os limites aprovados (D2) e valor provisório; conversões % ↔ centésimos de ponto e R$ ↔ centavos; máscara da chave Pix; teste de que toda chave tem definição e bate com a carga da migration · _CFG-FR-004, CFG-FR-005_
 - [ ] **T003** [P] `AuthProvider.verifyPassword(email, password)`: provedor falso (compara) e Supabase (cliente sem cookie, entra e encerra a sessão de conferência) · _—_
 
 ## Fase 2 — Fatias verticais (domínios `settings` e `auth`)

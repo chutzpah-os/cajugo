@@ -185,3 +185,6 @@
 
 # 2026-10-23 · 002/T001 tabela de regras
 - tasks.md da 002 (T001–T021); migration 0005: setting_values + índice + gatilho só de inserção + 14 valores provisórios; testes de migration (CFG-FR-003, CFG-SEC-003).
+
+# 2026-10-24 · 002/T002 lista das regras
+- domains/settings/definitions.ts (14 regras, limites, chave Pix por tipo com dígito verificador) e format.ts (% e R$, máscara da chave); helper settingValueJson/parseSettingValue para ler jsonb.

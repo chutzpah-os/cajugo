@@ -131,3 +131,6 @@
 
 # 2026-10-23 · Provisórios desde 2000 (002/T001)
 - Valores provisórios com vigência em 2000-01-01 (não -infinity): qualquer data consultada tem valor e o driver lê a data sem caso especial. Gatilho no banco garante o histórico mesmo para SQL manual.
+
+# 2026-10-24 · jsonb lido como texto (002/T002)
+- O Drizzle reinterpreta jsonb de texto ("557981360206" vira número) no PGlite e no postgres.js; valores de regra são lidos com value::text e JSON.parse num helper único. CPF/CNPJ da chave Pix com dígito verificador para evitar pagamento em chave errada.
