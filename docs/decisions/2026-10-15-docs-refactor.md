@@ -125,3 +125,6 @@
 
 # 2026-10-23 · "Mais" no menu do celular
 - Dono escolheu manter os 4 itens do PRD e acrescentar "Mais" (gaveta do DESIGN.md), em vez de esconder Conta: os itens mais usados continuam a um toque e nada fica inacessível no celular.
+
+# 2026-10-23 · Regras com histórico (002, ADR 0010)
+- Uma linha de settings sobrescreveria o passado; a spec exige quem mudou e o valor da época. Limites das regras aprovados pelo dono como trava contra erro de digitação; SUPPORT_WHATSAPP sai do ambiente; troca de senha em /conta/senha.

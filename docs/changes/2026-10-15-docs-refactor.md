@@ -179,3 +179,6 @@
 
 # 2026-10-23 · Menu do admin no celular
 - ui/panel-nav.tsx: 5º item "Mais" abre a gaveta (<dialog>) com os itens que não cabem na barra; e2e admin-nav.spec.ts; PRD §6 navegação do admin atualizada.
+
+# 2026-10-23 · Plano 002 aprovado
+- docs/specs/002-settings/plan.md (approved); ADR 0010 (setting_values só de inserção); ARCHITECTURE §4, GLOSSARY (Vigência) e SECURITY §8 (chave Pix da CajuGo) atualizados.

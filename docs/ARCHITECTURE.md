@@ -168,10 +168,12 @@ favorites                profile_id + vehicle_id (pk), price_at_save_cents, crea
 search_alerts            id, contact, filters (jsonb), active, notified_at, created_at
 
 # Plataforma
-settings                 (1 linha) showcase_name, domain, support_whatsapp, plan_price_cents,
-                         pix_key, pix_beneficiary, review_business_days (1), past_due_tolerance_days (5),
-                         cajugo_fee_pct (1), referral_pct (30), referral_months (3), payout_min_cents (5000),
-                         installment_rate_pct (1.79), require_approval (false), min_photos (6), retention_days (90)
+setting_values           id, key, value (jsonb), valid_from, changed_by    # só INSERT; ADR 0010
+                         uma linha por alteração; valor atual = mais recente por key; chaves e limites
+                         em src/domains/settings/definitions.ts (support_whatsapp, pix, review_business_days,
+                         past_due_tolerance_days, cajugo_fee_bps, installment_rate_bps, require_approval,
+                         min_photos, retention_days, referral_enabled, referral_who, referral_pct_bps,
+                         referral_months, payout_min_cents)
 activity_log ✅           id, user_id, action, entity, entity_id, data (jsonb), created_at     # só INSERT
 rate_limits ✅            key + window_start (pk), count
 webhook_events           id (pk = id do evento no gateway), type, received_at, processed_at   # fase 2
@@ -180,7 +182,7 @@ webhook_events           id (pk = id do evento no gateway), type, received_at, p
 Índices iniciais: `vehicles(status, share_on_cajugo)`, `vehicles(store_id, status)`, `vehicles(make, model)`, `vehicles(price_cents)`, GIN em `vehicles(search)`, `leads(store_id, status, created_at)`, `payments(status, submitted_at)`, `partnerships(store_id, status)`, `sales(seller_id, commission_status)`, `referrals(referrer_id, status)`.
 
 ### Regras que o modelo garante
-- **Nenhuma regra numérica no código:** valores de `settings` (PRD §5.14), lidos com cache curto.
+- **Nenhuma regra numérica no código:** valores de `setting_values` (PRD §5.14), lidos com cache de até 1 minuto; cálculos usam o valor vigente na data do fato (ADR 0010).
 - **Estoque único:** vitrine, catálogo e links de vendedor leem `vehicles`; nada é copiado.
 - **Antifraude do Caju Indica:** autoindicação bloqueada (mesmo CPF/CNPJ/celular entre quem indica e a loja); CPF único por resgate.
 

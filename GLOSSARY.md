@@ -154,6 +154,9 @@ _Evite_: bloqueada, inativa
 **Config**:
 Regras numéricas editáveis pelo admin (chave Pix, prazos, taxas, mínimos). Nada disso fica fixo no código.
 
+**Vigência**:
+Período em que um valor de regra (Config) vale: de quando o admin salvou até a próxima alteração. Cálculos (fatura, comissão, recompensa) usam o valor vigente na data do fato. No código: `valid_from`.
+
 **Favorito** e **Alerta de busca**:
 Veículo salvo pelo comprador; pedido "Avisar quando chegar" para uma busca sem resultado.
 
