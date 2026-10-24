@@ -122,3 +122,6 @@
 
 # 2026-10-23 · Spec 002 (respostas do dono)
 - Regras valem só daqui para frente; nova chave Pix pede senha; troca de senha entra na 002 (ninguém trocava a própria senha); alteração vale em até 1 min (cache); mensalidade fica no plano (011); nome e domínio só informativos; lança com os valores provisórios do PRD.
+
+# 2026-10-23 · "Mais" no menu do celular
+- Dono escolheu manter os 4 itens do PRD e acrescentar "Mais" (gaveta do DESIGN.md), em vez de esconder Conta: os itens mais usados continuam a um toque e nada fica inacessível no celular.

@@ -176,3 +176,6 @@
 
 # 2026-10-23 · Spec 002 clarified
 - docs/specs/002-settings/spec.md: regras configuráveis e troca de senha (10 FR, 2 NFR, 6 SEC); PRD §5.14, [4c] e §12.1 #1 ajustados com as respostas do /clarify.
+
+# 2026-10-23 · Menu do admin no celular
+- ui/panel-nav.tsx: 5º item "Mais" abre a gaveta (<dialog>) com os itens que não cabem na barra; e2e admin-nav.spec.ts; PRD §6 navegação do admin atualizada.

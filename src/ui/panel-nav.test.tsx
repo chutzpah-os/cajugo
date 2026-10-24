@@ -16,7 +16,7 @@ describe("menu do painel", () => {
     expect(isActive("/admin/lojasx", "/admin/lojas", "/admin")).toBe(false);
   });
 
-  it("marca o item atual com aria-current e mostra no celular só os itens móveis", () => {
+  it("marca o item atual com aria-current na barra lateral e na inferior", () => {
     // Act
     const html = renderToStaticMarkup(
       <PanelNavView items={items} pathname="/admin/lojas/1" />,
@@ -25,8 +25,41 @@ describe("menu do painel", () => {
     // Assert
     expect(html.match(/aria-current="page"/g)).toHaveLength(2); // celular + lateral
     expect(html).toMatch(/aria-current="page"[^>]*>.*?Lojas/);
-    const mobile = html.split('aria-label="Menu do painel (celular)"')[1];
-    expect(mobile.split("</nav>")[0]).not.toContain("Pagamentos Pix");
-    expect(html).toContain("Pagamentos Pix");
+  });
+
+  it('no celular, os itens que não cabem na barra ficam no "Mais"', () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <PanelNavView items={items} pathname="/admin" />,
+    );
+
+    // Assert: a barra tem só os itens móveis + "Mais"; a gaveta tem o resto
+    const bar = html
+      .split('aria-label="Menu do painel (celular)"')[1]
+      .split("</ul>")[0];
+    expect(bar).toContain("Lojas");
+    expect(bar).toContain("Mais");
+    expect(bar).not.toContain("Pagamentos Pix");
+    const drawer = html.split("<dialog")[1].split("</dialog>")[0];
+    expect(drawer).toContain("Pagamentos Pix");
+    expect(drawer).not.toContain("Lojas");
+  });
+
+  it('"Mais" fica ativo quando a página atual está na gaveta', () => {
+    const html = renderToStaticMarkup(
+      <PanelNavView items={items} pathname="/admin/pagamentos" />,
+    );
+    const bar = html
+      .split('aria-label="Menu do painel (celular)"')[1]
+      .split("</ul>")[0];
+    expect(bar).toMatch(/aria-current="page"[^>]*>(?:(?!<\/button>).)*Mais/);
+  });
+
+  it('sem itens fora da barra, não há "Mais"', () => {
+    const html = renderToStaticMarkup(
+      <PanelNavView items={items.filter((i) => i.mobile)} pathname="/admin" />,
+    );
+    expect(html).not.toContain("Mais");
+    expect(html).not.toContain("<dialog");
   });
 });

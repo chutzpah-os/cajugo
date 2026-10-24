@@ -377,7 +377,7 @@ Viram requisitos e testes nas specs (`SDD.md`):
 Navegação:
 - Lojista (mobile): **Veículos · Leads · Minha loja · Conta** (Rede Caju, Caju Indica e Fatura acessados pela Conta e pelos atalhos).
 - Vendedor: **Início · Vitrine · Extrato · Conta**.
-- Admin (mobile): **Painel · Lojas · Assinaturas · Conta**; desktop [15c]: sidebar com Visão geral, Lojas, Assinaturas, Pagamentos Pix, Veículos, Rede Caju, Caju Indica, Conta (com contadores de pendências).
+- Admin (mobile): **Painel · Lojas · Assinaturas · Conta · Mais** ("Mais" abre a gaveta com Pagamentos Pix, Veículos, Rede Caju e Caju Indica); desktop [15c]: sidebar com Visão geral, Lojas, Assinaturas, Pagamentos Pix, Veículos, Rede Caju, Caju Indica, Conta (com contadores de pendências).
 
 ---
 
