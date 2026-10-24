@@ -32,6 +32,13 @@ export class FakeAuthProvider implements AuthProvider {
     return { id: account.id, email: account.email };
   }
 
+  async verifyPassword(email: string, password: string) {
+    const account = [...this.accounts.values()].find(
+      (a) => a.email === email.toLowerCase(),
+    );
+    return account?.password === password;
+  }
+
   async getUser() {
     if (!this.current) return null;
     const account = this.accounts.get(this.current.userId);

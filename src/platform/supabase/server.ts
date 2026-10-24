@@ -83,6 +83,25 @@ export class SupabaseAuthProvider implements AuthProvider {
     return data.user ? toUser(data.user) : null;
   }
 
+  /**
+   * Cliente à parte, sem cookie: a sessão do usuário não muda. A sessão aberta só
+   * para conferir é encerrada em seguida, para não sobrar sessão órfã no Auth.
+   */
+  async verifyPassword(email: string, password: string) {
+    const probe = createClient(
+      env("SUPABASE_URL"),
+      env("SUPABASE_PUBLISHABLE_KEY"),
+      {
+        auth: { persistSession: false, autoRefreshToken: false },
+      },
+    );
+    const { error } = await probe.auth.signInWithPassword({ email, password });
+    if (error?.status === 400) return false;
+    if (error) throw error;
+    await probe.auth.signOut({ scope: "local" });
+    return true;
+  }
+
   async getUser() {
     const { data, error } = await this.client.auth.getUser();
     if (error || !data.user) return null;

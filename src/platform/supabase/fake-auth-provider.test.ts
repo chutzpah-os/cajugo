@@ -32,4 +32,21 @@ describe("FakeAuthProvider (contrato do AuthProvider)", () => {
     expect(await phone.getUser()).not.toBeNull();
     expect(await laptop.getUser()).toBeNull();
   });
+
+  it("[CFG-SEC-005] verifyPassword confere a senha sem abrir nem trocar sessão", async () => {
+    // Arrange: conectado com a conta A
+    const auth = new FakeAuthProvider();
+    const a = await auth.adminCreateUser("a@x.com", "senha-a-123");
+    await auth.adminCreateUser("b@x.com", "senha-b-123");
+    await auth.signInWithPassword("a@x.com", "senha-a-123");
+
+    // Act
+    const right = await auth.verifyPassword("A@x.com", "senha-a-123");
+    const wrong = await auth.verifyPassword("a@x.com", "errada-123");
+    const other = await auth.verifyPassword("b@x.com", "senha-b-123");
+
+    // Assert: respostas certas e a sessão de A continua a mesma
+    expect([right, wrong, other]).toEqual([true, false, true]);
+    expect(await auth.getUser()).toMatchObject({ id: a.id });
+  });
 });

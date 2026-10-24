@@ -188,3 +188,6 @@
 
 # 2026-10-24 · 002/T002 lista das regras
 - domains/settings/definitions.ts (14 regras, limites, chave Pix por tipo com dígito verificador) e format.ts (% e R$, máscara da chave); helper settingValueJson/parseSettingValue para ler jsonb.
+
+# 2026-10-24 · 002/T003 conferir senha
+- AuthProvider.verifyPassword (falso e Supabase); testado no staging: certa true, errada false, nenhuma sessão sobra.

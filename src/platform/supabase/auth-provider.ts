@@ -11,6 +11,8 @@ export type SignOutScope = "local" | "others" | "global";
  */
 export interface AuthProvider {
   signInWithPassword(email: string, password: string): Promise<AuthUser | null>;
+  /** Confere a senha de uma conta sem abrir nem trocar a sessão atual (confirmações sensíveis). */
+  verifyPassword(email: string, password: string): Promise<boolean>;
   /** Usuário da sessão atual, validado no provedor (nunca só lido do cookie). */
   getUser(): Promise<AuthUser | null>;
   signOut(scope: SignOutScope): Promise<void>;

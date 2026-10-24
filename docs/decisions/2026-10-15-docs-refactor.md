@@ -134,3 +134,6 @@
 
 # 2026-10-24 · jsonb lido como texto (002/T002)
 - O Drizzle reinterpreta jsonb de texto ("557981360206" vira número) no PGlite e no postgres.js; valores de regra são lidos com value::text e JSON.parse num helper único. CPF/CNPJ da chave Pix com dígito verificador para evitar pagamento em chave errada.
+
+# 2026-10-24 · Conferência de senha em cliente à parte (002/T003)
+- signInWithPassword no cliente com cookie trocaria a sessão do admin; o cliente sem cookie confere e encerra a sessão de conferência na hora, sem deixar sessão órfã.
