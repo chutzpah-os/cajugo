@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { settingValues } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { getSettings } from "./service";
+import { getSettings, publicSettings } from "./service";
 
 describe("settings", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -76,6 +76,27 @@ describe("settings", () => {
       const settings = await getSettings(t.db);
 
       expect(settings).not.toHaveProperty("regra_antiga");
+    });
+  });
+
+  describe("publicSettings", () => {
+    it("[CFG-SEC-004] só leva o que pode ir para página pública, nunca a chave Pix", async () => {
+      // Arrange: chave Pix configurada
+      await t.db.insert(settingValues).values({
+        key: "pix",
+        value: { type: "cpf", key: "52998224725", beneficiary: "CajuGo" },
+      });
+
+      // Act
+      const pub = publicSettings(await getSettings(t.db));
+
+      // Assert
+      expect(pub).toEqual({
+        supportWhatsapp: "557981360206",
+        installmentRateBps: 179,
+        referral: { enabled: true, pctBps: 3000, months: 3 },
+      });
+      expect(JSON.stringify(pub)).not.toContain("52998224725");
     });
   });
 });

@@ -194,3 +194,6 @@
 
 # 2026-10-24 · 002/T004 ler regras
 - settings/service.ts: getSettings(db, at) com distinct on (key) até a data; testes de valores provisórios e vigência por data.
+
+# 2026-10-30 · 002/T005 regras públicas e cache
+- settings: publicSettings (sem chave Pix) e currentSettings ('use cache', cacheTag settings, cacheLife 1 min); vitest com testTimeout/hookTimeout de 20 s.

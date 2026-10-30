@@ -38,3 +38,22 @@ export async function getSettings(
   }
   return settings as Settings;
 }
+
+/** O que das regras pode ir para página pública (montado à mão: nunca a chave Pix, CFG-SEC-004). */
+export type PublicSettings = {
+  supportWhatsapp: string;
+  installmentRateBps: number;
+  referral: { enabled: boolean; pctBps: number; months: number };
+};
+
+export function publicSettings(s: Settings): PublicSettings {
+  return {
+    supportWhatsapp: s.support_whatsapp,
+    installmentRateBps: s.installment_rate_bps,
+    referral: {
+      enabled: s.referral_enabled,
+      pctBps: s.referral_pct_bps,
+      months: s.referral_months,
+    },
+  };
+}

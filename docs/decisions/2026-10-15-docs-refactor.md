@@ -137,3 +137,6 @@
 
 # 2026-10-24 · Conferência de senha em cliente à parte (002/T003)
 - signInWithPassword no cliente com cookie trocaria a sessão do admin; o cliente sem cookie confere e encerra a sessão de conferência na hora, sem deixar sessão órfã.
+
+# 2026-10-30 · Cache de 1 min e limite de 20 s nos testes (002/T005)
+- revalidate 60 cumpre a CFG-NFR-001 sem cache remoto pago. Testes de integração criam Postgres e aplicam migrations; com a máquina carregada, 5/10 s estouravam: dono aprovou 20 s para todos.
