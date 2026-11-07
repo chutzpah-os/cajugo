@@ -14,6 +14,7 @@ import {
   signOut,
   switchPanel,
   updatePassword,
+  verifyOwnPassword,
 } from "./service";
 import type { SignInInput } from "./schemas";
 
@@ -859,6 +860,52 @@ describe("signIn", () => {
       await rememberPanel(t.db, session, "admin");
 
       expect(await lastPanel(session.userId)).toBeNull();
+    });
+  });
+
+  describe("verifyOwnPassword", () => {
+    async function connected() {
+      await createAccount("admin@x.com", ["admin"]);
+      await login({ email: "admin@x.com", password: PASSWORD }, "rede-login");
+      return (await getSession(deps()))!;
+    }
+    const verify = (
+      session: Awaited<ReturnType<typeof connected>> | null,
+      password: string,
+      ipHash = "rede-v",
+    ) => verifyOwnPassword(deps(), session, password, { ipHash });
+
+    it("[CFG-SEC-005] senha certa da própria conta passa; errada dá erro no campo", async () => {
+      // Arrange
+      const session = await connected();
+
+      // Act / Assert
+      await expect(verify(session, PASSWORD)).resolves.toBeUndefined();
+      await expect(verify(session, "errada-123")).rejects.toMatchObject({
+        status: 422,
+        errors: [expect.objectContaining({ field: "password" })],
+      });
+    });
+
+    it("[CFG-SEC-005] [CFG-SEC-006] 5 senhas erradas bloqueiam, e o bloqueio é o mesmo do login", async () => {
+      // Arrange
+      const session = await connected();
+      for (let i = 0; i < 5; i++)
+        await verify(session, "errada-123", `rede-${i}`).catch(() => {});
+
+      // Act / Assert: nem a senha certa passa, nem o login
+      await expect(verify(session, PASSWORD, "rede-x")).rejects.toMatchObject({
+        type: "too-many-requests",
+      });
+      await expect(
+        login({ email: "admin@x.com", password: PASSWORD }, "rede-y"),
+      ).rejects.toMatchObject({ type: "too-many-requests" });
+    });
+
+    it("[CFG-SEC-006] sem sessão responde 401", async () => {
+      await expect(verify(null, PASSWORD)).rejects.toMatchObject({
+        status: 401,
+      });
     });
   });
 });

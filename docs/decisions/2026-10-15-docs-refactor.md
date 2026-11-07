@@ -146,3 +146,6 @@
 
 # 2026-11-07 · Auditoria de regras sem valores (002/T006)
 - O activity_log guarda só quais regras mudaram; os valores ficam no histórico das regras. Assim a chave Pix (dado protegido, SECURITY §8) nunca vai para o log.
+
+# 2026-11-07 · Mesmo bloqueio para confirmar senha (002/T007)
+- Errar a senha numa confirmação conta como errar no login: quem pegar uma sessão de admin aberta não testa senhas à vontade pela tela da chave Pix.

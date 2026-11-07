@@ -14,8 +14,8 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 2 — Fatias verticais (domínios `settings` e `auth`)
 - [x] **T004** `getSettings(db, at?)`: todas as regras tipadas, vigentes agora ou numa data · _CFG-FR-003, CFG-FR-009_
 - [x] **T005** `publicSettings` (sem `pix`) e `currentSettings()` com `'use cache'`, `cacheTag('settings')` e `cacheLife` de 1 min · _CFG-SEC-004, CFG-NFR-001_
-- [ ] **T006** `updateSettings`: valida, grava só o que mudou numa transação, auditoria; admin grava, suporte e demais recusados · _CFG-FR-002, CFG-FR-004, CFG-SEC-001, CFG-SEC-002_
-- [ ] **T007** `verifyOwnPassword` no domínio `auth`: confere a senha da conta da sessão com o bloqueio da spec 001 (falha conta por e-mail e por rede) · _CFG-SEC-005, CFG-SEC-006_
+- [x] **T006** `updateSettings`: valida, grava só o que mudou numa transação, auditoria; admin grava, suporte e demais recusados · _CFG-FR-002, CFG-FR-004, CFG-SEC-001, CFG-SEC-002_
+- [x] **T007** `verifyOwnPassword` no domínio `auth`: confere a senha da conta da sessão com o bloqueio da spec 001 (falha conta por e-mail e por rede) · _CFG-SEC-005, CFG-SEC-006_
 - [ ] **T008** `updateSettings` com chave Pix: exige senha (`verifyOwnPassword`); senha errada não grava e conta no bloqueio; auditoria sem o valor da chave · _CFG-FR-008, CFG-SEC-005, CFG-SEC-004_
 - [ ] **T009** `settingHistory(db, session, key)`: de/para, quem e quando, do mais recente ao mais antigo; admin e suporte leem, demais recusados · _CFG-FR-006, CFG-SEC-001, CFG-SEC-002_
 - [ ] **T010** `changePassword`: senha atual certa, validação (≥ 8, confirmação, diferente da atual), encerra os outros aparelhos, auditoria sem senha; senha atual errada conta no bloqueio; só a própria conta · _CFG-FR-010, CFG-SEC-006_

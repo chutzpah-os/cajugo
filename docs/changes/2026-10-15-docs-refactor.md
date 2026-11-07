@@ -203,3 +203,6 @@
 
 # 2026-11-07 · 002/T006 salvar regras
 - settings/service.ts: updateSettings (só admin; valida; grava só o que mudou numa transação; auditoria só com as chaves; regra desconhecida recusada).
+
+# 2026-11-07 · 002/T007 confirmar a própria senha
+- auth/service.ts: passwordGuard (bloqueio único do login e das confirmações) e verifyOwnPassword; tasks T006/T007 marcadas.

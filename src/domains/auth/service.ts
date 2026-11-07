@@ -74,9 +74,59 @@ async function loadProfile(db: Db, userId: string) {
 const LOCK_MS = RATE_LIMITS.loginFailuresPerEmail.windowSeconds * 1000;
 
 /**
+ * Bloqueio de tentativas de senha (AUT-FR-003), o mesmo no login e nas confirmações
+ * por senha (CFG-SEC-005, CFG-SEC-006). Janela deslizante e só com falhas: por rede,
+ * 5 no último minuto; por e-mail, a 5ª em 15 min bloqueia por 15 min a partir dela.
+ */
+function passwordGuard(db: Db, ipHash: string, now: Date) {
+  const network = RATE_LIMITS.loginFailuresPerNetwork;
+  const perEmail = RATE_LIMITS.loginFailuresPerEmail;
+  const networkKey = `login:fail:ip:${ipHash}`;
+  const keys = (email: string) => {
+    const hash = hashIp(email);
+    return {
+      fail: `login:fail:email:${hash}`,
+      lock: `login:lock:email:${hash}`,
+    };
+  };
+  return {
+    async assertNetworkAllowed() {
+      const failures = await countRecentEvents(
+        db,
+        networkKey,
+        network.windowSeconds,
+        now,
+      );
+      if (failures >= network.limit)
+        throw AppError.tooManyRequests(network.windowSeconds);
+    },
+    async assertEmailAllowed(email: string) {
+      const lockedAt = await lastEvent(db, keys(email).lock);
+      if (lockedAt && now.getTime() - lockedAt.getTime() < LOCK_MS)
+        throw AppError.tooManyRequests(
+          Math.ceil((lockedAt.getTime() + LOCK_MS - now.getTime()) / 1000),
+        );
+    },
+    /** Falha conta para a rede e, se houver e-mail, para a conta. */
+    async recordFailure(email?: string) {
+      await recordEvent(db, networkKey, now);
+      if (!email) return;
+      const { fail, lock } = keys(email);
+      await recordEvent(db, fail, now);
+      const failures = await countRecentEvents(
+        db,
+        fail,
+        perEmail.windowSeconds,
+        now,
+      );
+      if (failures >= perEmail.limit) await recordEvent(db, lock, now);
+    },
+  };
+}
+
+/**
  * Login por e-mail e senha (AUT-FR-001). Devolve para onde a pessoa vai.
- * Bloqueio (AUT-FR-003), em janela deslizante e só com falhas: por rede, 5 no último
- * minuto; por e-mail, a 5ª em 15 min bloqueia por 15 min a partir dela.
+ * Bloqueio de tentativas em `passwordGuard` (AUT-FR-003).
  * `ctx.ipHash` é o IP já com hash (`hashIp(clientIp(headers))`).
  */
 export async function signIn(
@@ -85,44 +135,19 @@ export async function signIn(
   ctx: { ipHash: string },
 ): Promise<{ redirectTo: string }> {
   const now = deps.now?.() ?? new Date();
-  const network = RATE_LIMITS.loginFailuresPerNetwork;
-  const networkKey = `login:fail:ip:${ctx.ipHash}`;
-  if (
-    (await countRecentEvents(
-      deps.db,
-      networkKey,
-      network.windowSeconds,
-      now,
-    )) >= network.limit
-  )
-    throw AppError.tooManyRequests(network.windowSeconds);
+  const guard = passwordGuard(deps.db, ctx.ipHash, now);
+  await guard.assertNetworkAllowed();
 
   const parsed = signInSchema.safeParse(input);
   if (!parsed.success) {
-    await recordEvent(deps.db, networkKey, now);
+    await guard.recordFailure();
     throw invalidCredentials();
   }
   const { email, password, next } = parsed.data;
 
-  const perEmail = RATE_LIMITS.loginFailuresPerEmail;
-  const emailHash = hashIp(email);
-  const failKey = `login:fail:email:${emailHash}`;
-  const lockKey = `login:lock:email:${emailHash}`;
-  const lockedAt = await lastEvent(deps.db, lockKey);
-  if (lockedAt && now.getTime() - lockedAt.getTime() < LOCK_MS)
-    throw AppError.tooManyRequests(
-      Math.ceil((lockedAt.getTime() + LOCK_MS - now.getTime()) / 1000),
-    );
+  await guard.assertEmailAllowed(email);
   const fail = async () => {
-    await recordEvent(deps.db, networkKey, now);
-    await recordEvent(deps.db, failKey, now);
-    const failures = await countRecentEvents(
-      deps.db,
-      failKey,
-      perEmail.windowSeconds,
-      now,
-    );
-    if (failures >= perEmail.limit) await recordEvent(deps.db, lockKey, now);
+    await guard.recordFailure(email);
     return invalidCredentials();
   };
 
@@ -365,4 +390,39 @@ export async function findAccountByEmail(
     .from(profiles)
     .where(eq(profiles.email, parsed.data));
   return account ?? null;
+}
+
+/**
+ * Confirma a senha da própria conta antes de uma ação sensível (trocar a chave Pix,
+ * CFG-SEC-005; trocar a senha, CFG-SEC-006). Usa o mesmo bloqueio do login: errar
+ * aqui conta como errar no login. A conta vem só da sessão.
+ */
+export async function verifyOwnPassword(
+  deps: AuthDeps,
+  session: Session | null,
+  password: string,
+  ctx: { ipHash: string },
+): Promise<void> {
+  const s = authorize(session, ALL_ROLES);
+  const now = deps.now?.() ?? new Date();
+  const guard = passwordGuard(deps.db, ctx.ipHash, now);
+  await guard.assertNetworkAllowed();
+
+  const [profile] = await deps.db
+    .select({ email: profiles.email })
+    .from(profiles)
+    .where(eq(profiles.id, s.userId));
+  if (!profile) throw AppError.unauthorized();
+  await guard.assertEmailAllowed(profile.email);
+
+  if (!(await deps.auth.verifyPassword(profile.email, password))) {
+    await guard.recordFailure(profile.email);
+    throw AppError.validation([
+      {
+        field: "password",
+        code: "wrong_password",
+        message: "Senha incorreta.",
+      },
+    ]);
+  }
 }
