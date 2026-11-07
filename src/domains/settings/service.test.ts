@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { settingValues } from "@/platform/db/schema";
+import { activityLog, profiles, settingValues } from "@/platform/db/schema";
+import type { Role, Session } from "@/platform/http/session";
+import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { getSettings, publicSettings } from "./service";
+import { getSettings, publicSettings, updateSettings } from "./service";
 
 describe("settings", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -97,6 +99,141 @@ describe("settings", () => {
         referral: { enabled: true, pctBps: 3000, months: 3 },
       });
       expect(JSON.stringify(pub)).not.toContain("52998224725");
+    });
+  });
+
+  describe("updateSettings", () => {
+    const deps = () => ({ db: t.db, auth: new FakeAuthProvider() });
+    async function sessionAs(role: Role): Promise<Session> {
+      const id = crypto.randomUUID();
+      await t.db
+        .insert(profiles)
+        .values({ id, name: role, email: `${id}@x.com`, roles: [role] });
+      return {
+        userId: id,
+        roles: [role],
+        activeRole: role,
+        storeId: null,
+        mustChangePassword: false,
+      };
+    }
+    const rowCount = async () =>
+      (await t.db.select().from(settingValues)).length;
+
+    it("[CFG-FR-002] admin altera uma regra e o sistema passa a usar o novo valor", async () => {
+      // Arrange
+      const admin = await sessionAs("admin");
+
+      // Act
+      const result = await updateSettings(deps(), admin, {
+        past_due_tolerance_days: 7,
+      });
+
+      // Assert
+      expect(result.changed).toEqual(["past_due_tolerance_days"]);
+      expect((await getSettings(t.db)).past_due_tolerance_days).toBe(7);
+      const [log] = await t.db.select().from(activityLog);
+      expect(log).toMatchObject({
+        userId: admin.userId,
+        action: "settings.updated",
+        data: { keys: ["past_due_tolerance_days"] },
+      });
+    });
+
+    it("[CFG-FR-002] salva várias regras juntas e só grava o que mudou", async () => {
+      const admin = await sessionAs("admin");
+      const before = await rowCount();
+
+      const result = await updateSettings(deps(), admin, {
+        min_photos: 6, // igual ao atual
+        require_approval: true,
+        cajugo_fee_bps: 150,
+      });
+
+      expect(result.changed.sort()).toEqual([
+        "cajugo_fee_bps",
+        "require_approval",
+      ]);
+      expect(await rowCount()).toBe(before + 2);
+      const settings = await getSettings(t.db);
+      expect(settings).toMatchObject({
+        require_approval: true,
+        cajugo_fee_bps: 150,
+      });
+    });
+
+    it("[CFG-FR-002] salvar sem mudar nada não grava nem audita", async () => {
+      const admin = await sessionAs("admin");
+      const before = await rowCount();
+
+      const result = await updateSettings(deps(), admin, { min_photos: 6 });
+
+      expect(result.changed).toEqual([]);
+      expect(await rowCount()).toBe(before);
+      expect(await t.db.select().from(activityLog)).toHaveLength(0);
+    });
+
+    it("[CFG-FR-004] valor fora da faixa é recusado com a mensagem no campo e nada muda", async () => {
+      // Arrange
+      const admin = await sessionAs("admin");
+      const before = await rowCount();
+
+      // Act
+      const error = await updateSettings(deps(), admin, {
+        cajugo_fee_bps: 15000,
+        min_photos: 0,
+        past_due_tolerance_days: 7,
+      }).catch((e: unknown) => e);
+
+      // Assert
+      expect(error).toMatchObject({
+        status: 422,
+        errors: expect.arrayContaining([
+          expect.objectContaining({
+            field: "cajugo_fee_bps",
+            message: "Use um valor entre 0% e 20%.",
+          }),
+          expect.objectContaining({ field: "min_photos" }),
+        ]),
+      });
+      expect(await rowCount()).toBe(before);
+      expect((await getSettings(t.db)).past_due_tolerance_days).toBe(5);
+    });
+
+    it("[CFG-FR-004] regra desconhecida é recusada", async () => {
+      const admin = await sessionAs("admin");
+
+      await expect(
+        updateSettings(deps(), admin, { taxa_inventada: 1 }),
+      ).rejects.toMatchObject({ status: 422 });
+    });
+
+    it("[CFG-SEC-001] suporte não salva regras", async () => {
+      const support = await sessionAs("support");
+      const before = await rowCount();
+
+      await expect(
+        updateSettings(deps(), support, { min_photos: 8 }),
+      ).rejects.toMatchObject({ status: 403 });
+      expect(await rowCount()).toBe(before);
+    });
+
+    it("[CFG-SEC-002] lojista, usuário da loja, vendedor e indicador não salvam; visitante precisa entrar", async () => {
+      for (const role of [
+        "store_owner",
+        "store_staff",
+        "seller",
+        "referrer",
+      ] as const) {
+        const session = await sessionAs(role);
+        await expect(
+          updateSettings(deps(), session, { min_photos: 8 }),
+        ).rejects.toMatchObject({ status: 403 });
+      }
+      await expect(
+        updateSettings(deps(), null, { min_photos: 8 }),
+      ).rejects.toMatchObject({ status: 401 });
+      expect((await getSettings(t.db)).min_photos).toBe(6);
     });
   });
 });

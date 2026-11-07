@@ -200,3 +200,6 @@
 
 # 2026-11-07 · Testes mais rápidos
 - createTestDb: migrations aplicadas uma vez por arquivo de teste (dumpDataDir) e cada teste recebe um clone (loadDataDir); ~3,8 s → ~0,7 s por banco.
+
+# 2026-11-07 · 002/T006 salvar regras
+- settings/service.ts: updateSettings (só admin; valida; grava só o que mudou numa transação; auditoria só com as chaves; regra desconhecida recusada).

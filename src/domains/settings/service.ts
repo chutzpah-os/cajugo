@@ -1,11 +1,18 @@
 import { desc, lte } from "drizzle-orm";
+import { z } from "zod";
+import type { AuthDeps } from "@/domains/auth/service";
+import { authorizeTo } from "@/domains/auth/permissions";
 import { settingValues } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
+import { logActivity } from "@/platform/http/activity-log";
+import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
+import type { Session } from "@/platform/http/session";
 import {
   parseSettingValue,
   SETTINGS,
   SETTING_KEYS,
   settingValueJson,
+  type SettingKey,
   type Settings,
 } from "./definitions";
 
@@ -56,4 +63,61 @@ export function publicSettings(s: Settings): PublicSettings {
       months: s.referral_months,
     },
   };
+}
+
+/**
+ * Entrada de `updateSettings`: qualquer subconjunto das regras, cada uma com o seu
+ * formato; regra desconhecida é recusada (API.md §2). A chave Pix entra na T008,
+ * com confirmação por senha.
+ */
+const EDITABLE_KEYS = SETTING_KEYS.filter((k) => k !== "pix");
+const updateSchema = z
+  .object(
+    Object.fromEntries(
+      EDITABLE_KEYS.map((k) => [k, SETTINGS[k].schema.optional()]),
+    ) as { [K in SettingKey]?: z.ZodOptional<(typeof SETTINGS)[K]["schema"]> },
+  )
+  .strict();
+
+/**
+ * Admin altera regras (CFG-FR-002): valida cada uma (CFG-FR-004), grava só as que
+ * mudaram, todas numa transação, vigentes a partir de agora (CFG-FR-009), com
+ * auditoria. Só `admin` (CFG-SEC-001, CFG-SEC-002).
+ */
+export async function updateSettings(
+  deps: AuthDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<{ changed: SettingKey[] }> {
+  const admin = authorizeTo(session, "settings.edit");
+  const parsed = updateSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const now = deps.now?.() ?? new Date();
+
+  const current = await getSettings(deps.db, now);
+  const next = parsed.data as Partial<Settings>;
+  const changed = (Object.keys(next) as SettingKey[]).filter(
+    (k) => JSON.stringify(next[k]) !== JSON.stringify(current[k]),
+  );
+  if (changed.length === 0) return { changed };
+
+  await deps.db.transaction(async (tx) => {
+    await tx.insert(settingValues).values(
+      changed.map((key) => ({
+        key,
+        value: next[key],
+        validFrom: now,
+        changedBy: admin.userId,
+      })),
+    );
+    // Só as chaves: valores (ex.: chave Pix) não vão para a auditoria.
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "settings.updated",
+      entity: "settings",
+      data: { keys: changed },
+    });
+  });
+  return { changed };
 }

@@ -143,3 +143,6 @@
 
 # 2026-11-07 · Banco de teste por clone
 - Aplicar todas as migrations em cada teste dominava o tempo da suíte (e crescia a cada migration). O clone mantém cada teste com um banco próprio e limpo, sem mudar nenhum teste.
+
+# 2026-11-07 · Auditoria de regras sem valores (002/T006)
+- O activity_log guarda só quais regras mudaram; os valores ficam no histórico das regras. Assim a chave Pix (dado protegido, SECURITY §8) nunca vai para o log.
