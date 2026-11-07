@@ -215,3 +215,6 @@
 
 # 2026-11-07 · 002/T011 seed volta as regras
 - seedE2E reinsere os valores provisórios das regras que os testes mudaram (sem apagar histórico).
+
+# 2026-11-07 · 002/T012 campos de tela
+- src/ui: TextField com sufixo; PercentField e MoneyField (teclado numérico); ReadOnlyNotice.

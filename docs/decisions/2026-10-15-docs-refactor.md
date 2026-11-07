@@ -158,3 +158,6 @@
 
 # 2026-11-07 · Reset de regras por inserção (002/T011)
 - O gatilho impede apagar; o reset do staging insere o provisório como alteração nova, vigente no horário do banco, para os e2e começarem sempre do mesmo estado.
+
+# 2026-11-07 · Conversão de % e R$ no servidor (002/T012)
+- Os campos só mostram texto pt-BR; a conversão para centésimos de ponto e centavos fica em settings/format.ts, no servidor, para não depender de JavaScript no navegador nem duplicar regra.

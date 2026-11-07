@@ -7,15 +7,17 @@ type Props = {
   help?: ReactNode;
   error?: string;
   prefix?: string;
+  suffix?: string;
 } & ComponentProps<"input">;
 
-/** Campo com rótulo, ajuda, erro e prefixo opcional (ex.: "cajugo.com.br/"). */
+/** Campo com rótulo, ajuda, erro e prefixo/sufixo opcionais (ex.: "cajugo.com.br/", "%"). */
 export function TextField({
   id,
   label,
   help,
   error,
   prefix,
+  suffix,
   className,
   ...props
 }: Props) {
@@ -46,6 +48,11 @@ export function TextField({
           )}
           {...props}
         />
+        {suffix && (
+          <span className="flex items-center border-l border-field bg-bg px-3 text-sm text-text-3">
+            {suffix}
+          </span>
+        )}
       </div>
       {error ? (
         <p id={`${id}-error`} className="text-xs text-caju-deep">

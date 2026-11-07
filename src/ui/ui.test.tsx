@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import { Badge } from "./badge";
 import { Chip } from "./chip";
 import { cn } from "./cn";
+import { MoneyField, PercentField } from "./number-field";
+import { ReadOnlyNotice } from "./read-only-notice";
 import { TextField } from "./text-field";
 import { Toggle } from "./toggle";
 import { YesNo } from "./yes-no";
@@ -79,5 +81,36 @@ describe("componentes base", () => {
     expect(renderToStaticMarkup(<Badge tone="ok">Publicado</Badge>)).toContain(
       "Publicado",
     );
+  });
+
+  it("[CFG-NFR-002] campo de porcentagem: rótulo, teclado numérico e sufixo %", () => {
+    const html = renderToStaticMarkup(
+      <PercentField id="fee" name="fee" label="Taxa CajuGo" defaultValue="1" />,
+    );
+    expect(html).toMatch(/<label[^>]*for="fee"/);
+    expect(html).toContain('inputMode="decimal"');
+    expect(html).toMatch(/>%</);
+    expect(html).toContain('value="1"');
+  });
+
+  it("[CFG-NFR-002] campo de dinheiro: prefixo R$ e teclado numérico", () => {
+    const html = renderToStaticMarkup(
+      <MoneyField
+        id="min"
+        name="min"
+        label="Resgate mínimo"
+        defaultValue="50,00"
+      />,
+    );
+    expect(html).toMatch(/>R\$</);
+    expect(html).toContain('inputMode="decimal"');
+  });
+
+  it("aviso de somente leitura é anunciado como nota", () => {
+    const html = renderToStaticMarkup(
+      <ReadOnlyNotice>Só o admin altera as regras.</ReadOnlyNotice>,
+    );
+    expect(html).toContain('role="note"');
+    expect(html).toContain("Somente leitura");
   });
 });
