@@ -209,3 +209,6 @@
 
 # 2026-11-07 · 002/T008–T009 chave Pix e histórico
 - updateSettings aceita a chave Pix com password (verifyOwnPassword, bloqueio do login; só troca, não apaga); settingHistory (de/para, quem, quando; admin e suporte; valor inicial não conta).
+
+# 2026-11-07 · 002/T010 trocar a própria senha
+- auth: changePasswordSchema e changePassword (senha atual conferida com o bloqueio do login, nova ≥ 8 e diferente, encerra outros aparelhos, auditoria sem senha).

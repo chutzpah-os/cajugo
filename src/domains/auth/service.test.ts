@@ -2,9 +2,10 @@ import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityLog, profiles, stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import type { Role } from "@/platform/http/session";
+import type { Role, Session } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import {
+  changePassword,
   findAccountByEmail,
   generateTemporaryPassword,
   getSession,
@@ -906,6 +907,125 @@ describe("signIn", () => {
       await expect(verify(null, PASSWORD)).rejects.toMatchObject({
         status: 401,
       });
+    });
+  });
+
+  describe("changePassword", () => {
+    const NEW = "senha-nova-123";
+    async function onTwoDevices() {
+      const user = await createAccount("lojista@x.com", ["seller"]);
+      const phone = auth.device();
+      await signIn(
+        { ...deps(), auth: phone },
+        { email: "lojista@x.com", password: PASSWORD },
+        { ipHash: "rede-celular" },
+      );
+      await login({ email: "lojista@x.com", password: PASSWORD }, "rede-pc");
+      const session = (await getSession(deps()))!;
+      return { user, phone, session };
+    }
+    const change = (
+      session: Session | null,
+      input: { current: string; password: string; confirmation: string },
+      ipHash = "rede-pc",
+    ) => changePassword(deps(), session, input, { ipHash });
+
+    it("[CFG-FR-010] com a senha atual certa, a nova passa a valer e o outro aparelho sai", async () => {
+      // Arrange
+      const { user, phone, session } = await onTwoDevices();
+
+      // Act
+      await change(session, {
+        current: PASSWORD,
+        password: NEW,
+        confirmation: NEW,
+      });
+
+      // Assert
+      expect(await phone.getUser()).toBeNull();
+      expect(await auth.getUser()).toMatchObject({ id: user.id });
+      await expect(
+        login({ email: "lojista@x.com", password: PASSWORD }, "rede-a"),
+      ).rejects.toMatchObject({ type: "invalid-credentials" });
+      expect(
+        (await login({ email: "lojista@x.com", password: NEW }, "rede-b"))
+          .redirectTo,
+      ).toBe("/rede");
+      const logs = await t.db.select().from(activityLog);
+      expect(logs).toEqual([
+        expect.objectContaining({
+          userId: user.id,
+          action: "auth.password_changed",
+        }),
+      ]);
+      expect(JSON.stringify(logs)).not.toContain(NEW);
+    });
+
+    it("[CFG-FR-010] recusa senha curta, confirmação diferente ou igual à atual, sem trocar", async () => {
+      const { session } = await onTwoDevices();
+      const cases = [
+        [
+          { current: PASSWORD, password: "curta", confirmation: "curta" },
+          "password",
+        ],
+        [
+          { current: PASSWORD, password: NEW, confirmation: "outra-123" },
+          "confirmation",
+        ],
+        [
+          { current: PASSWORD, password: PASSWORD, confirmation: PASSWORD },
+          "password",
+        ],
+      ] as const;
+
+      for (const [input, field] of cases) {
+        await expect(change(session, input)).rejects.toMatchObject({
+          status: 422,
+          errors: expect.arrayContaining([expect.objectContaining({ field })]),
+        });
+      }
+      expect(
+        (await login({ email: "lojista@x.com", password: PASSWORD }, "rede-z"))
+          .redirectTo,
+      ).toBe("/rede");
+    });
+
+    it("[CFG-SEC-006] senha atual errada não troca e conta para o bloqueio da conta", async () => {
+      // Arrange
+      const { session } = await onTwoDevices();
+
+      // Act
+      for (let i = 0; i < 5; i++) {
+        await expect(
+          change(
+            session,
+            { current: "errada-123", password: NEW, confirmation: NEW },
+            `rede-${i}`,
+          ),
+        ).rejects.toMatchObject({
+          status: 422,
+          errors: [expect.objectContaining({ field: "current" })],
+        });
+      }
+
+      // Assert: conta bloqueada e senha antiga continua (depois do bloqueio)
+      await expect(
+        login({ email: "lojista@x.com", password: PASSWORD }, "rede-y"),
+      ).rejects.toMatchObject({ type: "too-many-requests" });
+    });
+
+    it("[CFG-SEC-006] sem sessão responde 401; com senha temporária, só pela tela de nova senha", async () => {
+      await expect(
+        change(null, { current: PASSWORD, password: NEW, confirmation: NEW }),
+      ).rejects.toMatchObject({ status: 401 });
+
+      const { session } = await onTwoDevices();
+      await expect(
+        change(
+          { ...session, mustChangePassword: true },
+          { current: PASSWORD, password: NEW, confirmation: NEW },
+        ),
+      ).rejects.toMatchObject({ type: "must-change-password" });
     });
   });
 });

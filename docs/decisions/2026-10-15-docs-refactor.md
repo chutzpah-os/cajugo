@@ -152,3 +152,6 @@
 
 # 2026-11-07 · Chave Pix só trocada, nunca apagada (002/T008)
 - Uma vez configurada, sempre há chave para o lojista pagar. O histórico mostra a chave inteira só a admin e suporte (SECURITY §8); a auditoria nunca guarda o valor.
+
+# 2026-11-07 · Troca de senha pede a atual (002/T010)
+- Sem a senha atual, quem pegasse uma sessão aberta trocaria a senha e tomaria a conta. Erro na atual vai para o campo "current" e conta no bloqueio do login.

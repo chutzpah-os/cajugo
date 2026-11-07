@@ -19,6 +19,7 @@ import { AREAS, authorizeTo, type Area } from "./permissions";
 import { TEAM_ROLES } from "./roles";
 import {
   accountEmailSchema,
+  changePasswordSchema,
   newPasswordSchema,
   panelSchema,
   signInSchema,
@@ -425,4 +426,45 @@ export async function verifyOwnPassword(
       },
     ]);
   }
+}
+
+/**
+ * Troca da própria senha (CFG-FR-010): confere a atual com o bloqueio do login
+ * (CFG-SEC-006), grava a nova, encerra os outros aparelhos e audita sem a senha.
+ * Quem está com senha temporária usa a nova senha (AUT-FR-015): `authorize` recusa.
+ */
+export async function changePassword(
+  deps: AuthDeps,
+  session: Session | null,
+  input: unknown,
+  ctx: { ipHash: string },
+): Promise<void> {
+  const s = authorize(session, ALL_ROLES);
+  const parsed = changePasswordSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+
+  try {
+    await verifyOwnPassword(deps, s, parsed.data.current, ctx);
+  } catch (error) {
+    // O erro da conferência é sobre a senha atual: vai para o campo "current".
+    if (error instanceof AppError && error.type === "validation")
+      throw AppError.validation([
+        {
+          field: "current",
+          code: "wrong_password",
+          message: "Senha atual incorreta.",
+        },
+      ]);
+    throw error;
+  }
+
+  await deps.auth.updateOwnPassword(parsed.data.password);
+  await deps.auth.signOut("others");
+  await logActivity(deps.db, {
+    userId: s.userId,
+    action: "auth.password_changed",
+    entity: "profile",
+    entityId: s.userId,
+  });
 }

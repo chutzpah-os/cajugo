@@ -40,3 +40,22 @@ export const accountEmailSchema = z
 
 /** Id de conta vindo de formulário (ex.: alvo da senha temporária). */
 export const userIdSchema = z.uuid();
+
+/** Troca da própria senha (CFG-FR-010): atual + nova (mesmas regras da nova senha). */
+export const changePasswordSchema = z
+  .object({
+    current: z.string().min(1, "Informe a senha atual.").max(200),
+    password: z
+      .string()
+      .min(8, "Use pelo menos 8 caracteres.")
+      .max(200, "Use no máximo 200 caracteres."),
+    confirmation: z.string(),
+  })
+  .refine((v) => v.password === v.confirmation, {
+    path: ["confirmation"],
+    message: "As senhas não conferem.",
+  })
+  .refine((v) => v.password !== v.current, {
+    path: ["password"],
+    message: "Use uma senha diferente da atual.",
+  });
