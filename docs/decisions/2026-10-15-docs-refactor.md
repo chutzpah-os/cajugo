@@ -149,3 +149,6 @@
 
 # 2026-11-07 · Mesmo bloqueio para confirmar senha (002/T007)
 - Errar a senha numa confirmação conta como errar no login: quem pegar uma sessão de admin aberta não testa senhas à vontade pela tela da chave Pix.
+
+# 2026-11-07 · Chave Pix só trocada, nunca apagada (002/T008)
+- Uma vez configurada, sempre há chave para o lojista pagar. O histórico mostra a chave inteira só a admin e suporte (SECURITY §8); a auditoria nunca guarda o valor.

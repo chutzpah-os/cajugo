@@ -61,7 +61,7 @@ const CNPJ_WEIGHTS = [
 
 export const PIX_TYPES = ["cpf", "cnpj", "email", "phone", "random"] as const;
 
-const pixSchema = z
+export const pixSchema = z
   .object({
     type: z.enum(PIX_TYPES, { error: "Escolha o tipo da chave." }),
     key: z.string().trim().min(1, "Informe a chave Pix.").max(140),

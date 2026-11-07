@@ -1,16 +1,24 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityLog, profiles, settingValues } from "@/platform/db/schema";
 import type { Role, Session } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { getSettings, publicSettings, updateSettings } from "./service";
+import { signIn } from "@/domains/auth/service";
+import {
+  getSettings,
+  publicSettings,
+  settingHistory,
+  updateSettings,
+} from "./service";
 
 describe("settings", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
   beforeEach(async () => {
+    vi.stubEnv("HASH_SECRET", "segredo-de-teste");
     t = await createTestDb();
   });
   afterEach(async () => {
+    vi.unstubAllEnvs();
     await t.close();
   });
 
@@ -234,6 +242,208 @@ describe("settings", () => {
         updateSettings(deps(), null, { min_photos: 8 }),
       ).rejects.toMatchObject({ status: 401 });
       expect((await getSettings(t.db)).min_photos).toBe(6);
+    });
+  });
+
+  describe("updateSettings com chave Pix", () => {
+    const PASSWORD = "senha-admin-1";
+    const PIX = {
+      type: "cpf",
+      key: "529.982.247-25",
+      beneficiary: "CajuGo Ltda",
+    };
+    let auth: FakeAuthProvider;
+    const deps = () => ({ db: t.db, auth });
+    const ctx = { ipHash: "rede-admin" };
+
+    async function admin(): Promise<Session> {
+      auth = new FakeAuthProvider();
+      const user = await auth.adminCreateUser("admin@x.com", PASSWORD);
+      await t.db.insert(profiles).values({
+        id: user.id,
+        name: "Admin",
+        email: "admin@x.com",
+        roles: ["admin"],
+      });
+      return {
+        userId: user.id,
+        roles: ["admin"],
+        activeRole: "admin",
+        storeId: null,
+        mustChangePassword: false,
+      };
+    }
+
+    it("[CFG-FR-008] com a senha certa, a nova chave Pix passa a valer, já normalizada", async () => {
+      // Arrange
+      const session = await admin();
+
+      // Act
+      await updateSettings(
+        deps(),
+        session,
+        { pix: PIX, password: PASSWORD },
+        ctx,
+      );
+
+      // Assert
+      expect((await getSettings(t.db)).pix).toEqual({
+        type: "cpf",
+        key: "52998224725",
+        beneficiary: "CajuGo Ltda",
+      });
+    });
+
+    it("[CFG-FR-008] sem a senha, a chave não muda", async () => {
+      const session = await admin();
+
+      await expect(
+        updateSettings(deps(), session, { pix: PIX }, ctx),
+      ).rejects.toMatchObject({
+        status: 422,
+        errors: [expect.objectContaining({ field: "password" })],
+      });
+      expect((await getSettings(t.db)).pix).toBeNull();
+    });
+
+    it("[CFG-SEC-005] senha errada não salva e conta para o bloqueio da conta", async () => {
+      // Arrange
+      const session = await admin();
+
+      // Act: 5 tentativas com a senha errada
+      for (let i = 0; i < 5; i++) {
+        await expect(
+          updateSettings(
+            deps(),
+            session,
+            { pix: PIX, password: "errada-123" },
+            { ipHash: `rede-${i}` },
+          ),
+        ).rejects.toMatchObject({ status: 422 });
+      }
+
+      // Assert: nada salvo e a conta bloqueada (nem o login passa)
+      expect((await getSettings(t.db)).pix).toBeNull();
+      await expect(
+        signIn(
+          deps(),
+          { email: "admin@x.com", password: PASSWORD },
+          { ipHash: "rede-x" },
+        ),
+      ).rejects.toMatchObject({ type: "too-many-requests" });
+    });
+
+    it("[CFG-SEC-004] a auditoria registra a troca sem o valor da chave", async () => {
+      const session = await admin();
+
+      await updateSettings(
+        deps(),
+        session,
+        { pix: PIX, password: PASSWORD },
+        ctx,
+      );
+
+      const logs = await t.db.select().from(activityLog);
+      expect(logs).toEqual([
+        expect.objectContaining({ data: { keys: ["pix"] } }),
+      ]);
+      expect(JSON.stringify(logs)).not.toContain("52998224725");
+    });
+
+    it("[CFG-FR-004] chave Pix inválida é recusada no campo", async () => {
+      const session = await admin();
+
+      await expect(
+        updateSettings(
+          deps(),
+          session,
+          { pix: { ...PIX, key: "111.111.111-11" }, password: PASSWORD },
+          ctx,
+        ),
+      ).rejects.toMatchObject({
+        status: 422,
+        errors: [
+          expect.objectContaining({
+            field: "pix.key",
+            message: "CPF inválido.",
+          }),
+        ],
+      });
+    });
+  });
+
+  describe("settingHistory", () => {
+    async function person(name: string, role: Role): Promise<Session> {
+      const id = crypto.randomUUID();
+      await t.db
+        .insert(profiles)
+        .values({ id, name, email: `${id}@x.com`, roles: [role] });
+      return {
+        userId: id,
+        roles: [role],
+        activeRole: role,
+        storeId: null,
+        mustChangePassword: false,
+      };
+    }
+    const deps = (at: Date) => ({
+      db: t.db,
+      auth: new FakeAuthProvider(),
+      now: () => at,
+    });
+
+    it("[CFG-FR-006] mostra cada alteração com de/para, quem e quando, da mais recente à mais antiga", async () => {
+      // Arrange: admin A muda 1% → 1,5%; depois admin B muda 1,5% → 2%
+      const a = await person("Ana", "admin");
+      const b = await person("Bruno", "admin");
+      const t1 = new Date("2026-11-01T10:00:00Z");
+      const t2 = new Date("2026-11-02T15:30:00Z");
+      await updateSettings(deps(t1), a, { cajugo_fee_bps: 150 });
+      await updateSettings(deps(t2), b, { cajugo_fee_bps: 200 });
+
+      // Act
+      const history = await settingHistory(t.db, a, "cajugo_fee_bps");
+
+      // Assert
+      expect(history).toEqual([
+        { at: t2, by: "Bruno", from: 150, to: 200 },
+        { at: t1, by: "Ana", from: 100, to: 150 },
+      ]);
+    });
+
+    it("[CFG-FR-006] regra nunca alterada não tem histórico (o valor inicial não conta)", async () => {
+      const admin = await person("Ana", "admin");
+
+      expect(await settingHistory(t.db, admin, "min_photos")).toEqual([]);
+    });
+
+    it("[CFG-SEC-001] suporte lê o histórico", async () => {
+      const admin = await person("Ana", "admin");
+      const support = await person("Sol", "support");
+      await updateSettings(deps(new Date()), admin, { min_photos: 8 });
+
+      const history = await settingHistory(t.db, support, "min_photos");
+
+      expect(history).toHaveLength(1);
+    });
+
+    it("[CFG-SEC-002] lojista não lê; visitante precisa entrar", async () => {
+      const owner = await person("Lia", "store_owner");
+
+      await expect(
+        settingHistory(t.db, owner, "min_photos"),
+      ).rejects.toMatchObject({ status: 403 });
+      await expect(
+        settingHistory(t.db, null, "min_photos"),
+      ).rejects.toMatchObject({ status: 401 });
+    });
+
+    it("regra desconhecida responde 404", async () => {
+      const admin = await person("Ana", "admin");
+
+      await expect(
+        settingHistory(t.db, admin, "regra_inventada"),
+      ).rejects.toMatchObject({ status: 404 });
     });
   });
 });

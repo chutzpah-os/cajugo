@@ -206,3 +206,6 @@
 
 # 2026-11-07 · 002/T007 confirmar a própria senha
 - auth/service.ts: passwordGuard (bloqueio único do login e das confirmações) e verifyOwnPassword; tasks T006/T007 marcadas.
+
+# 2026-11-07 · 002/T008–T009 chave Pix e histórico
+- updateSettings aceita a chave Pix com password (verifyOwnPassword, bloqueio do login; só troca, não apaga); settingHistory (de/para, quem, quando; admin e suporte; valor inicial não conta).
