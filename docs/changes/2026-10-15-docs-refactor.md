@@ -197,3 +197,6 @@
 
 # 2026-10-30 · 002/T005 regras públicas e cache
 - settings: publicSettings (sem chave Pix) e currentSettings ('use cache', cacheTag settings, cacheLife 1 min); vitest com testTimeout/hookTimeout de 20 s.
+
+# 2026-11-07 · Testes mais rápidos
+- createTestDb: migrations aplicadas uma vez por arquivo de teste (dumpDataDir) e cada teste recebe um clone (loadDataDir); ~3,8 s → ~0,7 s por banco.

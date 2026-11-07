@@ -140,3 +140,6 @@
 
 # 2026-10-30 · Cache de 1 min e limite de 20 s nos testes (002/T005)
 - revalidate 60 cumpre a CFG-NFR-001 sem cache remoto pago. Testes de integração criam Postgres e aplicam migrations; com a máquina carregada, 5/10 s estouravam: dono aprovou 20 s para todos.
+
+# 2026-11-07 · Banco de teste por clone
+- Aplicar todas as migrations em cada teste dominava o tempo da suíte (e crescia a cada migration). O clone mantém cada teste com um banco próprio e limpo, sem mudar nenhum teste.
