@@ -1,7 +1,14 @@
 import { eq, inArray } from "drizzle-orm";
-import { profiles, rateLimits, stores } from "@/platform/db/schema";
+import {
+  profiles,
+  rateLimits,
+  settingValues,
+  stores,
+} from "@/platform/db/schema";
 import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
+import { SETTINGS, SETTING_KEYS } from "@/domains/settings/definitions";
+import { getSettings } from "@/domains/settings/service";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -24,8 +31,8 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /**
  * Cria (ou deixa no estado inicial) as contas e a loja de teste. Pode rodar quantas
  * vezes quiser: a senha volta a `password`, o último painel é limpo, o bloqueio por
- * e-mail (AUT-FR-003) das contas de teste é zerado e a conta `temporary` volta a ter
- * senha temporária válida por 24 h.
+ * e-mail (AUT-FR-003) das contas de teste é zerado, a conta `temporary` volta a ter
+ * senha temporária válida por 24 h e as regras (spec 002) voltam aos valores provisórios.
  */
 export async function seedE2E(deps: AuthDeps, password: string) {
   const now = deps.now?.() ?? new Date();
@@ -104,6 +111,17 @@ export async function seedE2E(deps: AuthDeps, password: string) {
       ]),
     ),
   );
+
+  // Regras alteradas por testes voltam ao provisório. O histórico é só de inserção:
+  // o provisório entra como alteração nova, vigente agora (horário do banco).
+  const settings = await getSettings(deps.db);
+  const changed = SETTING_KEYS.filter(
+    (k) => JSON.stringify(settings[k]) !== JSON.stringify(SETTINGS[k].initial),
+  );
+  if (changed.length)
+    await deps.db
+      .insert(settingValues)
+      .values(changed.map((key) => ({ key, value: SETTINGS[key].initial })));
 
   return { ids, storeId: store.id };
 }

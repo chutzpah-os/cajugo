@@ -212,3 +212,6 @@
 
 # 2026-11-07 · 002/T010 trocar a própria senha
 - auth: changePasswordSchema e changePassword (senha atual conferida com o bloqueio do login, nova ≥ 8 e diferente, encerra outros aparelhos, auditoria sem senha).
+
+# 2026-11-07 · 002/T011 seed volta as regras
+- seedE2E reinsere os valores provisórios das regras que os testes mudaram (sem apagar histórico).

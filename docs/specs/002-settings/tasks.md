@@ -19,7 +19,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T008** `updateSettings` com chave Pix: exige senha (`verifyOwnPassword`); senha errada não grava e conta no bloqueio; auditoria sem o valor da chave · _CFG-FR-008, CFG-SEC-005, CFG-SEC-004_
 - [x] **T009** `settingHistory(db, session, key)`: de/para, quem e quando, do mais recente ao mais antigo; admin e suporte leem, demais recusados · _CFG-FR-006, CFG-SEC-001, CFG-SEC-002_
 - [x] **T010** `changePassword`: senha atual certa, validação (≥ 8, confirmação, diferente da atual), encerra os outros aparelhos, auditoria sem senha; senha atual errada conta no bloqueio; só a própria conta · _CFG-FR-010, CFG-SEC-006_
-- [ ] **T011** `pnpm e2e:seed` volta as regras do staging aos valores provisórios (inserindo, já que a tabela é só de inserção) · _—_
+- [x] **T011** `pnpm e2e:seed` volta as regras do staging aos valores provisórios (inserindo, já que a tabela é só de inserção) · _—_
 
 ## Fase 3 — Telas
 - [ ] **T012** [P] `src/ui`: campos de porcentagem e de dinheiro (pt-BR) e aviso de "somente leitura", com testes · _CFG-NFR-002_

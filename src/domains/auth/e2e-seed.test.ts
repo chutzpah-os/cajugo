@@ -1,9 +1,10 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { profiles, stores } from "@/platform/db/schema";
+import { profiles, settingValues, stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { E2E_ACCOUNTS, seedE2E } from "./e2e-seed";
+import { getSettings } from "@/domains/settings/service";
 import { signIn } from "./service";
 
 const NOW = new Date("2026-10-23T12:00:00Z");
@@ -103,5 +104,29 @@ describe("seedE2E", () => {
         { ipHash: "rede-nova-2" },
       ),
     ).rejects.toMatchObject({ type: "too-many-requests" });
+  });
+
+  it("volta as regras alteradas aos valores provisórios, sem apagar o histórico", async () => {
+    // Arrange: um teste anterior mudou duas regras
+    await seedE2E(deps(), "senha-e2e-1");
+    await t.db.insert(settingValues).values([
+      { key: "min_photos", value: 9 },
+      {
+        key: "pix",
+        value: { type: "email", key: "a@b.com", beneficiary: "CajuGo" },
+      },
+    ]);
+    const rowsBefore = (await t.db.select().from(settingValues)).length;
+
+    // Act
+    await seedE2E(deps(), "senha-e2e-1");
+
+    // Assert: valores provisórios de novo, com 2 linhas novas (nada apagado)
+    const settings = await getSettings(t.db);
+    expect(settings.min_photos).toBe(6);
+    expect(settings.pix).toBeNull();
+    expect((await t.db.select().from(settingValues)).length).toBe(
+      rowsBefore + 2,
+    );
   });
 });

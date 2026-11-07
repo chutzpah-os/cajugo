@@ -155,3 +155,6 @@
 
 # 2026-11-07 · Troca de senha pede a atual (002/T010)
 - Sem a senha atual, quem pegasse uma sessão aberta trocaria a senha e tomaria a conta. Erro na atual vai para o campo "current" e conta no bloqueio do login.
+
+# 2026-11-07 · Reset de regras por inserção (002/T011)
+- O gatilho impede apagar; o reset do staging insere o provisório como alteração nova, vigente no horário do banco, para os e2e começarem sempre do mesmo estado.
