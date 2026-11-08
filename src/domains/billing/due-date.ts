@@ -56,3 +56,9 @@ export function firstDueDate(confirmedAt: Date): {
   const billingDay = ymd(confirmedAt)[2];
   return { billingDay, nextDueAt: nextDueAfter(confirmedAt, billingDay) };
 }
+
+/** Começo do mês (em São Paulo) da data `at`, para totais "no mês". */
+export function saoPauloMonthStart(at: Date): Date {
+  const [y, m] = ymd(at);
+  return saoPauloMidnight(y, m, 1);
+}

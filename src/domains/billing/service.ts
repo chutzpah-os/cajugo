@@ -1,5 +1,5 @@
-import { and, desc, eq } from "drizzle-orm";
-import { authorizeTo } from "@/domains/auth/service";
+import { and, asc, count, desc, eq, gte } from "drizzle-orm";
+import { authorizeTo, can } from "@/domains/auth/service";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
 import { markPaymentReview } from "@/domains/stores/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
@@ -15,6 +15,7 @@ import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { whatsappLink } from "@/platform/whatsapp/link";
+import { saoPauloMonthStart } from "./due-date";
 import { startCheckoutSchema, submitReceiptSchema } from "./schemas";
 
 /**
@@ -368,4 +369,89 @@ export async function submitReceipt(
     if (isUniqueViolation(error)) throw AppError.conflict(IN_REVIEW);
     throw error;
   }
+}
+
+/** Como a fatura aparece para o admin (GLOSSARY "Fatura"). */
+const REFERENCE: Record<"first" | "monthly", string> = {
+  first: "1ª mensalidade",
+  monthly: "Mensalidade",
+};
+
+export type QueueItem = {
+  paymentId: string;
+  storeName: string;
+  storeSlug: string;
+  reference: string;
+  paidCents: number;
+  expectedCents: number;
+  /** "Valor diferente do esperado" (PIX-FR-008). */
+  differs: boolean;
+  submittedAt: Date;
+  format: string | null;
+};
+
+export type QueueView = {
+  items: QueueItem[];
+  waiting: number;
+  confirmedThisMonth: number;
+  /** Falso: [10b] mostra "Chave Pix não configurada" (PIX-FR-004). */
+  pixReady: boolean;
+  /** Suporte vê a fila sem os botões (PIX-SEC-003). */
+  canReview: boolean;
+};
+
+/** Fila de comprovantes [10b] (PIX-FR-007, 008): admin e suporte. */
+export async function reviewQueue(
+  deps: BillingDeps,
+  session: Session | null,
+): Promise<QueueView> {
+  const s = authorizeTo(session, "payments.view");
+  const now = clock(deps);
+  const rows = await deps.db
+    .select({
+      paymentId: payments.id,
+      storeName: stores.name,
+      storeSlug: stores.slug,
+      kind: invoices.kind,
+      paidCents: payments.paidCents,
+      amountCents: payments.amountCents,
+      expectedCents: invoices.totalCents,
+      submittedAt: payments.submittedAt,
+      format: payments.receiptFormat,
+    })
+    .from(payments)
+    .innerJoin(invoices, eq(invoices.id, payments.invoiceId))
+    .innerJoin(stores, eq(stores.id, payments.storeId))
+    .where(eq(payments.status, "submitted"))
+    .orderBy(asc(payments.submittedAt));
+  const [{ confirmed }] = await deps.db
+    .select({ confirmed: count() })
+    .from(payments)
+    .where(
+      and(
+        eq(payments.status, "confirmed"),
+        gte(payments.reviewedAt, saoPauloMonthStart(now)),
+      ),
+    );
+  const settings = await getSettings(deps.db, now);
+  return {
+    items: rows.map((r) => {
+      const paid = r.paidCents ?? r.amountCents;
+      return {
+        paymentId: r.paymentId,
+        storeName: r.storeName,
+        storeSlug: r.storeSlug,
+        reference: REFERENCE[r.kind],
+        paidCents: paid,
+        expectedCents: r.expectedCents,
+        differs: paid !== r.expectedCents,
+        submittedAt: r.submittedAt,
+        format: r.format,
+      };
+    }),
+    waiting: rows.length,
+    confirmedThisMonth: confirmed,
+    pixReady: pixReady(settings.pix),
+    canReview: can(s, "payments.review"),
+  };
 }

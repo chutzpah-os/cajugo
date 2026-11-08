@@ -491,6 +491,6 @@ export async function accountMenu(
 }
 
 // Interface pública do domínio `auth` para os outros domínios (ARCHITECTURE §3).
-export { authorizeTo } from "./permissions";
+export { authorizeTo, can } from "./permissions";
 export { currentSession } from "./current";
 export { grantRole } from "./roles";

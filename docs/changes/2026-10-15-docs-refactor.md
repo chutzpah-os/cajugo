@@ -361,3 +361,6 @@
 
 # 2026-11-08 · 004/T013 envio do comprovante
 - billing.submitReceipt: nome exato assinado para a loja da sessão (senão 404), arquivo conferido (jpg/png/webp/heic/pdf, até 10 MB; recusado é apagado), valor pago obrigatório, pagamento submitted e loja payment_review numa transação, log com valor pago e esperado; segundo envio (ou corrida no índice único) → 409 e arquivo apagado. stores: markPaymentReview, backToRegistered e activateFirstTime, cada uma só a partir do status esperado.
+
+# 2026-11-08 · 004/T014 fila de comprovantes
+- billing.reviewQueue (payments.view: admin e suporte): comprovantes em análise do mais antigo, com loja, referência, valor pago × esperado ("Valor diferente do esperado"), horário e formato; totais aguardando e confirmados no mês (São Paulo); pixReady e canReview (suporte sem botões). due-date.saoPauloMonthStart; auth/service reexporta can.

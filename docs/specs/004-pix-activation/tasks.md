@@ -22,7 +22,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T011** `checkSelfReferralByTaxId` nos dois sentidos, chamado por `startCheckout`; indicação `rejected` sem aviso ao indicado · _PIX-FR-003_
 - [x] **T012** `pixView` (valor da fatura, chave, favorecido, BR Code, prazo) e `receiptUpload` (pasta da loja da sessão) · _PIX-FR-004, PIX-SEC-001_
 - [x] **T013** `submitReceipt`: nome exato assinado, formato e 10 MB (recusado é apagado), valor pago, um pagamento em análise por fatura, loja `payment_review`, log; loja B não envia para A · _PIX-FR-005, PIX-FR-006, PIX-SEC-001, PIX-SEC-002, PIX-SEC-004_
-- [ ] **T014** `reviewQueue`: fila do mais antigo, referência, valor pago, alerta de valor diferente, totais do mês, "Chave Pix não configurada"; suporte lê, lojista não · _PIX-FR-007, PIX-FR-008, PIX-SEC-003_
+- [x] **T014** `reviewQueue`: fila do mais antigo, referência, valor pago, alerta de valor diferente, totais do mês, "Chave Pix não configurada"; suporte lê, lojista não · _PIX-FR-007, PIX-FR-008, PIX-SEC-003_
 - [ ] **T015** `confirmPayment`: valor corrigido, fatura paga, `activateFirstTime` (vencimento, endereço deixa de ser reservado), aviso, log, link `wa.me`; duas confirmações → uma ativação e 409 · _PIX-FR-008, PIX-FR-009, PIX-FR-013, PIX-SEC-004, PIX-SEC-007_
 - [ ] **T016** `rejectPayment`: motivo obrigatório, loja volta a `registered`, valor faltante, aviso, log; conferência dupla → 409 · _PIX-FR-010, PIX-FR-013, PIX-SEC-007_
 - [ ] **T017** `registerManualPayment` e `findStoresToCharge`: só admin, loja sem comprovante pendente, mesmo caminho de ativação, log · _PIX-FR-011, PIX-SEC-003_
