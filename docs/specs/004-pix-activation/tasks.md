@@ -20,7 +20,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 2 — Fatias verticais (domínios `billing`, `stores`, `referrals`)
 - [x] **T010** `checkoutView` e `startCheckout`: valor da regra vigente, documento validado e gravado na loja, fatura first aberta (reaproveitada), sem chave Pix → `pixReady=false`; usuário da loja 403 · _PIX-FR-001, PIX-FR-002, PIX-FR-004, PIX-SEC-004, PIX-SEC-005, PIX-SEC-006_
 - [x] **T011** `checkSelfReferralByTaxId` nos dois sentidos, chamado por `startCheckout`; indicação `rejected` sem aviso ao indicado · _PIX-FR-003_
-- [ ] **T012** `pixView` (valor da fatura, chave, favorecido, BR Code, prazo) e `receiptUpload` (pasta da loja da sessão) · _PIX-FR-004, PIX-SEC-001_
+- [x] **T012** `pixView` (valor da fatura, chave, favorecido, BR Code, prazo) e `receiptUpload` (pasta da loja da sessão) · _PIX-FR-004, PIX-SEC-001_
 - [ ] **T013** `submitReceipt`: nome exato assinado, formato e 10 MB (recusado é apagado), valor pago, um pagamento em análise por fatura, loja `payment_review`, log; loja B não envia para A · _PIX-FR-005, PIX-FR-006, PIX-SEC-001, PIX-SEC-002, PIX-SEC-004_
 - [ ] **T014** `reviewQueue`: fila do mais antigo, referência, valor pago, alerta de valor diferente, totais do mês, "Chave Pix não configurada"; suporte lê, lojista não · _PIX-FR-007, PIX-FR-008, PIX-SEC-003_
 - [ ] **T015** `confirmPayment`: valor corrigido, fatura paga, `activateFirstTime` (vencimento, endereço deixa de ser reservado), aviso, log, link `wa.me`; duas confirmações → uma ativação e 409 · _PIX-FR-008, PIX-FR-009, PIX-FR-013, PIX-SEC-004, PIX-SEC-007_

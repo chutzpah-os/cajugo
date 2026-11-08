@@ -355,3 +355,6 @@
 
 # 2026-11-08 · 004/T011 autoindicação por CPF/CNPJ
 - referrals.rejectSelfReferralsByTaxId: ao gravar o documento da loja, compara nos dois sentidos (indicação desta loja × documentos de quem indicou; indicações do dono × documento das lojas indicadas) e marca rejected/self_referral, com log só do motivo; chamado por startCheckout. Documentos de quem indicou: lojas dele hoje, CPF do perfil nas specs 008/010.
+
+# 2026-11-08 · 004/T012 Pix e assinatura do comprovante
+- billing.pixView (valor da fatura aberta, chave, favorecido, cidade, BR Code com valor, prazo; sem fatura → null; chave não pronta → 409) e receiptUpload (pasta privada receipts/{loja da sessão}, nome gerado, jpg/png/webp/heic/pdf, type authenticated; só com loja registered e fatura aberta).

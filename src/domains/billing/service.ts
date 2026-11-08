@@ -3,6 +3,11 @@ import { authorizeTo } from "@/domains/auth/service";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
+import type {
+  Cloudinary,
+  SignedUpload,
+} from "@/platform/cloudinary/cloudinary";
+import { brCode } from "@/platform/pix/br-code";
 import { invoices, payments, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
@@ -18,6 +23,11 @@ import { startCheckoutSchema } from "./schemas";
  */
 
 export type BillingDeps = { db: Db; now?: () => Date };
+export type FileDeps = BillingDeps & { cloudinary: Cloudinary };
+
+/** Comprovante: foto ou PDF, até 10 MB (PIX-FR-005, PIX-SEC-002). */
+export const RECEIPT_FORMATS = ["jpg", "png", "webp", "heic", "pdf"];
+export const RECEIPT_MAX_BYTES = 10 * 1024 * 1024;
 
 const clock = (deps: BillingDeps) => deps.now?.() ?? new Date();
 
@@ -187,5 +197,75 @@ export async function startCheckout(
         entityId: invoice.id,
         data: { kind: "first", totalCents: settings.membership_cents },
       });
+  });
+}
+
+export type PixView = {
+  amountCents: number;
+  key: string;
+  beneficiary: string;
+  city: string;
+  /** "Copia e cola" e conteúdo do QR code (BR Code com o valor). */
+  brCode: string;
+  reviewBusinessDays: number;
+};
+
+/**
+ * Tela do Pix [6c] (PIX-FR-004): valor da fatura aberta, chave e favorecido das
+ * regras, BR Code com o valor e o prazo de conferência. `null` sem fatura aberta
+ * (a pessoa ainda não passou por [5d]); chave não pronta → 409.
+ */
+export async function pixView(
+  deps: BillingDeps,
+  session: Session | null,
+): Promise<PixView | null> {
+  const { storeId } = ownerOf(session);
+  const invoice = await openFirstInvoice(deps.db, storeId);
+  if (!invoice) return null;
+  const settings = await getSettings(deps.db, clock(deps));
+  if (!pixReady(settings.pix)) throw AppError.conflict(UNAVAILABLE);
+  const { key, beneficiary, city } = settings.pix;
+  return {
+    amountCents: invoice.totalCents,
+    key,
+    beneficiary,
+    city,
+    brCode: brCode({
+      key,
+      name: beneficiary,
+      city,
+      amountCents: invoice.totalCents,
+    }),
+    reviewBusinessDays: settings.review_business_days,
+  };
+}
+
+/** Pasta privada dos comprovantes da loja (ADR 0011). */
+const receiptFolder = (storeId: string) => `receipts/${storeId}`;
+
+/**
+ * Assinatura para o navegador enviar o comprovante direto ao Cloudinary, privado
+ * (`authenticated`), na pasta da loja da sessão e com nome gerado aqui (PIX-SEC-001,
+ * PIX-SEC-002). Só com a loja `registered` e a fatura aberta (PIX-FR-006).
+ */
+export async function receiptUpload(
+  deps: FileDeps,
+  session: Session | null,
+): Promise<SignedUpload> {
+  const { storeId } = ownerOf(session);
+  const [store] = await deps.db
+    .select({ status: stores.status })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  if (
+    store?.status !== "registered" ||
+    !(await openFirstInvoice(deps.db, storeId))
+  )
+    throw AppError.conflict("Não há pagamento aguardando comprovante.");
+  return deps.cloudinary.signUpload({
+    folder: receiptFolder(storeId),
+    publicId: `receipt-${crypto.randomUUID()}`,
+    allowedFormats: RECEIPT_FORMATS,
+    type: "authenticated",
   });
 }
