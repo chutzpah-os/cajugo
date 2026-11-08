@@ -439,3 +439,6 @@
 
 # 2026-11-08 · 005/T012 edição do publicado e resumo
 - saveDraft em veículo publicado grava vehicle_history (field price, antes/depois, quem) e log vehicle.price_changed na mesma transação quando o preço muda; vehicleSummary ([6e]) com nome, selo, km, preço, capa, legenda da divulgação, Dias no ar e se a venda ainda pode ser desfeita; stores.storeIsLive.
+
+# 2026-11-08 · 005/T013 vendido, desfazer, despublicar e excluir
+- vehicles: transição única (trava a linha, status de origem fixo, log) para markSold (guarda e desliga a divulgação), undoSold (até 7 dias, volta com a divulgação de antes), unpublish (→ rascunho) e remove (→ excluído com deleted_at, definitivo para a loja); loja B → 404. Nome no resumo passa a ser a versão da FIPE.

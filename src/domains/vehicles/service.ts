@@ -582,13 +582,8 @@ export async function vehicleSummary(
   const now = clock(deps);
   return {
     vehicleId: v.id,
-    name:
-      [
-        v.model,
-        v.version?.replace(new RegExp(`^${v.model ?? ""}\\s*`, "i"), ""),
-      ]
-        .filter(Boolean)
-        .join(" ") || "Veículo sem nome",
+    // A versão da FIPE já traz o modelo ("ONIX HATCH LT 1.0…").
+    name: v.version ?? v.model ?? "Veículo sem nome",
     status: v.status,
     statusLabel: STATUS_LABEL[v.status],
     yearModel: v.yearModel,
@@ -611,3 +606,113 @@ export async function vehicleSummary(
       now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
   };
 }
+
+/**
+ * Muda o status só a partir do esperado (repetição ou corrida não estraga), grava o
+ * log e diz se mudou.
+ */
+async function transition(
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+  rule: {
+    from: (typeof vehicles.$inferSelect.status)[];
+    set: (
+      v: typeof vehicles.$inferSelect,
+      now: Date,
+    ) => Partial<typeof vehicles.$inferInsert>;
+    action: string;
+    conflict: string;
+    allowed?: (v: typeof vehicles.$inferSelect, now: Date) => boolean;
+  },
+): Promise<void> {
+  const { userId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const now = clock(deps);
+  await deps.db.transaction(async (tx) => {
+    const [v] = await tx
+      .select()
+      .from(vehicles)
+      .where(eq(vehicles.id, vehicle.id))
+      .for("update");
+    if (
+      !rule.from.includes(v.status) ||
+      (rule.allowed && !rule.allowed(v, now))
+    )
+      throw AppError.conflict(rule.conflict);
+    await tx
+      .update(vehicles)
+      .set({ ...rule.set(v, now), updatedAt: now })
+      .where(eq(vehicles.id, v.id));
+    await logActivity(tx, {
+      userId,
+      action: rule.action,
+      entity: "vehicle",
+      entityId: v.id,
+    });
+  });
+}
+
+/** Vendido (VEH-FR-013): sai de todos os lugares; a divulgação é guardada e desligada. */
+export const markSold = (
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+) =>
+  transition(deps, session, vehicleId, {
+    from: ["published"],
+    set: (v, now) => ({
+      status: "sold",
+      soldAt: now,
+      shareBeforeSale: v.shareOnCajugo,
+      shareOnCajugo: false,
+    }),
+    action: "vehicle.sold",
+    conflict: "Só um veículo publicado pode ser marcado como vendido.",
+  });
+
+/** Desfazer venda em até 7 dias: volta publicado, com a divulgação de antes. */
+export const undoSold = (
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+) =>
+  transition(deps, session, vehicleId, {
+    from: ["sold"],
+    allowed: (v, now) =>
+      !!v.soldAt &&
+      now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
+    set: (v) => ({
+      status: "published",
+      soldAt: null,
+      shareOnCajugo: v.shareBeforeSale ?? v.shareOnCajugo,
+      shareBeforeSale: null,
+    }),
+    action: "vehicle.sale_undone",
+    conflict: `A venda só pode ser desfeita em até ${UNDO_SALE_DAYS} dias.`,
+  });
+
+/** Despublicar (VEH-FR-014): volta a rascunho e sai do catálogo. */
+export const unpublish = (
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+) =>
+  transition(deps, session, vehicleId, {
+    from: ["published"],
+    set: () => ({ status: "draft" }),
+    action: "vehicle.unpublished",
+    conflict: "Só um veículo publicado pode ser despublicado.",
+  });
+
+/** Excluir (VEH-FR-014): definitivo para a loja; guardado 90 dias para o admin. */
+export const remove = (
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+) =>
+  transition(deps, session, vehicleId, {
+    from: ["draft", "pending_approval", "published", "hidden", "sold"],
+    set: (_, now) => ({ status: "deleted", deletedAt: now }),
+    action: "vehicle.deleted",
+    conflict: "Este veículo já foi excluído.",
+  });
