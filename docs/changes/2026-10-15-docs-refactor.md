@@ -331,3 +331,6 @@
 
 # 2026-11-08 · 004/T003 CPF e CNPJ
 - src/platform/br/tax-id.ts: isValidCpf, isValidCnpj, parseTaxId (11 dígitos = CPF, 14 = CNPJ) e maskTaxId; a regra da chave Pix passou a usar o módulo (a cópia da validação saiu de settings/definitions.ts).
+
+# 2026-11-08 · 004/T004 BR Code do Pix
+- src/platform/pix/br-code.ts: payload EMV do Pix estático (chave, favorecido, cidade, valor) com CRC16, igual ao exemplo do manual do BACEN; nome e cidade sem acento e no limite do padrão.

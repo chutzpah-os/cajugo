@@ -227,3 +227,6 @@
 
 # 2026-11-08 · Unicidade no banco, não só no código (004/T002)
 - "Um comprovante em análise por fatura" e "uma 1ª mensalidade por loja" são índices únicos parciais: duas abas ou dois admins ao mesmo tempo não conseguem burlar a regra, e a 011 herda a mesma garantia para as faturas mensais.
+
+# 2026-11-08 · BR Code próprio, sem biblioteca (004/T004)
+- O formato do BACEN é curto e estável; implementar com teste contra o exemplo oficial evita dependência nova e é o mesmo código que a fatura mensal (011) vai usar.
