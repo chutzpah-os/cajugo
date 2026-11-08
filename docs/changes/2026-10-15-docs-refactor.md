@@ -379,3 +379,6 @@
 
 # 2026-11-08 · 004/T019 rota do comprovante
 - GET /api/v1/payments/[id]/receipt (contract.md): billing.receiptFile (admin e suporte qualquer; lojista só o da própria loja; resto, id inválido, inexistente ou manual → 404) e billing/http.receiptResponse (arquivo lido pelo servidor, private no-store, inline com nome neutro, nosniff; 403 vira 404). Conferido no servidor local: sem sessão → 401 problem+json.
+
+# 2026-11-08 · 004/T020 tela de pagamento [5d] e recusa [12e]
+- /lojistas/pagamento substitui a tela provisória: "2 de 2", card escuro do plano (mensalidade das regras, loja, vencimento, sem fidelidade, cancelar quando quiser), forma de pagamento Pix, CPF/CNPJ, barra fixa "Pagar com Pix · R$ X"; sem chave Pix, aviso com WhatsApp e botão desabilitado; com recusa, motivo e valor faltante [12e]. billing/actions.ts com startCheckoutAction.
