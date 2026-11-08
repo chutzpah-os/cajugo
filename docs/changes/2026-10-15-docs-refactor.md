@@ -301,3 +301,6 @@
 
 # 2026-11-08 · 003/T017 termos
 - /termos [12i]: Termos de uso e Política de privacidade (seções com âncoras), aviso de versão inicial em revisão jurídica, SEO pelo pageMetadata.
+
+# 2026-11-08 · 003/T018 tela de cadastro
+- /lojistas/cadastro [5c] (StoreSignupForm: cidade com sugestões, endereço sugerido e checado ao vivo, código ao vivo, conta existente, termos) e stores/actions.ts (checagens ao vivo com limite liveCheck 60/min por rede; registerStoreAction entra e vai ao pagamento); rota /i/[codigo] → cadastro com o código; seed dá código LOJISTA10 ao lojista de teste. Testado no navegador contra o staging.

@@ -200,3 +200,6 @@
 
 # 2026-11-08 · Texto inicial dos termos (003/T017)
 - O PRD só lista os tópicos; o texto usa apenas o que PRD e SECURITY já definem, sem cláusulas novas, e fica marcado como versão inicial até a revisão jurídica (PRD §12.1 #5). Abas viraram âncoras: funcionam sem JS e ficam no HTML para busca.
+
+# 2026-11-08 · /i/{codigo} como Route Handler (003/T018)
+- Rota dinâmica de página exige generateStaticParams com cacheComponents; o link só redireciona, então um Route Handler GET (307) é mais simples e não depende da lista de códigos. Campos do cadastro controlados: o React limpa o formulário a cada envio.

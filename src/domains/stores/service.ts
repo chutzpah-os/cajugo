@@ -563,3 +563,39 @@ export async function removeE2ESignups(deps: AuthDeps): Promise<number> {
   for (const id of ids) await deps.auth.adminDeleteUser(id);
   return ids.length;
 }
+
+export type CodeCheckView =
+  | { status: "ok"; referrerName: string }
+  | { status: "not-found" | "self-referral" }
+  | null;
+
+/**
+ * Checagem ao vivo do código no cadastro (STO-FR-007). Conectado: compara com o
+ * e-mail e o celular da própria conta; visitante: com o que digitou. Só o nome de
+ * quem indicou sai daqui (STO-SEC-005).
+ */
+export async function checkReferralCode(
+  db: Db,
+  session: Session | null,
+  input: { code: string; email: string; phone: string },
+): Promise<CodeCheckView> {
+  let applicant = {
+    email: String(input.email).slice(0, 254),
+    phone: String(input.phone).slice(0, 30),
+  };
+  if (session) {
+    const [p] = await db
+      .select({ email: profiles.email, phone: profiles.phone })
+      .from(profiles)
+      .where(eq(profiles.id, session.userId));
+    applicant = { email: p?.email ?? "", phone: p?.phone ?? "" };
+  }
+  const result = await checkCode(
+    db,
+    String(input.code).slice(0, 20),
+    applicant,
+  );
+  return result.status === "ok"
+    ? { status: "ok", referrerName: result.referrerName }
+    : { status: result.status };
+}

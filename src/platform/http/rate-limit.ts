@@ -8,6 +8,8 @@ export type RateLimitRule = { limit: number; windowSeconds: number };
 export const RATE_LIMITS = {
   publicForm: { limit: 5, windowSeconds: 60 },
   publicFormDaily: { limit: 30, windowSeconds: 24 * 60 * 60 },
+  /** Checagens ao vivo em formulário público (endereço, código, cidade): por rede. */
+  liveCheck: { limit: 60, windowSeconds: 60 },
   /** Falhas de login por rede no último minuto; login certo não conta (AUT-FR-003). */
   loginFailuresPerNetwork: { limit: 5, windowSeconds: 60 },
   /** Falhas por e-mail em quaisquer 15 min; a 5ª bloqueia por 15 min (AUT-FR-003). */

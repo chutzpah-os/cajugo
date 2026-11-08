@@ -2,6 +2,7 @@ import { eq, inArray } from "drizzle-orm";
 import { profiles, rateLimits, stores } from "@/platform/db/schema";
 import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
+import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
 import { removeE2ESignups } from "@/domains/stores/service";
 import { grantRole } from "./roles";
@@ -112,6 +113,8 @@ export async function seedE2E(deps: AuthDeps, password: string) {
   await restoreInitialSettings(deps.db);
   // Lojas e contas criadas pelos e2e de cadastro (spec 003).
   await removeE2ESignups(deps);
+  // Código pessoal do lojista de teste, para o e2e do link /i/{codigo} (spec 003).
+  await getOrCreateCode(deps.db, ids.owner, "Lojista E2E");
 
   return { ids, storeId: store.id };
 }
