@@ -44,3 +44,21 @@ export const rejectPaymentSchema = z
     amountCents: cents("Informe o valor que caiu na conta.").optional(),
   })
   .strict();
+
+/** Registro sem comprovante [10b] (PIX-FR-011): exceção, sempre com forma e observação. */
+export const manualPaymentSchema = z
+  .object({
+    storeId: z.uuid(),
+    method: z.enum(["cash", "transfer", "pix", "other"], {
+      error: "Escolha a forma de pagamento.",
+    }),
+    amountCents: cents("Informe o valor recebido."),
+    note: z
+      .string()
+      .trim()
+      .min(3, "Conte como foi pago.")
+      .max(300, "Use no máximo 300 caracteres."),
+  })
+  .strict();
+
+export const storeSearchSchema = z.string().trim().min(2).max(60);

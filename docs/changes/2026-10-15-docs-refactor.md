@@ -370,3 +370,6 @@
 
 # 2026-11-08 · 004/T016 recusar comprovante
 - billing.rejectPayment (só admin): motivo de 3 a 300 caracteres, atualização condicional (submitted → rejected), 1ª mensalidade volta a registered (fatura continua aberta para reenviar), aviso com motivo e valor faltante, log com motivo e valores; já conferido → 409.
+
+# 2026-11-08 · 004/T017 pagamento sem comprovante
+- billing.findStoresToCharge (lojas sem 1ª mensalidade paga, por nome ou endereço, com aviso de comprovante pendente) e registerManualPayment (só admin; forma, valor e observação; loja registered sem comprovante em análise; abre a fatura se faltar; pagamento confirmed manual; mesma ativação da confirmação; log payment.manual).

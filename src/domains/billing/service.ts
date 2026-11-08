@@ -1,4 +1,14 @@
-import { and, asc, count, desc, eq, gte } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  ilike,
+  inArray,
+  or,
+} from "drizzle-orm";
 import { authorizeTo, can } from "@/domains/auth/service";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
 import { notify } from "@/domains/notices/service";
@@ -24,6 +34,8 @@ import { whatsappLink } from "@/platform/whatsapp/link";
 import { firstDueDate, saoPauloMonthStart } from "./due-date";
 import {
   confirmPaymentSchema,
+  manualPaymentSchema,
+  storeSearchSchema,
   rejectPaymentSchema,
   startCheckoutSchema,
   submitReceiptSchema,
@@ -634,5 +646,122 @@ export async function rejectPayment(
         expectedCents: invoice.totalCents,
       },
     });
+  });
+}
+
+export type StoreHit = {
+  storeId: string;
+  name: string;
+  slug: string;
+  status: "registered" | "payment_review";
+  /** Tem comprovante em análise: conferir esse primeiro. */
+  pendingReceipt: boolean;
+};
+
+/** Lojas que ainda não pagaram a 1ª mensalidade, por nome ou endereço (PIX-FR-011). */
+export async function findStoresToCharge(
+  deps: BillingDeps,
+  session: Session | null,
+  query: unknown,
+): Promise<StoreHit[]> {
+  authorizeTo(session, "payments.review");
+  const parsed = storeSearchSchema.safeParse(query);
+  if (!parsed.success) return [];
+  const like = `%${parsed.data.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+  const rows = await deps.db
+    .select({
+      storeId: stores.id,
+      name: stores.name,
+      slug: stores.slug,
+      status: stores.status,
+    })
+    .from(stores)
+    .where(
+      and(
+        inArray(stores.status, ["registered", "payment_review"]),
+        or(ilike(stores.name, like), ilike(stores.slug, like)),
+      ),
+    )
+    .orderBy(asc(stores.name))
+    .limit(10);
+  return rows.map((r) => ({
+    ...r,
+    status: r.status as StoreHit["status"],
+    pendingReceipt: r.status === "payment_review",
+  }));
+}
+
+/**
+ * Admin registra pagamento sem comprovante (PIX-FR-011): exceção (ex.: dinheiro),
+ * com forma, valor e observação; mesmo efeito da confirmação. Só para loja que ainda
+ * não pagou a 1ª mensalidade e sem comprovante em análise. Só `admin`, com histórico.
+ */
+export async function registerManualPayment(
+  deps: BillingDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<{ whatsappUrl: string }> {
+  const admin = authorizeTo(session, "payments.review");
+  const parsed = manualPaymentSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { storeId, method, amountCents, note } = parsed.data;
+  const now = clock(deps);
+  const settings = await getSettings(deps.db, now);
+
+  return deps.db.transaction(async (tx) => {
+    const [store] = await tx
+      .select({ status: stores.status })
+      .from(stores)
+      .where(eq(stores.id, storeId));
+    if (!store) throw AppError.notFound();
+    if (store.status === "payment_review")
+      throw AppError.conflict("Confira o comprovante pendente desta loja.");
+    if (store.status !== "registered")
+      throw AppError.conflict("Esta loja não tem pagamento pendente.");
+
+    let invoice = await openFirstInvoice(tx, storeId);
+    if (!invoice)
+      [invoice] = await tx
+        .insert(invoices)
+        .values({
+          storeId,
+          kind: "first",
+          membershipCents: settings.membership_cents,
+          totalCents: settings.membership_cents,
+          dueAt: now,
+        })
+        .returning();
+    const [payment] = await tx
+      .insert(payments)
+      .values({
+        invoiceId: invoice.id,
+        storeId,
+        amountCents,
+        status: "confirmed",
+        manual: true,
+        method,
+        note,
+        submittedBy: admin.userId,
+        submittedAt: now,
+        reviewedBy: admin.userId,
+        reviewedAt: now,
+      })
+      .returning({ id: payments.id });
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "payment.manual",
+      entity: "payment",
+      entityId: payment.id,
+      data: {
+        storeId,
+        invoiceId: invoice.id,
+        reference: REFERENCE[invoice.kind],
+        method,
+        amountCents,
+        expectedCents: invoice.totalCents,
+      },
+    });
+    return settleInvoice(tx, invoice, now);
   });
 }
