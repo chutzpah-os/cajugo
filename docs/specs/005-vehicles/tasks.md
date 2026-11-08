@@ -16,7 +16,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 2 — Fatias verticais (domínio `vehicles`)
 - [x] **T007** `vehicles/lists.ts` + `saveDraft` (cria no 1º salvamento, parcial, `.strict()`, padrões de divulgação e contato da loja) e `vehicleForm`; loja B → 404 · _VEH-FR-003, VEH-FR-006, VEH-FR-008, VEH-SEC-001_
-- [ ] **T008** Identificação no `saveDraft`: ids e nomes da FIPE, regra dos anos, placa e final; referência FIPE e diferença percentual · _VEH-FR-005, VEH-FR-007_
+- [x] **T008** Identificação no `saveDraft`: ids e nomes da FIPE, regra dos anos, placa e final; referência FIPE e diferença percentual · _VEH-FR-005, VEH-FR-007_
 - [ ] **T009** Fotos: `photoUpload` (limite de 20, pasta do veículo), `addPhoto` (nome exato, formato, 15 MB, dimensões; recusado apagado), `removePhoto`, `reorderPhotos` (capa = 1ª); loja B → 404 · _VEH-FR-004, VEH-SEC-001, VEH-SEC-003_
 - [ ] **T010** `publish` com `publishSchema` (erros por campo) e transição condicional; loja não ativada publica; log · _VEH-FR-009, VEH-FR-010, VEH-SEC-005_
 - [ ] **T011** `setShare` (só publicado) e legendas por estado, inclusive "Aparece quando a loja for ativada" (D3) · _VEH-FR-002, VEH-FR-010_

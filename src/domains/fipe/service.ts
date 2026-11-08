@@ -210,3 +210,70 @@ export async function reference(
     throw error;
   }
 }
+
+export type Identification = {
+  make: string;
+  model: string;
+  version: string | null;
+  yearModel: number | null;
+  reference: FipeReference | null;
+};
+
+/**
+ * Confere a escolha da tela contra a FIPE guardada (VEH-FR-005): a versão é da
+ * marca e o ano é da versão. Devolve os nomes (marca, família, versão), o ano modelo
+ * ("Zero KM" = ano corrente) e a referência do mês; escolha inválida → erro no campo.
+ */
+export async function identify(
+  deps: FipeDeps,
+  input: { brandId: string; modelId?: string | null; yearId?: string | null },
+): Promise<Identification> {
+  const fail = (field: string, message: string) =>
+    AppError.validation([{ field, code: "invalid", message }]);
+  const brand = (await brands(deps)).find((b) => b.id === input.brandId);
+  if (!brand) throw fail("fipeBrandId", "Escolha a marca da lista.");
+  if (!input.modelId)
+    return {
+      make: brand.name,
+      model: "",
+      version: null,
+      yearModel: null,
+      reference: null,
+    };
+
+  const family = (await models(deps, brand.id)).find((f) =>
+    f.versions.some((v) => v.id === input.modelId),
+  );
+  const version = family?.versions.find((v) => v.id === input.modelId);
+  if (!family || !version)
+    throw fail("fipeModelId", "Escolha a versão da lista.");
+  if (!input.yearId)
+    return {
+      make: brand.name,
+      model: family.family,
+      version: version.name,
+      yearModel: null,
+      reference: null,
+    };
+
+  const year = (await years(deps, brand.id, version.id)).find(
+    (y) => y.id === input.yearId,
+  );
+  if (!year) throw fail("fipeYearId", "Escolha o ano da lista.");
+  const code = year.id.split(":")[1];
+  const yearModel = code.startsWith("32000")
+    ? Number(
+        new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/Sao_Paulo",
+          year: "numeric",
+        }).format(nowOf(deps)),
+      )
+    : Number(code.split("-")[0]);
+  return {
+    make: brand.name,
+    model: family.family,
+    version: version.name,
+    yearModel,
+    reference: await reference(deps, brand.id, version.id, code),
+  };
+}

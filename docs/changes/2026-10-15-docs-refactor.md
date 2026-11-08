@@ -424,3 +424,6 @@
 
 # 2026-11-08 · 005/T007 rascunho do veículo
 - vehicles: lists.ts (câmbio, combustível, carroceria, portas, condições, itens; limites fixos D2), schemas (campos do [2a], tudo opcional no rascunho, .strict()), saveDraft (cria no 1º salvamento com divulgação e WhatsApp da loja; depois grava só o enviado; vendido/excluído → 409/404) e vehicleForm (saída montada à mão); loja B → 404; usuário da loja cadastra. stores.vehicleDefaults; brPhoneSchema foi para platform/br/phone.ts.
+
+# 2026-11-08 · 005/T008 identificação do veículo
+- fipe.identify confere marca → versão → ano contra a FIPE guardada e devolve nomes (marca, família = Modelo, versão), ano modelo (Zero KM = ano corrente) e referência do mês; saveDraft grava esses dados e a referência (nunca da tela), aplica a regra dos anos e a placa com final. vehicles/price.priceVsFipe ("4,6% abaixo").

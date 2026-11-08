@@ -1,7 +1,10 @@
 import { and, eq, inArray } from "drizzle-orm";
 import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
+import { identify } from "@/domains/fipe/service";
 import { vehicleDefaults } from "@/domains/stores/service";
+import { parsePlate } from "@/platform/br/plate";
+import type { FipeClient } from "@/platform/fipe/client";
 import { vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
@@ -12,7 +15,7 @@ import { draftSchema } from "./schemas";
  * Veículos da loja (spec 005). `storeId` sempre da sessão; veículo de outra loja
  * responde 404 (a posse vai no `where`, SECURITY.md §4).
  */
-export type VehicleDeps = { db: Db; now?: () => Date };
+export type VehicleDeps = { db: Db; fipe?: FipeClient; now?: () => Date };
 
 const clock = (deps: VehicleDeps) => deps.now?.() ?? new Date();
 
@@ -44,8 +47,22 @@ export async function saveDraft(
   input: unknown,
 ): Promise<{ vehicleId: string; savedAt: Date }> {
   const { storeId } = storeOf(session);
-  const { vehicleId, ...fields } = parse(draftSchema, input);
+  const { vehicleId, ...parsed } = parse(draftSchema, input);
   const now = clock(deps);
+  const existing = vehicleId
+    ? await deps.db
+        .select({
+          status: vehicles.status,
+          yearModel: vehicles.yearModel,
+          yearManufacture: vehicles.yearManufacture,
+        })
+        .from(vehicles)
+        .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)))
+        .then((r) => r[0])
+    : undefined;
+  if (vehicleId && (!existing || existing.status === "deleted"))
+    throw AppError.notFound();
+  const fields = await resolveFields(deps, parsed, existing);
 
   if (!vehicleId) {
     const defaults = await vehicleDefaults(deps.db, storeId);
@@ -56,12 +73,7 @@ export async function saveDraft(
     return { vehicleId: created.id, savedAt: now };
   }
 
-  const [current] = await deps.db
-    .select({ status: vehicles.status })
-    .from(vehicles)
-    .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)));
-  if (!current || current.status === "deleted") throw AppError.notFound();
-  if (!(EDITABLE as readonly string[]).includes(current.status))
+  if (!(EDITABLE as readonly string[]).includes(existing!.status))
     throw AppError.conflict("Este veículo não pode mais ser editado.");
   await deps.db
     .update(vehicles)
@@ -74,6 +86,71 @@ export async function saveDraft(
       ),
     );
   return { vehicleId, savedAt: now };
+}
+
+type DraftInput = ReturnType<typeof draftSchema.parse>;
+
+const fieldError = (field: string, message: string) =>
+  AppError.validation([{ field, code: "invalid", message }]);
+
+/**
+ * Converte a entrada da tela nas colunas: identificação pela FIPE guardada (nomes,
+ * ano modelo, referência), regra dos anos e placa com final (VEH-FR-005, VEH-FR-007).
+ */
+async function resolveFields(
+  deps: VehicleDeps,
+  input: Omit<DraftInput, "vehicleId">,
+  existing?: { yearModel: number | null; yearManufacture: number | null },
+) {
+  const { fipeBrandId, fipeModelId, fipeYearId, plate, ...rest } = input;
+  const out: Record<string, unknown> = { ...rest };
+
+  let yearModel = existing?.yearModel ?? null;
+  if (fipeBrandId !== undefined) {
+    const id = fipeBrandId
+      ? await identify(deps, {
+          brandId: fipeBrandId,
+          modelId: fipeModelId,
+          yearId: fipeYearId,
+        })
+      : null;
+    yearModel = id?.yearModel ?? null;
+    Object.assign(out, {
+      fipeBrandId: fipeBrandId ?? null,
+      fipeModelId: id?.version ? fipeModelId : null,
+      fipeYearId: id?.yearModel ? fipeYearId : null,
+      make: id?.make ?? null,
+      model: id?.model || null,
+      version: id?.version ?? null,
+      yearModel,
+      fipeCode: id?.reference?.fipeCode ?? null,
+      fipePriceCents: id?.reference?.priceCents ?? null,
+      fipeMonth: id?.reference?.month ?? null,
+    });
+  }
+
+  const yearManufacture =
+    input.yearManufacture ?? existing?.yearManufacture ?? null;
+  if (
+    yearModel &&
+    yearManufacture &&
+    (yearModel < yearManufacture || yearModel > yearManufacture + 1)
+  )
+    throw fieldError(
+      "yearManufacture",
+      "O ano modelo deve ser o de fabricação ou o seguinte.",
+    );
+
+  if (plate !== undefined) {
+    if (!plate.trim()) Object.assign(out, { plate: null, plateEnd: null });
+    else {
+      const p = parsePlate(plate);
+      if (!p)
+        throw fieldError("plate", "Placa inválida (ex.: ABC1D23 ou ABC1234).");
+      Object.assign(out, { plate: p.plate, plateEnd: p.end });
+    }
+  }
+  return out;
 }
 
 export type VehicleFormView = {

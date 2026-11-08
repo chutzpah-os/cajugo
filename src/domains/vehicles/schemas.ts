@@ -16,6 +16,16 @@ import {
  * loja, status, datas e referência FIPE nunca vêm da tela (VEH-SEC-001).
  */
 export const vehicleFields = {
+  /** Escolha da FIPE (ids); nomes e referência vêm do servidor (VEH-FR-005). */
+  fipeBrandId: z.string().max(12).nullable(),
+  fipeModelId: z.string().max(12).nullable(),
+  fipeYearId: z.string().max(40).nullable(),
+  yearManufacture: z
+    .number()
+    .int()
+    .min(1950)
+    .max(2100, "Confira o ano de fabricação."),
+  plate: z.string().max(10),
   mileageKm: z.number().int().min(0).max(2_000_000, "Confira a quilometragem."),
   transmission: z.enum(keysOf(TRANSMISSIONS), { error: "Escolha o câmbio." }),
   fuel: z.enum(keysOf(FUELS), { error: "Escolha o combustível." }),
