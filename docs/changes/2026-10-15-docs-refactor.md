@@ -240,3 +240,6 @@
 # 2026-11-08 · 002/T019 e2e das regras
 - tests/e2e/settings.spec.ts (10 cenários: salvar e histórico, faixa, suporte, lojista, chave Pix com senha, WhatsApp no recuperar, troca de senha, acessibilidade de 3 telas); audit() movida para fixtures.
 - Corrigido: tipo da chave Pix voltava a CPF depois de um envio com erro (rascunho agora em campos ocultos).
+
+# 2026-11-08 · 002/T020 migration no prod
+- 0005 aplicada no cajugo-prod; staging e prod conferidos: 14 regras com os valores provisórios e gatilho só de inserção.
