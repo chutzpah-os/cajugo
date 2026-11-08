@@ -49,7 +49,7 @@ Páginas públicas: o menu [11a] no cabeçalho da home, a landing `/lojistas` [5
 - `registerReferral(tx, code, storeId)`: grava a indicação com status `registered`. Fica no domínio, mas é chamada só pelo `registerStore`, dentro da mesma transação.
 
 **Plataforma**
-- `cloudinary/sign.ts`: `signUpload({ folder, publicId, allowedFormats })` gera `{ signature, timestamp, apiKey, cloudName, ... }` com SHA-256 sobre os parâmetros ordenados (o mesmo algoritmo do SDK). `verifyUpload(publicId)` consulta a Admin API (formato e bytes). `imageUrl(publicId, { w })`.
+- `cloudinary/sign.ts`: `signUpload({ folder, publicId, allowedFormats })` gera `{ signature, timestamp, apiKey, cloudName, ... }` com SHA-1 sobre os parâmetros ordenados (algoritmo padrão do Cloudinary; SHA-256 exige configurar a conta). `verifyUpload(publicId)` consulta a Admin API (formato e bytes). `imageUrl(publicId, { w })`.
 - `seo/metadata.ts`: `pageMetadata({ title, description, path, image? })` gera `Metadata` com canônica e Open Graph; `jsonLd(...)` gera o `<script type="application/ld+json">` seguro (escapa `<`).
 
 ## Mapa requisito → solução

@@ -185,3 +185,6 @@
 
 # 2026-11-08 · Migration em dois passos (003/T001)
 - Remover address e criar address_* no mesmo passo faz o drizzle-kit perguntar se é renomeação (pede terminal interativo). Separar em 0006 e 0007 tira a ambiguidade e deixa explícito que address foi apagada, não renomeada.
+
+# 2026-11-08 · Cloudinary sem SDK, SHA-1 (003/T003)
+- A assinatura é um hash de poucos parâmetros; o SDK não traria ganho. SHA-1 é o padrão aceito pelo Cloudinary sem configurar a conta (o plano dizia SHA-256, que exige ajuste no painel). CLOUDINARY_FOLDER explícita em vez de inferir o ambiente da Vercel, para rodar igual numa VPS.

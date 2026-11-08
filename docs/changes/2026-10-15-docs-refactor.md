@@ -256,3 +256,6 @@
 
 # 2026-11-08 · 003/T002 cidades do IBGE
 - scripts/generate-cities.ts gera src/platform/geo/cities.json (5.571 cidades); searchCities (começo do nome, sem acento) e findCity (nome oficial + UF).
+
+# 2026-11-08 · 003/T003 Cloudinary
+- src/platform/cloudinary: signParams, createCloudinary (signUpload com pasta/nome/formatos do servidor, verifyUpload pela Admin API, imageUrl f_auto,q_auto), FakeCloudinary; CLOUDINARY_FOLDER (staging/prod) no .env.example e DEPLOYMENT. Testado com upload real no staging.
