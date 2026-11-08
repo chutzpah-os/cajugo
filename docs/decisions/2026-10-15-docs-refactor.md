@@ -170,3 +170,6 @@
 
 # 2026-11-08 · 404 "suave" nas páginas logadas (002/T015)
 - Com streaming e layout em <Suspense>, regra inexistente mostra a tela 404 mas com status 200. Em página logada e noindex não há efeito; páginas públicas (SEO) precisam validar antes do streaming e devolver 404 de verdade.
+
+# 2026-11-08 · Build sem depender do banco (002/T018)
+- Página que lê regras usa connection() antes: o build não consulta o banco, então deploy não falha com o banco pausado (plano gratuito) nem antes de a migration chegar ao prod.

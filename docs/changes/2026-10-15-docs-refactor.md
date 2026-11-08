@@ -233,3 +233,6 @@
 
 # 2026-11-08 · 002/T017 /conta/senha
 - Tela de troca da própria senha para qualquer papel (ChangePasswordForm + changePasswordAction); /conta protegida no proxy; testado no navegador (atual errada, troca certa, login com a nova).
+
+# 2026-11-08 · 002/T018 WhatsApp pelas regras
+- /recuperar lê o WhatsApp de atendimento das regras (botão por requisição com connection(), cache de 1 min); SUPPORT_WHATSAPP removida do código, do .env.example e do DEPLOYMENT.

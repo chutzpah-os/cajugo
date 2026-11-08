@@ -28,7 +28,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T015** Histórico por regra na tela (link "Histórico" em cada regra) · _CFG-FR-006_
 - [x] **T016** [8f] `/admin/indica/regras`: programa ativo, quem pode indicar, recompensa, duração e resgate mínimo; link "Regras do programa" em `/admin/indica` · _CFG-FR-001, CFG-FR-002_
 - [x] **T017** `/conta/senha` (senha atual, nova, confirmação) para qualquer papel; `/conta` protegida no `proxy.ts` · _CFG-FR-010, CFG-SEC-006_
-- [ ] **T018** `/recuperar` lê o WhatsApp das regras; `SUPPORT_WHATSAPP` sai do código, do `.env.example` e do DEPLOYMENT; avisar o dono para apagar na Vercel · _CFG-FR-007_
+- [x] **T018** `/recuperar` lê o WhatsApp das regras; `SUPPORT_WHATSAPP` sai do código, do `.env.example` e do DEPLOYMENT; avisar o dono para apagar na Vercel · _CFG-FR-007_
 
 ## Fase 4 — Ponta a ponta e fechamento
 - [ ] **T019** Playwright (390 px, staging): admin altera uma regra e vê o valor e o histórico; suporte sem "Salvar"; lojista "Sem permissão"; troca de chave Pix com senha certa e errada; `/recuperar` com o número das regras; troca de senha; acessibilidade de `/admin/conta`, `/admin/indica/regras` e `/conta/senha` · _CFG-FR-001, CFG-FR-002, CFG-FR-006, CFG-FR-007, CFG-FR-008, CFG-FR-010, CFG-NFR-002, CFG-SEC-001, CFG-SEC-002_
