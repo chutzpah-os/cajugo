@@ -799,3 +799,5 @@ export async function resetStoreForTests(
       .where(eq(stores.id, storeId));
   });
 }
+
+export { STORES_TAG } from "./tags";

@@ -1,9 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getDb } from "@/platform/db/client";
 import { publicStore } from "./service";
+import { STORES_TAG } from "./tags";
 
-/** Tag das páginas públicas de loja (ARCHITECTURE §5): quem altera loja invalida. */
-export const STORES_TAG = "stores";
+export { STORES_TAG };
 
 /**
  * Loja do endereço `/loja/{slug}` com cache (cota gratuita, SEO): a página decide

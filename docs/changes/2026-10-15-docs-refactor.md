@@ -385,3 +385,6 @@
 
 # 2026-11-08 · 004/T021 tela do Pix [6c] e pagamento em análise [10a]
 - /lojistas/pagamento/pix: valor, QR do BR Code (gerado no servidor), chave e copia e cola com Copiar, favorecido, passos, prazo; ReceiptForm com pré-visualização (imagem ou nome do PDF), limite de 10 MB, valor pago, envio direto ao Cloudinary privado e ida para [10a]. /painel/pagamento substitui a provisória (comprovante, valor, prazo; sem análise → painel). platform/cloudinary/browser-upload.uploadSigned agora é o envio único (logo e capa também usam). billing.paymentInReview e actions de assinatura e envio.
+
+# 2026-11-08 · 004/T022 Pagamentos Pix do admin [10b]
+- /admin/pagamentos substitui a provisória: aviso "Chave Pix não configurada", totais, lembrete do extrato, fila com Ver comprovante (rota privada), alerta de valor diferente, valor corrigido, Confirmar (com botão wa.me para avisar a loja) e Recusar com motivo; Registrar pagamento sem comprovante com busca da loja; suporte vê sem botões. Actions de conferência renovam a página pública da loja (STORES_TAG foi para stores/tags.ts e é reexportada pelo serviço).

@@ -1,6 +1,8 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { STORES_TAG } from "@/domains/stores/service";
 import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
@@ -9,7 +11,16 @@ import {
   getCloudinary,
   type SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
-import { receiptUpload, startCheckout, submitReceipt } from "./service";
+import {
+  confirmPayment,
+  findStoresToCharge,
+  receiptUpload,
+  registerManualPayment,
+  rejectPayment,
+  startCheckout,
+  submitReceipt,
+  type StoreHit,
+} from "./service";
 
 export type FormState = {
   ok: boolean;
@@ -88,5 +99,82 @@ export async function submitReceiptAction(input: {
       error,
       "Não foi possível enviar o comprovante agora. Tente de novo.",
     );
+  }
+}
+
+export type ReviewResult =
+  | { ok: true; whatsappUrl?: string }
+  | { ok: false; message?: string; errors: Record<string, string> };
+
+function reviewError(error: unknown): ReviewResult {
+  const state = formError(
+    error,
+    "Não foi possível concluir agora. Tente de novo.",
+  );
+  return { ok: false, message: state?.message, errors: state?.errors ?? {} };
+}
+
+/** Confirmar [10b] (PIX-FR-009): a loja vai ao ar, então a página pública é renovada. */
+export async function confirmPaymentAction(input: {
+  paymentId: string;
+  amountCents?: number;
+}): Promise<ReviewResult> {
+  try {
+    const { whatsappUrl } = await confirmPayment(
+      { db: getDb() },
+      await currentSession(),
+      input,
+    );
+    updateTag(STORES_TAG);
+    return { ok: true, whatsappUrl };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/** Recusar com motivo [10b] (PIX-FR-010). */
+export async function rejectPaymentAction(input: {
+  paymentId: string;
+  reason: string;
+  amountCents?: number;
+}): Promise<ReviewResult> {
+  try {
+    await rejectPayment({ db: getDb() }, await currentSession(), input);
+    return { ok: true };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/** Busca de loja para o registro sem comprovante (PIX-FR-011). */
+export async function findStoresAction(query: string): Promise<StoreHit[]> {
+  try {
+    return await findStoresToCharge(
+      { db: getDb() },
+      await currentSession(),
+      String(query).slice(0, 60),
+    );
+  } catch {
+    return [];
+  }
+}
+
+/** Registrar pagamento sem comprovante (PIX-FR-011). */
+export async function manualPaymentAction(input: {
+  storeId: string;
+  method: string;
+  amountCents: number;
+  note: string;
+}): Promise<ReviewResult> {
+  try {
+    const { whatsappUrl } = await registerManualPayment(
+      { db: getDb() },
+      await currentSession(),
+      input,
+    );
+    updateTag(STORES_TAG);
+    return { ok: true, whatsappUrl };
+  } catch (error) {
+    return reviewError(error);
   }
 }
