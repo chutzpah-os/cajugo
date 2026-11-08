@@ -259,3 +259,6 @@
 
 # 2026-11-08 · 003/T003 Cloudinary
 - src/platform/cloudinary: signParams, createCloudinary (signUpload com pasta/nome/formatos do servidor, verifyUpload pela Admin API, imageUrl f_auto,q_auto), FakeCloudinary; CLOUDINARY_FOLDER (staging/prod) no .env.example e DEPLOYMENT. Testado com upload real no staging.
+
+# 2026-11-08 · 003/T004 SEO e URL da loja
+- src/platform/seo/seo.tsx: pageMetadata (título com marca, canônica absoluta sem query, Open Graph/Twitter) e JsonLd/jsonLdText (escapa <); src/platform/http/urls.ts: appUrl e storeUrl.
