@@ -280,3 +280,6 @@
 
 # 2026-11-08 · 003/T010 Minha loja (dados)
 - stores: hours.ts (intervalos por dia ou Fechado, até 3, sem sobreposição), storeUpdateSchema (CEP 8 dígitos, Instagram normalizado), updateStore e storeSummary só na loja da sessão; usuário da loja 403; auditoria store.updated.
+
+# 2026-11-08 · 003/T011 troca do endereço
+- stores: changeSlug (1×/30 dias com data em dd/mm/aaaa; antigo redireciona 90 dias; voltar a um antigo da própria loja; transação + auditoria store.slug_changed) e resolveSlug (atual ou antigo válido).

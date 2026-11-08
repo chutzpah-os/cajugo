@@ -1,11 +1,11 @@
-import { eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
 import {
   checkCode,
   getOrCreateCode,
   registerReferral,
 } from "@/domains/referrals/service";
-import { profiles, stores } from "@/platform/db/schema";
+import { profiles, storeSlugRedirects, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
@@ -17,7 +17,7 @@ import {
   storeUpdateSchema,
 } from "./schemas";
 import type { StoreHours } from "./hours";
-import { checkSlug } from "./slug";
+import { checkSlug, slugSchema } from "./slug";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 /** Endereço reservado sem 1º pagamento (PRD §5.1); liberação na spec 011. */
@@ -325,4 +325,114 @@ export async function storeSummary(
     coverPublicId: s.coverPublicId,
     slugChangedAt: s.slugChangedAt,
   };
+}
+
+const SLUG_CHANGE_INTERVAL_DAYS = 30;
+const SLUG_REDIRECT_DAYS = 90;
+const brDate = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: "America/Sao_Paulo",
+});
+
+/**
+ * Troca do endereço do catálogo (STO-FR-013): no máximo 1 vez a cada 30 dias; o
+ * endereço antigo leva ao novo por 90 dias. Voltar a um endereço antigo da própria
+ * loja é permitido. Só a loja da sessão (STO-SEC-001); usuário da loja: 403.
+ */
+export async function changeSlug(
+  deps: AuthDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<{ slug: string }> {
+  const { userId, storeId } = ownStore(session);
+  const parsed = slugSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(
+      fieldErrorsFromZod(parsed.error).map((e) => ({ ...e, field: "slug" })),
+    );
+  const slug = parsed.data;
+  const now = deps.now?.() ?? new Date();
+
+  const [store] = await deps.db
+    .select({ slug: stores.slug, changedAt: stores.slugChangedAt })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  if (!store) throw AppError.notFound();
+  if (store.slug === slug) return { slug };
+  if (store.changedAt) {
+    const next = new Date(
+      store.changedAt.getTime() + SLUG_CHANGE_INTERVAL_DAYS * DAY_MS,
+    );
+    if (now < next)
+      throw fieldError(
+        "slug",
+        "too_soon",
+        `Você poderá trocar de novo a partir de ${brDate.format(next)}.`,
+      );
+  }
+
+  const [ownOld] = await deps.db
+    .select({ slug: storeSlugRedirects.oldSlug })
+    .from(storeSlugRedirects)
+    .where(
+      and(
+        eq(storeSlugRedirects.oldSlug, slug),
+        eq(storeSlugRedirects.storeId, storeId),
+      ),
+    );
+  if (!ownOld) await assertSlugAvailable(deps, slug);
+
+  await deps.db.transaction(async (tx) => {
+    if (ownOld)
+      await tx
+        .delete(storeSlugRedirects)
+        .where(eq(storeSlugRedirects.oldSlug, slug));
+    const expiresAt = new Date(now.getTime() + SLUG_REDIRECT_DAYS * DAY_MS);
+    await tx
+      .insert(storeSlugRedirects)
+      .values({ oldSlug: store.slug, storeId, expiresAt })
+      .onConflictDoUpdate({
+        target: storeSlugRedirects.oldSlug,
+        set: { storeId, expiresAt },
+      });
+    await tx
+      .update(stores)
+      .set({ slug, slugChangedAt: now })
+      .where(eq(stores.id, storeId));
+    await logActivity(tx, {
+      userId,
+      action: "store.slug_changed",
+      entity: "store",
+      entityId: storeId,
+      data: { from: store.slug, to: slug },
+    });
+  });
+  return { slug };
+}
+
+/**
+ * Endereço `/loja/{slug}`: a loja dona do endereço atual, ou a loja para a qual um
+ * endereço antigo ainda redireciona (até 90 dias). `null` se nenhum.
+ */
+export async function resolveSlug(
+  db: Db,
+  slug: string,
+  at: Date = new Date(),
+): Promise<{ storeId: string; slug: string; redirected: boolean } | null> {
+  const [current] = await db
+    .select({ id: stores.id, slug: stores.slug })
+    .from(stores)
+    .where(eq(stores.slug, slug));
+  if (current)
+    return { storeId: current.id, slug: current.slug, redirected: false };
+  const [old] = await db
+    .select({ id: stores.id, slug: stores.slug })
+    .from(storeSlugRedirects)
+    .innerJoin(stores, eq(stores.id, storeSlugRedirects.storeId))
+    .where(
+      and(
+        eq(storeSlugRedirects.oldSlug, slug),
+        gt(storeSlugRedirects.expiresAt, at),
+      ),
+    );
+  return old ? { storeId: old.id, slug: old.slug, redirected: true } : null;
 }

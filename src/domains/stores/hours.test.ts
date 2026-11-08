@@ -54,7 +54,7 @@ describe("horário de atendimento", () => {
         ...fullWeek,
         mon: { ranges: Array(4).fill({ from: "08:00", to: "09:00" }) },
       },
-      (({ sun: _sun, ...rest }) => rest)(fullWeek),
+      Object.fromEntries(Object.entries(fullWeek).filter(([d]) => d !== "sun")),
     ];
     for (const h of bad) expect(hoursSchema.safeParse(h).success).toBe(false);
     const message = hoursSchema.safeParse(bad[0]);
