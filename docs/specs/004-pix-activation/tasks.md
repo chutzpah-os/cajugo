@@ -7,7 +7,7 @@ spec: 004
 Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um ciclo teste falhando → código → verde. Testes com o ID do requisito no nome. O caso "loja B" entra em toda ação com id ou com arquivo da loja (PIX-SEC-001). Decisões do plano D1–D4 nas opções recomendadas (confirmar antes do `/implement`).
 
 ## Fase 1 — Fundação
-- [ ] **T001** Documentos: ARCHITECTURE §4 (`stores.tax_id`/`tax_id_type`, `invoices.kind`, `payments.paid_cents`/`method`/`note`, `notices`), SECURITY §8 (valor pago e motivo de recusa), GLOSSARY ("valor pago", "indicação não válida", "aviso"), ADR 0011 (comprovante privado servido por rota nossa, D2) · _—_
+- [x] **T001** Documentos: ARCHITECTURE §4 (`stores.tax_id`/`tax_id_type`, `invoices.kind`, `payments.paid_cents`/`method`/`note`, `notices`), SECURITY §8 (valor pago e motivo de recusa), GLOSSARY ("valor pago", "indicação não válida", "aviso"), ADR 0011 (comprovante privado servido por rota nossa, D2) · _—_
 - [ ] **T002** Migration `0008`: enums, `invoices`, `payments`, `notices`, colunas em `stores` e `referrals`, `referral_status` + `rejected`, valor inicial de `membership_cents`; teste de migration (índices únicos parciais) · _—_
 - [ ] **T003** [P] `src/platform/br/tax-id.ts`: validar, normalizar e mascarar CPF/CNPJ; a regra `pix` passa a usar este módulo (sem mudar comportamento) · _PIX-FR-002, PIX-SEC-005_
 - [ ] **T004** [P] `src/platform/pix/br-code.ts`: payload EMV do Pix estático com valor + CRC16, testado contra o exemplo do manual do BACEN · _PIX-FR-004_

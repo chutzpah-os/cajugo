@@ -92,6 +92,9 @@ Vínculo entre quem indicou e a loja indicada, criado pelo código ou link.
 **Código de indicação** (`referral_code`):
 Código pessoal de quem indica (ex.: `RICARDO10`), criado com a conta, e o link `/i/{codigo}` que leva ao cadastro da loja com o código aplicado. Usar o próprio código (mesmo e-mail, celular, CPF ou CNPJ) é autoindicação e não vale.
 
+**Indicação não válida** (`rejected`):
+Indicação descartada por autoindicação (mesmo e-mail, celular, CPF ou CNPJ de quem indicou); nunca gera recompensa. Só o admin vê o motivo.
+
 **Recompensa** (`reward`):
 Valor mensal gerado por uma indicação ativa (R$ 30), creditado a quem indicou.
 
@@ -140,7 +143,17 @@ O único plano do MVP: R$ 100/mês, sem fidelidade.
 Arquivo (foto ou PDF) do Pix pago, enviado pelo lojista e conferido pelo admin no extrato.
 
 **Pagamento** (`payment`):
-Envio de um comprovante para uma fatura: enviado → confirmado ou recusado (com motivo).
+Envio de um comprovante para uma fatura: enviado → confirmado ou recusado (com motivo). O admin também pode registrar um pagamento sem comprovante (exceção, ex.: dinheiro).
+
+**Valor pago** (`paid_cents`):
+Quanto o lojista diz ter pago ao enviar o comprovante; o admin pode corrigir conforme o extrato, e o corrigido é o que vale (`amount_cents`). Diferente do valor esperado, que é o total da fatura.
+
+**Documento fiscal** (`tax_id`):
+CPF ou CNPJ de quem paga a loja, informado na tela de pagamento [5d]; aparece mascarado para o lojista.
+
+**Aviso** (`notice`):
+Mensagem no painel de quem recebe (ex.: comprovante confirmado ou recusado). No MVP é o único aviso automático (ADR 0007).
+_Evite_: notificação (sugere envio por e-mail ou celular)
 
 **Assinatura** (`subscription`):
 Vínculo pago da loja com o Plano Catálogo; o status dela decide se a loja fica no ar.

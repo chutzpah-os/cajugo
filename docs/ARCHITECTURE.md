@@ -105,21 +105,26 @@ profiles ✅              # 1:1 com auth.users (mesmo id; sem FK, porque o schem
 
 # Loja e assinatura (a assinatura vive na própria loja)
 stores ✅ (+ colunas novas)
-  id, name, slug (unique, `[a-z0-9-]`), cnpj, city, state, whatsapp, about, instagram,
+  id, name, slug (unique, `[a-z0-9-]`), tax_id + tax_id_type (cpf|cnpj: documento de quem paga, spec 004), city, state, whatsapp, about, instagram,
   address_street, address_number, address_complement, address_district, address_zip (spec 003),
   logo_public_id, cover_public_id, hours (jsonb), share_by_default, owner_id,
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),
-  billing_day, next_due_at, past_due_since, cancel_at, active_until, slug_reserved_until,
+  billing_day, next_due_at, activated_at (1ª ativação), past_due_since, cancel_at, active_until, slug_reserved_until,
   slug_changed_at (troca no máximo 1× a cada 30 dias),
   accepts_sellers (bool), commission_type (pct|fixed), commission_value,
   created_at, updated_at                       # indicação usada: em referrals.referred_store_id
 store_slug_redirects     old_slug (pk), store_id, expires_at
 
-invoices                 id, store_id, period (AAAA-MM), membership_cents, fees_cents, credit_cents, total_cents,
-                         due_at, status (open|paid|overdue|canceled), paid_at
-payments                 id, invoice_id, store_id, amount_cents, receipt_public_id (Cloudinary privado),
-                         status (submitted|confirmed|rejected), reject_reason, manual (bool: registro sem comprovante),
-                         submitted_at, reviewed_by, reviewed_at
+invoices                 id, store_id, kind (first|monthly), period (AAAA-MM; null na first), membership_cents,
+                         fees_cents, credit_cents, total_cents (valor esperado, fixado na abertura pela regra vigente),
+                         due_at, status (open|paid|overdue|canceled), paid_at          # spec 004 (first); mensais na 011
+payments                 id, invoice_id, store_id, paid_cents (informado pelo lojista), amount_cents (o que vale,
+                         corrigível pelo admin), receipt_public_id + receipt_format (Cloudinary `authenticated`),
+                         status (submitted|confirmed|rejected), reject_reason, manual (bool), method (pix|cash|transfer|other),
+                         note, submitted_by, submitted_at, reviewed_by, reviewed_at
+                         # no máximo 1 `submitted` por fatura (índice único parcial)
+notices                  id, profile_id (quem vê), kind, data (jsonb, sem dado pessoal), created_at, dismissed_at
+                         # avisos no painel (ADR 0007); cada spec acrescenta os seus `kind`
 
 # Veículos
 vehicles
@@ -159,8 +164,8 @@ seller_reviews           id, seller_id, store_id, rating (1–5), text, created_
 
 # Caju Indica
 referral_codes           code (pk), profile_id (dono) ou campaign_name (link de campanha, sem recompensa), active   # criadas na 003 (código pessoal do lojista); campanhas na 010
-referrals                id, code, referrer_id, referred_store_id, status (invited|registered|active|paused|ended),
-                         months_paid (0–3), created_at
+referrals                id, code, referrer_id, referred_store_id, status (invited|registered|active|paused|ended|rejected),
+                         reject_reason (ex.: self_referral, spec 004), months_paid (0–3), created_at
 rewards                  id, referral_id, beneficiary_id, period, amount_cents,
                          status (expected|credited|applied|redeemed)
 payouts                  id, profile_id, amount_cents, pix_key, cpf, status (requested|paid), paid_by, paid_at
@@ -181,7 +186,7 @@ rate_limits ✅            key + window_start (pk), count
 webhook_events           id (pk = id do evento no gateway), type, received_at, processed_at   # fase 2
 ```
 
-Índices iniciais: `vehicles(status, share_on_cajugo)`, `vehicles(store_id, status)`, `vehicles(make, model)`, `vehicles(price_cents)`, GIN em `vehicles(search)`, `leads(store_id, status, created_at)`, `payments(status, submitted_at)`, `partnerships(store_id, status)`, `sales(seller_id, commission_status)`, `referrals(referrer_id, status)`.
+Índices iniciais: `vehicles(status, share_on_cajugo)`, `vehicles(store_id, status)`, `vehicles(make, model)`, `vehicles(price_cents)`, GIN em `vehicles(search)`, `leads(store_id, status, created_at)`, `payments(status, submitted_at)`, `invoices(store_id, status)`, `notices(profile_id, created_at)`, `stores(tax_id)`, `partnerships(store_id, status)`, `sales(seller_id, commission_status)`, `referrals(referrer_id, status)`.
 
 ### Regras que o modelo garante
 - **Nenhuma regra numérica no código:** valores de `setting_values` (PRD §5.14), lidos com cache de até 1 minuto; cálculos usam o valor vigente na data do fato (ADR 0010).

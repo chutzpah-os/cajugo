@@ -322,3 +322,6 @@
 
 # 2026-11-08 · APP_URL obrigatória na produção
 - appUrl() para o build quando falta APP_URL com VERCEL_ENV=production (antes caía em localhost sem avisar); aceita espaço e barra no fim. Teste novo em urls.test.ts; DEPLOYMENT.md atualizado.
+
+# 2026-11-08 · 004/T001 documentos do Pix manual
+- ARCHITECTURE §4: documento fiscal na loja (tax_id/tax_id_type), invoices.kind, payments com valor pago, método e observação, tabela notices, indicação rejected; SECURITY §8 (comprovante pela rota do servidor; valor pago e motivo); GLOSSARY (valor pago, documento fiscal, aviso, indicação não válida); ADR 0011.

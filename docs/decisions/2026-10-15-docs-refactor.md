@@ -221,3 +221,6 @@
 
 # 2026-11-08 · Build de produção falha sem APP_URL
 - O primeiro deploy saiu com canônica, sitemap e robots apontando para localhost porque APP_URL não chegou ao build; para o SEO isso é pior que um build quebrado. A checagem usa VERCEL_ENV (só lê a variável, nada exclusivo da Vercel) e muda junto na saída para a VPS.
+
+# 2026-11-08 · Comprovante privado pela nossa rota (004/T001, ADR 0011)
+- URL assinada do Cloudinary não expira e o plano gratuito bloqueia PDF; servir pelo servidor confere sessão a cada abertura e vale igual para documentos do vendedor (008) e para a VPS. Documento fiscal fica na loja (quem paga), não no perfil.
