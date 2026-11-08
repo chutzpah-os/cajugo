@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray, or } from "drizzle-orm";
 import { profiles, referralCodes, referrals } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 
@@ -100,4 +100,30 @@ export async function registerReferral(db: Db, code: string, storeId: string) {
     referrerId: owner?.profileId ?? null,
     referredStoreId: storeId,
   });
+}
+
+/**
+ * Só testes (limpeza dos e2e de cadastro): apaga indicações que envolvem essas contas
+ * ou lojas e os códigos dessas contas, dentro da transação do chamador.
+ */
+export async function removeReferralData(
+  db: Db,
+  profileIds: string[],
+  storeIds: string[],
+) {
+  const codes = profileIds.length
+    ? (
+        await db
+          .select({ code: referralCodes.code })
+          .from(referralCodes)
+          .where(inArray(referralCodes.profileId, profileIds))
+      ).map((c) => c.code)
+    : [];
+  const filters = [];
+  if (storeIds.length)
+    filters.push(inArray(referrals.referredStoreId, storeIds));
+  if (codes.length) filters.push(inArray(referrals.code, codes));
+  if (filters.length) await db.delete(referrals).where(or(...filters));
+  if (codes.length)
+    await db.delete(referralCodes).where(inArray(referralCodes.code, codes));
 }

@@ -21,7 +21,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T010** `updateStore`: dados públicos, endereço em campos, horário, divulgar; loja só da sessão (loja B); usuário da loja recusado · _STO-FR-008, STO-FR-009, STO-FR-012, STO-SEC-001, STO-SEC-003_
 - [x] **T011** `changeSlug` (limite de 30 dias, redirecionamento de 90 dias, transação, auditoria) e `resolveSlug` · _STO-FR-013, STO-SEC-001_
 - [x] **T012** `storeImageUpload` e `setStoreImage` (pasta da loja, formato, ≤ 15 MB; loja B; usuário da loja) · _STO-FR-010, STO-SEC-004, STO-SEC-003_
-- [ ] **T013** `pnpm e2e:seed` apaga as lojas e contas criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) · _—_
+- [x] **T013** `pnpm e2e:seed` apaga as lojas e contas criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) · _—_
 
 ## Fase 3 — Telas
 - [ ] **T014** [P] `src/ui`: menu em gaveta, campo com sugestões (autocomplete), campo de imagem (enviar/trocar) e aviso "Disponível/Indisponível", com testes · _STO-NFR-002_

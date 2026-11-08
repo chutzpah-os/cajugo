@@ -286,3 +286,6 @@
 
 # 2026-11-08 · 003/T012 logo e capa
 - stores: storeImageUpload (assinatura na pasta stores/{storeId}, nome do servidor, jpg/png/webp/heic) e setStoreImage (pasta da loja ou 404; confere formato e ≤ 15 MB no Cloudinary; auditoria).
+
+# 2026-11-08 · 003/T013 limpeza dos cadastros de teste
+- stores.removeE2ESignups (lojas, redirecionamentos, perfis e contas de e2e-cadastro-*@cajugo.test) e referrals.removeReferralData; chamado pelo pnpm e2e:seed. Migrations 0006/0007 aplicadas no staging para o seed rodar.

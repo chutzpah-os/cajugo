@@ -3,6 +3,7 @@ import { profiles, rateLimits, stores } from "@/platform/db/schema";
 import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
 import { restoreInitialSettings } from "@/domains/settings/service";
+import { removeE2ESignups } from "@/domains/stores/service";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -109,6 +110,8 @@ export async function seedE2E(deps: AuthDeps, password: string) {
 
   // Regras alteradas por testes voltam ao provisório (spec 002).
   await restoreInitialSettings(deps.db);
+  // Lojas e contas criadas pelos e2e de cadastro (spec 003).
+  await removeE2ESignups(deps);
 
   return { ids, storeId: store.id };
 }

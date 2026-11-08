@@ -5,6 +5,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { E2E_ACCOUNTS, seedE2E } from "./e2e-seed";
 import { getSettings } from "@/domains/settings/service";
+import { registerStore } from "@/domains/stores/service";
 import { signIn } from "./service";
 
 const NOW = new Date("2026-10-23T12:00:00Z");
@@ -128,5 +129,52 @@ describe("seedE2E", () => {
     expect((await t.db.select().from(settingValues)).length).toBe(
       rowsBefore + 2,
     );
+  });
+
+  it("apaga as lojas e contas criadas pelos e2e de cadastro, e só elas", async () => {
+    // Arrange: um cadastro de teste (indicado pelo lojista de teste) e um cadastro real
+    await seedE2E(deps(), "senha-e2e-1");
+    const signup = (email: string, slug: string) =>
+      registerStore(
+        deps(),
+        null,
+        {
+          storeName: "Loja",
+          city: "Aracaju",
+          state: "SE",
+          whatsapp: "79981360206",
+          slug,
+          name: "Fulano",
+          email,
+          phone: `7998${Math.floor(1000000 + Math.random() * 8999999)}`,
+          password: "senha-boa-123",
+          terms: true,
+        },
+        { ipHash: crypto.randomUUID() },
+      );
+    await signup("e2e-cadastro-1@cajugo.test", "e2e-cadastro-loja");
+    const real = await signup("dono@loja.com", "loja-real");
+
+    // Act
+    await seedE2E(deps(), "senha-e2e-1");
+
+    // Assert
+    const slugs = (await t.db.select({ slug: stores.slug }).from(stores)).map(
+      (s) => s.slug,
+    );
+    expect(slugs).toContain("loja-real");
+    expect(slugs).not.toContain("e2e-cadastro-loja");
+    expect(
+      await auth.verifyPassword("e2e-cadastro-1@cajugo.test", "senha-boa-123"),
+    ).toBe(false);
+    expect(await auth.verifyPassword("dono@loja.com", "senha-boa-123")).toBe(
+      true,
+    );
+    const [realProfile] = await t.db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, real.userId));
+    expect(realProfile.storeId).toBe(real.storeId);
+    expect(await t.db.select().from(settingValues)).toBeTruthy();
   });
 });

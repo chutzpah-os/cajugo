@@ -1,9 +1,10 @@
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, inArray, like } from "drizzle-orm";
 import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
 import {
   checkCode,
   getOrCreateCode,
   registerReferral,
+  removeReferralData,
 } from "@/domains/referrals/service";
 import { profiles, storeSlugRedirects, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
@@ -519,4 +520,46 @@ export async function setStoreImage(
       entityId: storeId,
     });
   });
+}
+
+/** E-mails dos cadastros feitos pelos testes ponta a ponta (spec 003). */
+export const E2E_SIGNUP_EMAIL = /^e2e-cadastro-[a-z0-9-]+@cajugo\.test$/;
+
+/**
+ * Só testes (`pnpm e2e:seed`, que recusa rodar na produção): apaga as lojas e contas
+ * criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) e tudo que depende
+ * delas. A auditoria fica (é só de inserção).
+ */
+export async function removeE2ESignups(deps: AuthDeps): Promise<number> {
+  const accounts = (
+    await deps.db
+      .select({ id: profiles.id, email: profiles.email })
+      .from(profiles)
+      .where(like(profiles.email, "e2e-cadastro-%@cajugo.test"))
+  ).filter((a) => E2E_SIGNUP_EMAIL.test(a.email));
+  if (!accounts.length) return 0;
+  const ids = accounts.map((a) => a.id);
+
+  await deps.db.transaction(async (tx) => {
+    const owned = await tx
+      .select({ id: stores.id })
+      .from(stores)
+      .where(inArray(stores.ownerId, ids));
+    const storeIds = owned.map((s) => s.id);
+    // Indicações e códigos são do domínio referrals.
+    await removeReferralData(tx, ids, storeIds);
+    if (storeIds.length) {
+      await tx
+        .delete(storeSlugRedirects)
+        .where(inArray(storeSlugRedirects.storeId, storeIds));
+      await tx
+        .update(profiles)
+        .set({ storeId: null })
+        .where(inArray(profiles.storeId, storeIds));
+      await tx.delete(stores).where(inArray(stores.id, storeIds));
+    }
+    await tx.delete(profiles).where(inArray(profiles.id, ids));
+  });
+  for (const id of ids) await deps.auth.adminDeleteUser(id);
+  return ids.length;
 }
