@@ -33,7 +33,7 @@ describe("rota do comprovante (contract.md, ADR 0011)", () => {
 
     for (const session of people) {
       // Act
-      const res = await receiptResponse(deps(), session, paymentId);
+      const res = await receiptResponse(deps, session, paymentId);
 
       // Assert
       expect(res.status).toBe(200);
@@ -55,16 +55,14 @@ describe("rota do comprovante (contract.md, ADR 0011)", () => {
     const seller = await personWith(t.db, "seller");
 
     // Act + Assert
-    expect((await receiptResponse(deps(), null, paymentId)).status).toBe(401);
+    expect((await receiptResponse(deps, null, paymentId)).status).toBe(401);
     for (const session of [other, staff, seller])
-      expect((await receiptResponse(deps(), session, paymentId)).status).toBe(
+      expect((await receiptResponse(deps, session, paymentId)).status).toBe(
         404,
       );
-    expect((await receiptResponse(deps(), owner, "nao-e-uuid")).status).toBe(
-      404,
-    );
+    expect((await receiptResponse(deps, owner, "nao-e-uuid")).status).toBe(404);
     expect(
-      (await receiptResponse(deps(), owner, crypto.randomUUID())).status,
+      (await receiptResponse(deps, owner, crypto.randomUUID())).status,
     ).toBe(404);
   });
 
@@ -81,6 +79,23 @@ describe("rota do comprovante (contract.md, ADR 0011)", () => {
       columns: { id: true },
     });
 
-    expect((await receiptResponse(deps(), admin, id)).status).toBe(404);
+    expect((await receiptResponse(deps, admin, id)).status).toBe(404);
+  });
+
+  it("[PIX-SEC-002] sem sessão é 401 antes de qualquer configuração; falha de configuração vira 500 com log", async () => {
+    const broken = () => {
+      throw new Error("CLOUDINARY_API_KEY não definida");
+    };
+    const { paymentId } = await storeInReview(deps(), "loja-a");
+
+    expect((await receiptResponse(broken, null, paymentId)).status).toBe(401);
+    const res = await receiptResponse(
+      broken,
+      await personWith(t.db, "admin"),
+      paymentId,
+    );
+    expect(res.status).toBe(500);
+    expect(res.headers.get("content-type")).toBe("application/problem+json");
+    expect(await res.text()).not.toContain("CLOUDINARY");
   });
 });

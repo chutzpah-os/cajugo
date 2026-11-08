@@ -400,3 +400,6 @@
 
 # 2026-11-08 · 004/T025 migrations no prod
 - 0008 e 0009 aplicadas no cajugo-prod e conferidas: 10 migrations, tabelas invoices/payments/notices, colunas novas de stores, índices únicos de pagamento em análise e confirmado, mensalidade R$ 100 e status rejected da indicação.
+
+# 2026-11-08 · rota do comprovante confere a sessão primeiro (004)
+- receiptResponse recebe uma função que monta as dependências: sem sessão responde 401 antes de ler a configuração do Cloudinary; erro inesperado vai para o log (billing.receipt_failed) e vira 500 problem+json sem detalhe interno. No prod a rota respondia 500 vazio sem sessão.

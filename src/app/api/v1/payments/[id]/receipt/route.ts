@@ -10,7 +10,7 @@ export async function GET(
 ) {
   const { id } = await ctx.params;
   return receiptResponse(
-    { db: getDb(), cloudinary: getCloudinary() },
+    () => ({ db: getDb(), cloudinary: getCloudinary() }),
     await currentSession(),
     id,
   );
