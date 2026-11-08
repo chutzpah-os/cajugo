@@ -1,7 +1,10 @@
 import { asc, desc, eq, lte } from "drizzle-orm";
 import { z } from "zod";
-import { verifyOwnPassword, type AuthDeps } from "@/domains/auth/service";
-import { authorizeTo } from "@/domains/auth/permissions";
+import {
+  authorizeTo,
+  verifyOwnPassword,
+  type AuthDeps,
+} from "@/domains/auth/service";
 import { profiles, settingValues } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
@@ -10,6 +13,7 @@ import type { Session } from "@/platform/http/session";
 import {
   parseSettingValue,
   pixSchema,
+  sameSettingValue,
   SETTINGS,
   SETTING_KEYS,
   settingValueJson,
@@ -20,8 +24,8 @@ import {
 /**
  * Todas as regras, tipadas, com o valor vigente em `at` (padrão: agora). Cada regra
  * vale da sua alteração até a próxima (CFG-FR-009); as specs que calculam passam a
- * data do fato. Sem valor para alguma regra é erro de dados: a migration `0005` cria
- * todas (CFG-FR-003).
+ * data do fato. Data anterior a qualquer alteração recebe o valor provisório (o mais
+ * antigo de cada regra): o sistema nunca fica sem valor (CFG-FR-003).
  */
 export async function getSettings(
   db: Db,
@@ -36,6 +40,16 @@ export async function getSettings(
     .where(lte(settingValues.validFrom, at))
     .orderBy(settingValues.key, desc(settingValues.validFrom));
   const byKey = new Map(rows.map((r) => [r.key, r.value]));
+  if (byKey.size < SETTING_KEYS.length) {
+    const earliest = await db
+      .selectDistinctOn([settingValues.key], {
+        key: settingValues.key,
+        value: settingValueJson,
+      })
+      .from(settingValues)
+      .orderBy(settingValues.key, asc(settingValues.validFrom));
+    for (const r of earliest) if (!byKey.has(r.key)) byKey.set(r.key, r.value);
+  }
 
   const settings: Record<string, unknown> = {};
   for (const key of SETTING_KEYS) {
@@ -105,7 +119,7 @@ export async function updateSettings(
     password?: string;
   };
   const changed = (Object.keys(next) as SettingKey[]).filter(
-    (k) => JSON.stringify(next[k]) !== JSON.stringify(current[k]),
+    (k) => !sameSettingValue(next[k], current[k]),
   );
   if (changed.length === 0) return { changed };
 
@@ -156,7 +170,8 @@ export type SettingChange = {
 
 /**
  * Histórico de uma regra (CFG-FR-006), da alteração mais recente à mais antiga.
- * O valor provisório da migration é o ponto de partida, não uma alteração.
+ * O valor provisório da migration é o ponto de partida, não uma alteração; voltas ao
+ * provisório feitas pelo sistema (seed de teste) aparecem como "Sistema".
  * Leitura: admin e suporte (CFG-SEC-001, CFG-SEC-002).
  */
 export async function settingHistory(
@@ -188,13 +203,30 @@ export async function settingHistory(
   );
   const changes: SettingChange[] = [];
   rows.forEach((row, i) => {
-    if (i === 0 || row.changedBy === null) return;
+    if (i === 0) return;
     changes.push({
       at: row.at,
-      by: row.by,
+      // Sem autor depois do valor inicial = volta ao provisório feita pelo sistema.
+      by: row.changedBy === null ? "Sistema" : row.by,
       from: values[i - 1],
       to: values[i],
     });
   });
   return changes.reverse();
+}
+
+/**
+ * Volta ao valor provisório toda regra que estiver diferente (só testes: `pnpm
+ * e2e:seed`). O histórico é só de inserção: entra como alteração nova, do "Sistema".
+ */
+export async function restoreInitialSettings(db: Db): Promise<SettingKey[]> {
+  const current = await getSettings(db);
+  const changed = SETTING_KEYS.filter(
+    (k) => !sameSettingValue(current[k], SETTINGS[k].initial),
+  );
+  if (changed.length)
+    await db
+      .insert(settingValues)
+      .values(changed.map((key) => ({ key, value: SETTINGS[key].initial })));
+  return changed;
 }

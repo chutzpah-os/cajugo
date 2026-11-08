@@ -45,19 +45,24 @@ async function Content() {
         </ReadOnlyNotice>
       )}
 
-      <div className="flex flex-col gap-1 rounded-card border border-line bg-surface p-4">
-        <h2 className="text-[17px] font-extrabold">Vitrine CajuGo</h2>
-        <p className="text-sm text-text-2">
-          Nome: <strong className="text-ink">CajuGo</strong>
-        </p>
-        <p className="text-sm text-text-2">
-          Endereço: <strong className="text-ink">{showcaseHost()}</strong>
-        </p>
-        <p className="text-xs text-text-3">
-          Nome e endereço mudam pelo deploy (links, QR codes e SEO).
-        </p>
-      </div>
-      {form("showcase", "Atendimento")}
+      <SettingsGroupForm
+        group="showcase"
+        title="Vitrine CajuGo"
+        fields={groupFields(settings, "showcase")}
+        canEdit={canEdit}
+      >
+        <div className="flex flex-col gap-1">
+          <p className="text-sm text-text-2">
+            Nome: <strong className="text-ink">CajuGo</strong>
+          </p>
+          <p className="text-sm text-text-2">
+            Endereço: <strong className="text-ink">{showcaseHost()}</strong>
+          </p>
+          <p className="text-xs text-text-3">
+            Nome e endereço mudam pelo deploy (links, QR codes e SEO).
+          </p>
+        </div>
+      </SettingsGroupForm>
       {form("network", "Rede Caju")}
 
       <PixKeyEditor
@@ -66,6 +71,8 @@ async function Content() {
           settings.pix
             ? {
                 masked: maskPixKey(settings.pix),
+                // A chave inteira só vai para quem pode trocá-la (revisão lado a lado).
+                full: canEdit ? settings.pix.key : undefined,
                 beneficiary: settings.pix.beneficiary,
               }
             : null

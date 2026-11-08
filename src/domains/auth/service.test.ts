@@ -1014,6 +1014,24 @@ describe("signIn", () => {
       ).rejects.toMatchObject({ type: "too-many-requests" });
     });
 
+    it("[CFG-FR-010] campo desconhecido é recusado", async () => {
+      const { session } = await onTwoDevices();
+
+      await expect(
+        changePassword(
+          deps(),
+          session,
+          {
+            current: PASSWORD,
+            password: NEW,
+            confirmation: NEW,
+            userId: "outra",
+          },
+          { ipHash: "rede-pc" },
+        ),
+      ).rejects.toMatchObject({ status: 422 });
+    });
+
     it("[CFG-SEC-006] sem sessão responde 401; com senha temporária, só pela tela de nova senha", async () => {
       await expect(
         change(null, { current: PASSWORD, password: NEW, confirmation: NEW }),

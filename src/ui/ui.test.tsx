@@ -106,7 +106,7 @@ describe("componentes base", () => {
     expect(html).toContain('inputMode="decimal"');
   });
 
-  it("aviso de somente leitura é anunciado como nota", () => {
+  it("[CFG-SEC-001] aviso de somente leitura é anunciado como nota", () => {
     const html = renderToStaticMarkup(
       <ReadOnlyNotice>Só o admin altera as regras.</ReadOnlyNotice>,
     );

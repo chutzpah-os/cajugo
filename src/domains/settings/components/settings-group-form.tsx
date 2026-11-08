@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, type ReactNode } from "react";
 import { Button } from "@/ui/button";
 import { MoneyField, PercentField } from "@/ui/number-field";
 import { TextField } from "@/ui/text-field";
@@ -28,11 +28,14 @@ export function SettingsGroupForm({
   title,
   fields,
   canEdit,
+  children,
 }: {
   group: SettingGroup;
   title: string;
   fields: SettingFieldView[];
   canEdit: boolean;
+  /** Informações só de leitura no topo do grupo (ex.: nome e domínio da vitrine). */
+  children?: ReactNode;
 }) {
   const [state, action, pending] = useActionState<SaveSettingsState, FormData>(
     saveSettingsAction,
@@ -51,6 +54,7 @@ export function SettingsGroupForm({
       <h2 id={`group-${group}`} className="text-[17px] font-extrabold">
         {title}
       </h2>
+      {children}
       {fields.map((f) => {
         const common = {
           id: `setting-${f.key}`,

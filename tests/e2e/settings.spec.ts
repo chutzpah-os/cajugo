@@ -102,7 +102,7 @@ test.describe("regras configuráveis", () => {
     page,
   }) => {
     await enterAs(page, accounts.admin.email, "/admin/conta");
-    const support = group(page, "Atendimento");
+    const support = group(page, "Vitrine CajuGo");
     await support.getByLabel("WhatsApp de atendimento").fill("5579900001111");
     await support.getByRole("button", { name: "Salvar" }).click();
     await expect(support.getByText("Alterações salvas.")).toBeVisible();

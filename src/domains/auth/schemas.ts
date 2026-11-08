@@ -24,8 +24,9 @@ export const newPasswordSchema = z
       .string()
       .min(8, "Use pelo menos 8 caracteres.")
       .max(200, "Use no máximo 200 caracteres."),
-    confirmation: z.string(),
+    confirmation: z.string().max(200),
   })
+  .strict()
   .refine((v) => v.password === v.confirmation, {
     path: ["confirmation"],
     message: "As senhas não conferem.",
@@ -49,8 +50,9 @@ export const changePasswordSchema = z
       .string()
       .min(8, "Use pelo menos 8 caracteres.")
       .max(200, "Use no máximo 200 caracteres."),
-    confirmation: z.string(),
+    confirmation: z.string().max(200),
   })
+  .strict()
   .refine((v) => v.password === v.confirmation, {
     path: ["confirmation"],
     message: "As senhas não conferem.",

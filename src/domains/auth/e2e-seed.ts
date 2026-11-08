@@ -1,14 +1,8 @@
 import { eq, inArray } from "drizzle-orm";
-import {
-  profiles,
-  rateLimits,
-  settingValues,
-  stores,
-} from "@/platform/db/schema";
+import { profiles, rateLimits, stores } from "@/platform/db/schema";
 import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
-import { SETTINGS, SETTING_KEYS } from "@/domains/settings/definitions";
-import { getSettings } from "@/domains/settings/service";
+import { restoreInitialSettings } from "@/domains/settings/service";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -113,16 +107,8 @@ export async function seedE2E(deps: AuthDeps, password: string) {
     ),
   );
 
-  // Regras alteradas por testes voltam ao provisório. O histórico é só de inserção:
-  // o provisório entra como alteração nova, vigente agora (horário do banco).
-  const settings = await getSettings(deps.db);
-  const changed = SETTING_KEYS.filter(
-    (k) => JSON.stringify(settings[k]) !== JSON.stringify(SETTINGS[k].initial),
-  );
-  if (changed.length)
-    await deps.db
-      .insert(settingValues)
-      .values(changed.map((key) => ({ key, value: SETTINGS[key].initial })));
+  // Regras alteradas por testes voltam ao provisório (spec 002).
+  await restoreInitialSettings(deps.db);
 
   return { ids, storeId: store.id };
 }

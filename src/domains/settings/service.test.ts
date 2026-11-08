@@ -68,6 +68,15 @@ describe("settings", () => {
       expect(after.min_photos).toBe(6);
     });
 
+    it("[CFG-FR-003] data anterior a qualquer alteração recebe o valor provisório", async () => {
+      const settings = await getSettings(
+        t.db,
+        new Date("1990-01-01T00:00:00Z"),
+      );
+
+      expect(settings.min_photos).toBe(6);
+    });
+
     it("[CFG-FR-009] alteração agendada para depois ainda não vale agora", async () => {
       await t.db.insert(settingValues).values({
         key: "min_photos",
@@ -78,7 +87,7 @@ describe("settings", () => {
       expect((await getSettings(t.db)).min_photos).toBe(6);
     });
 
-    it("chave que não está na lista é ignorada", async () => {
+    it("[CFG-FR-003] chave que não está na lista é ignorada", async () => {
       await t.db
         .insert(settingValues)
         .values({ key: "regra_antiga", value: 1 });
@@ -408,6 +417,28 @@ describe("settings", () => {
       expect(history).toEqual([
         { at: t2, by: "Bruno", from: 150, to: 200 },
         { at: t1, by: "Ana", from: 100, to: 150 },
+      ]);
+    });
+
+    it('[CFG-FR-006] volta ao provisório feita pelo sistema aparece no histórico como "Sistema"', async () => {
+      // Arrange: admin muda 6 → 8; depois o sistema volta ao provisório
+      const admin = await person("Ana", "admin");
+      await updateSettings(deps(new Date("2026-11-01T10:00:00Z")), admin, {
+        min_photos: 8,
+      });
+      await t.db.insert(settingValues).values({
+        key: "min_photos",
+        value: 6,
+        validFrom: new Date("2026-11-02T10:00:00Z"),
+      });
+
+      // Act
+      const history = await settingHistory(t.db, admin, "min_photos");
+
+      // Assert
+      expect(history.map((h) => [h.by, h.from, h.to])).toEqual([
+        ["Sistema", 8, 6],
+        ["Ana", 6, 8],
       ]);
     });
 

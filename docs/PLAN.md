@@ -60,6 +60,7 @@
 - **Testes-chave:** usuário B não acessa dados de A; papel errado → 403; lojista não acessa `/admin`.
 
 ## 002 · Regras configuráveis — tabela `settings`, telas 4c (parte de regras), 8f (parte numérica)
+> ✅ **Implementada** em 2026-11-08 (`docs/specs/002-settings/`): regras com histórico (`setting_values`, ADR 0010), telas [4c] e [8f], chave Pix com senha, troca da própria senha em `/conta/senha`; 200 testes de unidade/integração e 24 e2e; todos os FR/SEC com teste. Migration 0005 no staging e no prod.
 - Tabela `settings` (PRD §5.14) com valores provisórios; leitura com cache curto; edição pelo admin com auditoria.
 - Base para todas as specs seguintes (nada de número fixo no código).
 

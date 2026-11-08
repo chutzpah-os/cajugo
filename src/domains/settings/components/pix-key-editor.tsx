@@ -25,7 +25,7 @@ export function PixKeyEditor({
   current,
   canEdit,
 }: {
-  current: { masked: string; beneficiary: string } | null;
+  current: { masked: string; full?: string; beneficiary: string } | null;
   canEdit: boolean;
 }) {
   const [state, action, pending] = useActionState<SavePixState, FormData>(
@@ -145,7 +145,9 @@ export function PixKeyEditor({
                 <div className="rounded-input bg-bg p-3">
                   <p className="text-xs text-text-3">Atual</p>
                   <p className="font-mono break-all text-ink">
-                    {current?.masked ?? "Não configurada"}
+                    {current
+                      ? (current.full ?? current.masked)
+                      : "Não configurada"}
                   </p>
                   {current && (
                     <p className="text-text-2">{current.beneficiary}</p>

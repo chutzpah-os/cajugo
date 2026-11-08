@@ -468,3 +468,7 @@ export async function changePassword(
     entityId: s.userId,
   });
 }
+
+// Interface pública do domínio `auth` para os outros domínios (ARCHITECTURE §3).
+export { authorizeTo } from "./permissions";
+export { currentSession } from "./current";

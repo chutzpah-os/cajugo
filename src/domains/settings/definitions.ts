@@ -10,8 +10,15 @@ import { bpsToPercent, centsToReais } from "./format";
  * Os limites (D2 do plano) são trava contra erro de digitação.
  */
 
-export type SettingGroup =
-  "showcase" | "network" | "payment" | "approval" | "data" | "referral";
+export const SETTING_GROUPS = [
+  "showcase",
+  "network",
+  "payment",
+  "approval",
+  "data",
+  "referral",
+] as const;
+export type SettingGroup = (typeof SETTING_GROUPS)[number];
 
 const integer = (min: number, max: number, unit = "") =>
   z
@@ -258,3 +265,23 @@ export const settingValueJson = sql<
 >`${settingValues.value}::text`;
 export const parseSettingValue = (text: string | null): unknown =>
   text === null ? null : JSON.parse(text);
+
+/** Regras de um grupo editáveis por formulário (a chave Pix tem fluxo próprio). */
+export function editableKeys(group: SettingGroup): SettingKey[] {
+  return SETTING_KEYS.filter(
+    (k) => SETTINGS[k].group === group && SETTINGS[k].input !== "pix",
+  );
+}
+
+/** Igualdade de valores de regra independente da ordem das chaves do objeto. */
+export function sameSettingValue(a: unknown, b: unknown): boolean {
+  const stable = (v: unknown): unknown =>
+    v && typeof v === "object" && !Array.isArray(v)
+      ? Object.fromEntries(
+          Object.entries(v as Record<string, unknown>)
+            .sort(([x], [y]) => x.localeCompare(y))
+            .map(([k, val]) => [k, stable(val)]),
+        )
+      : v;
+  return JSON.stringify(stable(a)) === JSON.stringify(stable(b));
+}

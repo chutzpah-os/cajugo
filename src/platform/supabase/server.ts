@@ -97,6 +97,8 @@ export class SupabaseAuthProvider implements AuthProvider {
     );
     const { error } = await probe.auth.signInWithPassword({ email, password });
     if (error?.status === 400) return false;
+    // Limite do próprio Supabase Auth: a pessoa vê "muitas tentativas", não erro 500.
+    if (error?.status === 429) throw AppError.tooManyRequests(60);
     if (error) throw error;
     await probe.auth.signOut({ scope: "local" });
     return true;

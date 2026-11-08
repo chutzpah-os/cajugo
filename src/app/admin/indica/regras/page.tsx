@@ -35,8 +35,7 @@ async function Content() {
         </ReadOnlyNotice>
       )}
       <p className="text-sm text-text-2">
-        A recompensa começa no 1º pagamento confirmado da loja indicada e vale
-        para o que acontecer depois de cada alteração.
+        Cada alteração vale para o que acontecer depois dela.
       </p>
       <SettingsGroupForm
         group="referral"

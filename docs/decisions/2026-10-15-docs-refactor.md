@@ -176,3 +176,6 @@
 
 # 2026-11-08 · Rascunho do Pix em campos ocultos (002/T019)
 - O React reinicia o formulário depois de cada envio; o <select> visível voltava ao 1º tipo enquanto o estado guardava outro. Campos ocultos ligados ao estado não são afetados pelo reinício.
+
+# 2026-11-08 · Exceções aceitas na 002
+- Os 14 valores provisórios da migration 0005 usam uuid v4 (gen_random_uuid): a migration já está aplicada em staging e prod e o Postgres 17 não gera v7; toda linha nova usa v7. A chave Pix fica em card próprio, fora de "Pagamento", por ter fluxo de 2 passos com senha. CFG-NFR-001 sem teste automático: garantido pelo cacheLife (expire 60 s).

@@ -1,6 +1,6 @@
 import {
+  editableKeys,
   SETTINGS,
-  SETTING_KEYS,
   type Pix,
   type SettingGroup,
   type SettingInput,
@@ -88,9 +88,7 @@ export function groupFields(
   settings: Settings,
   group: SettingGroup,
 ): { key: SettingKey; label: string; input: SettingInput; value: FormValue }[] {
-  return SETTING_KEYS.filter(
-    (k) => SETTINGS[k].group === group && SETTINGS[k].input !== "pix",
-  ).map((key) => ({
+  return editableKeys(group).map((key) => ({
     key,
     label: SETTINGS[key].label,
     input: SETTINGS[key].input,
