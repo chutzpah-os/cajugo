@@ -4,15 +4,19 @@ type Props = {
   name: string;
   label: string;
   defaultValue?: boolean;
+  /** Controlado (ex.: formulário com salvamento automático). */
+  value?: boolean | null;
+  onChange?: (value: boolean) => void;
 };
 
 const option = cn(
-  "flex h-[34px] w-[52px] cursor-pointer items-center justify-center rounded-lg text-sm font-semibold text-text-3",
+  "flex h-11 w-[56px] cursor-pointer items-center justify-center rounded-lg text-sm font-semibold text-text-3",
   "has-[:checked]:font-bold has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ink",
 );
 
 /** Segmentado Sim/Não (DESIGN.md §3). Rádios nativos: envia "true"/"false" no formulário. */
-export function YesNo({ name, label, defaultValue }: Props) {
+export function YesNo({ name, label, defaultValue, value, onChange }: Props) {
+  const controlled = value !== undefined;
   return (
     <div className="flex min-h-11 items-center justify-between gap-3">
       <span id={`${name}-label`} className="text-[15px]">
@@ -33,7 +37,9 @@ export function YesNo({ name, label, defaultValue }: Props) {
             type="radio"
             name={name}
             value="true"
-            defaultChecked={defaultValue === true}
+            {...(controlled
+              ? { checked: value === true, onChange: () => onChange?.(true) }
+              : { defaultChecked: defaultValue === true })}
             className="sr-only"
           />
           Sim
@@ -48,7 +54,9 @@ export function YesNo({ name, label, defaultValue }: Props) {
             type="radio"
             name={name}
             value="false"
-            defaultChecked={defaultValue === false}
+            {...(controlled
+              ? { checked: value === false, onChange: () => onChange?.(false) }
+              : { defaultChecked: defaultValue === false })}
             className="sr-only"
           />
           Não

@@ -451,3 +451,6 @@
 
 # 2026-11-08 · 005/T016 componentes base
 - src/ui: ConfirmSheet (diálogo [6f] em folha de baixo, <dialog> nativo, controlado), SelectField (rótulo, ajuda, erro apontado) e TextAreaField (contador N/máx); testes de marcação.
+
+# 2026-11-08 · 005/T017 formulário do veículo (parte 1)
+- /painel/veiculos/novo e /[id]/editar com VehicleForm: identificação pela FIPE (marca → modelo → versão → ano, ano de fabricação, placa), ficha técnica, preço com referência FIPE e diferença, parcela estimada, condições (YesNo controlado, 44 px), itens com contador, descrição com contador e divulgação/contato; salva sozinho 1 s depois (só o que mudou), mostra "Salvando…" já na alteração, avisa antes de sair com alteração pendente e troca o endereço para o de edição no 1º salvamento. Actions de veículo e FIPE; tag de cache vehicles. Testado no navegador com a FIPE real.
