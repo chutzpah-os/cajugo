@@ -715,7 +715,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - Rodapé "Ainda não tem conta?": Divulgar meus veículos [5b] · Rede Caju [7a] · Caju Indica [9b].
 
 ### [10a] Pagamento em análise (lojista)
-- "Comprovante recebido. Estamos conferindo." + prazo; pode cadastrar veículos como rascunho; após confirmação → [5e].
+- "Comprovante recebido. Estamos conferindo." + prazo; pode cadastrar e publicar veículos (aparecem quando a loja for ativada); após confirmação → [5e].
 
 ### [10b] Pagamentos Pix (admin)
 - KPIs (aguardando conferência, confirmados no mês, lojas em atraso); lembrete "Confira no extrato se o valor caiu na chave".
@@ -847,7 +847,7 @@ Ver `API.md` §5 (mapa de rotas).
 
 ### 12.1 Pendências de decisão
 1. ~~Valores provisórios de `Config` (§5.14)~~ **Resolvido (spec 002):** lança com os valores provisórios do §5.14; a chave Pix começa vazia e o admin preenche em [4c]; o admin ajusta os demais quando quiser.
-2. Fonte de dados FIPE (API gratuita ou lista manual).
+2. ~~Fonte de dados FIPE~~ **Resolvido (spec 005):** API pública gratuita, copiada para o banco da CajuGo (listas sincronizadas; preço por versão uma vez por mês); o formulário não depende da API no ar.
 3. Usuários da loja: o lojista convida pelo [3c] (convite com senha temporária, sem e-mail no MVP)?
 4. Documentos exigidos do vendedor na curadoria (CPF, antecedentes: quais e como enviar).
 5. Revisão jurídica dos termos [12i] (Rede Caju, Caju Indica, LGPD).

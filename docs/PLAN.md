@@ -41,7 +41,7 @@
 - [x] **F10** Infra de servidor comum: `requireSession`, helper de erro (problem+json / `{ ok:false, errors }`), rate limit por IP (`rate_limits`), honeypot, `activity_log`, logger JSON.
   - Em `src/platform/http/`: `AppError` + problem+json + `ActionResult`, `authorize`/`authorizeStore`, `consumeRateLimit` (tabela `rate_limits`), `clientIp`/`hashIp`, honeypot (+ `HoneypotField` em `src/ui`), `logActivity` (tabela `activity_log`), `logger` com redação de dados pessoais. A leitura da sessão do Supabase Auth fica para a spec 001.
 - [x] **F11** Verificação local única (`pnpm check`) rodada pelo Husky no pre-commit (`docs/TESTING.md`); comandos de migration. Sem GitHub Actions.
-- [ ] **F12** Script de seed com lojas e veículos de exemplo (fotos de `design/carexamplesimages/`).
+- ~~**F12** Script de seed com lojas e veículos de exemplo~~: cancelado (2026-11-08, `/clarify` da 005). Nenhum dado de exemplo em ambiente nenhum; os testes criam e apagam os próprios dados.
 - [x] **F13** Criar as skills de processo SDD (`/spec`, `/clarify`, `/plan`, `/tasks`, `/implement`, `/verify`) a partir do `SDD.md` §12.
 
 **Pronto quando:** `dev` sobe, o deploy de preview funciona, a tela de componentes base renderiza e o `pnpm check` passa.
@@ -76,13 +76,15 @@
 - Admin [10b]: fila com alerta de valor divergente, **Confirmar** (ativa a loja, próximo vencimento, `wa.me`) / **Recusar** com motivo → [12e].
 - Registro manual sem comprovante (exceção) em [6g]; onboarding [5e].
 
-## 005 · Veículos do lojista e aprovação prévia — telas 1c, 2a, 6e, 6f, 14c
+## 005 · Veículos do lojista — telas 1c, 2a, 6e, 6f
 - Formulário [2a] com autosave; fotos (até 20, upload assinado); FIPE (D6).
 - **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; os 15 MB são conferidos depois do envio e o arquivo recusado já é apagado (004/T007). Falta resolver a remoção de metadados das fotos públicas (transformação de entrada).
 - Estados: rascunho → (pendente de aprovação) → publicado ⇄ oculto → vendido (desfazer 7 dias) → excluído.
 - Divulgar na CajuGo; histórico de preço; lista com KPIs, busca e filtros; resumo [6e].
-- Aprovação prévia [14c]: checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi), aprovar / pedir ajuste.
-- **F12** (dados de exemplo) entra aqui.
+- FIPE: API pública gratuita, copiada para o banco da CajuGo (listas sincronizadas; preço por versão uma vez por mês); o formulário não depende da API no ar.
+
+## 005b · Aprovação prévia — tela 14c
+- Estado "pendente de aprovação"; fila [14c] com checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi), aprovar / pedir ajuste com motivo e aviso à loja. A regra vem desligada por padrão (PRD §5.12).
 
 ## 006 · Vitrine e comprador — telas 1a, 1b, 6d, 9a, 12a–12d, 12g, 14a, 14b, 15a
 - **Status HTTP real nas páginas públicas (SEO):** hoje `/loja/{slug}` (003) responde 200 com redirecionamento no navegador e 404 "suave" (`noindex`), porque o Next 16 envia o layout antes da página (streaming). Catálogo e veículo precisam de 301/404 de verdade: resolver no `proxy.ts` só para `/loja/*` e `/v/*` (consulta indexada) ou renderizar essas páginas sem streaming do layout.
