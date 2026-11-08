@@ -433,3 +433,6 @@
 
 # 2026-11-08 · 005/T010 publicar veículo
 - vehicles.publish: exige 1 foto e marca, versão, ano modelo, ano de fabricação, km, câmbio, combustível e preço, com erro em cada campo que falta; draft → published condicional com published_at e log vehicle.published; repetir não faz nada; loja não ativada publica; loja B → 404.
+
+# 2026-11-08 · 005/T011 divulgação e legendas
+- vehicles.setShare (só publicado; rascunho → 409 "Publique para liberar."; loja B → 404) e captions.ts (selo por status e legenda: vitrine, só catálogo, publique, removido, e "Aparece quando a loja for ativada", D3).

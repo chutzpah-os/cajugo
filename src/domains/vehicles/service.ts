@@ -504,3 +504,19 @@ export async function publish(
     });
   });
 }
+
+/** "Divulgar na CajuGo" no card (VEH-FR-010): só em veículo publicado. */
+export async function setShare(
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+  on: boolean,
+): Promise<void> {
+  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const done = await deps.db
+    .update(vehicles)
+    .set({ shareOnCajugo: !!on, updatedAt: clock(deps) })
+    .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.status, "published")))
+    .returning({ id: vehicles.id });
+  if (!done.length) throw AppError.conflict("Publique para liberar.");
+}
