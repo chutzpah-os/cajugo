@@ -334,3 +334,6 @@
 
 # 2026-11-08 · 004/T004 BR Code do Pix
 - src/platform/pix/br-code.ts: payload EMV do Pix estático (chave, favorecido, cidade, valor) com CRC16, igual ao exemplo do manual do BACEN; nome e cidade sem acento e no limite do padrão.
+
+# 2026-11-08 · 004/T005 vencimento
+- billing/due-date.ts: firstDueDate e nextDueAfter, com o dia contado em São Paulo, último dia do mês quando falta o dia (31/01 → 28/02 → 31/03; bissexto), virada de ano e vencimento à meia-noite de São Paulo com o fuso da data.
