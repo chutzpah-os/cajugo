@@ -4,30 +4,22 @@ import QRCode from "qrcode";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button, ButtonLink } from "@/ui/button";
+import { uploadSigned } from "@/platform/cloudinary/browser-upload";
 import { ImageField } from "@/ui/image-field";
 import { setStoreImageAction, storeImageUploadAction } from "../actions";
 
 const MAX_BYTES = 15 * 1024 * 1024;
 
-/** Envio direto ao Cloudinary com a assinatura do servidor; devolve o publicId completo. */
+/** Logo ou capa: assinatura do servidor → envio direto → servidor confere e grava. */
 async function uploadToCloudinary(kind: "logo" | "cover", file: File) {
   const signed = await storeImageUploadAction(kind);
   if (!signed.ok) throw new Error(signed.message);
-  const body = new FormData();
-  body.set("file", file);
-  body.set("api_key", signed.upload.apiKey);
-  for (const [k, v] of Object.entries(signed.upload.fields)) body.set(k, v);
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${signed.upload.cloudName}/image/upload`,
-    { method: "POST", body },
+  const publicId = await uploadSigned(
+    signed.upload,
+    file,
+    "Use uma imagem JPG, PNG, WEBP ou HEIC de até 15 MB.",
   );
-  const json = (await res.json()) as {
-    public_id?: string;
-    error?: { message: string };
-  };
-  if (!res.ok || !json.public_id)
-    throw new Error("Use uma imagem JPG, PNG, WEBP ou HEIC de até 15 MB.");
-  const saved = await setStoreImageAction(kind, json.public_id);
+  const saved = await setStoreImageAction(kind, publicId);
   if (!saved.ok) throw new Error(saved.message);
 }
 

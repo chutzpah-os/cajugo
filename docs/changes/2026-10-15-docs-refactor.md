@@ -382,3 +382,6 @@
 
 # 2026-11-08 · 004/T020 tela de pagamento [5d] e recusa [12e]
 - /lojistas/pagamento substitui a tela provisória: "2 de 2", card escuro do plano (mensalidade das regras, loja, vencimento, sem fidelidade, cancelar quando quiser), forma de pagamento Pix, CPF/CNPJ, barra fixa "Pagar com Pix · R$ X"; sem chave Pix, aviso com WhatsApp e botão desabilitado; com recusa, motivo e valor faltante [12e]. billing/actions.ts com startCheckoutAction.
+
+# 2026-11-08 · 004/T021 tela do Pix [6c] e pagamento em análise [10a]
+- /lojistas/pagamento/pix: valor, QR do BR Code (gerado no servidor), chave e copia e cola com Copiar, favorecido, passos, prazo; ReceiptForm com pré-visualização (imagem ou nome do PDF), limite de 10 MB, valor pago, envio direto ao Cloudinary privado e ida para [10a]. /painel/pagamento substitui a provisória (comprovante, valor, prazo; sem análise → painel). platform/cloudinary/browser-upload.uploadSigned agora é o envio único (logo e capa também usam). billing.paymentInReview e actions de assinatura e envio.

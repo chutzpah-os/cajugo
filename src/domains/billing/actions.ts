@@ -5,7 +5,11 @@ import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
 import { logger } from "@/platform/http/logger";
-import { startCheckout } from "./service";
+import {
+  getCloudinary,
+  type SignedUpload,
+} from "@/platform/cloudinary/cloudinary";
+import { receiptUpload, startCheckout, submitReceipt } from "./service";
 
 export type FormState = {
   ok: boolean;
@@ -43,4 +47,46 @@ export async function startCheckoutAction(
     );
   }
   redirect("/lojistas/pagamento/pix");
+}
+
+/** Assinatura do envio do comprovante (PIX-SEC-002). */
+export async function receiptUploadAction(): Promise<
+  { ok: true; upload: SignedUpload } | { ok: false; message: string }
+> {
+  try {
+    return {
+      ok: true,
+      upload: await receiptUpload(
+        { db: getDb(), cloudinary: getCloudinary() },
+        await currentSession(),
+      ),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        formError(error, "Não foi possível enviar agora.")?.message ??
+        "Não foi possível enviar agora.",
+    };
+  }
+}
+
+/** Comprovante enviado + valor pago (PIX-FR-005, PIX-FR-006). */
+export async function submitReceiptAction(input: {
+  publicId: string;
+  paidCents: number;
+}): Promise<FormState> {
+  try {
+    await submitReceipt(
+      { db: getDb(), cloudinary: getCloudinary() },
+      await currentSession(),
+      input,
+    );
+    return { ok: true, errors: {} };
+  } catch (error) {
+    return formError(
+      error,
+      "Não foi possível enviar o comprovante agora. Tente de novo.",
+    );
+  }
 }

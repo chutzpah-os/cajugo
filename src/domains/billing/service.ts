@@ -810,3 +810,32 @@ export async function receiptFile(
   const reference = row.kind === "first" ? "1a-mensalidade" : "mensalidade";
   return { ...file, filename: `comprovante-${reference}.${ext}` };
 }
+
+/** Pagamento em análise [10a] (PIX-FR-006): o comprovante enviado e o prazo. */
+export async function paymentInReview(
+  deps: BillingDeps,
+  session: Session | null,
+): Promise<{
+  submittedAt: Date;
+  paidCents: number;
+  reviewBusinessDays: number;
+} | null> {
+  const { storeId } = ownerOf(session);
+  const [payment] = await deps.db
+    .select({
+      submittedAt: payments.submittedAt,
+      paidCents: payments.paidCents,
+      amountCents: payments.amountCents,
+    })
+    .from(payments)
+    .where(
+      and(eq(payments.storeId, storeId), eq(payments.status, "submitted")),
+    );
+  if (!payment) return null;
+  const settings = await getSettings(deps.db, clock(deps));
+  return {
+    submittedAt: payment.submittedAt,
+    paidCents: payment.paidCents ?? payment.amountCents,
+    reviewBusinessDays: settings.review_business_days,
+  };
+}

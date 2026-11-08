@@ -3,7 +3,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityLog, payments } from "@/platform/db/schema";
 import { FakeCloudinary } from "@/platform/cloudinary/fake-cloudinary";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { receiptUpload, startCheckout, submitReceipt } from "./service";
+import {
+  paymentInReview,
+  receiptUpload,
+  startCheckout,
+  submitReceipt,
+} from "./service";
 import { configurePix, storeOwner, storeRow } from "./testing/fixtures";
 
 const MB = 1024 * 1024;
@@ -141,5 +146,18 @@ describe("envio do comprovante", () => {
       }),
     ).rejects.toMatchObject({ status: 422 });
     expect(await t.db.select().from(payments)).toHaveLength(0);
+  });
+
+  it("[PIX-FR-006] [10a] mostra o comprovante em análise e o prazo; sem nenhum, nada", async () => {
+    const a = await readyToPay();
+    expect(await paymentInReview(deps(), a)).toBeNull();
+    const publicId = await uploaded(a);
+
+    await submitReceipt(deps(), a, { publicId, paidCents: 10000 });
+
+    expect(await paymentInReview(deps(), a)).toMatchObject({
+      paidCents: 10000,
+      reviewBusinessDays: 1,
+    });
   });
 });
