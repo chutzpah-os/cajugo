@@ -3,9 +3,12 @@ import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireStorePage } from "@/domains/auth/guards";
 import { StoreInfoForm } from "@/domains/stores/components/store-info-form";
+import { StoreSharePanel } from "@/domains/stores/components/store-share-panel";
 import { hoursToForm } from "@/domains/stores/hours-form";
 import { storeSummary } from "@/domains/stores/service";
+import { getCloudinary } from "@/platform/cloudinary/cloudinary";
 import { getDb } from "@/platform/db/client";
+import { storeUrl } from "@/platform/http/urls";
 
 export const metadata: Metadata = { title: "Minha loja | CajuGo" };
 
@@ -16,9 +19,24 @@ async function Content() {
   );
   if (!allowed) return <NoPermission home={home} />;
   const s = await storeSummary(getDb(), session);
+  const cloudinary = getCloudinary();
   return (
     <section className="flex flex-col gap-4 py-6">
       <h1 className="text-[22px] font-extrabold">Minha loja</h1>
+      <StoreSharePanel
+        storeName={s.name}
+        catalogUrl={storeUrl(s.slug)}
+        logoUrl={
+          s.logoPublicId
+            ? cloudinary.imageUrl(s.logoPublicId, { width: 200 })
+            : null
+        }
+        coverUrl={
+          s.coverPublicId
+            ? cloudinary.imageUrl(s.coverPublicId, { width: 800 })
+            : null
+        }
+      />
       <StoreInfoForm
         initial={{
           name: s.name,

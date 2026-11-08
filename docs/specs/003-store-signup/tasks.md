@@ -30,7 +30,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T017** [P] `/termos` [12i] com abas Termos e Privacidade e aviso de versão inicial · _STO-FR-016_
 - [x] **T018** Cadastro `/lojistas/cadastro` [5c]: formulário, cidade com sugestões, endereço ao vivo, código ao vivo, conta existente; `/i/[codigo]` → cadastro com o código · _STO-FR-003, STO-FR-004, STO-FR-005, STO-FR-007, STO-FR-014, STO-FR-015_
 - [x] **T019** Minha loja `/painel/loja` [3b]: informações públicas, endereço, horário e preferência de divulgar · _STO-FR-008, STO-FR-009, STO-FR-012, STO-SEC-003_
-- [ ] **T020** Minha loja: logo e capa, link, QR code em PNG (`qrcode`, D1), compartilhar e ver como cliente · _STO-FR-010, STO-FR-011_
+- [x] **T020** Minha loja: logo e capa, link, QR code em PNG (`qrcode`, D1), compartilhar e ver como cliente · _STO-FR-010, STO-FR-011_
 - [ ] **T021** Troca do endereço na tela e `/loja/[slug]` (redirecionamento do endereço antigo e página mínima, D4) · _STO-FR-013_
 
 ## Fase 4 — Ponta a ponta e fechamento

@@ -307,3 +307,6 @@
 
 # 2026-11-08 · 003/T019 tela Minha loja
 - /painel/loja [3b]: StoreInfoForm (informações públicas, endereço, horário por dia com 2 intervalos e Fechado, divulgar por padrão), updateStoreAction com erro de horário no próprio dia; hours-form.ts; seed com WhatsApp válido. Testado no navegador (lojista salva; usuário da loja: Sem permissão).
+
+# 2026-11-08 · 003/T020 imagens e divulgação
+- Minha loja: StoreSharePanel (logo e capa enviados direto ao Cloudinary com assinatura e conferidos no servidor; copiar link; QR code PNG com qrcode; compartilhar; ver como cliente) e actions storeImageUploadAction/setStoreImageAction. Dependência qrcode 1.5.4 (MIT, D1). Testado no navegador com upload real no staging.

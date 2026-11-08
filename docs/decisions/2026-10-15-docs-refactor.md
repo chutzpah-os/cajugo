@@ -206,3 +206,6 @@
 
 # 2026-11-08 · Horário opcional, mas completo (003/T019)
 - Loja sem nenhum horário salva normalmente (hours = null); se começar a preencher, cada dia precisa de horário ou Fechado, com o aviso no próprio dia, para o catálogo nunca mostrar semana pela metade.
+
+# 2026-11-08 · e2e sem cabeçalho forçado em requisições externas (003/T020)
+- O x-forwarded-for que os e2e usam para variar a rede vai em toda requisição e faz o Cloudinary recusar o CORS; o teste de upload roda sem ele (navegador real não envia esse cabeçalho). Nos e2e da T022, o cabeçalho será aplicado só ao localhost.

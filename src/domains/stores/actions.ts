@@ -10,11 +10,17 @@ import { AppError } from "@/platform/http/errors";
 import { isHoneypotFilled } from "@/platform/http/honeypot";
 import { logger } from "@/platform/http/logger";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
+import {
+  getCloudinary,
+  type SignedUpload,
+} from "@/platform/cloudinary/cloudinary";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { hoursFromForm } from "./hours-form";
 import {
   checkReferralCode,
   registerStore,
+  setStoreImage,
+  storeImageUpload,
   updateStore,
   type CodeCheckView,
 } from "./service";
@@ -193,5 +199,61 @@ export async function updateStoreAction(
     return { ok: true, message: "Alterações salvas.", errors: {} };
   } catch (error) {
     return formError(error);
+  }
+}
+
+async function imageDeps() {
+  return {
+    db: getDb(),
+    auth: await requestAuthProvider(),
+    cloudinary: getCloudinary(),
+  };
+}
+
+/** Assinatura para enviar logo ou capa direto ao Cloudinary (STO-FR-010). */
+export async function storeImageUploadAction(
+  kind: string,
+): Promise<
+  { ok: true; upload: SignedUpload } | { ok: false; message: string }
+> {
+  try {
+    return {
+      ok: true,
+      upload: await storeImageUpload(
+        await imageDeps(),
+        await currentSession(),
+        kind,
+      ),
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: formError(error)?.message ?? "Não foi possível enviar.",
+    };
+  }
+}
+
+/** Salva o logo ou a capa enviada, depois de conferir no Cloudinary (STO-SEC-004). */
+export async function setStoreImageAction(
+  kind: string,
+  publicId: string,
+): Promise<{ ok: boolean; message?: string }> {
+  try {
+    await setStoreImage(
+      await imageDeps(),
+      await currentSession(),
+      kind,
+      publicId,
+    );
+    return { ok: true };
+  } catch (error) {
+    const state = formError(error);
+    return {
+      ok: false,
+      message:
+        state?.message ??
+        Object.values(state?.errors ?? {})[0] ??
+        "Não foi possível salvar a imagem.",
+    };
   }
 }
