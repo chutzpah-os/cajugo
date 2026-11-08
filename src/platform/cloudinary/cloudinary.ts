@@ -29,7 +29,12 @@ export type SignedUpload = {
   fields: Record<string, string>;
 };
 
-export type UploadedImage = { format: string; bytes: number };
+export type UploadedImage = {
+  format: string;
+  bytes: number;
+  width?: number;
+  height?: number;
+};
 
 /** `upload`: público (logo, capa, fotos). `authenticated`: privado, sem URL pública (ADR 0011). */
 export type DeliveryType = "upload" | "authenticated";
@@ -42,6 +47,11 @@ export type Cloudinary = {
     publicId: string;
     allowedFormats: string[];
     type?: DeliveryType;
+    /**
+     * Transformação de entrada: o Cloudinary guarda já transformado (ex.: reduzir e
+     * regravar sem metadados, VEH-SEC-003). O original enviado não fica guardado.
+     */
+    transformation?: string;
     now?: Date;
   }): SignedUpload;
   fullPublicId(folder: string, publicId: string): string;
@@ -80,6 +90,7 @@ export function createCloudinary(
       publicId,
       allowedFormats,
       type = "upload",
+      transformation,
       now = new Date(),
     }) {
       const params: Record<string, string | number> = {
@@ -88,6 +99,7 @@ export function createCloudinary(
         public_id: publicId,
         timestamp: seconds(now),
         ...(type === "authenticated" ? { type } : {}),
+        ...(transformation ? { transformation } : {}),
       };
       return {
         cloudName: config.cloudName,
@@ -109,7 +121,11 @@ export function createCloudinary(
       if (res.status === 404) return null;
       if (!res.ok) throw new Error(`Cloudinary respondeu ${res.status}`);
       const body = (await res.json()) as UploadedImage;
-      return { format: body.format, bytes: body.bytes };
+      return {
+        format: body.format,
+        bytes: body.bytes,
+        ...(body.width ? { width: body.width, height: body.height } : {}),
+      };
     },
     async destroy(fullPublicId, type = "upload", now = new Date()) {
       const params = {

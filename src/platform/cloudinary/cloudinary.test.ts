@@ -242,4 +242,51 @@ describe("Cloudinary", () => {
       expect(fake.destroyed).toEqual([id]);
     });
   });
+
+  describe("fotos públicas reduzidas e sem metadados (VEH-SEC-003)", () => {
+    it("[VEH-SEC-003] [VEH-NFR-002] a assinatura inclui a transformação de entrada", () => {
+      const cloud = createCloudinary(config);
+
+      const signed = cloud.signUpload({
+        folder: "vehicles/v-1",
+        publicId: "photo-abc",
+        allowedFormats: ["jpg", "png", "webp", "heic"],
+        transformation: "c_limit,w_1600,h_1600",
+        now: new Date("2026-11-08T12:00:00Z"),
+      });
+
+      expect(signed.fields.transformation).toBe("c_limit,w_1600,h_1600");
+      expect(signed.fields.signature).toBe(
+        signParams(
+          {
+            allowed_formats: "jpg,png,webp,heic",
+            folder: "staging/vehicles/v-1",
+            public_id: "photo-abc",
+            timestamp: 1794139200,
+            transformation: "c_limit,w_1600,h_1600",
+          },
+          "abcd",
+        ),
+      );
+    });
+
+    it("[VEH-NFR-002] a conferência devolve largura e altura reais", async () => {
+      const cloud = createCloudinary(config, (async () =>
+        Response.json({
+          format: "jpg",
+          bytes: 1000,
+          width: 1600,
+          height: 1200,
+        })) as typeof fetch);
+
+      expect(
+        await cloud.verifyUpload("staging/vehicles/v-1/photo-abc"),
+      ).toEqual({
+        format: "jpg",
+        bytes: 1000,
+        width: 1600,
+        height: 1200,
+      });
+    });
+  });
 });

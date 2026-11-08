@@ -254,3 +254,6 @@
 
 # 2026-11-08 · FIPE sob demanda e histórico genérico (005/T001)
 - A API gratuita da FIPE aceita 500 consultas/dia; copiar no uso cabe na cota e o formulário não depende dela no ar (ADR 0012). O histórico de preço usa a vehicle_history genérica já prevista no ARCHITECTURE, para outros campos entrarem sem tabela nova.
+
+# 2026-11-08 · Metadados removidos no servidor (005/T005)
+- A transformação de entrada faz o Cloudinary guardar só a imagem regravada: o original com GPS nunca fica acessível, nem por URL sem transformação. A redução no navegador continua como economia de banda, não como proteção.

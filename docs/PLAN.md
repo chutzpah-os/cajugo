@@ -78,7 +78,7 @@
 
 ## 005 · Veículos do lojista — telas 1c, 2a, 6e, 6f
 - Formulário [2a] com autosave; fotos (até 20, upload assinado); FIPE (D6).
-- **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; os 15 MB são conferidos depois do envio e o arquivo recusado já é apagado (004/T007). Falta resolver a remoção de metadados das fotos públicas (transformação de entrada).
+- **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; os 15 MB são conferidos depois do envio e o arquivo recusado já é apagado (004/T007). Remoção de metadados resolvida na 005/T005: transformação de entrada `c_limit,w_1600,h_1600` (prova no staging: foto com GPS guardada com 1600 px e zero EXIF).
 - Estados: rascunho → (pendente de aprovação) → publicado ⇄ oculto → vendido (desfazer 7 dias) → excluído.
 - Divulgar na CajuGo; histórico de preço; lista com KPIs, busca e filtros; resumo [6e].
 - FIPE: API pública gratuita, copiada para o banco da CajuGo (listas sincronizadas; preço por versão uma vez por mês); o formulário não depende da API no ar.

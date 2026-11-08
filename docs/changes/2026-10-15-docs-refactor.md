@@ -415,3 +415,6 @@
 
 # 2026-11-08 · 005/T004 cliente da FIPE
 - src/platform/fipe/client.ts: marcas, modelos, anos e preço da API pública (códigos em texto, preço em centavos, mês de referência), com prazo de 5 s e validação do formato; qualquer falha vira FipeUnavailable. Formato conferido com 3 consultas reais; plano anota que a família (Modelo) sai do nome da FIPE.
+
+# 2026-11-08 · 005/T005 fotos reduzidas e sem metadados
+- signUpload aceita transformação de entrada assinada; verifyUpload devolve largura e altura. Prova no staging: JPEG 3000×2000 com GPS e aparelho no EXIF ficou guardado com 1600×1067 e nenhum metadado, mesmo baixando o original sem transformação; apagado depois.
