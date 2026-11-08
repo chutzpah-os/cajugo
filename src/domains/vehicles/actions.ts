@@ -9,6 +9,7 @@ import { AppError } from "@/platform/http/errors";
 import { logger } from "@/platform/http/logger";
 import {
   addPhoto,
+  isPublished,
   markSold,
   photoUpload,
   publish,
@@ -94,10 +95,23 @@ export async function fipeAction(
 
 type Done = { ok: true } | ActionError;
 
-async function run(fn: () => Promise<unknown>): Promise<Done> {
+/**
+ * Executa a ação e renova as páginas públicas só se o veículo é (ou era) público:
+ * renovar recarrega a rota, e um rascunho em edição não deve ser remontado.
+ */
+async function run(
+  vehicleId: string,
+  fn: () => Promise<unknown>,
+): Promise<Done> {
   try {
+    const session = await currentSession();
+    const wasPublic = await isPublished(getDb(), session, vehicleId);
     await fn();
-    updateTag(VEHICLES_TAG);
+    if (
+      wasPublic ||
+      (await isPublished(getDb(), session, vehicleId).catch(() => false))
+    )
+      updateTag(VEHICLES_TAG);
     return { ok: true };
   } catch (error) {
     return fail(error);
@@ -105,27 +119,37 @@ async function run(fn: () => Promise<unknown>): Promise<Done> {
 }
 
 export async function publishAction(vehicleId: string): Promise<Done> {
-  return run(async () => publish(deps(), await currentSession(), vehicleId));
+  return run(vehicleId, async () =>
+    publish(deps(), await currentSession(), vehicleId),
+  );
 }
 export async function setShareAction(
   vehicleId: string,
   on: boolean,
 ): Promise<Done> {
-  return run(async () =>
+  return run(vehicleId, async () =>
     setShare(deps(), await currentSession(), vehicleId, on),
   );
 }
 export async function markSoldAction(vehicleId: string): Promise<Done> {
-  return run(async () => markSold(deps(), await currentSession(), vehicleId));
+  return run(vehicleId, async () =>
+    markSold(deps(), await currentSession(), vehicleId),
+  );
 }
 export async function undoSoldAction(vehicleId: string): Promise<Done> {
-  return run(async () => undoSold(deps(), await currentSession(), vehicleId));
+  return run(vehicleId, async () =>
+    undoSold(deps(), await currentSession(), vehicleId),
+  );
 }
 export async function unpublishAction(vehicleId: string): Promise<Done> {
-  return run(async () => unpublish(deps(), await currentSession(), vehicleId));
+  return run(vehicleId, async () =>
+    unpublish(deps(), await currentSession(), vehicleId),
+  );
 }
 export async function removeAction(vehicleId: string): Promise<Done> {
-  return run(async () => remove(deps(), await currentSession(), vehicleId));
+  return run(vehicleId, async () =>
+    remove(deps(), await currentSession(), vehicleId),
+  );
 }
 
 /** Fotos (VEH-FR-004). */
@@ -144,13 +168,9 @@ export async function addPhotoAction(
   publicId: string,
 ): Promise<{ ok: true; photo: PhotoView } | ActionError> {
   try {
-    const photo = await addPhoto(
-      photoDeps(),
-      await currentSession(),
-      vehicleId,
-      publicId,
-    );
-    updateTag(VEHICLES_TAG);
+    const session = await currentSession();
+    const photo = await addPhoto(photoDeps(), session, vehicleId, publicId);
+    if (await isPublished(getDb(), session, vehicleId)) updateTag(VEHICLES_TAG);
     return { ok: true, photo };
   } catch (error) {
     return fail(error);
@@ -160,7 +180,7 @@ export async function removePhotoAction(
   vehicleId: string,
   photoId: string,
 ): Promise<Done> {
-  return run(async () =>
+  return run(vehicleId, async () =>
     removePhoto(photoDeps(), await currentSession(), vehicleId, photoId),
   );
 }
@@ -168,7 +188,7 @@ export async function reorderPhotosAction(
   vehicleId: string,
   photoIds: string[],
 ): Promise<Done> {
-  return run(async () =>
+  return run(vehicleId, async () =>
     reorderPhotos(photoDeps(), await currentSession(), vehicleId, photoIds),
   );
 }

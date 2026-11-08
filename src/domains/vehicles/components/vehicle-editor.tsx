@@ -2,15 +2,19 @@
 
 import Link from "next/link";
 import type { VehicleFormView } from "../service";
+import { PhotosSection } from "./photos-section";
+import { PublishBar } from "./publish-bar";
 import { VehicleForm } from "./vehicle-form";
 
-/** Tela [2a]: cabeçalho com fechar e o formulário (fotos e Publicar entram na T018). */
+/** Tela [2a]: cabeçalho com fechar, fotos, formulário e Publicar. */
 export function VehicleEditor({
   title,
   initial,
+  cloudName,
 }: {
   title: string;
   initial: VehicleFormView | null;
+  cloudName: string;
 }) {
   return (
     <section className="flex flex-col gap-4 py-6">
@@ -24,7 +28,11 @@ export function VehicleEditor({
           ✕
         </Link>
       </header>
-      <VehicleForm initial={initial} />
+      <VehicleForm
+        initial={initial}
+        top={<PhotosSection cloudName={cloudName} />}
+        bottom={<PublishBar />}
+      />
     </section>
   );
 }

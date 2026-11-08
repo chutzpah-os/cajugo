@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireStorePage } from "@/domains/auth/guards";
+import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { VehicleEditor } from "@/domains/vehicles/components/vehicle-editor";
 import { vehicleForm } from "@/domains/vehicles/service";
 import { getDb } from "@/platform/db/client";
@@ -23,7 +24,13 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]/editar">) {
       throw error;
     },
   );
-  return <VehicleEditor title="Editar veículo" initial={view} />;
+  return (
+    <VehicleEditor
+      title="Editar veículo"
+      initial={view}
+      cloudName={cloudName()}
+    />
+  );
 }
 
 /** Editar veículo [2a], aberto pelo resumo [6e] ou pela lista [1c]. */

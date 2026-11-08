@@ -257,3 +257,6 @@
 
 # 2026-11-08 · Metadados removidos no servidor (005/T005)
 - A transformação de entrada faz o Cloudinary guardar só a imagem regravada: o original com GPS nunca fica acessível, nem por URL sem transformação. A redução no navegador continua como economia de banda, não como proteção.
+
+# 2026-11-08 · Renovar cache só para veículo público (005/T018)
+- updateTag recarrega a rota atual; num rascunho em edição isso remontava o formulário e apagava listas e estado. Como rascunho não aparece em página pública, a renovação só acontece quando o veículo é ou passa a ser publicado. Arquivos do campo de foto são copiados antes de esperar o rascunho ser criado.

@@ -947,3 +947,13 @@ export async function hasPublishedVehicle(
     .limit(1);
   return !!row;
 }
+
+/** O veículo da loja da sessão está publicado? (para renovar as páginas públicas) */
+export async function isPublished(
+  db: Db,
+  session: Session | null,
+  vehicleId: string,
+): Promise<boolean> {
+  const { vehicle } = await ownVehicle(db, session, vehicleId);
+  return vehicle.status === "published";
+}

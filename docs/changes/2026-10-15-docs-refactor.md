@@ -454,3 +454,6 @@
 
 # 2026-11-08 · 005/T017 formulário do veículo (parte 1)
 - /painel/veiculos/novo e /[id]/editar com VehicleForm: identificação pela FIPE (marca → modelo → versão → ano, ano de fabricação, placa), ficha técnica, preço com referência FIPE e diferença, parcela estimada, condições (YesNo controlado, 44 px), itens com contador, descrição com contador e divulgação/contato; salva sozinho 1 s depois (só o que mudou), mostra "Salvando…" já na alteração, avisa antes de sair com alteração pendente e troca o endereço para o de edição no 1º salvamento. Actions de veículo e FIPE; tag de cache vehicles. Testado no navegador com a FIPE real.
+
+# 2026-11-08 · 005/T018 fotos e Publicar no formulário
+- PhotosSection (redução no navegador, progresso, capa, arrastar ou setas, remover, limite de 20) e PublishBar (salva o pendente, publica, mostra erro em cada campo e rola até a seção; publicado → resumo); contexto do formulário por React Context; uploadSigned com progresso e shrinkImage na plataforma; imageUrlFor e cloudName para a tela. Ações só renovam as páginas públicas quando o veículo é ou era público (renovar recarrega a rota e remontava o rascunho). Testado no navegador: erros, foto real, FIPE real e publicação.

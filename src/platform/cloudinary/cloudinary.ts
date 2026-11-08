@@ -191,3 +191,11 @@ export function getCloudinary(): Cloudinary {
     folder: process.env.CLOUDINARY_FOLDER || "staging",
   });
 }
+
+/** Nome da nuvem (público: aparece em toda URL de imagem), para a tela montar URLs. */
+export function cloudName(): string {
+  const v = process.env.CLOUDINARY_CLOUD_NAME;
+  if (!v)
+    throw new Error("CLOUDINARY_CLOUD_NAME não definida (veja .env.example).");
+  return v;
+}
