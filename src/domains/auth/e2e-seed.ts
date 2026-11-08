@@ -1,10 +1,16 @@
 import { eq, inArray } from "drizzle-orm";
+import type { Cloudinary } from "@/platform/cloudinary/cloudinary";
 import { profiles, rateLimits, stores } from "@/platform/db/schema";
 import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
 import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
-import { removeE2ESignups, resetStoreForTests } from "@/domains/stores/service";
+import { removeBillingForTests } from "@/domains/billing/service";
+import {
+  e2eSignups,
+  removeE2ESignups,
+  resetStoreForTests,
+} from "@/domains/stores/service";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -29,9 +35,21 @@ const DAY_MS = 24 * 60 * 60 * 1000;
  * Cria (ou deixa no estado inicial) as contas e a loja de teste. Pode rodar quantas
  * vezes quiser: a senha volta a `password`, o último painel é limpo, o bloqueio por
  * e-mail (AUT-FR-003) das contas de teste é zerado, a conta `temporary` volta a ter
- * senha temporária válida por 24 h e as regras (spec 002) voltam aos valores provisórios.
+ * senha temporária válida por 24 h, as regras (spec 002) voltam aos valores provisórios
+ * com uma chave Pix de teste, e faturas, pagamentos e avisos dos e2e são apagados.
  */
-export async function seedE2E(deps: AuthDeps, password: string) {
+/** Chave Pix de teste: o fluxo de pagamento (spec 004) precisa de chave pronta. */
+export const E2E_PIX = {
+  type: "email",
+  key: "pix-e2e@cajugo.test",
+  beneficiary: "CajuGo Testes",
+  city: "Aracaju",
+} as const;
+
+export async function seedE2E(
+  deps: AuthDeps & { cloudinary?: Cloudinary },
+  password: string,
+) {
   const now = deps.now?.() ?? new Date();
   const ids = {} as Record<keyof typeof E2E_ACCOUNTS, string>;
 
@@ -110,8 +128,18 @@ export async function seedE2E(deps: AuthDeps, password: string) {
     ),
   );
 
-  // Regras alteradas por testes voltam ao provisório (spec 002).
-  await restoreInitialSettings(deps.db);
+  // Regras alteradas por testes voltam ao provisório (spec 002), com a chave Pix de
+  // teste (spec 004); só grava o que mudou.
+  await restoreInitialSettings(deps.db, { pix: E2E_PIX });
+  // Faturas, pagamentos e avisos das lojas e contas dos e2e (spec 004); os
+  // comprovantes saem também do Cloudinary.
+  const signups = await e2eSignups(deps.db);
+  const receipts = await removeBillingForTests(deps.db, {
+    ...signups,
+    profileIds: [...signups.profileIds, ...Object.values(ids)],
+  });
+  for (const publicId of receipts)
+    await deps.cloudinary?.destroy(publicId, "authenticated");
   // Lojas e contas criadas pelos e2e de cadastro (spec 003).
   await removeE2ESignups(deps);
   // Loja de teste no estado inicial (Minha loja e troca de endereço, spec 003).

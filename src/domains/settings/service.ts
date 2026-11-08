@@ -219,15 +219,20 @@ export async function settingHistory(
  * Volta ao valor provisório toda regra que estiver diferente (só testes: `pnpm
  * e2e:seed`). O histórico é só de inserção: entra como alteração nova, do "Sistema".
  */
-export async function restoreInitialSettings(db: Db): Promise<SettingKey[]> {
+export async function restoreInitialSettings(
+  db: Db,
+  overrides: Partial<Settings> = {},
+): Promise<SettingKey[]> {
   const current = await getSettings(db);
+  const target = (key: SettingKey) =>
+    key in overrides ? overrides[key] : SETTINGS[key].initial;
   const changed = SETTING_KEYS.filter(
-    (k) => !sameSettingValue(current[k], SETTINGS[k].initial),
+    (k) => !sameSettingValue(current[k], target(k)),
   );
   if (changed.length)
     await db
       .insert(settingValues)
-      .values(changed.map((key) => ({ key, value: SETTINGS[key].initial })));
+      .values(changed.map((key) => ({ key, value: target(key) })));
   return changed;
 }
 export { pixReady } from "./definitions";

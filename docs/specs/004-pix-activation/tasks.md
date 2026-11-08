@@ -36,5 +36,5 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T023** [5e] em `/painel/veiculos` (banner, primeiros passos, "Cadastrar primeiro veículo" → `/painel/veiculos/novo`, D3) e avisos do painel com Dispensar · _PIX-FR-012, PIX-FR-013_
 
 ## Fase 4 — Fechamento
-- [ ] **T024** Playwright (390 px, staging): [5d] → [6c] com PNG e PDF reais → [10a]; admin recusa → [12e] → reenvio → confirma → [5e] e `/loja/{slug}` abre; registro manual; suporte sem botões; usuário da loja bloqueado; `audit()`; seed limpa faturas e pagamentos do e2e · _PIX-FR-001 a PIX-FR-014, PIX-NFR-001, PIX-SEC-003, PIX-SEC-006_
+- [x] **T024** Playwright (390 px, staging): [5d] → [6c] com PNG e PDF reais → [10a]; admin recusa → [12e] → reenvio → confirma → [5e] e `/loja/{slug}` abre; registro manual; suporte sem botões; usuário da loja bloqueado; `audit()`; seed limpa faturas e pagamentos do e2e · _PIX-FR-001 a PIX-FR-014, PIX-NFR-001, PIX-SEC-003, PIX-SEC-006_
 - [ ] **T025** Migration `0008` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_

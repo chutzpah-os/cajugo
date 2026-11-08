@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { profiles, settingValues, stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
-import { E2E_ACCOUNTS, seedE2E } from "./e2e-seed";
+import { E2E_ACCOUNTS, E2E_PIX, seedE2E } from "./e2e-seed";
 import { getSettings } from "@/domains/settings/service";
 import { registerStore } from "@/domains/stores/service";
 import { signIn } from "./service";
@@ -125,7 +125,12 @@ describe("seedE2E", () => {
     // Assert: valores provisórios de novo, com 2 linhas novas (nada apagado)
     const settings = await getSettings(t.db);
     expect(settings.min_photos).toBe(6);
-    expect(settings.pix).toBeNull();
+    expect(settings.pix).toEqual(E2E_PIX);
+    expect((await t.db.select().from(settingValues)).length).toBe(
+      rowsBefore + 2,
+    );
+    // Rodar de novo, sem nada alterado, não grava nada.
+    await seedE2E(deps(), "senha-e2e-1");
     expect((await t.db.select().from(settingValues)).length).toBe(
       rowsBefore + 2,
     );

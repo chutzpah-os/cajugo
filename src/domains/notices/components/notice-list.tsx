@@ -16,14 +16,18 @@ export function NoticeList({ notices }: { notices: NoticeView[] }) {
       {visible.map((n) => (
         <li
           key={n.id}
-          role={n.tone === "alert" ? "alert" : "status"}
           className={
             n.tone === "alert"
               ? "flex items-start justify-between gap-2 rounded-card bg-caju-soft p-3 text-sm text-caju-deep"
               : "flex items-start justify-between gap-2 rounded-card bg-ok-soft p-3 text-sm text-ok"
           }
         >
-          <span className="py-2.5">{n.text}</span>
+          <span
+            role={n.tone === "alert" ? "alert" : "status"}
+            className="py-2.5"
+          >
+            {n.text}
+          </span>
           <button
             type="button"
             onClick={async () => {

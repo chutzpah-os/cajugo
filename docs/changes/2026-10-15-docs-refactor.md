@@ -391,3 +391,6 @@
 
 # 2026-11-08 · 004/T023 onboarding [5e] e avisos no painel
 - /painel/veiculos: banner "Assinatura ativa. Sua loja está no ar." com o link do catálogo, primeiros passos (N de 3, com links para cadastrar veículo e completar a loja) e estado vazio "Cadastrar primeiro veículo" → /painel/veiculos/novo (rota da 005), substituindo o texto provisório. Avisos (NoticeList com Dispensar) na moldura de todas as áreas logadas; notices/actions.dismissNoticeAction.
+
+# 2026-11-08 · 004/T024 e2e do Pix manual
+- tests/e2e/payment.spec.ts (3 cenários, vários atores): [5d] com CPF inválido → [6c] com QR, copiar e PNG real → [10a] → admin recusa com motivo → [12e] com faltante e aviso → reenvio em PDF real → admin abre o PDF pela rota privada e confirma (wa.me) → [5e] e /loja/{slug}; registro sem comprovante; suporte sem botões; usuário da loja sem pagamento. Seed: chave Pix de teste (restoreInitialSettings com destino), limpeza de faturas, pagamentos, avisos e comprovantes no Cloudinary. 38 e2e verdes; staging limpo depois.

@@ -71,8 +71,10 @@ export async function audit(page: Page) {
     ]
       .filter(
         (el) =>
+          !el.closest("[aria-hidden=true]") &&
           !(el as HTMLInputElement).labels?.length &&
-          !el.getAttribute("aria-label"),
+          !el.getAttribute("aria-label") &&
+          !el.getAttribute("aria-labelledby"),
       )
       .map((el) => el.outerHTML.slice(0, 80));
     return {

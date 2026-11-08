@@ -7,6 +7,7 @@ import {
   gte,
   ilike,
   inArray,
+  isNotNull,
   or,
 } from "drizzle-orm";
 import { authorizeTo, can } from "@/domains/auth/service";
@@ -26,7 +27,7 @@ import type {
   SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
 import { brCode } from "@/platform/pix/br-code";
-import { invoices, payments, stores } from "@/platform/db/schema";
+import { invoices, notices, payments, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
@@ -838,4 +839,41 @@ export async function paymentInReview(
     paidCents: payment.paidCents ?? payment.amountCents,
     reviewBusinessDays: settings.review_business_days,
   };
+}
+
+/**
+ * Só testes (`pnpm e2e:seed`, que recusa a produção): apaga faturas, pagamentos e
+ * avisos das lojas e contas criadas pelos e2e, e devolve os comprovantes para o seed
+ * apagar no Cloudinary.
+ */
+export async function removeBillingForTests(
+  db: Db,
+  input: { storeIds: string[]; profileIds: string[] },
+): Promise<string[]> {
+  const receipts: string[] = [];
+  await db.transaction(async (tx) => {
+    if (input.storeIds.length) {
+      const rows = await tx
+        .select({ publicId: payments.receiptPublicId })
+        .from(payments)
+        .where(
+          and(
+            inArray(payments.storeId, input.storeIds),
+            isNotNull(payments.receiptPublicId),
+          ),
+        );
+      receipts.push(...rows.map((r) => r.publicId!));
+      await tx
+        .delete(payments)
+        .where(inArray(payments.storeId, input.storeIds));
+      await tx
+        .delete(invoices)
+        .where(inArray(invoices.storeId, input.storeIds));
+    }
+    if (input.profileIds.length)
+      await tx
+        .delete(notices)
+        .where(inArray(notices.profileId, input.profileIds));
+  });
+  return receipts;
 }

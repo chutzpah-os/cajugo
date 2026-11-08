@@ -78,7 +78,9 @@ export function ReceiptForm({ suggestedAmount }: { suggestedAmount: string }) {
         id="receipt"
         type="file"
         accept={ACCEPT}
-        aria-label="Anexar comprovante"
+        // O controle é o botão abaixo (toque e teclado); o campo só recebe o arquivo.
+        tabIndex={-1}
+        aria-hidden
         className="sr-only"
         onChange={(e) => {
           const f = e.target.files?.[0] ?? null;

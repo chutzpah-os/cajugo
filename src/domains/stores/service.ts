@@ -667,6 +667,28 @@ export const E2E_SIGNUP_EMAIL = /^e2e-cadastro-[a-z0-9-]+@cajugo\.test$/;
  * criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) e tudo que depende
  * delas. A auditoria fica (é só de inserção).
  */
+/** Só testes: contas e lojas criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`). */
+export async function e2eSignups(
+  db: Db,
+): Promise<{ profileIds: string[]; storeIds: string[] }> {
+  const accounts = (
+    await db
+      .select({ id: profiles.id, email: profiles.email })
+      .from(profiles)
+      .where(like(profiles.email, "e2e-cadastro-%@cajugo.test"))
+  ).filter((a) => E2E_SIGNUP_EMAIL.test(a.email));
+  const profileIds = accounts.map((a) => a.id);
+  const storeIds = profileIds.length
+    ? (
+        await db
+          .select({ id: stores.id })
+          .from(stores)
+          .where(inArray(stores.ownerId, profileIds))
+      ).map((s) => s.id)
+    : [];
+  return { profileIds, storeIds };
+}
+
 export async function removeE2ESignups(deps: AuthDeps): Promise<number> {
   const accounts = (
     await deps.db

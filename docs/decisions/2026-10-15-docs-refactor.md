@@ -245,3 +245,6 @@
 
 # 2026-11-08 · Status da loja mudado só pelo domínio stores (004/T013)
 - O billing não escreve stores.status direto: chama transições com status de origem fixo (registered → payment_review → active ou de volta), que devolvem se mudaram. Repetição ou ordem errada não corrompem o estado, e a 011 acrescenta as suas transições no mesmo lugar.
+
+# 2026-11-08 · Ajustes vindos do e2e (004/T024)
+- Aviso no painel: o papel status/alerta foi para dentro do item da lista (no próprio <li> ele apagava o item para o leitor de tela). Campo de arquivo atrás de botão sai da navegação e do leitor (o botão é o controle), e a checagem de acessibilidade ignora campo aria-hidden nas duas regras.
