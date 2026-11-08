@@ -82,6 +82,7 @@
 - **F12** (dados de exemplo) entra aqui.
 
 ## 006 · Vitrine e comprador — telas 1a, 1b, 6d, 9a, 12a–12d, 12g, 14a, 14b, 15a
+- **Status HTTP real nas páginas públicas (SEO):** hoje `/loja/{slug}` (003) responde 200 com redirecionamento no navegador e 404 "suave" (`noindex`), porque o Next 16 envia o layout antes da página (streaming). Catálogo e veículo precisam de 301/404 de verdade: resolver no `proxy.ts` só para `/loja/*` e `/v/*` (consulta indexada) ou renderizar essas páginas sem streaming do layout.
 - Vitrine e catálogo da loja (mesmo layout), busca full-text, filtros, ordenação, cursor; view `showcase_vehicles`; ISR + `revalidateTag`.
 - Página do veículo; guarda `?ref=` do vendedor; [12d] para vendido/oculto; [12g] para loja suspensa.
 - Simulador [14b] (Price, valores de `settings`); favoritos [14a] com selos; busca sem resultado + alerta [12a]; banner Caju Indica [9a].

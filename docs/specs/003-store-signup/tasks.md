@@ -31,7 +31,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T018** Cadastro `/lojistas/cadastro` [5c]: formulário, cidade com sugestões, endereço ao vivo, código ao vivo, conta existente; `/i/[codigo]` → cadastro com o código · _STO-FR-003, STO-FR-004, STO-FR-005, STO-FR-007, STO-FR-014, STO-FR-015_
 - [x] **T019** Minha loja `/painel/loja` [3b]: informações públicas, endereço, horário e preferência de divulgar · _STO-FR-008, STO-FR-009, STO-FR-012, STO-SEC-003_
 - [x] **T020** Minha loja: logo e capa, link, QR code em PNG (`qrcode`, D1), compartilhar e ver como cliente · _STO-FR-010, STO-FR-011_
-- [ ] **T021** Troca do endereço na tela e `/loja/[slug]` (redirecionamento do endereço antigo e página mínima, D4) · _STO-FR-013_
+- [x] **T021** Troca do endereço na tela e `/loja/[slug]` (redirecionamento do endereço antigo e página mínima, D4) · _STO-FR-013_
 
 ## Fase 4 — Ponta a ponta e fechamento
 - [ ] **T022** Playwright (390 px, staging): menu; landing → cadastro → pagamento com código do link; endereço "Indisponível"; conta existente; Minha loja (dados, horário, logo, link, QR); troca de endereço e redirecionamento; termos; SEO no HTML de `/lojistas`; acessibilidade · _STO-FR-001 a STO-FR-016, STO-NFR-001, STO-NFR-002, STO-SEC-002, STO-SEC-003_

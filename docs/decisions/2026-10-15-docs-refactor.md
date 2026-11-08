@@ -209,3 +209,6 @@
 
 # 2026-11-08 · e2e sem cabeçalho forçado em requisições externas (003/T020)
 - O x-forwarded-for que os e2e usam para variar a rede vai em toda requisição e faz o Cloudinary recusar o CORS; o teste de upload roda sem ele (navegador real não envia esse cabeçalho). Nos e2e da T022, o cabeçalho será aplicado só ao localhost.
+
+# 2026-11-08 · /loja/{slug} com cache e status "suave" (003/T021)
+- Página pública com cache (cota gratuita) e placeholder no generateStaticParams para o build não depender do banco. Limitação: com streaming, redirecionamento e 404 saem como 200 (redirecionamento no navegador; noindex). Aceito enquanto a página é mínima e noindex; status real virou item obrigatório da 006 no PLAN.

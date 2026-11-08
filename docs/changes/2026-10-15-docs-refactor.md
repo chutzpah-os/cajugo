@@ -310,3 +310,6 @@
 
 # 2026-11-08 · 003/T020 imagens e divulgação
 - Minha loja: StoreSharePanel (logo e capa enviados direto ao Cloudinary com assinatura e conferidos no servidor; copiar link; QR code PNG com qrcode; compartilhar; ver como cliente) e actions storeImageUploadAction/setStoreImageAction. Dependência qrcode 1.5.4 (MIT, D1). Testado no navegador com upload real no staging.
+
+# 2026-11-08 · 003/T021 troca do endereço e /loja/{slug}
+- Minha loja: SlugChangeForm (checagem ao vivo, aviso + confirmação, data da próxima troca) e changeSlugAction; /loja/[slug] mínima (D4) com cachedPublicStore ('use cache', tag stores) e placeholder de build; actions de loja invalidam a tag. Endereço antigo leva ao novo (testado no navegador).

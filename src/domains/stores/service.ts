@@ -599,3 +599,28 @@ export async function checkReferralCode(
     ? { status: "ok", referrerName: result.referrerName }
     : { status: result.status };
 }
+
+/**
+ * Loja do endereço público `/loja/{slug}` (só dados públicos). `redirected`: o
+ * endereço é antigo e leva ao atual (STO-FR-013). `null`: endereço inexistente.
+ */
+export async function publicStore(
+  db: Db,
+  slug: string,
+): Promise<{
+  slug: string;
+  redirected: boolean;
+  name: string;
+  city: string;
+  state: string;
+} | null> {
+  const resolved = await resolveSlug(db, slug);
+  if (!resolved) return null;
+  const [s] = await db
+    .select({ name: stores.name, city: stores.city, state: stores.state })
+    .from(stores)
+    .where(eq(stores.id, resolved.storeId));
+  return s
+    ? { slug: resolved.slug, redirected: resolved.redirected, ...s }
+    : null;
+}

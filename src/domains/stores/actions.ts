@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { currentSession, signIn } from "@/domains/auth/service";
@@ -15,10 +16,12 @@ import {
   type SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
 import { requestAuthProvider } from "@/platform/supabase/next";
+import { STORES_TAG } from "./current";
 import { hoursFromForm } from "./hours-form";
 import {
   checkReferralCode,
   registerStore,
+  changeSlug,
   setStoreImage,
   storeImageUpload,
   updateStore,
@@ -196,6 +199,7 @@ export async function updateStoreAction(
         shareByDefault: form.get("shareByDefault") === "on",
       },
     );
+    updateTag(STORES_TAG);
     return { ok: true, message: "Alterações salvas.", errors: {} };
   } catch (error) {
     return formError(error);
@@ -245,6 +249,7 @@ export async function setStoreImageAction(
       kind,
       publicId,
     );
+    updateTag(STORES_TAG);
     return { ok: true };
   } catch (error) {
     const state = formError(error);
@@ -255,5 +260,28 @@ export async function setStoreImageAction(
         Object.values(state?.errors ?? {})[0] ??
         "Não foi possível salvar a imagem.",
     };
+  }
+}
+
+/** Troca do endereço do catálogo (STO-FR-013): 1 vez a cada 30 dias, com aviso. */
+export async function changeSlugAction(
+  _prev: StoreFormState,
+  form: FormData,
+): Promise<StoreFormState> {
+  if (form.get("confirm") !== "on")
+    return {
+      ok: false,
+      errors: { confirm: "Confirme que entendeu o aviso." },
+    };
+  try {
+    const { slug } = await changeSlug(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      String(form.get("slug") ?? ""),
+    );
+    updateTag(STORES_TAG);
+    return { ok: true, message: `Endereço alterado para ${slug}.`, errors: {} };
+  } catch (error) {
+    return formError(error);
   }
 }
