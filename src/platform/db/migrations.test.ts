@@ -154,4 +154,84 @@ describe("migrations", () => {
       );
     });
   });
+
+  describe("0006 cadastro do lojista", () => {
+    async function migrated() {
+      const client = new PGlite();
+      const db = drizzle(client, { schema });
+      cleanup.push(() => client.close());
+      await migrate(db, { migrationsFolder: "drizzle" });
+      return client;
+    }
+    const columns = async (client: PGlite, table: string) =>
+      (
+        await client.query<{ column_name: string }>(
+          "select column_name from information_schema.columns where table_name = $1",
+          [table],
+        )
+      ).rows.map((r) => r.column_name);
+
+    it("[STO-FR-008] [STO-FR-013] loja com endereço em campos, sem a coluna antiga, e redirecionamentos", async () => {
+      // Arrange / Act
+      const client = await migrated();
+
+      // Assert
+      const store = await columns(client, "stores");
+      expect(store).toEqual(
+        expect.arrayContaining([
+          "address_street",
+          "address_number",
+          "address_complement",
+          "address_district",
+          "address_zip",
+          "slug_changed_at",
+          "slug_reserved_until",
+        ]),
+      );
+      expect(store).not.toContain("address");
+      expect(await columns(client, "store_slug_redirects")).toEqual(
+        expect.arrayContaining(["old_slug", "store_id", "expires_at"]),
+      );
+    });
+
+    it("[STO-FR-007] [STO-FR-014] códigos de indicação e uma indicação por loja", async () => {
+      // Arrange
+      const client = await migrated();
+      const owner = "0192f1e0-0000-7000-8000-000000000031";
+      const store = "0192f1e0-0000-7000-8000-000000000032";
+      await client.query(
+        "insert into profiles (id, name, email, roles) values ($1, 'Ricardo', 'r@x.com', '{referrer}')",
+        [owner],
+      );
+      await client.query(
+        "insert into stores (id, name, slug, city, state, whatsapp, owner_id) values ($1, 'Loja', 'loja', 'Aracaju', 'SE', '5579999999999', $2)",
+        [store, owner],
+      );
+      await client.query(
+        "insert into referral_codes (code, profile_id) values ('RICARDO10', $1)",
+        [owner],
+      );
+      const refer = () =>
+        client.query(
+          "insert into referrals (id, code, referrer_id, referred_store_id) values (gen_random_uuid(), 'RICARDO10', $1, $2)",
+          [owner, store],
+        );
+
+      // Act
+      await refer();
+
+      // Assert: status inicial "registered" e a mesma loja não é indicada duas vezes
+      const { rows } = await client.query<{ status: string }>(
+        "select status from referrals",
+      );
+      expect(rows).toEqual([{ status: "registered" }]);
+      await expect(refer()).rejects.toThrow();
+      await expect(
+        client.query(
+          "insert into referral_codes (code, profile_id) values ('OUTRO10', $1)",
+          [owner],
+        ),
+      ).rejects.toThrow();
+    });
+  });
 });

@@ -182,3 +182,6 @@
 
 # 2026-11-08 · Decisões da 003
 - Código pessoal antecipado da 010; autoindicação por e-mail/celular aqui e CPF/CNPJ na 004; conta existente adiciona a loja; termos com o rascunho do PRD; troca de endereço 1×/30 dias; endereço em campos (SEO local). Plano: qrcode (D1), remover stores.address vazia (D2), cidades do IBGE no repo (D3), /loja/{slug} mínima até a 005 (D4).
+
+# 2026-11-08 · Migration em dois passos (003/T001)
+- Remover address e criar address_* no mesmo passo faz o drizzle-kit perguntar se é renomeação (pede terminal interativo). Separar em 0006 e 0007 tira a ambiguidade e deixa explícito que address foi apagada, não renomeada.

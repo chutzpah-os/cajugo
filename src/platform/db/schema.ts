@@ -90,7 +90,13 @@ export const stores = pgTable("stores", {
   city: text("city").notNull(),
   state: text("state").notNull(),
   whatsapp: text("whatsapp").notNull(),
-  address: text("address"),
+  /** Endereço em campos (SEO local); cidade e UF ficam em `city`/`state`. */
+  addressStreet: text("address_street"),
+  addressNumber: text("address_number"),
+  addressComplement: text("address_complement"),
+  addressDistrict: text("address_district"),
+  /** CEP, 8 dígitos. */
+  addressZip: text("address_zip"),
   about: text("about"),
   instagram: text("instagram"),
   logoPublicId: text("logo_public_id"),
@@ -98,6 +104,10 @@ export const stores = pgTable("stores", {
   hours: jsonb("hours"),
   shareByDefault: boolean("share_by_default").notNull().default(true),
   status: storeStatus("status").notNull().default("registered"),
+  /** Última troca de endereço do catálogo: no máximo 1 a cada 30 dias (STO-FR-013). */
+  slugChangedAt: timestamp("slug_changed_at", { withTimezone: true }),
+  /** Endereço reservado até o 1º pagamento; liberado pela spec 011. */
+  slugReservedUntil: timestamp("slug_reserved_until", { withTimezone: true }),
   ownerId: uuid("owner_id")
     .notNull()
     .references((): AnyPgColumn => profiles.id),
@@ -149,4 +159,53 @@ export const settingValues = pgTable(
     changedBy: uuid("changed_by").references(() => profiles.id),
   },
   (t) => [index("setting_values_key_valid_from").on(t.key, t.validFrom.desc())],
+).enableRLS();
+
+/** Endereço antigo do catálogo que ainda leva à loja (90 dias, STO-FR-013). */
+export const storeSlugRedirects = pgTable("store_slug_redirects", {
+  oldSlug: text("old_slug").primaryKey(),
+  storeId: uuid("store_id")
+    .notNull()
+    .references(() => stores.id),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+}).enableRLS();
+
+export const referralStatus = pgEnum("referral_status", [
+  "invited",
+  "registered",
+  "active",
+  "paused",
+  "ended",
+]);
+
+/** Código de indicação (GLOSSARY): pessoal (`profile_id`) ou de campanha (spec 010). */
+export const referralCodes = pgTable("referral_codes", {
+  /** Maiúsculas e números (ex.: `RICARDO10`). */
+  code: text("code").primaryKey(),
+  profileId: uuid("profile_id")
+    .references(() => profiles.id)
+    .unique(),
+  campaignName: text("campaign_name"),
+  active: boolean("active").notNull().default(true),
+  ...timestamps,
+}).enableRLS();
+
+/** Indicação: quem indicou × loja indicada (uma por loja). Recompensas na spec 010. */
+export const referrals = pgTable(
+  "referrals",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    code: text("code")
+      .notNull()
+      .references(() => referralCodes.code),
+    referrerId: uuid("referrer_id").references(() => profiles.id),
+    referredStoreId: uuid("referred_store_id")
+      .notNull()
+      .references(() => stores.id)
+      .unique(),
+    status: referralStatus("status").notNull().default("registered"),
+    monthsPaid: integer("months_paid").notNull().default(0),
+    ...timestamps,
+  },
+  (t) => [index("referrals_referrer_status").on(t.referrerId, t.status)],
 ).enableRLS();

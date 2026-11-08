@@ -7,7 +7,7 @@ spec: 003
 Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um ciclo teste falhando → código → verde. Testes com o ID do requisito no nome. O caso "loja B" entra em toda ação de Minha loja (STO-SEC-001).
 
 ## Fase 1 — Fundação
-- [ ] **T001** Migration `0006`: endereço em colunas e remoção de `stores.address` (D2), `slug_changed_at`, `slug_reserved_until`, `store_slug_redirects`, enum `referral_status`, `referral_codes`, `referrals` + índice; teste de migration · _—_
+- [x] **T001** Migrations `0006` (tabelas e remoção de `stores.address`) e `0007` (campos da loja): endereço em colunas e remoção de `stores.address` (D2), `slug_changed_at`, `slug_reserved_until`, `store_slug_redirects`, enum `referral_status`, `referral_codes`, `referrals` + índice; teste de migration · _—_
 - [ ] **T002** [P] `src/platform/geo/`: script que gera a lista de cidades do IBGE (D3), lista versionada e busca sem acento (`searchCities`, `isValidCity`) · _STO-FR-004_
 - [ ] **T003** [P] `src/platform/cloudinary/`: `signUpload` (SHA-256, vetor conhecido), `verifyUpload` (Admin API), `imageUrl`, e um Cloudinary falso para testes · _STO-SEC-004_
 - [ ] **T004** [P] `src/platform/seo/` (`pageMetadata`, `jsonLd` com escape) e `storeUrl(slug)` (função única de URL de loja, ADR 0009) · _STO-NFR-001, STO-FR-011_
@@ -35,5 +35,5 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 4 — Ponta a ponta e fechamento
 - [ ] **T022** Playwright (390 px, staging): menu; landing → cadastro → pagamento com código do link; endereço "Indisponível"; conta existente; Minha loja (dados, horário, logo, link, QR); troca de endereço e redirecionamento; termos; SEO no HTML de `/lojistas`; acessibilidade · _STO-FR-001 a STO-FR-016, STO-NFR-001, STO-NFR-002, STO-SEC-002, STO-SEC-003_
-- [ ] **T023** Aplicar a migration `0006` no staging e no prod e conferir · _—_
+- [ ] **T023** Aplicar as migrations `0006` e `0007` no staging e no prod e conferir · _—_
 - [ ] **T024** `/verify`: rastreabilidade verde; spec `implemented`; registrar em `docs/changes` e `docs/decisions` · _—_

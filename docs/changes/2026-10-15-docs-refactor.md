@@ -250,3 +250,6 @@
 
 # 2026-11-08 · Spec 003 planejada
 - docs/specs/003-store-signup (spec clarified, plano aprovado, 24 tasks); ARCHITECTURE §4 (endereço em campos, slug_changed_at, referral_codes na 003), SECURITY §8 (e-mail/celular da checagem de autoindicação), GLOSSARY (Código de indicação).
+
+# 2026-11-08 · 003/T001 migrations do cadastro
+- 0006: referral_status, referral_codes, referrals (índice referrer/status, 1 por loja), store_slug_redirects e remoção de stores.address (vazia, D2); 0007: endereço em campos, slug_changed_at, slug_reserved_until; testes de migration.
