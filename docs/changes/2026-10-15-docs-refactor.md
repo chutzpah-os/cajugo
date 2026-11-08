@@ -295,3 +295,6 @@
 
 # 2026-11-08 · 003/T015 menu da home
 - ui/site-menu.tsx (gaveta [11a]) e auth/components/site-header.tsx (sessão em <Suspense>); auth.accountMenu (primeiro nome e painéis, PANEL_HREF); home com cabeçalho.
+
+# 2026-11-08 · 003/T016 landing do lojista
+- /lojistas [5b] (benefícios, plano, FAQ, barra Prosseguir) com pageMetadata, JSON-LD (Organization, Service/Offer, FAQPage) e Open Graph; robots.ts e sitemap.ts (platform/seo/indexing.ts).

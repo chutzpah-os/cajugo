@@ -26,7 +26,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 3 — Telas
 - [x] **T014** [P] `src/ui`: menu em gaveta, campo com sugestões (autocomplete), campo de imagem (enviar/trocar) e aviso "Disponível/Indisponível", com testes · _STO-NFR-002_
 - [x] **T015** Menu da home [11a] no cabeçalho de `/`: visitante e conectado (nome + painéis) · _STO-FR-001_
-- [ ] **T016** Landing `/lojistas` [5b] com metadata, canônica, JSON-LD e Open Graph; `sitemap.xml` e `robots.txt` · _STO-FR-002, STO-NFR-001_
+- [x] **T016** Landing `/lojistas` [5b] com metadata, canônica, JSON-LD e Open Graph; `sitemap.xml` e `robots.txt` · _STO-FR-002, STO-NFR-001_
 - [ ] **T017** [P] `/termos` [12i] com abas Termos e Privacidade e aviso de versão inicial · _STO-FR-016_
 - [ ] **T018** Cadastro `/lojistas/cadastro` [5c]: formulário, cidade com sugestões, endereço ao vivo, código ao vivo, conta existente; `/i/[codigo]` → cadastro com o código · _STO-FR-003, STO-FR-004, STO-FR-005, STO-FR-007, STO-FR-014, STO-FR-015_
 - [ ] **T019** Minha loja `/painel/loja` [3b]: informações públicas, endereço, horário e preferência de divulgar · _STO-FR-008, STO-FR-009, STO-FR-012, STO-SEC-003_
