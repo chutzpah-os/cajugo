@@ -105,12 +105,14 @@ profiles ✅              # 1:1 com auth.users (mesmo id; sem FK, porque o schem
 
 # Loja e assinatura (a assinatura vive na própria loja)
 stores ✅ (+ colunas novas)
-  id, name, slug (unique, `[a-z0-9-]`), cnpj, city, state, whatsapp, address, about, instagram,
+  id, name, slug (unique, `[a-z0-9-]`), cnpj, city, state, whatsapp, about, instagram,
+  address_street, address_number, address_complement, address_district, address_zip (spec 003),
   logo_public_id, cover_public_id, hours (jsonb), share_by_default, owner_id,
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),
   billing_day, next_due_at, past_due_since, cancel_at, active_until, slug_reserved_until,
+  slug_changed_at (troca no máximo 1× a cada 30 dias),
   accepts_sellers (bool), commission_type (pct|fixed), commission_value,
-  referral_code_used, created_at, updated_at
+  created_at, updated_at                       # indicação usada: em referrals.referred_store_id
 store_slug_redirects     old_slug (pk), store_id, expires_at
 
 invoices                 id, store_id, period (AAAA-MM), membership_cents, fees_cents, credit_cents, total_cents,
@@ -156,7 +158,7 @@ sales                    id, vehicle_id, store_id, final_price_cents, seller_id,
 seller_reviews           id, seller_id, store_id, rating (1–5), text, created_at
 
 # Caju Indica
-referral_codes           code (pk), profile_id (dono) ou campaign_name (link de campanha, sem recompensa), active
+referral_codes           code (pk), profile_id (dono) ou campaign_name (link de campanha, sem recompensa), active   # criadas na 003 (código pessoal do lojista); campanhas na 010
 referrals                id, code, referrer_id, referred_store_id, status (invited|registered|active|paused|ended),
                          months_paid (0–3), created_at
 rewards                  id, referral_id, beneficiary_id, period, amount_cents,

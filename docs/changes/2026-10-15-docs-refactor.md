@@ -247,3 +247,6 @@
 # 2026-11-08 · 002/T021 verify e correções da revisão
 - Domínios só se usam pelo service.ts (auth reexporta authorizeTo e currentSession; reset das regras virou restoreInitialSettings); schemas de senha .strict(); cache de no máximo 1 min (expire 60); regra vale o provisório em datas antigas; histórico mostra "Sistema"; mesma chave Pix não diz "atualizada"; 429 do Supabase vira "muitas tentativas"; WhatsApp no card Vitrine CajuGo; chave atual inteira na revisão (só admin).
 - Spec 002 implemented.
+
+# 2026-11-08 · Spec 003 planejada
+- docs/specs/003-store-signup (spec clarified, plano aprovado, 24 tasks); ARCHITECTURE §4 (endereço em campos, slug_changed_at, referral_codes na 003), SECURITY §8 (e-mail/celular da checagem de autoindicação), GLOSSARY (Código de indicação).

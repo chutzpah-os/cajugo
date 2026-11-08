@@ -90,6 +90,7 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 | Dado | Exibição | Log |
 |---|---|---|
 | CPF/CNPJ (lojista, vendedor, indicador) | só ao dono (mascarado) e ao admin | ❌ |
+| E-mail e celular de quem se cadastra, usados na checagem de autoindicação (spec 003) | nunca a quem indicou nem em página pública; quem indicou vê só o status da indicação | ❌ |
 | Chave Pix e favorecido da CajuGo (regras, spec 002) | só ao admin e ao suporte (regras) e nas telas de pagamento de quem está conectado; nunca em página pública | ❌ |
 | Chave Pix (vendedor, indicador) | só ao dono, ao admin e, para o vendedor, às lojas parceiras (para pagar a comissão) | ❌ |
 | Documentos do vendedor e comprovantes de Pix | privados (Cloudinary `authenticated`), só admin e dono | ❌ |

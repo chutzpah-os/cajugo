@@ -89,6 +89,9 @@ Programa de indicação de lojas: quem indica ganha 30% da mensalidade da loja i
 **Indicação** (`referral`):
 Vínculo entre quem indicou e a loja indicada, criado pelo código ou link.
 
+**Código de indicação** (`referral_code`):
+Código pessoal de quem indica (ex.: `RICARDO10`), criado com a conta, e o link `/i/{codigo}` que leva ao cadastro da loja com o código aplicado. Usar o próprio código (mesmo e-mail, celular, CPF ou CNPJ) é autoindicação e não vale.
+
 **Recompensa** (`reward`):
 Valor mensal gerado por uma indicação ativa (R$ 30), creditado a quem indicou.
 

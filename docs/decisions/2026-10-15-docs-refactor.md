@@ -179,3 +179,6 @@
 
 # 2026-11-08 · Exceções aceitas na 002
 - Os 14 valores provisórios da migration 0005 usam uuid v4 (gen_random_uuid): a migration já está aplicada em staging e prod e o Postgres 17 não gera v7; toda linha nova usa v7. A chave Pix fica em card próprio, fora de "Pagamento", por ter fluxo de 2 passos com senha. CFG-NFR-001 sem teste automático: garantido pelo cacheLife (expire 60 s).
+
+# 2026-11-08 · Decisões da 003
+- Código pessoal antecipado da 010; autoindicação por e-mail/celular aqui e CPF/CNPJ na 004; conta existente adiciona a loja; termos com o rascunho do PRD; troca de endereço 1×/30 dias; endereço em campos (SEO local). Plano: qrcode (D1), remover stores.address vazia (D2), cidades do IBGE no repo (D3), /loja/{slug} mínima até a 005 (D4).
