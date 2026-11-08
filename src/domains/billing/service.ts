@@ -2,7 +2,11 @@ import { and, asc, count, desc, eq, gte } from "drizzle-orm";
 import { authorizeTo, can } from "@/domains/auth/service";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
 import { notify } from "@/domains/notices/service";
-import { activateFirstTime, markPaymentReview } from "@/domains/stores/service";
+import {
+  activateFirstTime,
+  backToRegistered,
+  markPaymentReview,
+} from "@/domains/stores/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
 import type {
@@ -20,6 +24,7 @@ import { whatsappLink } from "@/platform/whatsapp/link";
 import { firstDueDate, saoPauloMonthStart } from "./due-date";
 import {
   confirmPaymentSchema,
+  rejectPaymentSchema,
   startCheckoutSchema,
   submitReceiptSchema,
 } from "./schemas";
@@ -561,4 +566,73 @@ async function notOpenForReview(db: Db, paymentId: string): Promise<AppError> {
     .from(payments)
     .where(eq(payments.id, paymentId));
   return exists ? AppError.conflict(ALREADY_REVIEWED) : AppError.notFound();
+}
+
+/**
+ * Admin recusa o comprovante [10b] (PIX-FR-010): motivo obrigatório; a 1ª mensalidade
+ * volta a "cadastrada" para o lojista reenviar ([12e]), com o valor faltante quando o
+ * valor que vale é menor que o esperado. Aviso ao lojista e histórico (PIX-FR-013,
+ * PIX-SEC-004); conferido uma vez só (PIX-SEC-007).
+ */
+export async function rejectPayment(
+  deps: BillingDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<void> {
+  const admin = authorizeTo(session, "payments.review");
+  const parsed = rejectPaymentSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { paymentId, reason, amountCents } = parsed.data;
+  const now = clock(deps);
+
+  await deps.db.transaction(async (tx) => {
+    const [payment] = await tx
+      .update(payments)
+      .set({
+        status: "rejected",
+        rejectReason: reason,
+        reviewedBy: admin.userId,
+        reviewedAt: now,
+        ...(amountCents ? { amountCents } : {}),
+      })
+      .where(and(eq(payments.id, paymentId), eq(payments.status, "submitted")))
+      .returning();
+    if (!payment) throw await notOpenForReview(tx, paymentId);
+    const [invoice] = await tx
+      .select()
+      .from(invoices)
+      .where(eq(invoices.id, payment.invoiceId));
+    if (invoice.kind === "first") await backToRegistered(tx, payment.storeId);
+    const missing = invoice.totalCents - payment.amountCents;
+    const [store] = await tx
+      .select({ ownerId: stores.ownerId })
+      .from(stores)
+      .where(eq(stores.id, payment.storeId));
+    await notify(
+      tx,
+      store.ownerId,
+      {
+        kind: "payment_rejected",
+        reason,
+        ...(missing > 0 ? { missingCents: missing } : {}),
+      },
+      now,
+    );
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "payment.rejected",
+      entity: "payment",
+      entityId: payment.id,
+      data: {
+        storeId: payment.storeId,
+        invoiceId: invoice.id,
+        reference: REFERENCE[invoice.kind],
+        reason,
+        paidCents: payment.paidCents,
+        amountCents: payment.amountCents,
+        expectedCents: invoice.totalCents,
+      },
+    });
+  });
 }

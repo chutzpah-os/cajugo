@@ -31,3 +31,16 @@ export const confirmPaymentSchema = z
     amountCents: cents("Informe o valor que caiu na conta.").optional(),
   })
   .strict();
+
+/** Recusar [10b]: motivo obrigatório (PIX-FR-010); valor corrigido opcional. */
+export const rejectPaymentSchema = z
+  .object({
+    paymentId: z.uuid(),
+    reason: z
+      .string()
+      .trim()
+      .min(3, "Informe o motivo.")
+      .max(300, "Use no máximo 300 caracteres."),
+    amountCents: cents("Informe o valor que caiu na conta.").optional(),
+  })
+  .strict();

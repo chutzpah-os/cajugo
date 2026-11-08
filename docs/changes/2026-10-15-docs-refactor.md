@@ -367,3 +367,6 @@
 
 # 2026-11-08 · 004/T015 confirmar comprovante
 - billing.confirmPayment (só admin): atualização condicional (submitted → confirmed, valor corrigido opcional), fatura paga, 1ª ativação com dia e próximo vencimento, aviso "Pagamento confirmado", log com valor pago/vale/esperado e referência, link wa.me com o endereço da loja e o vencimento; segundo admin → 409 "Este comprovante já foi conferido.", inexistente → 404. settleInvoice fica para o registro manual (T017) e para as mensais (011).
+
+# 2026-11-08 · 004/T016 recusar comprovante
+- billing.rejectPayment (só admin): motivo de 3 a 300 caracteres, atualização condicional (submitted → rejected), 1ª mensalidade volta a registered (fatura continua aberta para reenviar), aviso com motivo e valor faltante, log com motivo e valores; já conferido → 409.
