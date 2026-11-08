@@ -163,7 +163,7 @@ describe("troca do endereço do catálogo", () => {
     ).rejects.toMatchObject({ status: 403 });
   });
 
-  it("[STO-FR-006] a página pública só mostra loja no ar (cadastrada ou suspensa: nada)", async () => {
+  it("[STO-FR-006] [PIX-FR-014] a página pública só mostra loja no ar (ativa, em atraso, cancelamento agendado)", async () => {
     const a = await owner("silvautocar", "a@x.com");
     expect(await publicStore(t.db, "silvautocar")).toBeNull();
 
@@ -177,10 +177,25 @@ describe("troca do endereço do catálogo", () => {
       city: "Aracaju",
     });
 
-    await t.db
-      .update(stores)
-      .set({ status: "suspended" })
-      .where(eq(stores.id, a.storeId!));
-    expect(await publicStore(t.db, "silvautocar")).toBeNull();
+    // No ar também em atraso (tolerância) e com cancelamento agendado (PRD §5.5).
+    for (const status of ["past_due", "cancel_scheduled"] as const) {
+      await t.db
+        .update(stores)
+        .set({ status })
+        .where(eq(stores.id, a.storeId!));
+      expect(await publicStore(t.db, "silvautocar"), status).not.toBeNull();
+    }
+    for (const status of [
+      "payment_review",
+      "suspended",
+      "canceled",
+      "archived",
+    ] as const) {
+      await t.db
+        .update(stores)
+        .set({ status })
+        .where(eq(stores.id, a.storeId!));
+      expect(await publicStore(t.db, "silvautocar"), status).toBeNull();
+    }
   });
 });

@@ -16,7 +16,8 @@ import type {
 import { logActivity } from "@/platform/http/activity-log";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
-import type { Session } from "@/platform/http/session";
+import { authorizeStore, type Session } from "@/platform/http/session";
+import { storeUrl } from "@/platform/http/urls";
 import {
   addStoreSchema,
   registerStoreSchema,
@@ -596,6 +597,68 @@ export async function activateFirstTime(
   return done.length > 0;
 }
 
+/** Status em que a loja está "no ar" para o público (PRD §5.5). */
+export const LIVE_STATUSES = [
+  "active",
+  "past_due",
+  "cancel_scheduled",
+] as const;
+
+export function isStoreLive(status: string): boolean {
+  return (LIVE_STATUSES as readonly string[]).includes(status);
+}
+
+export type OnboardingStatus = {
+  /** Mostrar o banner e os primeiros passos [5e]? */
+  show: boolean;
+  catalogUrl: string;
+  steps: {
+    subscription: boolean;
+    firstVehicle: boolean;
+    storeComplete: boolean;
+  };
+  done: number;
+};
+
+/**
+ * Primeiros passos [5e] (PIX-FR-012): com a loja no ar, assinatura ativa ✓, primeiro
+ * veículo (spec 005) e loja completa (logo, capa, sobre e horário). Some quando os 3
+ * estão completos.
+ */
+export async function onboardingStatus(
+  db: Db,
+  session: Session | null,
+): Promise<OnboardingStatus> {
+  const s = authorizeStore(session);
+  const [store] = await db
+    .select({
+      slug: stores.slug,
+      status: stores.status,
+      activatedAt: stores.activatedAt,
+      logo: stores.logoPublicId,
+      cover: stores.coverPublicId,
+      about: stores.about,
+      hours: stores.hours,
+    })
+    .from(stores)
+    .where(eq(stores.id, s.storeId));
+  if (!store) throw AppError.notFound();
+  const steps = {
+    subscription: !!store.activatedAt && isStoreLive(store.status),
+    // Veículos chegam na spec 005; até lá nenhuma loja tem o primeiro.
+    firstVehicle: false,
+    storeComplete:
+      !!store.logo && !!store.cover && !!store.about?.trim() && !!store.hours,
+  };
+  const done = Object.values(steps).filter(Boolean).length;
+  return {
+    show: steps.subscription && done < 3,
+    catalogUrl: storeUrl(store.slug),
+    steps,
+    done,
+  };
+}
+
 /** E-mails dos cadastros feitos pelos testes ponta a ponta (spec 003). */
 export const E2E_SIGNUP_EMAIL = /^e2e-cadastro-[a-z0-9-]+@cajugo\.test$/;
 
@@ -694,9 +757,14 @@ export async function publicStore(
   const [s] = await db
     .select({ name: stores.name, city: stores.city, state: stores.state })
     .from(stores)
-    // Só loja no ar: cadastrada (sem pagamento), suspensa ou cancelada não é pública
-    // (STO-FR-006, SECURITY.md §4).
-    .where(and(eq(stores.id, resolved.storeId), eq(stores.status, "active")));
+    // Só loja no ar (PRD §5.5): cadastrada, em análise, suspensa ou cancelada não é
+    // pública (STO-FR-006, PIX-FR-014, SECURITY.md §4).
+    .where(
+      and(
+        eq(stores.id, resolved.storeId),
+        inArray(stores.status, LIVE_STATUSES),
+      ),
+    );
   return s
     ? { slug: resolved.slug, redirected: resolved.redirected, ...s }
     : null;

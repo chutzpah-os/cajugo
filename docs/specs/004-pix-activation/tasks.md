@@ -26,7 +26,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T015** `confirmPayment`: valor corrigido, fatura paga, `activateFirstTime` (vencimento, endereço deixa de ser reservado), aviso, log, link `wa.me`; duas confirmações → uma ativação e 409 · _PIX-FR-008, PIX-FR-009, PIX-FR-013, PIX-SEC-004, PIX-SEC-007_
 - [x] **T016** `rejectPayment`: motivo obrigatório, loja volta a `registered`, valor faltante, aviso, log; conferência dupla → 409 · _PIX-FR-010, PIX-FR-013, PIX-SEC-007_
 - [x] **T017** `registerManualPayment` e `findStoresToCharge`: só admin, loja sem comprovante pendente, mesmo caminho de ativação, log · _PIX-FR-011, PIX-SEC-003_
-- [ ] **T018** `isStoreLive` no `publicStore` (ativa, em atraso, cancelamento agendado) e `onboardingStatus` (loja completa = logo, capa, sobre, horário) · _PIX-FR-012, PIX-FR-014_
+- [x] **T018** `isStoreLive` no `publicStore` (ativa, em atraso, cancelamento agendado) e `onboardingStatus` (loja completa = logo, capa, sobre, horário) · _PIX-FR-012, PIX-FR-014_
 - [ ] **T019** Route Handler `GET /api/v1/payments/[id]/receipt` conforme `contract.md`: 401, 404 (outra loja, inexistente, manual), arquivo com `no-store` · _PIX-SEC-001, PIX-SEC-002, PIX-SEC-003_
 
 ## Fase 3 — Telas

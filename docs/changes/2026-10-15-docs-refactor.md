@@ -373,3 +373,6 @@
 
 # 2026-11-08 · 004/T017 pagamento sem comprovante
 - billing.findStoresToCharge (lojas sem 1ª mensalidade paga, por nome ou endereço, com aviso de comprovante pendente) e registerManualPayment (só admin; forma, valor e observação; loja registered sem comprovante em análise; abre a fatura se faltar; pagamento confirmed manual; mesma ativação da confirmação; log payment.manual).
+
+# 2026-11-08 · 004/T018 loja no ar e primeiros passos
+- stores: LIVE_STATUSES/isStoreLive (ativa, em atraso, cancelamento agendado, PRD §5.5) no publicStore, corrigindo o filtro só "active" da 003; onboardingStatus (assinatura ativa, primeiro veículo da 005, loja completa = logo, capa, sobre e horário; some com os 3). Teste de ponta a ponta no serviço: /loja/{slug} só abre depois da confirmação.
