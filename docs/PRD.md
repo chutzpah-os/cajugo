@@ -182,7 +182,7 @@ Painel [4a] com pendências → Pagamentos Pix [10b] → Lojas [1d]/[6g] → Ass
 ## 5. Regras de negócio e máquinas de estado
 
 ### 5.1 Assinatura do Catálogo
-- R$ 100/mês, vencimento no dia da 1ª confirmação (ex.: dia 26). Sem fidelidade.
+- R$ 100/mês (`Config`), vencimento no dia da 1ª confirmação (ex.: dia 26); se o mês não tem esse dia, vence no último dia do mês (31/01 → 28/02 → 31/03). Sem fidelidade.
 - A loja só fica **ativa** após o admin confirmar o 1º comprovante. Antes disso o lojista já pode cadastrar veículos como **rascunho** [10a].
 - Aviso de vencimento 3 dias antes: no painel do lojista e na lista do admin, com botão `wa.me` para o admin avisar.
 - **Tolerância de atraso: 5 dias** (`Config`, a confirmar). Depois, a loja fica **suspensa**: catálogo e veículos ocultos ao público [12g, sem expor o motivo]; dados preservados; edição permitida; painel com alerta e botão de pagar [12f].
@@ -248,7 +248,8 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
   - **Confirmar:** fatura paga; ativa ou reativa a loja; define o próximo vencimento; abre botão `wa.me` para avisar o lojista.
   - **Recusar:** motivo obrigatório (ex.: valor divergente) → lojista vê [12e] (motivo, valor faltante, novo upload); a loja segue no ar até o limite de tolerância.
 - Prazo de conferência: **1 dia útil** (`Config`, a confirmar).
-- **Registro sem comprovante** (exceção, ex.: dinheiro): o admin pode registrar o pagamento direto em [6g]; fica no log de auditoria.
+- O lojista informa o **valor pago** ao enviar o comprovante; o admin pode corrigi-lo conforme o extrato ao conferir (o histórico guarda os dois).
+- **Registro sem comprovante** (exceção, ex.: dinheiro): o admin registra o pagamento em [10b], buscando a loja (atalho em [6g]); fica no log de auditoria.
 - **Fatura mensal** [10c] = mensalidade + taxas CajuGo de vendas via vendedor do período − crédito Caju Indica.
 - Recibo e nota fiscal: fora do sistema no MVP.
 
@@ -312,6 +313,7 @@ Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f] (spec
 
 | Regra | Valor provisório |
 |---|---|
+| Mensalidade do Plano Catálogo | R$ 100 |
 | Chave Pix e favorecido da CajuGo | vazio até o admin preencher em [4c] |
 | Prazo de conferência do comprovante | 1 dia útil |
 | Tolerância de atraso antes da suspensão | 5 dias |
@@ -466,12 +468,13 @@ Campos:
 - Forma de pagamento: **só Pix** (manual, §5.6). Cartão e Pix automático ficam para a fase 2.
 - CPF ou CNPJ para nota fiscal (validação de dígitos).
 - CTA **Pagar com Pix · R$ 100** → [6c].
+- Sem chave Pix configurada: "O pagamento está indisponível no momento. Fale com a CajuGo." com `wa.me` do suporte; CTA desabilitado.
 - Enquanto a loja não estiver ativa, o login leva a esta tela ou a [10a].
 
 ### [5e] Catálogo vazio + onboarding
 - Aparece quando o admin confirma o 1º comprovante [10b].
 - Banner verde: "Assinatura ativa. Sua loja está no ar." + link do catálogo.
-- "Primeiros passos" (1 de 3): Assinatura ativa ✓; Cadastre seu primeiro veículo; Complete sua loja.
+- "Primeiros passos" (1 de 3): Assinatura ativa ✓; Cadastre seu primeiro veículo; Complete sua loja (logo, capa, sobre e horário preenchidos).
 - Estado vazio com **Cadastrar primeiro veículo** → [2a].
 - Checklist some quando os 3 passos estiverem completos.
 
@@ -592,7 +595,7 @@ Validação para publicar: ≥1 foto, marca, modelo, versão, anos, km, câmbio,
 ### [6c] Pix manual (chave, QR e comprovante)
 - Aberto por **Pagar com Pix** em [5d], pela fatura [10c] ou pelo alerta de suspensão [12f].
 - Valor a pagar (mensalidade ou total da fatura), **chave Pix da CajuGo** com **Copiar**, **QR code estático** com o valor, favorecido e "Como pagar" em passos.
-- **Anexar comprovante** (foto ou PDF, até 10 MB) com pré-visualização; **Enviar comprovante** só habilita com arquivo.
+- **Anexar comprovante** (foto ou PDF, até 10 MB) com pré-visualização e **valor pago**; **Enviar comprovante** só habilita com arquivo e valor.
 - Nota: "Conferimos o comprovante em até 1 dia útil."
 - Após o envio → [10a].
 
@@ -717,7 +720,8 @@ Todas as confirmações geram registro em `LogAtividade`.
 ### [10b] Pagamentos Pix (admin)
 - KPIs (aguardando conferência, confirmados no mês, lojas em atraso); lembrete "Confira no extrato se o valor caiu na chave".
 - Cada comprovante: loja, referência (1ª mensalidade / mês / taxas), valor, horário, arquivo (abre em visualização privada); **alerta "Valor diferente do esperado"**.
-- **Confirmar** (ativa/reativa a loja; botão `wa.me` para avisar) · **Recusar** (motivo obrigatório).
+- **Confirmar** (ativa/reativa a loja; botão `wa.me` para avisar; admin pode corrigir o valor pago) · **Recusar** (motivo obrigatório).
+- **Registrar pagamento sem comprovante** (busca a loja); aviso "Chave Pix não configurada" enquanto a chave estiver vazia.
 
 ### [10c] Fatura do mês (lojista)
 - Mensalidade R$ 100 + taxas CajuGo de vendas via vendedor − crédito Caju Indica = total; vencimento; status; **Pagar com Pix** → [6c].
