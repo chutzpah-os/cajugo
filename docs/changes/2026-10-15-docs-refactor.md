@@ -227,3 +227,6 @@
 
 # 2026-11-08 · 002/T015 histórico na tela
 - /admin/conta/historico/[key] (de/para por extenso, quem, quando em horário de Brasília; chave Pix mascarada) e links "Histórico" em cada regra e na chave Pix; displaySettingValue.
+
+# 2026-11-08 · 002/T016 tela [8f]
+- /admin/indica/regras com as regras do Caju Indica (mesmo formulário por grupo) e link "Regras do programa" em /admin/indica; testado no navegador (resgate mínimo e quem pode indicar).
