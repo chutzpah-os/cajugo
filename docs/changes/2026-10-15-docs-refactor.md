@@ -421,3 +421,6 @@
 
 # 2026-11-08 · 005/T006 domínio fipe
 - brands, models (agrupados por família = primeira palavra, com as versões da FIPE), years (id modelo:ano) e reference (preço do mês), lendo do banco e consultando a API só quando falta ou venceu (30 dias); API fora → o guardado, mesmo vencido; sem nada guardado → 503 "Lista indisponível agora" (referência → null).
+
+# 2026-11-08 · 005/T007 rascunho do veículo
+- vehicles: lists.ts (câmbio, combustível, carroceria, portas, condições, itens; limites fixos D2), schemas (campos do [2a], tudo opcional no rascunho, .strict()), saveDraft (cria no 1º salvamento com divulgação e WhatsApp da loja; depois grava só o enviado; vendido/excluído → 409/404) e vehicleForm (saída montada à mão); loja B → 404; usuário da loja cadastra. stores.vehicleDefaults; brPhoneSchema foi para platform/br/phone.ts.

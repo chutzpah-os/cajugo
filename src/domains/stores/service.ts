@@ -597,6 +597,19 @@ export async function activateFirstTime(
   return done.length > 0;
 }
 
+/** Padrões de um veículo novo (VEH-FR-008): divulgação e WhatsApp da loja. */
+export async function vehicleDefaults(
+  db: Db,
+  storeId: string,
+): Promise<{ shareOnCajugo: boolean; contactWhatsapp: string }> {
+  const [s] = await db
+    .select({ share: stores.shareByDefault, whatsapp: stores.whatsapp })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  if (!s) throw AppError.notFound();
+  return { shareOnCajugo: s.share, contactWhatsapp: s.whatsapp };
+}
+
 /** Status em que a loja está "no ar" para o público (PRD §5.5). */
 export const LIVE_STATUSES = [
   "active",
