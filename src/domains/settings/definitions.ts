@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { z } from "zod";
+import { isValidCnpj, isValidCpf } from "@/platform/br/tax-id";
 import { settingValues } from "@/platform/db/schema";
 import { bpsToPercent, centsToReais } from "./format";
 
@@ -47,25 +48,6 @@ const money = (minCents: number, maxCents: number) => {
 
 const digits = (s: string) => s.replace(/\D/g, "");
 
-/** Dígitos verificadores de CPF/CNPJ (módulo 11). */
-function validCheckDigits(value: string, weights: number[][]): boolean {
-  if (/^(\d)\1+$/.test(value)) return false;
-  return weights.every((w) => {
-    const pos = w.length;
-    const sum = w.reduce((acc, wi, i) => acc + Number(value[i]) * wi, 0);
-    const dv = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-    return dv === Number(value[pos]);
-  });
-}
-const CPF_WEIGHTS = [
-  [10, 9, 8, 7, 6, 5, 4, 3, 2],
-  [11, 10, 9, 8, 7, 6, 5, 4, 3, 2],
-];
-const CNPJ_WEIGHTS = [
-  [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
-  [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2],
-];
-
 export const PIX_TYPES = ["cpf", "cnpj", "email", "phone", "random"] as const;
 
 export const pixSchema = z
@@ -86,14 +68,12 @@ export const pixSchema = z
     switch (pix.type) {
       case "cpf": {
         const d = digits(pix.key);
-        if (d.length !== 11 || !validCheckDigits(d, CPF_WEIGHTS))
-          return fail("CPF inválido.");
+        if (!isValidCpf(d)) return fail("CPF inválido.");
         return { ...pix, key: d };
       }
       case "cnpj": {
         const d = digits(pix.key);
-        if (d.length !== 14 || !validCheckDigits(d, CNPJ_WEIGHTS))
-          return fail("CNPJ inválido.");
+        if (!isValidCnpj(d)) return fail("CNPJ inválido.");
         return { ...pix, key: d };
       }
       case "email": {

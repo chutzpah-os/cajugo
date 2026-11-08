@@ -328,3 +328,6 @@
 
 # 2026-11-08 · 004/T002 migration 0008
 - Enums e tabelas invoices, payments, notices; stores.tax_id/tax_id_type/billing_day/next_due_at/activated_at; referrals.reject_reason e status rejected; regra membership_cents (R$ 100). Índices únicos parciais: uma fatura first por loja e um comprovante em análise por fatura (testados). Aplicada no staging.
+
+# 2026-11-08 · 004/T003 CPF e CNPJ
+- src/platform/br/tax-id.ts: isValidCpf, isValidCnpj, parseTaxId (11 dígitos = CPF, 14 = CNPJ) e maskTaxId; a regra da chave Pix passou a usar o módulo (a cópia da validação saiu de settings/definitions.ts).
