@@ -10,6 +10,8 @@ import {
   or,
 } from "drizzle-orm";
 import { authorizeTo, can } from "@/domains/auth/service";
+import { authorize } from "@/platform/http/session";
+import { userRole } from "@/platform/db/schema";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
 import { notify } from "@/domains/notices/service";
 import {
@@ -764,4 +766,47 @@ export async function registerManualPayment(
     });
     return settleInvoice(tx, invoice, now);
   });
+}
+
+const EXTENSION: Record<string, string> = {
+  jpg: "jpg",
+  jpeg: "jpg",
+  png: "png",
+  webp: "webp",
+  heic: "heic",
+  pdf: "pdf",
+};
+
+/**
+ * Arquivo do comprovante (ADR 0011, `contract.md`): admin e suporte veem qualquer um;
+ * o lojista só o da própria loja. Outra loja, outro papel, id inválido, inexistente
+ * ou registro sem comprovante → 404 (PIX-SEC-001, PIX-SEC-002, PIX-SEC-003).
+ */
+export async function receiptFile(
+  deps: FileDeps,
+  session: Session | null,
+  paymentId: string,
+): Promise<{ body: ArrayBuffer; contentType: string; filename: string }> {
+  const s = authorize(session, userRole.enumValues);
+  if (!UUID.test(paymentId)) throw AppError.notFound();
+  const [row] = await deps.db
+    .select({
+      storeId: payments.storeId,
+      publicId: payments.receiptPublicId,
+      format: payments.receiptFormat,
+      kind: invoices.kind,
+    })
+    .from(payments)
+    .innerJoin(invoices, eq(invoices.id, payments.invoiceId))
+    .where(eq(payments.id, paymentId));
+  const allowed =
+    can(s, "payments.view") ||
+    (can(s, "billing.manage") && !!row && row.storeId === s.storeId);
+  if (!row || !allowed || !row.publicId || !row.format)
+    throw AppError.notFound();
+  const file = await deps.cloudinary.fetchPrivate(row.publicId, row.format);
+  if (!file) throw AppError.notFound();
+  const ext = EXTENSION[row.format] ?? "bin";
+  const reference = row.kind === "first" ? "1a-mensalidade" : "mensalidade";
+  return { ...file, filename: `comprovante-${reference}.${ext}` };
 }

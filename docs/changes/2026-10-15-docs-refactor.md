@@ -376,3 +376,6 @@
 
 # 2026-11-08 · 004/T018 loja no ar e primeiros passos
 - stores: LIVE_STATUSES/isStoreLive (ativa, em atraso, cancelamento agendado, PRD §5.5) no publicStore, corrigindo o filtro só "active" da 003; onboardingStatus (assinatura ativa, primeiro veículo da 005, loja completa = logo, capa, sobre e horário; some com os 3). Teste de ponta a ponta no serviço: /loja/{slug} só abre depois da confirmação.
+
+# 2026-11-08 · 004/T019 rota do comprovante
+- GET /api/v1/payments/[id]/receipt (contract.md): billing.receiptFile (admin e suporte qualquer; lojista só o da própria loja; resto, id inválido, inexistente ou manual → 404) e billing/http.receiptResponse (arquivo lido pelo servidor, private no-store, inline com nome neutro, nosniff; 403 vira 404). Conferido no servidor local: sem sessão → 401 problem+json.
