@@ -274,3 +274,6 @@
 
 # 2026-11-08 · 003/T008 cadastro do lojista
 - domains/stores: schemas (registerStoreSchema/addStoreSchema, telefone BR com DDI, cidade do IBGE) e registerStore (conta + perfil + papel + loja registered com endereço reservado 7 dias + código + indicação + auditoria numa transação; apaga a conta se falhar). auth reexporta grantRole.
+
+# 2026-11-08 · 003/T009 proteções do cadastro
+- registerStore: limite por rede (5/min e 30/dia) e campo isca; e-mail existente com convite neutro para entrar; conectado (cliente sem loja) cria só a loja e ganha o papel de lojista; equipe 403; quem já tem loja 409.

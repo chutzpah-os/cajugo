@@ -8,6 +8,7 @@ import {
   stores,
 } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
+import type { Role, Session } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { registerStore } from "./service";
 
@@ -228,5 +229,187 @@ describe("registerStore (visitante)", () => {
     expect(await auth.verifyPassword("outra@x.com", "senha-forte-1")).toBe(
       false,
     );
+  });
+});
+
+describe("registerStore (proteções e conta existente)", () => {
+  let t: Awaited<ReturnType<typeof createTestDb>>;
+  let auth: FakeAuthProvider;
+  const deps = () => ({ db: t.db, auth, now: () => NOW });
+
+  beforeEach(async () => {
+    vi.stubEnv("HASH_SECRET", "segredo-de-teste");
+    t = await createTestDb();
+    auth = new FakeAuthProvider();
+  });
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await t.close();
+  });
+
+  async function account(email: string, roles: Role[]): Promise<Session> {
+    const user = await auth.adminCreateUser(email, "senha-forte-1");
+    await t.db
+      .insert(profiles)
+      .values({ id: user.id, name: "Ana Lima", email, roles });
+    return {
+      userId: user.id,
+      roles,
+      activeRole: roles[0],
+      storeId: null,
+      mustChangePassword: false,
+    };
+  }
+
+  it("[STO-SEC-002] campo isca preenchido: nada é criado", async () => {
+    await expect(
+      registerStore(deps(), null, VALID, {
+        ipHash: "rede-a",
+        honeypotFilled: true,
+      }),
+    ).rejects.toMatchObject({ status: 400 });
+    expect(await t.db.select().from(stores)).toHaveLength(0);
+    expect(await auth.verifyPassword("joao@silva.com", "senha-forte-1")).toBe(
+      false,
+    );
+  });
+
+  it("[STO-SEC-002] a mesma rede acima de 5 tentativas por minuto recebe aviso para aguardar", async () => {
+    // Arrange: 5 tentativas (inválidas) da mesma rede
+    for (let i = 0; i < 5; i++)
+      await registerStore(
+        deps(),
+        null,
+        { ...VALID, terms: false },
+        { ipHash: "rede-a" },
+      ).catch(() => {});
+
+    // Act / Assert
+    await expect(
+      registerStore(deps(), null, VALID, { ipHash: "rede-a" }),
+    ).rejects.toMatchObject({ type: "too-many-requests", status: 429 });
+    expect(
+      (await registerStore(deps(), null, VALID, { ipHash: "rede-b" })).storeId,
+    ).toBeTruthy();
+  });
+
+  it("[STO-FR-015] e-mail já cadastrado: convite neutro para entrar, nada é criado", async () => {
+    // Arrange
+    await account("ana@x.com", ["referrer"]);
+
+    // Act / Assert
+    await expect(
+      registerStore(
+        deps(),
+        null,
+        { ...VALID, email: "ANA@x.com" },
+        { ipHash: "rede-a" },
+      ),
+    ).rejects.toMatchObject({
+      errors: [
+        expect.objectContaining({
+          field: "email",
+          message: "Se você já tem conta, entre para continuar.",
+        }),
+      ],
+    });
+    expect(await t.db.select().from(stores)).toHaveLength(0);
+  });
+
+  it("[STO-FR-015] conectada, a indicadora informa só a loja e passa a ser também lojista", async () => {
+    // Arrange
+    const ana = await account("ana@x.com", ["referrer"]);
+
+    // Act
+    const { userId, storeId } = await registerStore(
+      deps(),
+      ana,
+      {
+        storeName: "Ana Veículos",
+        city: "Aracaju",
+        state: "SE",
+        whatsapp: "79981360206",
+        slug: "ana-veiculos",
+        terms: true,
+      },
+      { ipHash: "rede-a" },
+    );
+
+    // Assert
+    expect(userId).toBe(ana.userId);
+    const [profile] = await t.db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, ana.userId));
+    expect(profile.roles).toEqual(["referrer", "store_owner"]);
+    expect(profile.storeId).toBe(storeId);
+    const [code] = await t.db
+      .select()
+      .from(referralCodes)
+      .where(eq(referralCodes.profileId, ana.userId));
+    expect(code.code).toBe("ANA10");
+  });
+
+  it("[STO-FR-015] conectada, autoindicação pelo próprio código é recusada", async () => {
+    const ana = await account("ana@x.com", ["referrer"]);
+    await t.db
+      .insert(referralCodes)
+      .values({ code: "ANA10", profileId: ana.userId });
+
+    await expect(
+      registerStore(
+        deps(),
+        ana,
+        {
+          storeName: "Ana Veículos",
+          city: "Aracaju",
+          state: "SE",
+          whatsapp: "79981360206",
+          slug: "ana-veiculos",
+          terms: true,
+          referralCode: "ANA10",
+        },
+        { ipHash: "rede-a" },
+      ),
+    ).rejects.toMatchObject({
+      errors: [expect.objectContaining({ field: "referralCode" })],
+    });
+  });
+
+  it("[STO-FR-015] [STO-SEC-002] conta da equipe não abre loja; quem já tem loja também não", async () => {
+    const support = await account("suporte@x.com", ["support"]);
+    const store = {
+      storeName: "Loja",
+      city: "Aracaju",
+      state: "SE",
+      whatsapp: "79981360206",
+      slug: "loja-equipe",
+      terms: true,
+    };
+
+    await expect(
+      registerStore(deps(), support, store, { ipHash: "rede-a" }),
+    ).rejects.toMatchObject({
+      status: 403,
+    });
+
+    const owner = await registerStore(deps(), null, VALID, {
+      ipHash: "rede-b",
+    });
+    const ownerSession: Session = {
+      userId: owner.userId,
+      roles: ["store_owner"],
+      activeRole: "store_owner",
+      storeId: owner.storeId,
+      mustChangePassword: false,
+    };
+    await expect(
+      registerStore(
+        deps(),
+        ownerSession,
+        { ...store, slug: "segunda-loja" },
+        { ipHash: "rede-c" },
+      ),
+    ).rejects.toMatchObject({ status: 409 });
   });
 });

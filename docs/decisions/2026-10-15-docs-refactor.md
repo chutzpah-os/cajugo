@@ -191,3 +191,6 @@
 
 # 2026-11-08 · Conta antes da transação (003/T008)
 - O Supabase Auth fica fora da transação do banco; a conta é criada antes e apagada se a transação falhar (testado com falha simulada). Código de indicação e endereço são checados antes de criar a conta, para erro comum não gerar conta.
+
+# 2026-11-08 · Limite conta toda tentativa de cadastro (003/T009)
+- Diferente do login (só falhas), o cadastro é formulário público: SECURITY §6 manda limitar toda tentativa por rede. O limite vem antes da validação, para não virar sonda de e-mails cadastrados.

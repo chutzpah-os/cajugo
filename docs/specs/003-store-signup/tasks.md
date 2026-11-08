@@ -17,7 +17,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T006** `suggestSlug` e regras do endereço do catálogo; `checkSlug` (disponível, em uso, inválido) · _STO-FR-005_
 - [x] **T007** `referrals`: `getOrCreateCode` (código pessoal único) e `checkCode` (inexistente, autoindicação por e-mail ou celular, só o nome de quem indicou) · _STO-FR-007, STO-FR-014, STO-SEC-005_
 - [x] **T008** `registerStore` para visitante: conta + perfil + papel + loja `registered` + endereço reservado + código + indicação numa transação; desfaz a conta se falhar; auditoria · _STO-FR-003, STO-FR-004, STO-FR-006, STO-FR-007, STO-FR-014_
-- [ ] **T009** `registerStore`: honeypot e limite por rede; e-mail existente com mensagem neutra; conectado cria só a loja; equipe e quem já tem loja recusados · _STO-FR-015, STO-SEC-002_
+- [x] **T009** `registerStore`: honeypot e limite por rede; e-mail existente com mensagem neutra; conectado cria só a loja; equipe e quem já tem loja recusados · _STO-FR-015, STO-SEC-002_
 - [ ] **T010** `updateStore`: dados públicos, endereço em campos, horário, divulgar; loja só da sessão (loja B); usuário da loja recusado · _STO-FR-008, STO-FR-009, STO-FR-012, STO-SEC-001, STO-SEC-003_
 - [ ] **T011** `changeSlug` (limite de 30 dias, redirecionamento de 90 dias, transação, auditoria) e `resolveSlug` · _STO-FR-013, STO-SEC-001_
 - [ ] **T012** `storeImageUpload` e `setStoreImage` (pasta da loja, formato, ≤ 15 MB; loja B; usuário da loja) · _STO-FR-010, STO-SEC-004, STO-SEC-003_
