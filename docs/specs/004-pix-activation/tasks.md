@@ -18,7 +18,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T009** Domínio `notices`: `notify`, `noticesFor` (só do perfil da sessão), `dismiss`; permissão `payments.view` (admin, suporte) · _PIX-FR-013, PIX-SEC-003_
 
 ## Fase 2 — Fatias verticais (domínios `billing`, `stores`, `referrals`)
-- [ ] **T010** `checkoutView` e `startCheckout`: valor da regra vigente, documento validado e gravado na loja, fatura first aberta (reaproveitada), sem chave Pix → `pixReady=false`; usuário da loja 403 · _PIX-FR-001, PIX-FR-002, PIX-FR-004, PIX-SEC-004, PIX-SEC-005, PIX-SEC-006_
+- [x] **T010** `checkoutView` e `startCheckout`: valor da regra vigente, documento validado e gravado na loja, fatura first aberta (reaproveitada), sem chave Pix → `pixReady=false`; usuário da loja 403 · _PIX-FR-001, PIX-FR-002, PIX-FR-004, PIX-SEC-004, PIX-SEC-005, PIX-SEC-006_
 - [ ] **T011** `checkSelfReferralByTaxId` nos dois sentidos, chamado por `startCheckout`; indicação `rejected` sem aviso ao indicado · _PIX-FR-003_
 - [ ] **T012** `pixView` (valor da fatura, chave, favorecido, BR Code, prazo) e `receiptUpload` (pasta da loja da sessão) · _PIX-FR-004, PIX-SEC-001_
 - [ ] **T013** `submitReceipt`: nome exato assinado, formato e 10 MB (recusado é apagado), valor pago, um pagamento em análise por fatura, loja `payment_review`, log; loja B não envia para A · _PIX-FR-005, PIX-FR-006, PIX-SEC-001, PIX-SEC-002, PIX-SEC-004_

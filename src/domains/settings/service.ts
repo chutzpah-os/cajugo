@@ -230,3 +230,4 @@ export async function restoreInitialSettings(db: Db): Promise<SettingKey[]> {
       .values(changed.map((key) => ({ key, value: SETTINGS[key].initial })));
   return changed;
 }
+export { pixReady } from "./definitions";

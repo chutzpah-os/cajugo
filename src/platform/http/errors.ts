@@ -41,6 +41,17 @@ export class AppError extends Error {
     return error;
   }
 
+  /** Estado não permite a ação (ex.: endereço em uso, comprovante já conferido). */
+  static conflict(detail?: string, errors: FieldError[] = []) {
+    return new AppError(
+      "conflict",
+      "Não foi possível concluir",
+      409,
+      detail,
+      errors,
+    );
+  }
+
   static validation(errors: FieldError[]) {
     return new AppError(
       "validation",

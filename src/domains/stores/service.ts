@@ -137,10 +137,10 @@ export async function registerStore(
 }
 
 async function assertSlugAvailable(deps: AuthDeps, slug: string) {
-  if ((await checkSlug(deps.db, slug)).status !== "available") {
-    const error = fieldError("slug", "taken", "Indisponível.");
-    throw Object.assign(error, { status: 409 });
-  }
+  if ((await checkSlug(deps.db, slug)).status !== "available")
+    throw AppError.conflict(undefined, [
+      { field: "slug", code: "taken", message: "Indisponível." },
+    ]);
 }
 
 /** Loja + papel + código + indicação + auditoria, dentro da transação do chamador. */

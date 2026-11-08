@@ -349,3 +349,6 @@
 
 # 2026-11-08 · 004/T009 avisos no painel
 - Domínio notices: notify (na transação do evento), noticesFor (só do perfil da sessão, frase montada no servidor) e dismissNotice (outro perfil → 404); permissão payments.view (admin e suporte); src/platform/br/money.ts (centsToReais, reaisToCents, brl), reaproveitado pelas regras.
+
+# 2026-11-08 · 004/T010 tela de pagamento no servidor
+- billing: checkoutView (mensalidade vigente ou da fatura aberta, documento mascarado, pixReady, wa.me do atendimento, última recusa) e startCheckout (CPF/CNPJ validado e gravado na loja, fatura first aberta uma vez, sem chave Pix → 409); AppError.conflict substituiu o Object.assign do 409 do endereço (achado da revisão da 003); fixtures de teste do billing.
