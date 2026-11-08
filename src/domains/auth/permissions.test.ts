@@ -106,4 +106,17 @@ describe("ações do admin", () => {
     for (const p of [...adminOnly, "admin.read", "admin.moderate"] as const)
       expect(can(owner, p)).toBe(false);
   });
+
+  it("[PIX-SEC-003] suporte e admin veem a fila de comprovantes; só o admin confere", () => {
+    expect(can(sessionWith("support"), "payments.view")).toBe(true);
+    expect(can(sessionWith("admin"), "payments.view")).toBe(true);
+    expect(can(sessionWith("support"), "payments.review")).toBe(false);
+    for (const role of [
+      "store_owner",
+      "store_staff",
+      "seller",
+      "referrer",
+    ] as const)
+      expect(can(sessionWith(role), "payments.view")).toBe(false);
+  });
 });

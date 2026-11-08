@@ -33,6 +33,8 @@ export const PERMISSIONS = {
   "admin.moderate": ["admin", "support"],
   /** Confirmar ou recusar comprovante. */
   "payments.review": ["admin"],
+  /** Ver a fila de comprovantes e abrir os arquivos (PIX-SEC-003). */
+  "payments.view": ["admin", "support"],
   /** Suspender ou reativar loja. */
   "stores.suspend": ["admin"],
   /** Aprovar ou bloquear vendedor. */

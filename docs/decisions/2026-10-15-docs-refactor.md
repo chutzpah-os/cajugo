@@ -236,3 +236,6 @@
 
 # 2026-11-08 · Cidade opcional só na leitura (004/T008, D1)
 - O histórico de regras é só de inserção, então valores antigos da chave Pix (sem cidade) existem para sempre; a leitura aceita, a gravação exige e, sem cidade, a chave conta como não pronta (sem QR). Assim o histórico nunca quebra e nenhum dado precisa ser reescrito.
+
+# 2026-11-08 · Aviso guarda dados, não a frase (004/T009)
+- O aviso grava o tipo e os dados (motivo, valores) e a frase é montada na leitura: mudar o texto não exige migrar avisos antigos, e nenhum dado pessoal vai para a tabela. Formatação de dinheiro foi para a plataforma para os domínios não dependerem das regras.

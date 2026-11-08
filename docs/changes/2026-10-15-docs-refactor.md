@@ -346,3 +346,6 @@
 
 # 2026-11-08 · 004/T008 mensalidade e cidade do favorecido
 - Regra membership_cents ("Mensalidade do Plano Catálogo", grupo Pagamento, R$ 10–1.000) em [4c]; a chave Pix ganhou "Cidade do favorecido", obrigatória na troca (pixWriteSchema) e opcional na leitura; pixReady(); aviso no editor quando a chave atual não tem cidade; e2e da troca com cidade.
+
+# 2026-11-08 · 004/T009 avisos no painel
+- Domínio notices: notify (na transação do evento), noticesFor (só do perfil da sessão, frase montada no servidor) e dismissNotice (outro perfil → 404); permissão payments.view (admin e suporte); src/platform/br/money.ts (centsToReais, reaisToCents, brl), reaproveitado pelas regras.

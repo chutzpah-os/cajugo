@@ -328,7 +328,11 @@ describe("settings", () => {
 
     it("[PIX-FR-004] a chave nova exige a cidade do favorecido (vai no QR do Pix)", async () => {
       const session = await admin();
-      const { city: _city, ...withoutCity } = PIX;
+      const withoutCity = {
+        type: PIX.type,
+        key: PIX.key,
+        beneficiary: PIX.beneficiary,
+      };
 
       await expect(
         updateSettings(

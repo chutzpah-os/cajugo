@@ -11,18 +11,7 @@ export function percentToBps(text: string): number {
   return text.trim() === "" || Number.isNaN(n) ? NaN : Math.round(n * 100);
 }
 
-/** Centavos → texto em reais (5000 → "50,00"). */
-export function centsToReais(cents: number): string {
-  return (cents / 100).toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
-
-/** Texto em reais → centavos ("1.234,56" → 123456). Texto inválido → NaN. */
-export function reaisToCents(text: string): number {
-  return percentToBps(text);
-}
+export { centsToReais, reaisToCents } from "@/platform/br/money";
 
 /** Chave Pix mascarada para a tela [4c] (CFG-SEC-004: nunca a chave inteira à toa). */
 export function maskPixKey(pix: Pix): string {
