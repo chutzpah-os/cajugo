@@ -1,6 +1,7 @@
 import {
   SETTINGS,
   SETTING_KEYS,
+  type Pix,
   type SettingGroup,
   type SettingInput,
   type SettingKey,
@@ -9,6 +10,7 @@ import {
 import {
   bpsToPercent,
   centsToReais,
+  maskPixKey,
   percentToBps,
   reaisToCents,
 } from "./format";
@@ -94,4 +96,35 @@ export function groupFields(
     input: SETTINGS[key].input,
     value: settingFormValue(key, settings[key]),
   }));
+}
+
+const WHO_LABELS: Record<string, string> = {
+  store_owner: "Lojistas",
+  seller: "Vendedores",
+  referrer: "Indicadores",
+};
+
+/** Valor por extenso para o histórico (CFG-FR-006); a chave Pix sai mascarada. */
+export function displaySettingValue(key: SettingKey, value: unknown): string {
+  switch (SETTINGS[key].input) {
+    case "percent":
+      return `${bpsToPercent(value as number)}%`;
+    case "money":
+      return `R$ ${centsToReais(value as number)}`;
+    case "bool":
+      return value ? "Sim" : "Não";
+    case "who":
+      return (
+        Object.entries(value as Record<string, boolean>)
+          .filter(([, on]) => on)
+          .map(([role]) => WHO_LABELS[role])
+          .join(", ") || "Ninguém"
+      );
+    case "pix":
+      return value
+        ? `${maskPixKey(value as Pix)} (${(value as Pix).beneficiary})`
+        : "Não configurada";
+    default:
+      return String(value);
+  }
 }

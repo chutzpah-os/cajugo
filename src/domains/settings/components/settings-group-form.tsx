@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { Button } from "@/ui/button";
 import { MoneyField, PercentField } from "@/ui/number-field";
@@ -104,6 +105,18 @@ export function SettingsGroupForm({
             return null;
         }
       })}
+      <ul className="flex flex-wrap gap-x-4 text-sm">
+        {fields.map((f) => (
+          <li key={f.key}>
+            <Link
+              href={`/admin/conta/historico/${f.key}`}
+              className="flex min-h-11 items-center font-semibold text-caju-ink"
+            >
+              Histórico: {f.label.replace(/ \(.*\)$/, "")}
+            </Link>
+          </li>
+        ))}
+      </ul>
       {state?.message && (
         <p
           role={state.ok ? "status" : "alert"}

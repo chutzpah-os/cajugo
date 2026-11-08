@@ -224,3 +224,6 @@
 
 # 2026-11-08 · 002/T014 fluxo da chave Pix
 - [4c] PixKeyEditor (nova chave → revisão lado a lado + senha) e savePixAction; testado no navegador: CPF inválido volta ao passo 1, senha errada fica no passo 2, troca certa mostra a chave mascarada.
+
+# 2026-11-08 · 002/T015 histórico na tela
+- /admin/conta/historico/[key] (de/para por extenso, quem, quando em horário de Brasília; chave Pix mascarada) e links "Histórico" em cada regra e na chave Pix; displaySettingValue.

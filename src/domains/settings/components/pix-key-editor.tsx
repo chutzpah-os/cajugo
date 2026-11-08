@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { Button } from "@/ui/button";
 import { TextField } from "@/ui/text-field";
@@ -60,6 +61,12 @@ export function PixKeyEditor({
       ) : (
         <p className="text-sm font-semibold text-caju-deep">Não configurada</p>
       )}
+      <Link
+        href="/admin/conta/historico/pix"
+        className="flex min-h-11 items-center self-start text-sm font-semibold text-caju-ink"
+      >
+        Histórico da chave Pix
+      </Link>
       {state?.ok && (
         <p role="status" className="text-sm text-ok">
           {state.message}

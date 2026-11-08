@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SETTINGS } from "./definitions";
-import { formToSettings, settingFormValue } from "./form";
+import { displaySettingValue, formToSettings, settingFormValue } from "./form";
 
 const form = (entries: Record<string, string>) => {
   const f = new FormData();
@@ -62,5 +62,27 @@ describe("formulário das regras", () => {
     expect(
       SETTINGS.cajugo_fee_bps.schema.safeParse(input.cajugo_fee_bps).success,
     ).toBe(false);
+  });
+
+  it("[CFG-FR-006] o histórico mostra cada valor por extenso (chave Pix mascarada)", () => {
+    expect(displaySettingValue("cajugo_fee_bps", 150)).toBe("1,5%");
+    expect(displaySettingValue("payout_min_cents", 5000)).toBe("R$ 50,00");
+    expect(displaySettingValue("past_due_tolerance_days", 7)).toBe("7");
+    expect(displaySettingValue("require_approval", true)).toBe("Sim");
+    expect(
+      displaySettingValue("referral_who", {
+        store_owner: true,
+        seller: false,
+        referrer: true,
+      }),
+    ).toBe("Lojistas, Indicadores");
+    expect(
+      displaySettingValue("pix", {
+        type: "cpf",
+        key: "52998224725",
+        beneficiary: "CajuGo",
+      }),
+    ).toBe("***.982.247-** (CajuGo)");
+    expect(displaySettingValue("pix", null)).toBe("Não configurada");
   });
 });

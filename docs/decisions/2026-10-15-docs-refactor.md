@@ -167,3 +167,6 @@
 
 # 2026-11-08 · Pix em um formulário de 2 passos (002/T014)
 - Os campos do passo 1 ficam escondidos no passo 2 e seguem no envio: uma action só, sem guardar rascunho no servidor. O passo se ajusta na renderização (sem efeito), como pede a regra do React.
+
+# 2026-11-08 · 404 "suave" nas páginas logadas (002/T015)
+- Com streaming e layout em <Suspense>, regra inexistente mostra a tela 404 mas com status 200. Em página logada e noindex não há efeito; páginas públicas (SEO) precisam validar antes do streaming e devolver 404 de verdade.
