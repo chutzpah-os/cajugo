@@ -4,6 +4,7 @@ import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireStorePage } from "@/domains/auth/guards";
 import { Onboarding } from "@/domains/stores/components/onboarding";
 import { onboardingStatus } from "@/domains/stores/service";
+import { hasPublishedVehicle } from "@/domains/vehicles/service";
 import { getDb } from "@/platform/db/client";
 import { ButtonLink } from "@/ui/button";
 import { EmptyState } from "@/ui/empty-state";
@@ -16,7 +17,11 @@ async function Content() {
     "vehicles.manage",
   );
   if (!allowed) return <NoPermission home={home} />;
-  const status = await onboardingStatus(getDb(), session);
+  const status = await onboardingStatus(getDb(), session, {
+    firstVehicle: session.storeId
+      ? await hasPublishedVehicle(getDb(), session.storeId)
+      : false,
+  });
 
   return (
     <section className="flex flex-col gap-4 py-6">

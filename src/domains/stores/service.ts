@@ -644,12 +644,13 @@ export type OnboardingStatus = {
 
 /**
  * Primeiros passos [5e] (PIX-FR-012): com a loja no ar, assinatura ativa ✓, primeiro
- * veículo (spec 005) e loja completa (logo, capa, sobre e horário). Some quando os 3
+ * veículo (VEH-FR-015, informado por quem chama) e loja completa (logo, capa, sobre e horário). Some quando os 3
  * estão completos.
  */
 export async function onboardingStatus(
   db: Db,
   session: Session | null,
+  input: { firstVehicle: boolean },
 ): Promise<OnboardingStatus> {
   const s = authorizeStore(session);
   const [store] = await db
@@ -667,8 +668,8 @@ export async function onboardingStatus(
   if (!store) throw AppError.notFound();
   const steps = {
     subscription: !!store.activatedAt && isStoreLive(store.status),
-    // Veículos chegam na spec 005; até lá nenhuma loja tem o primeiro.
-    firstVehicle: false,
+    // Vem do domínio vehicles, pela página (sem ciclo stores ↔ vehicles).
+    firstVehicle: input.firstVehicle,
     storeComplete:
       !!store.logo && !!store.cover && !!store.about?.trim() && !!store.hours,
   };

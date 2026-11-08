@@ -41,13 +41,15 @@ describe("loja no ar depois do 1º pagamento", () => {
   it("[PIX-FR-012] primeiros passos: 1 de 3 ao ativar; loja completa só com logo, capa, sobre e horário", async () => {
     // Arrange
     const { owner, paymentId } = await storeInReview(deps(), "silva-autocar");
-    expect((await onboardingStatus(t.db, owner)).show).toBe(false);
+    expect(
+      (await onboardingStatus(t.db, owner, { firstVehicle: false })).show,
+    ).toBe(false);
     await confirmPayment(deps(), await personWith(t.db, "admin"), {
       paymentId,
     });
 
     // Act
-    const first = await onboardingStatus(t.db, owner);
+    const first = await onboardingStatus(t.db, owner, { firstVehicle: false });
     await t.db
       .update(stores)
       .set({
@@ -56,12 +58,16 @@ describe("loja no ar depois do 1º pagamento", () => {
         about: "Seminovos revisados.",
       })
       .where(eq(stores.id, owner.storeId));
-    const withoutHours = await onboardingStatus(t.db, owner);
+    const withoutHours = await onboardingStatus(t.db, owner, {
+      firstVehicle: false,
+    });
     await t.db
       .update(stores)
       .set({ hours: { mon: { closed: true } } })
       .where(eq(stores.id, owner.storeId));
-    const complete = await onboardingStatus(t.db, owner);
+    const complete = await onboardingStatus(t.db, owner, {
+      firstVehicle: false,
+    });
 
     // Assert
     expect(first).toMatchObject({

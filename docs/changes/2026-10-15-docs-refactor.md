@@ -445,3 +445,6 @@
 
 # 2026-11-08 · 005/T014 lista Meus veículos
 - vehicles.listVehicles: indicadores (publicados, na CajuGo, vendidos no mês em São Paulo), contagem por filtro (todos, publicados, rascunhos, vendidos; excluído não conta), busca por marca/modelo/versão ou placa, cards com capa, selo, legenda e o que pode fazer; loja B vê só os próprios. billing.subscriptionCard (só lojista) e reexport de saoPauloMonthStart.
+
+# 2026-11-08 · 005/T015 catálogo público e primeiro veículo
+- vehicles.publicVehicles (só publicado de loja no ar; saída sem placa nem chassi; capa) e hasPublishedVehicle; stores.onboardingStatus recebe firstVehicle de quem chama (a página /painel/veiculos junta os dois domínios, sem ciclo).
