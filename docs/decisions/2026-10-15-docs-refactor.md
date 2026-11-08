@@ -188,3 +188,6 @@
 
 # 2026-11-08 · Cloudinary sem SDK, SHA-1 (003/T003)
 - A assinatura é um hash de poucos parâmetros; o SDK não traria ganho. SHA-1 é o padrão aceito pelo Cloudinary sem configurar a conta (o plano dizia SHA-256, que exige ajuste no painel). CLOUDINARY_FOLDER explícita em vez de inferir o ambiente da Vercel, para rodar igual numa VPS.
+
+# 2026-11-08 · Conta antes da transação (003/T008)
+- O Supabase Auth fica fora da transação do banco; a conta é criada antes e apagada se a transação falhar (testado com falha simulada). Código de indicação e endereço são checados antes de criar a conta, para erro comum não gerar conta.

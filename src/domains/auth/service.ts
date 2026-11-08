@@ -472,3 +472,4 @@ export async function changePassword(
 // Interface pública do domínio `auth` para os outros domínios (ARCHITECTURE §3).
 export { authorizeTo } from "./permissions";
 export { currentSession } from "./current";
+export { grantRole } from "./roles";

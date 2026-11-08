@@ -271,3 +271,6 @@
 
 # 2026-11-08 · 003/T007 referrals
 - domains/referrals/service.ts: getOrCreateCode (NOME10, NOME11…, idempotente), checkCode (ok/not-found/self-referral por e-mail ou celular; só o primeiro nome), registerReferral.
+
+# 2026-11-08 · 003/T008 cadastro do lojista
+- domains/stores: schemas (registerStoreSchema/addStoreSchema, telefone BR com DDI, cidade do IBGE) e registerStore (conta + perfil + papel + loja registered com endereço reservado 7 dias + código + indicação + auditoria numa transação; apaga a conta se falhar). auth reexporta grantRole.
