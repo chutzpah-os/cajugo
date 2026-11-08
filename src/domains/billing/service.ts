@@ -908,3 +908,41 @@ export async function removeBillingForTests(
   });
   return receipts;
 }
+
+export { saoPauloMonthStart } from "./due-date";
+
+const SUBSCRIPTION_LABEL: Record<string, string> = {
+  registered: "Aguardando pagamento",
+  payment_review: "Pagamento em análise",
+  active: "Ativo",
+  past_due: "Em atraso",
+  suspended: "Suspensa",
+  cancel_scheduled: "Cancelamento agendado",
+  canceled: "Cancelada",
+  archived: "Arquivada",
+};
+
+/** Card da assinatura em Meus veículos [1c] (VEH-FR-001): só para o lojista. */
+export async function subscriptionCard(
+  deps: BillingDeps,
+  session: Session | null,
+): Promise<{
+  plan: string;
+  membershipCents: number;
+  statusLabel: string;
+  nextDueAt: Date | null;
+}> {
+  const { storeId } = ownerOf(session);
+  const [store] = await deps.db
+    .select({ status: stores.status, nextDueAt: stores.nextDueAt })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  if (!store) throw AppError.notFound();
+  const settings = await getSettings(deps.db, clock(deps));
+  return {
+    plan: "Plano Catálogo",
+    membershipCents: settings.membership_cents,
+    statusLabel: SUBSCRIPTION_LABEL[store.status],
+    nextDueAt: store.nextDueAt,
+  };
+}

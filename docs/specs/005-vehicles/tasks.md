@@ -22,7 +22,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T011** `setShare` (só publicado) e legendas por estado, inclusive "Aparece quando a loja for ativada" (D3) · _VEH-FR-002, VEH-FR-010_
 - [x] **T012** Edição de publicado: `saveDraft` em publicado com histórico de preço na mesma transação; `vehicleSummary` com "Dias no ar"; log de preço · _VEH-FR-011, VEH-FR-012, VEH-SEC-005_
 - [x] **T013** `markSold` / `undoSold` (7 dias, divulgação como antes) / `unpublish` / `remove` (definitivo para a loja, `deleted_at`), todos condicionais; loja B → 404; log · _VEH-FR-013, VEH-FR-014, VEH-SEC-001, VEH-SEC-005_
-- [ ] **T014** `listVehicles` (KPIs, contagem por filtro, busca por modelo ou placa) e `billing.subscriptionCard` · _VEH-FR-001, VEH-FR-002_
+- [x] **T014** `listVehicles` (KPIs, contagem por filtro, busca por modelo ou placa) e `billing.subscriptionCard` · _VEH-FR-001, VEH-FR-002_
 - [ ] **T015** `publicVehicles` (só publicado de loja no ar, sem placa nem chassi) e `hasPublishedVehicle` no `onboardingStatus` (passado pela página) · _VEH-FR-010, VEH-FR-015, VEH-SEC-002, VEH-SEC-004_
 
 ## Fase 3 — Telas

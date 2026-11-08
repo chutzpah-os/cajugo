@@ -1,6 +1,18 @@
-import { and, asc, count, eq, inArray } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
 import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
+import { saoPauloMonthStart } from "@/domains/billing/service";
 import { identify } from "@/domains/fipe/service";
 import { storeIsLive, vehicleDefaults } from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
@@ -716,3 +728,146 @@ export const remove = (
     action: "vehicle.deleted",
     conflict: "Este veículo já foi excluído.",
   });
+
+export type VehicleCard = {
+  vehicleId: string;
+  name: string;
+  status: string;
+  statusLabel: string;
+  yearModel: number | null;
+  mileageKm: number | null;
+  priceCents: number | null;
+  coverPublicId: string | null;
+  shareOnCajugo: boolean;
+  shareCaption: string;
+  canShare: boolean;
+  canSell: boolean;
+};
+
+export type VehicleList = {
+  items: VehicleCard[];
+  counts: { all: number; published: number; draft: number; sold: number };
+  kpis: { published: number; onCajugo: number; soldThisMonth: number };
+};
+
+const FILTERS = ["all", "published", "draft", "sold"] as const;
+
+/**
+ * Meus veículos [1c] (VEH-FR-001, 002): indicadores, contagem por filtro, busca por
+ * modelo ou placa (só a loja vê a placa) e cards. Excluído não aparece nem conta.
+ */
+export async function listVehicles(
+  deps: VehicleDeps,
+  session: Session | null,
+  input: { status?: string; q?: string },
+): Promise<VehicleList> {
+  const { storeId } = storeOf(session);
+  const status = (FILTERS as readonly string[]).includes(input.status ?? "")
+    ? (input.status as (typeof FILTERS)[number])
+    : "all";
+  const now = clock(deps);
+  const mine = and(
+    eq(vehicles.storeId, storeId),
+    ne(vehicles.status, "deleted"),
+  );
+
+  const [c] = await deps.db
+    .select({
+      all: count(),
+      published:
+        sql<number>`count(*) filter (where ${vehicles.status} = 'published')`.mapWith(
+          Number,
+        ),
+      draft:
+        sql<number>`count(*) filter (where ${vehicles.status} = 'draft')`.mapWith(
+          Number,
+        ),
+      sold: sql<number>`count(*) filter (where ${vehicles.status} = 'sold')`.mapWith(
+        Number,
+      ),
+      onCajugo:
+        sql<number>`count(*) filter (where ${vehicles.status} = 'published' and ${vehicles.shareOnCajugo})`.mapWith(
+          Number,
+        ),
+      soldThisMonth:
+        sql<number>`count(*) filter (where ${vehicles.status} = 'sold' and ${vehicles.soldAt} >= ${saoPauloMonthStart(now)})`.mapWith(
+          Number,
+        ),
+    })
+    .from(vehicles)
+    .where(mine);
+
+  const q = input.q?.trim().slice(0, 40) ?? "";
+  const like = `%${q.replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
+  const plate = q.toUpperCase().replace(/[\s-]/g, "");
+  const rows = await deps.db
+    .select()
+    .from(vehicles)
+    .where(
+      and(
+        mine,
+        status === "all" ? undefined : eq(vehicles.status, status),
+        q
+          ? or(
+              ilike(vehicles.make, like),
+              ilike(vehicles.model, like),
+              ilike(vehicles.version, like),
+              plate ? ilike(vehicles.plate, `%${plate}%`) : undefined,
+            )
+          : undefined,
+      ),
+    )
+    .orderBy(desc(vehicles.updatedAt));
+
+  const live = await storeIsLive(deps.db, storeId);
+  const covers = rows.length
+    ? await deps.db
+        .select({
+          vehicleId: vehiclePhotos.vehicleId,
+          publicId: vehiclePhotos.publicId,
+        })
+        .from(vehiclePhotos)
+        .where(
+          and(
+            inArray(
+              vehiclePhotos.vehicleId,
+              rows.map((r) => r.id),
+            ),
+            eq(vehiclePhotos.position, 0),
+          ),
+        )
+    : [];
+  const coverOf = new Map(covers.map((p) => [p.vehicleId, p.publicId]));
+
+  return {
+    counts: {
+      all: c.all,
+      published: c.published,
+      draft: c.draft,
+      sold: c.sold,
+    },
+    kpis: {
+      published: c.published,
+      onCajugo: c.onCajugo,
+      soldThisMonth: c.soldThisMonth,
+    },
+    items: rows.map((v) => ({
+      vehicleId: v.id,
+      name: v.version ?? v.model ?? "Veículo sem nome",
+      status: v.status,
+      statusLabel: STATUS_LABEL[v.status],
+      yearModel: v.yearModel,
+      mileageKm: v.mileageKm,
+      priceCents: v.priceCents,
+      coverPublicId: coverOf.get(v.id) ?? null,
+      shareOnCajugo: v.shareOnCajugo,
+      shareCaption: shareCaption({
+        status: v.status,
+        share: v.shareOnCajugo,
+        storeLive: live,
+      }),
+      canShare: v.status === "published",
+      canSell: v.status === "published",
+    })),
+  };
+}

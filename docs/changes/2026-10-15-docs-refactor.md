@@ -442,3 +442,6 @@
 
 # 2026-11-08 · 005/T013 vendido, desfazer, despublicar e excluir
 - vehicles: transição única (trava a linha, status de origem fixo, log) para markSold (guarda e desliga a divulgação), undoSold (até 7 dias, volta com a divulgação de antes), unpublish (→ rascunho) e remove (→ excluído com deleted_at, definitivo para a loja); loja B → 404. Nome no resumo passa a ser a versão da FIPE.
+
+# 2026-11-08 · 005/T014 lista Meus veículos
+- vehicles.listVehicles: indicadores (publicados, na CajuGo, vendidos no mês em São Paulo), contagem por filtro (todos, publicados, rascunhos, vendidos; excluído não conta), busca por marca/modelo/versão ou placa, cards com capa, selo, legenda e o que pode fazer; loja B vê só os próprios. billing.subscriptionCard (só lojista) e reexport de saoPauloMonthStart.
