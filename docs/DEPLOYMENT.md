@@ -32,7 +32,7 @@ Quem é dono de cada conta. Nenhuma senha ou chave aqui (`.env.local` e gerencia
 | `HASH_SECRET` | segredo do hash de IP (rate limit, denúncias); `openssl rand -hex 32` |
 | `PAYMENT_*` | fase 2, com o gateway (MVP: pagamento manual, sem variável) |
 | `MAIL_*` | quando o e-mail transacional for escolhido |
-| `APP_URL` | links em e-mails e WhatsApp |
+| `APP_URL` | endereço público (`https://cajugo.vercel.app`): canônica, sitemap, links e QR code. **Obrigatória em Production**: sem ela o build para (local e Preview caem em `http://localhost:3000`). Na saída para a VPS, trocar a checagem de `VERCEL_ENV` pela do novo ambiente |
 | `ENABLE_EXPERIMENTAL_COREPACK=1` | só na Vercel: faz o build usar o pnpm fixado em `packageManager` (12.x) |
 
 `.env.example` no repositório só com os nomes.

@@ -218,3 +218,6 @@
 
 # 2026-11-08 · Ajustes da verificação da 003 (003/T024)
 - A revisão achou que um publicId com `../` depois do prefixo da loja apontava para a pasta de outra loja: agora só vale o nome exato que o servidor assinou. Loja cadastrada/suspensa não aparece em /loja (SECURITY §4). FR-007/SEC-005 reescritos: a tela de quem indicou é da 010 (decisão do /clarify). Tamanho e EXIF na assinatura ficaram para antes das fotos de veículo (005).
+
+# 2026-11-08 · Build de produção falha sem APP_URL
+- O primeiro deploy saiu com canônica, sitemap e robots apontando para localhost porque APP_URL não chegou ao build; para o SEO isso é pior que um build quebrado. A checagem usa VERCEL_ENV (só lê a variável, nada exclusivo da Vercel) e muda junto na saída para a VPS.

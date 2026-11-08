@@ -319,3 +319,6 @@
 
 # 2026-11-08 · 003/T024 verificação da spec 003
 - Rastreabilidade: 23 requisitos com teste, 268 unidade/integração e 35 e2e verdes. Correções da revisão: imagem só com o nome exato assinado (bloqueia `../` para outra loja), /loja/{slug} só para loja ativa, código pessoal e link /i/ em Minha loja (STO-FR-014), regra dos 30 dias só no serviço. Spec `implemented`; prod pendente (T023).
+
+# 2026-11-08 · APP_URL obrigatória na produção
+- appUrl() para o build quando falta APP_URL com VERCEL_ENV=production (antes caía em localhost sem avisar); aceita espaço e barra no fim. Teste novo em urls.test.ts; DEPLOYMENT.md atualizado.
