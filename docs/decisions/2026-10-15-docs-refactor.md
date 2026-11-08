@@ -203,3 +203,6 @@
 
 # 2026-11-08 · /i/{codigo} como Route Handler (003/T018)
 - Rota dinâmica de página exige generateStaticParams com cacheComponents; o link só redireciona, então um Route Handler GET (307) é mais simples e não depende da lista de códigos. Campos do cadastro controlados: o React limpa o formulário a cada envio.
+
+# 2026-11-08 · Horário opcional, mas completo (003/T019)
+- Loja sem nenhum horário salva normalmente (hours = null); se começar a preencher, cada dia precisa de horário ou Fechado, com o aviso no próprio dia, para o catálogo nunca mostrar semana pela metade.

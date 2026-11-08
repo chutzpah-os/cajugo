@@ -304,3 +304,6 @@
 
 # 2026-11-08 · 003/T018 tela de cadastro
 - /lojistas/cadastro [5c] (StoreSignupForm: cidade com sugestões, endereço sugerido e checado ao vivo, código ao vivo, conta existente, termos) e stores/actions.ts (checagens ao vivo com limite liveCheck 60/min por rede; registerStoreAction entra e vai ao pagamento); rota /i/[codigo] → cadastro com o código; seed dá código LOJISTA10 ao lojista de teste. Testado no navegador contra o staging.
+
+# 2026-11-08 · 003/T019 tela Minha loja
+- /painel/loja [3b]: StoreInfoForm (informações públicas, endereço, horário por dia com 2 intervalos e Fechado, divulgar por padrão), updateStoreAction com erro de horário no próprio dia; hours-form.ts; seed com WhatsApp válido. Testado no navegador (lojista salva; usuário da loja: Sem permissão).

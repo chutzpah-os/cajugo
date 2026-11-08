@@ -80,7 +80,7 @@ export async function seedE2E(deps: AuthDeps, password: string) {
         slug: E2E_STORE_SLUG,
         city: "Aracaju",
         state: "SE",
-        whatsapp: "5579000000000",
+        whatsapp: "557932110000",
         ownerId: ids.owner,
         status: "active",
         // Loja de teste nunca vai para a vitrine CajuGo.
@@ -90,7 +90,7 @@ export async function seedE2E(deps: AuthDeps, password: string) {
   }
   await deps.db
     .update(stores)
-    .set({ status: "active" })
+    .set({ status: "active", whatsapp: "557932110000" })
     .where(eq(stores.id, store.id));
   for (const key of ["owner", "staff"] as const)
     await deps.db

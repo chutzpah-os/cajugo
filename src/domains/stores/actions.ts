@@ -11,9 +11,11 @@ import { isHoneypotFilled } from "@/platform/http/honeypot";
 import { logger } from "@/platform/http/logger";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { requestAuthProvider } from "@/platform/supabase/next";
+import { hoursFromForm } from "./hours-form";
 import {
   checkReferralCode,
   registerStore,
+  updateStore,
   type CodeCheckView,
 } from "./service";
 import { checkSlug, type SlugCheck } from "./slug";
@@ -124,4 +126,72 @@ export async function registerStoreAction(
     };
   }
   redirect("/lojistas/pagamento");
+}
+
+export type StoreFormState = {
+  ok: boolean;
+  message?: string;
+  errors: Record<string, string>;
+} | null;
+
+/** Erros do serviço → estado da tela (mensagem geral ou por campo). */
+function formError(error: unknown): StoreFormState {
+  if (error instanceof AppError)
+    return {
+      ok: false,
+      message: error.errors.length ? undefined : error.title,
+      errors: Object.fromEntries(
+        error.errors.map((e) => [
+          // Horário: o erro fica no dia (hours.tue); o resto, no campo.
+          e.field.startsWith("hours.")
+            ? e.field.split(".").slice(0, 2).join(".")
+            : e.field.split(".")[0],
+          e.message,
+        ]),
+      ),
+    };
+  logger.error("stores.save_failed", {
+    error: error instanceof Error ? error.message : String(error),
+  });
+  return {
+    ok: false,
+    message: "Não foi possível salvar agora. Tente de novo em instantes.",
+    errors: {},
+  };
+}
+
+/** Minha loja [3b] (STO-FR-008, 009, 012): só a loja da sessão. */
+export async function updateStoreAction(
+  _prev: StoreFormState,
+  form: FormData,
+): Promise<StoreFormState> {
+  const text = (k: string) => String(form.get(k) ?? "");
+  const hours = hoursFromForm(form);
+  const noHours = Object.values(hours).every(
+    (d) =>
+      !("closed" in (d as object)) &&
+      !(d as { ranges: unknown[] }).ranges.length,
+  );
+  try {
+    await updateStore(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      {
+        name: text("name"),
+        about: text("about"),
+        whatsapp: text("whatsapp"),
+        instagram: text("instagram"),
+        addressStreet: text("addressStreet"),
+        addressNumber: text("addressNumber"),
+        addressComplement: text("addressComplement"),
+        addressDistrict: text("addressDistrict"),
+        addressZip: text("addressZip"),
+        hours: noHours ? null : hours,
+        shareByDefault: form.get("shareByDefault") === "on",
+      },
+    );
+    return { ok: true, message: "Alterações salvas.", errors: {} };
+  } catch (error) {
+    return formError(error);
+  }
 }
