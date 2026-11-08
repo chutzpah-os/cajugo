@@ -2,10 +2,10 @@ import { and, asc, count, eq, inArray } from "drizzle-orm";
 import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { identify } from "@/domains/fipe/service";
-import { vehicleDefaults } from "@/domains/stores/service";
+import { storeIsLive, vehicleDefaults } from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
 import type { FipeClient } from "@/platform/fipe/client";
-import { vehiclePhotos, vehicles } from "@/platform/db/schema";
+import { vehicleHistory, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type {
   Cloudinary,
   SignedUpload,
@@ -17,7 +17,8 @@ import {
   type FieldError,
 } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
-import { MAX_PHOTOS } from "./lists";
+import { MAX_PHOTOS, UNDO_SALE_DAYS } from "./lists";
+import { shareCaption, STATUS_LABEL } from "./captions";
 import { logActivity } from "@/platform/http/activity-log";
 import { draftSchema } from "./schemas";
 
@@ -56,7 +57,7 @@ export async function saveDraft(
   session: Session | null,
   input: unknown,
 ): Promise<{ vehicleId: string; savedAt: Date }> {
-  const { storeId } = storeOf(session);
+  const { userId, storeId } = storeOf(session);
   const { vehicleId, ...parsed } = parse(draftSchema, input);
   const now = clock(deps);
   const existing = vehicleId
@@ -65,6 +66,7 @@ export async function saveDraft(
           status: vehicles.status,
           yearModel: vehicles.yearModel,
           yearManufacture: vehicles.yearManufacture,
+          priceCents: vehicles.priceCents,
         })
         .from(vehicles)
         .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)))
@@ -85,16 +87,41 @@ export async function saveDraft(
 
   if (!(EDITABLE as readonly string[]).includes(existing!.status))
     throw AppError.conflict("Este veículo não pode mais ser editado.");
-  await deps.db
-    .update(vehicles)
-    .set({ ...fields, updatedAt: now })
-    .where(
-      and(
-        eq(vehicles.id, vehicleId),
-        eq(vehicles.storeId, storeId),
-        inArray(vehicles.status, [...EDITABLE]),
-      ),
-    );
+  const newPrice = fields.priceCents as number | undefined;
+  const priceChanged =
+    existing!.status === "published" &&
+    newPrice !== undefined &&
+    newPrice !== existing!.priceCents;
+  await deps.db.transaction(async (tx) => {
+    await tx
+      .update(vehicles)
+      .set({ ...fields, updatedAt: now })
+      .where(
+        and(
+          eq(vehicles.id, vehicleId),
+          eq(vehicles.storeId, storeId),
+          inArray(vehicles.status, [...EDITABLE]),
+        ),
+      );
+    if (!priceChanged) return;
+    // Histórico de preço do publicado (VEH-FR-012), base do "Baixou R$ X" (006).
+    await tx.insert(vehicleHistory).values({
+      vehicleId,
+      field: "price",
+      oldValue:
+        existing!.priceCents === null ? null : String(existing!.priceCents),
+      newValue: String(newPrice),
+      userId,
+      createdAt: now,
+    });
+    await logActivity(tx, {
+      userId,
+      action: "vehicle.price_changed",
+      entity: "vehicle",
+      entityId: vehicleId,
+      data: { oldCents: existing!.priceCents, newCents: newPrice },
+    });
+  });
   return { vehicleId, savedAt: now };
 }
 
@@ -519,4 +546,68 @@ export async function setShare(
     .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.status, "published")))
     .returning({ id: vehicles.id });
   if (!done.length) throw AppError.conflict("Publique para liberar.");
+}
+
+const DAY_MS = 86_400_000;
+
+export type VehicleSummary = {
+  vehicleId: string;
+  name: string;
+  status: string;
+  statusLabel: string;
+  yearModel: number | null;
+  mileageKm: number | null;
+  priceCents: number | null;
+  coverPublicId: string | null;
+  shareOnCajugo: boolean;
+  shareCaption: string;
+  /** Dias desde a publicação (VEH-FR-011); `null` se não publicado. */
+  daysOnAir: number | null;
+  /** "Desfazer venda" ainda vale (VEH-FR-013)? */
+  canUndoSale: boolean;
+};
+
+/** Resumo do veículo [6e] (VEH-FR-011), só da loja da sessão. */
+export async function vehicleSummary(
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+): Promise<VehicleSummary> {
+  const { storeId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const [v] = await deps.db
+    .select()
+    .from(vehicles)
+    .where(eq(vehicles.id, vehicle.id));
+  const [cover] = await photosOf(deps.db, v.id);
+  const now = clock(deps);
+  return {
+    vehicleId: v.id,
+    name:
+      [
+        v.model,
+        v.version?.replace(new RegExp(`^${v.model ?? ""}\\s*`, "i"), ""),
+      ]
+        .filter(Boolean)
+        .join(" ") || "Veículo sem nome",
+    status: v.status,
+    statusLabel: STATUS_LABEL[v.status],
+    yearModel: v.yearModel,
+    mileageKm: v.mileageKm,
+    priceCents: v.priceCents,
+    coverPublicId: cover?.publicId ?? null,
+    shareOnCajugo: v.shareOnCajugo,
+    shareCaption: shareCaption({
+      status: v.status,
+      share: v.shareOnCajugo,
+      storeLive: await storeIsLive(deps.db, storeId),
+    }),
+    daysOnAir:
+      v.status === "published" && v.publishedAt
+        ? Math.floor((now.getTime() - v.publishedAt.getTime()) / DAY_MS)
+        : null,
+    canUndoSale:
+      v.status === "sold" &&
+      !!v.soldAt &&
+      now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
+  };
 }

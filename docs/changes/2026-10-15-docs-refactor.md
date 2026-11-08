@@ -436,3 +436,6 @@
 
 # 2026-11-08 · 005/T011 divulgação e legendas
 - vehicles.setShare (só publicado; rascunho → 409 "Publique para liberar."; loja B → 404) e captions.ts (selo por status e legenda: vitrine, só catálogo, publique, removido, e "Aparece quando a loja for ativada", D3).
+
+# 2026-11-08 · 005/T012 edição do publicado e resumo
+- saveDraft em veículo publicado grava vehicle_history (field price, antes/depois, quem) e log vehicle.price_changed na mesma transação quando o preço muda; vehicleSummary ([6e]) com nome, selo, km, preço, capa, legenda da divulgação, Dias no ar e se a venda ainda pode ser desfeita; stores.storeIsLive.

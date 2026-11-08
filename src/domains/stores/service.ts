@@ -610,6 +610,15 @@ export async function vehicleDefaults(
   return { shareOnCajugo: s.share, contactWhatsapp: s.whatsapp };
 }
 
+/** A loja está no ar? (para legendas e páginas públicas de veículo, spec 005) */
+export async function storeIsLive(db: Db, storeId: string): Promise<boolean> {
+  const [s] = await db
+    .select({ status: stores.status })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  return !!s && isStoreLive(s.status);
+}
+
 /** Status em que a loja está "no ar" para o público (PRD §5.5). */
 export const LIVE_STATUSES = [
   "active",
