@@ -12,7 +12,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T003** [P] `src/platform/br/plate.ts`: placa Mercosul e antiga, normalização e final de placa · _VEH-FR-005, VEH-SEC-002_
 - [x] **T004** [P] `src/platform/fipe/client.ts`: marcas, modelos, anos e preço da API pública, com prazo de 5 s e validação do formato da resposta (`fetch` falso nos testes) · _VEH-FR-005, VEH-FR-007_
 - [x] **T005** `src/platform/cloudinary`: transformação de entrada assinada (`c_limit,w_1600,h_1600`) e dimensões no `verifyUpload`; prova no staging (foto com GPS sai sem metadados e com no máximo 1.600 px) · _VEH-SEC-003, VEH-NFR-002_
-- [ ] **T006** Domínio `fipe`: `brands`, `models`, `years`, `reference` lendo do banco e buscando só o que falta ou venceu (30 dias; preço do mês); API fora → o guardado · _VEH-FR-005, VEH-FR-007, VEH-NFR-004_
+- [x] **T006** Domínio `fipe`: `brands`, `models`, `years`, `reference` lendo do banco e buscando só o que falta ou venceu (30 dias; preço do mês); API fora → o guardado · _VEH-FR-005, VEH-FR-007, VEH-NFR-004_
 
 ## Fase 2 — Fatias verticais (domínio `vehicles`)
 - [ ] **T007** `vehicles/lists.ts` + `saveDraft` (cria no 1º salvamento, parcial, `.strict()`, padrões de divulgação e contato da loja) e `vehicleForm`; loja B → 404 · _VEH-FR-003, VEH-FR-006, VEH-FR-008, VEH-SEC-001_

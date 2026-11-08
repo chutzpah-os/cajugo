@@ -418,3 +418,6 @@
 
 # 2026-11-08 · 005/T005 fotos reduzidas e sem metadados
 - signUpload aceita transformação de entrada assinada; verifyUpload devolve largura e altura. Prova no staging: JPEG 3000×2000 com GPS e aparelho no EXIF ficou guardado com 1600×1067 e nenhum metadado, mesmo baixando o original sem transformação; apagado depois.
+
+# 2026-11-08 · 005/T006 domínio fipe
+- brands, models (agrupados por família = primeira palavra, com as versões da FIPE), years (id modelo:ano) e reference (preço do mês), lendo do banco e consultando a API só quando falta ou venceu (30 dias); API fora → o guardado, mesmo vencido; sem nada guardado → 503 "Lista indisponível agora" (referência → null).
