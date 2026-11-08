@@ -197,3 +197,6 @@
 
 # 2026-11-08 · FAQ sem número fixo de taxa (003/T016)
 - A resposta sobre comissão não cita o % da taxa CajuGo (regra editável, spec 002) para a página continuar estática e boa para SEO; o valor aparece no painel. O preço R$ 100 é o texto do PRD até o plano editável da 011.
+
+# 2026-11-08 · Texto inicial dos termos (003/T017)
+- O PRD só lista os tópicos; o texto usa apenas o que PRD e SECURITY já definem, sem cláusulas novas, e fica marcado como versão inicial até a revisão jurídica (PRD §12.1 #5). Abas viraram âncoras: funcionam sem JS e ficam no HTML para busca.

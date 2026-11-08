@@ -298,3 +298,6 @@
 
 # 2026-11-08 · 003/T016 landing do lojista
 - /lojistas [5b] (benefícios, plano, FAQ, barra Prosseguir) com pageMetadata, JSON-LD (Organization, Service/Offer, FAQPage) e Open Graph; robots.ts e sitemap.ts (platform/seo/indexing.ts).
+
+# 2026-11-08 · 003/T017 termos
+- /termos [12i]: Termos de uso e Política de privacidade (seções com âncoras), aviso de versão inicial em revisão jurídica, SEO pelo pageMetadata.
