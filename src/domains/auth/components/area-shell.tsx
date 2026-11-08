@@ -10,6 +10,8 @@ import { PANEL_LABEL } from "../labels";
 import { AREA_NAV } from "../navigation";
 import type { Area } from "../permissions";
 import { currentStoreStatus } from "../current";
+import { noticesFor } from "@/domains/notices/service";
+import { NoticeList } from "@/domains/notices/components/notice-list";
 
 const AREA_ROOT: Record<Area, string> = {
   painel: "/painel",
@@ -20,7 +22,7 @@ const AREA_ROOT: Record<Area, string> = {
 
 /**
  * Moldura das áreas logadas: sessão, papel da área, menu, troca de painel, sair
- * e o alerta provisório de loja suspensa (AUT-FR-005, 007, 009). A página sempre
+ * avisos do painel (PIX-FR-013) e o alerta de loja suspensa (AUT-FR-005, 007, 009). A página sempre
  * renderiza e checa a própria permissão (AUT-FR-012).
  */
 export async function AreaShell({
@@ -36,6 +38,8 @@ export async function AreaShell({
   const storeStatus = await currentStoreStatus(session.storeId);
   // Menu só para quem tem a área; sem permissão, nada da área aparece.
   const nav = allowed ? AREA_NAV[area] : undefined;
+  // Avisos de quem está conectado, em qualquer área (ADR 0007, PIX-FR-013).
+  const notices = allowed ? await noticesFor(getDb(), session) : [];
 
   return (
     <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pb-6 md:max-w-5xl lg:max-w-6xl">
@@ -77,6 +81,8 @@ export async function AreaShell({
           </form>
         </div>
       </header>
+
+      <NoticeList notices={notices} />
 
       {area === "painel" && allowed && storeStatus === "suspended" && (
         <div

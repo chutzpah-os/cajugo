@@ -33,7 +33,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T020** [5d] em `/lojistas/pagamento` (resumo, CPF/CNPJ, aviso sem chave com `wa.me`) e [12e] no mesmo endereço quando o último comprovante foi recusado · _PIX-FR-001, PIX-FR-002, PIX-FR-004, PIX-FR-010, PIX-NFR-002_
 - [x] **T021** [6c] em `/lojistas/pagamento/pix`: valor, chave com Copiar, QR, passos, prazo; anexo com pré-visualização (imagem e PDF), limite de 10 MB, valor pago; envio → [10a] em `/painel/pagamento` · _PIX-FR-004, PIX-FR-005, PIX-FR-006, PIX-NFR-002_
 - [x] **T022** [10b] em `/admin/pagamentos`: fila, abrir arquivo, alerta, corrigir valor, Confirmar com `wa.me`, Recusar com motivo, Registrar pagamento sem comprovante; suporte sem botões · _PIX-FR-007, PIX-FR-008, PIX-FR-009, PIX-FR-010, PIX-FR-011, PIX-SEC-003_
-- [ ] **T023** [5e] em `/painel/veiculos` (banner, primeiros passos, "Cadastrar primeiro veículo" → `/painel/veiculos/novo`, D3) e avisos do painel com Dispensar · _PIX-FR-012, PIX-FR-013_
+- [x] **T023** [5e] em `/painel/veiculos` (banner, primeiros passos, "Cadastrar primeiro veículo" → `/painel/veiculos/novo`, D3) e avisos do painel com Dispensar · _PIX-FR-012, PIX-FR-013_
 
 ## Fase 4 — Fechamento
 - [ ] **T024** Playwright (390 px, staging): [5d] → [6c] com PNG e PDF reais → [10a]; admin recusa → [12e] → reenvio → confirma → [5e] e `/loja/{slug}` abre; registro manual; suporte sem botões; usuário da loja bloqueado; `audit()`; seed limpa faturas e pagamentos do e2e · _PIX-FR-001 a PIX-FR-014, PIX-NFR-001, PIX-SEC-003, PIX-SEC-006_

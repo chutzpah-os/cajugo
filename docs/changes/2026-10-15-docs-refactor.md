@@ -388,3 +388,6 @@
 
 # 2026-11-08 · 004/T022 Pagamentos Pix do admin [10b]
 - /admin/pagamentos substitui a provisória: aviso "Chave Pix não configurada", totais, lembrete do extrato, fila com Ver comprovante (rota privada), alerta de valor diferente, valor corrigido, Confirmar (com botão wa.me para avisar a loja) e Recusar com motivo; Registrar pagamento sem comprovante com busca da loja; suporte vê sem botões. Actions de conferência renovam a página pública da loja (STORES_TAG foi para stores/tags.ts e é reexportada pelo serviço).
+
+# 2026-11-08 · 004/T023 onboarding [5e] e avisos no painel
+- /painel/veiculos: banner "Assinatura ativa. Sua loja está no ar." com o link do catálogo, primeiros passos (N de 3, com links para cadastrar veículo e completar a loja) e estado vazio "Cadastrar primeiro veículo" → /painel/veiculos/novo (rota da 005), substituindo o texto provisório. Avisos (NoticeList com Dispensar) na moldura de todas as áreas logadas; notices/actions.dismissNoticeAction.
