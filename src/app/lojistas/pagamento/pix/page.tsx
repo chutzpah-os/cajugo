@@ -9,6 +9,7 @@ import { ReceiptForm } from "@/domains/billing/components/receipt-form";
 import { pixView } from "@/domains/billing/service";
 import { brl, centsToReais } from "@/platform/br/money";
 import { getDb } from "@/platform/db/client";
+import { AppError } from "@/platform/http/errors";
 
 export const metadata: Metadata = {
   title: "Pague com Pix | CajuGo",
@@ -21,7 +22,13 @@ async function Content() {
     "billing.manage",
   );
   if (!allowed) return <NoPermission home={home} />;
-  const view = await pixView({ db: getDb() }, session).catch(() => null);
+  // Chave não pronta (409): volta para [5d], que explica; outro erro sobe.
+  const view = await pixView({ db: getDb() }, session).catch(
+    (error: unknown) => {
+      if (error instanceof AppError && error.status === 409) return null;
+      throw error;
+    },
+  );
   // Sem fatura aberta (não passou por [5d]) ou chave não pronta: volta para [5d].
   if (!view) redirect("/lojistas/pagamento");
   const qr = await QRCode.toDataURL(view.brCode, { width: 400, margin: 1 });

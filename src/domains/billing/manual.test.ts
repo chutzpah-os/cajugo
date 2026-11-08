@@ -3,7 +3,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityLog, payments } from "@/platform/db/schema";
 import { FakeCloudinary } from "@/platform/cloudinary/fake-cloudinary";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { findStoresToCharge, registerManualPayment } from "./service";
+import {
+  findStoresToCharge,
+  receiptUpload,
+  registerManualPayment,
+} from "./service";
 import {
   configurePix,
   personWith,
@@ -127,5 +131,38 @@ describe("pagamento sem comprovante", () => {
       }),
     ).rejects.toMatchObject({ status: 422 });
     expect((await storeRow(t.db, owner.storeId)).status).toBe("registered");
+  });
+
+  it("[PIX-SEC-007] dois admins registrando ao mesmo tempo: um pagamento e uma ativação", async () => {
+    const owner = await storeOwner(t.db, "loja-a", "a@x.com");
+    const a1 = await personWith(t.db, "admin");
+    const a2 = await personWith(t.db, "admin");
+
+    const results = await Promise.allSettled([
+      registerManualPayment(deps(), a1, cash(owner.storeId)),
+      registerManualPayment(deps(), a2, cash(owner.storeId)),
+    ]);
+
+    expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+    expect(
+      (results.find((r) => r.status === "rejected") as PromiseRejectedResult)
+        .reason,
+    ).toMatchObject({ status: 409 });
+    expect(await t.db.select().from(payments)).toHaveLength(1);
+  });
+
+  it("[PIX-SEC-007] [PIX-SEC-004] depois do registro, não entra comprovante na mesma fatura; o log guarda a observação", async () => {
+    const owner = await storeOwner(t.db, "loja-a", "a@x.com");
+    const admin = await personWith(t.db, "admin");
+    await registerManualPayment(deps(), admin, cash(owner.storeId));
+
+    await expect(receiptUpload(deps(), owner)).rejects.toMatchObject({
+      status: 409,
+    });
+    const [log] = await t.db
+      .select()
+      .from(activityLog)
+      .where(eq(activityLog.action, "payment.manual"));
+    expect(log.data).toMatchObject({ note: "Pago em dinheiro na loja" });
   });
 });

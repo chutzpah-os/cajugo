@@ -154,6 +154,14 @@ export async function checkoutView(
   };
 }
 
+async function storedTaxId(db: Db, storeId: string) {
+  const [s] = await db
+    .select({ digits: stores.taxId, type: stores.taxIdType })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  return s?.digits && s.type ? { digits: s.digits, type: s.type } : null;
+}
+
 const TAX_ID_MESSAGE: Record<number, string> = {
   11: "CPF inválido.",
   14: "CNPJ inválido.",
@@ -174,9 +182,11 @@ export async function startCheckout(
   const parsed = startCheckoutSchema.safeParse(input);
   if (!parsed.success)
     throw AppError.validation(fieldErrorsFromZod(parsed.error));
-  const taxId = parseTaxId(parsed.data.taxId);
+  const typed = parsed.data.taxId?.trim() ?? "";
+  // Vazio: reaproveita o documento já informado (reenvio depois de recusa, [12e]).
+  const taxId = typed ? parseTaxId(typed) : await storedTaxId(deps.db, storeId);
   if (!taxId) {
-    const digits = parsed.data.taxId.replace(/\D/g, "").length;
+    const digits = typed.replace(/\D/g, "").length;
     throw AppError.validation([
       {
         field: "taxId",
@@ -402,6 +412,11 @@ const REFERENCE: Record<"first" | "monthly", string> = {
   first: "1ª mensalidade",
   monthly: "Mensalidade",
 };
+/** A mesma referência no nome do arquivo baixado. */
+const REFERENCE_SLUG: Record<"first" | "monthly", string> = {
+  first: "1a-mensalidade",
+  monthly: "mensalidade",
+};
 
 export type QueueItem = {
   paymentId: string;
@@ -483,6 +498,7 @@ export async function reviewQueue(
 }
 
 const ALREADY_REVIEWED = "Este comprovante já foi conferido.";
+const ALREADY_PAID = "Esta fatura já foi paga.";
 
 const brDate = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "America/Sao_Paulo",
@@ -498,10 +514,14 @@ async function settleInvoice(
   invoice: { id: string; storeId: string; kind: "first" | "monthly" },
   at: Date,
 ): Promise<{ whatsappUrl: string }> {
-  await tx
+  // Paga uma vez só: o segundo (outro admin, corrida) não acha a fatura aberta e a
+  // transação inteira é desfeita (PIX-SEC-007).
+  const paid = await tx
     .update(invoices)
     .set({ status: "paid", paidAt: at })
-    .where(eq(invoices.id, invoice.id));
+    .where(and(eq(invoices.id, invoice.id), eq(invoices.status, "open")))
+    .returning({ id: invoices.id });
+  if (!paid.length) throw AppError.conflict(ALREADY_PAID);
   const [store] = await tx
     .select({
       name: stores.name,
@@ -713,10 +733,13 @@ export async function registerManualPayment(
   const settings = await getSettings(deps.db, now);
 
   return deps.db.transaction(async (tx) => {
+    // Trava a loja até o fim: um comprovante enviado ao mesmo tempo espera e depois
+    // recebe "já em análise" (ou o admin vê "comprovante pendente").
     const [store] = await tx
       .select({ status: stores.status })
       .from(stores)
-      .where(eq(stores.id, storeId));
+      .where(eq(stores.id, storeId))
+      .for("update");
     if (!store) throw AppError.notFound();
     if (store.status === "payment_review")
       throw AppError.conflict("Confira o comprovante pendente desta loja.");
@@ -763,6 +786,7 @@ export async function registerManualPayment(
         method,
         amountCents,
         expectedCents: invoice.totalCents,
+        note,
       },
     });
     return settleInvoice(tx, invoice, now);
@@ -790,6 +814,9 @@ export async function receiptFile(
 ): Promise<{ body: ArrayBuffer; contentType: string; filename: string }> {
   const s = authorize(session, userRole.enumValues);
   if (!UUID.test(paymentId)) throw AppError.notFound();
+  const team = can(s, "payments.view");
+  if (!team && !(can(s, "billing.manage") && s.storeId))
+    throw AppError.notFound();
   const [row] = await deps.db
     .select({
       storeId: payments.storeId,
@@ -799,17 +826,21 @@ export async function receiptFile(
     })
     .from(payments)
     .innerJoin(invoices, eq(invoices.id, payments.invoiceId))
-    .where(eq(payments.id, paymentId));
-  const allowed =
-    can(s, "payments.view") ||
-    (can(s, "billing.manage") && !!row && row.storeId === s.storeId);
-  if (!row || !allowed || !row.publicId || !row.format)
-    throw AppError.notFound();
+    // Posse no próprio filtro (SECURITY.md §4): o lojista só acha o da sua loja.
+    .where(
+      and(
+        eq(payments.id, paymentId),
+        team ? undefined : eq(payments.storeId, s.storeId!),
+      ),
+    );
+  if (!row?.publicId || !row.format) throw AppError.notFound();
   const file = await deps.cloudinary.fetchPrivate(row.publicId, row.format);
   if (!file) throw AppError.notFound();
   const ext = EXTENSION[row.format] ?? "bin";
-  const reference = row.kind === "first" ? "1a-mensalidade" : "mensalidade";
-  return { ...file, filename: `comprovante-${reference}.${ext}` };
+  return {
+    ...file,
+    filename: `comprovante-${REFERENCE_SLUG[row.kind]}.${ext}`,
+  };
 }
 
 /** Pagamento em análise [10a] (PIX-FR-006): o comprovante enviado e o prazo. */

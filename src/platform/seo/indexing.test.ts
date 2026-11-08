@@ -42,4 +42,22 @@ describe("indexação", () => {
       "https://cajugo.vercel.app/termos",
     ]);
   });
+
+  it("[PIX-NFR-002] telas de pagamento e de conferência ficam fora da busca e do sitemap", () => {
+    const disallow = [robotsRules().rules].flat()[0]?.disallow as string[];
+    const blocked = (path: string) =>
+      disallow.some((p) => path === p || path.startsWith(`${p}/`));
+
+    for (const path of [
+      "/lojistas/pagamento",
+      "/lojistas/pagamento/pix",
+      "/painel/pagamento",
+      "/painel/veiculos",
+      "/admin/pagamentos",
+      "/api/v1/payments/x/receipt",
+    ])
+      expect(blocked(path), path).toBe(true);
+    const urls = staticSitemap().map((e) => new URL(e.url).pathname);
+    expect(urls.some((u) => /pagamento|painel|admin|api/.test(u))).toBe(false);
+  });
 });

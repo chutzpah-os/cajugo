@@ -317,6 +317,10 @@ export const payments = pgTable(
     uniqueIndex("payments_one_in_review")
       .on(t.invoiceId)
       .where(sql`${t.status} = 'submitted'`),
+    // Uma fatura tem no máximo um pagamento confirmado (PIX-SEC-007).
+    uniqueIndex("payments_one_confirmed")
+      .on(t.invoiceId)
+      .where(sql`${t.status} = 'confirmed'`),
   ],
 ).enableRLS();
 

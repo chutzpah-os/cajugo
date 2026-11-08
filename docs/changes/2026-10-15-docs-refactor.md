@@ -394,3 +394,6 @@
 
 # 2026-11-08 · 004/T024 e2e do Pix manual
 - tests/e2e/payment.spec.ts (3 cenários, vários atores): [5d] com CPF inválido → [6c] com QR, copiar e PNG real → [10a] → admin recusa com motivo → [12e] com faltante e aviso → reenvio em PDF real → admin abre o PDF pela rota privada e confirma (wa.me) → [5e] e /loja/{slug}; registro sem comprovante; suporte sem botões; usuário da loja sem pagamento. Seed: chave Pix de teste (restoreInitialSettings com destino), limpeza de faturas, pagamentos, avisos e comprovantes no Cloudinary. 38 e2e verdes; staging limpo depois.
+
+# 2026-11-08 · 004 verificação
+- Correções da revisão: fatura paga uma vez só (atualização condicional + índice único de pagamento confirmado, migration 0009), loja travada no registro sem comprovante, posse do comprovante no próprio filtro, id do aviso validado, observação no log do registro manual, reenvio [12e] sem redigitar o documento, erros que sumiam agora vão para o log; teste da PIX-NFR-002 (fora da busca) e auditoria de [12e] no e2e. Spec implemented; prod pendente (T025).

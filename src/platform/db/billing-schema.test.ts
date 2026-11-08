@@ -67,4 +67,20 @@ describe("faturas e pagamentos no banco", () => {
     await t.db.update(payments).set({ status: "rejected" });
     await expect(submitted(id)).resolves.toBeDefined();
   });
+
+  it("[PIX-SEC-007] no máximo um pagamento confirmado por fatura", async () => {
+    const [{ id }] = await firstInvoice();
+    const confirmed = () =>
+      t.db.insert(payments).values({
+        invoiceId: id,
+        storeId,
+        amountCents: 10000,
+        status: "confirmed",
+        submittedBy: ownerId,
+        submittedAt: new Date(),
+      });
+    await confirmed();
+
+    await expect(confirmed()).rejects.toThrow();
+  });
 });

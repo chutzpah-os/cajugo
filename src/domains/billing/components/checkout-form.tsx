@@ -45,7 +45,7 @@ export function CheckoutForm({
         placeholder={maskedTaxId ?? "000.000.000-00"}
         help={
           maskedTaxId
-            ? `Informado: ${maskedTaxId}. Confirme para continuar.`
+            ? `Informado: ${maskedTaxId}. Deixe em branco para manter.`
             : undefined
         }
         value={taxId}
@@ -82,7 +82,7 @@ export function CheckoutForm({
         <Button
           type="submit"
           block
-          disabled={!pixReady || pending || !taxId.trim()}
+          disabled={!pixReady || pending || (!taxId.trim() && !maskedTaxId)}
         >
           {pending ? "Continuando…" : `Pagar com Pix · ${amountLabel}`}
         </Button>

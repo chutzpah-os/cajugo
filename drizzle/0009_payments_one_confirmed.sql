@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "payments_one_confirmed" ON "payments" USING btree ("invoice_id") WHERE "payments"."status" = 'confirmed';

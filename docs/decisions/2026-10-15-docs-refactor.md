@@ -248,3 +248,6 @@
 
 # 2026-11-08 · Ajustes vindos do e2e (004/T024)
 - Aviso no painel: o papel status/alerta foi para dentro do item da lista (no próprio <li> ele apagava o item para o leitor de tela). Campo de arquivo atrás de botão sai da navegação e do leitor (o botão é o controle), e a checagem de acessibilidade ignora campo aria-hidden nas duas regras.
+
+# 2026-11-08 · Corrida resolvida no banco (004 verificação)
+- O banco de testes executa uma transação por vez, então teste de concorrência ali não prova nada; a garantia de "conferido uma vez só" passou para o Postgres (fatura open → paid condicional, índice único de pagamento confirmado por fatura, SELECT ... FOR UPDATE da loja no registro manual), que vale com conexões paralelas de verdade. PIX-SEC-002 e PIX-FR-003 da spec reescritos para refletir D2 e a tela do admin na 010.

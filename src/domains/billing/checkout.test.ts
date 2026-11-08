@@ -155,4 +155,22 @@ describe("tela de pagamento [5d]", () => {
       status: 401,
     });
   });
+
+  it("[PIX-FR-010] no reenvio, documento em branco reaproveita o já informado", async () => {
+    const a = await storeOwner(t.db, "loja-a", "a@x.com");
+    await configurePix(t.db);
+    await startCheckout(deps(), a, { taxId: "529.982.247-25" });
+
+    await startCheckout(deps(), a, { taxId: "" });
+    await startCheckout(deps(), a, {});
+
+    expect((await storeRow(t.db, a.storeId)).taxId).toBe("52998224725");
+    const b = await storeOwner(t.db, "loja-b", "b@x.com");
+    await expect(startCheckout(deps(), b, { taxId: "" })).rejects.toMatchObject(
+      {
+        status: 422,
+        errors: [expect.objectContaining({ field: "taxId" })],
+      },
+    );
+  });
 });

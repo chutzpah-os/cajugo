@@ -154,7 +154,9 @@ export async function findStoresAction(query: string): Promise<StoreHit[]> {
       await currentSession(),
       String(query).slice(0, 60),
     );
-  } catch {
+  } catch (error) {
+    // Erro inesperado vai para o log; sem permissão, só não acha nada.
+    formError(error, "");
     return [];
   }
 }

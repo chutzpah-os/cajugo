@@ -662,11 +662,6 @@ export async function onboardingStatus(
 /** E-mails dos cadastros feitos pelos testes ponta a ponta (spec 003). */
 export const E2E_SIGNUP_EMAIL = /^e2e-cadastro-[a-z0-9-]+@cajugo\.test$/;
 
-/**
- * Só testes (`pnpm e2e:seed`, que recusa rodar na produção): apaga as lojas e contas
- * criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) e tudo que depende
- * delas. A auditoria fica (é só de inserção).
- */
 /** Só testes: contas e lojas criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`). */
 export async function e2eSignups(
   db: Db,
@@ -689,6 +684,11 @@ export async function e2eSignups(
   return { profileIds, storeIds };
 }
 
+/**
+ * Só testes (`pnpm e2e:seed`, que recusa rodar na produção): apaga as lojas e contas
+ * criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) e tudo que depende
+ * delas. A auditoria fica (é só de inserção).
+ */
 export async function removeE2ESignups(deps: AuthDeps): Promise<number> {
   const accounts = (
     await deps.db

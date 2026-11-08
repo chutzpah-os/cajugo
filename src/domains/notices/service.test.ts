@@ -82,4 +82,12 @@ describe("avisos no painel", () => {
     expect(row.dismissedAt).toBeNull();
     await expect(noticesFor(t.db, null)).rejects.toMatchObject({ status: 401 });
   });
+
+  it("[PIX-SEC-001] id inválido ao dispensar é 404", async () => {
+    const a = await person("a@x.com");
+
+    await expect(dismissNotice(t.db, a, "nao-e-uuid")).rejects.toMatchObject({
+      status: 404,
+    });
+  });
 });

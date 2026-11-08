@@ -2,7 +2,7 @@
 id: 004
 slug: pix-activation
 title: Pix manual e ativação da loja
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-08
 ---
@@ -54,7 +54,7 @@ Sucesso: um comprovante enviado é conferido em até 1 dia útil, e a loja vai a
 
 ## Requisitos de segurança e privacidade
 - **PIX-SEC-001** O lojista da loja B nunca vê, envia nem substitui comprovante ou pagamento da loja A; o pagamento é sempre o da loja da sessão.
-- **PIX-SEC-002** O comprovante é privado: não tem endereço público, só o admin, o suporte e o próprio lojista o veem, por um link que expira em minutos; só aceita JPG, PNG, WEBP, HEIC ou PDF de até 10 MB.
+- **PIX-SEC-002** O comprovante é privado: não tem endereço público, só o admin, o suporte e o próprio lojista o veem, e a permissão é conferida a cada abertura (nenhum link do arquivo sai para o navegador, decisão D2 do plano, ADR 0011); só aceita JPG, PNG, WEBP, HEIC ou PDF de até 10 MB.
 - **PIX-SEC-003** Só o admin confirma, recusa ou registra pagamento sem comprovante; o suporte vê a fila sem agir; lojista e usuário da loja não abrem [10b].
 - **PIX-SEC-004** O valor esperado é calculado pelo sistema, nunca vem da tela do lojista; confirmar, recusar e registrar sem comprovante ficam no histórico de atividade (quem, loja, valor, referência, motivo).
 - **PIX-SEC-005** O CPF ou CNPJ do lojista só aparece para ele mesmo (mascarado) e para o admin; nunca para quem indicou nem em página pública.
@@ -78,7 +78,7 @@ Sucesso: um comprovante enviado é conferido em até 1 dia útil, e a loja vai a
 ### PIX-FR-003
 - **Dado** uma loja indicada pelo código de um lojista com CNPJ `12.345.678/0001-95`
 - **Quando** o lojista da loja indicada informa o mesmo CNPJ em [5d]
-- **Então** a indicação fica "não válida" por autoindicação, visível só para o admin
+- **Então** a indicação fica "não válida" por autoindicação, com o motivo registrado só para o admin (a tela de indicações do admin [8g] é da spec 010)
 - **E** o lojista segue para o Pix normalmente, sem aviso sobre a indicação
 - **E** se quem indicou é um indicador ainda sem documento, a indicação continua "Cadastrada" e a comparação é feita quando ele informar o CPF
 
@@ -165,7 +165,7 @@ Sucesso: um comprovante enviado é conferido em até 1 dia útil, e a loja vai a
 - **Dado** um comprovante enviado
 - **Quando** alguém sem sessão de admin, suporte ou do próprio lojista tenta abrir o arquivo
 - **Então** não consegue
-- **E** o link que o admin usa para ver o arquivo deixa de funcionar depois de alguns minutos
+- **E** abrir o arquivo confere a sessão toda vez: quem sai da conta ou perde o acesso deixa de ver na hora, sem link que continue valendo
 - **E** um arquivo SVG, GIF ou HTML é recusado no envio
 
 ### PIX-SEC-003

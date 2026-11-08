@@ -59,24 +59,6 @@ async function signUpStore(page: Page, stamp: string) {
   return { name: `E2E Pix ${stamp}`, slug: `e2e-pix-${stamp}` };
 }
 
-/** [5d] → [6c] → envio → [10a]. */
-async function payWith(page: Page, file: string, paid: string) {
-  await page
-    .getByLabel("CPF ou CNPJ para a nota fiscal")
-    .fill("529.982.247-25");
-  await page
-    .getByRole("button", { name: /Pagar com Pix · R\$ 100,00/ })
-    .click();
-  await expect(page).toHaveURL(/\/lojistas\/pagamento\/pix$/);
-  await page.locator("#receipt").setInputFiles(file);
-  await page.getByLabel("Valor pago").fill(paid);
-  await page.getByRole("button", { name: "Enviar comprovante" }).click();
-  await expect(page).toHaveURL(/\/painel\/pagamento$/, { timeout: 30_000 });
-  await expect(
-    page.getByText("Comprovante recebido. Estamos conferindo."),
-  ).toBeVisible();
-}
-
 const card = (page: Page, storeName: string) =>
   page.locator("li", { has: page.getByText(storeName, { exact: true }) });
 
@@ -160,12 +142,21 @@ test.describe("Pix manual e ativação", () => {
     await expect(page).toHaveURL(/\/lojistas\/pagamento$/);
     await expect(heading(page)).toHaveText("Comprovante recusado");
     await expect(page.getByText("Valor faltante: R$ 10,00")).toBeVisible();
+    expect(await audit(page), "[12e]").toEqual(CLEAN);
     await expect(
       page.getByText(
         "Comprovante recusado: Valor divergente. Faltam R$ 10,00.",
       ),
     ).toBeVisible();
-    await payWith(page, PDF, "100");
+    // Reenvio sem redigitar o documento (fica o já informado).
+    await page
+      .getByRole("button", { name: /Pagar com Pix · R\$ 100,00/ })
+      .click();
+    await expect(page).toHaveURL(/\/lojistas\/pagamento\/pix$/);
+    await page.locator("#receipt").setInputFiles(PDF);
+    await page.getByLabel("Valor pago").fill("100");
+    await page.getByRole("button", { name: "Enviar comprovante" }).click();
+    await expect(page).toHaveURL(/\/painel\/pagamento$/, { timeout: 30_000 });
 
     // Admin abre o PDF pela rota privada e confirma
     await admin.reload();

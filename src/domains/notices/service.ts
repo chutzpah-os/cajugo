@@ -1,4 +1,5 @@
 import { and, desc, eq, isNull } from "drizzle-orm";
+import { z } from "zod";
 import { authorize, type Session } from "@/platform/http/session";
 import { brl } from "@/platform/br/money";
 import { notices, userRole } from "@/platform/db/schema";
@@ -73,6 +74,7 @@ export async function dismissNotice(
   noticeId: string,
 ): Promise<void> {
   const s = authorize(session, userRole.enumValues);
+  if (!z.uuid().safeParse(noticeId).success) throw AppError.notFound();
   const done = await db
     .update(notices)
     .set({ dismissedAt: new Date() })
