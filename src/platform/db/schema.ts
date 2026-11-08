@@ -345,3 +345,147 @@ export const notices = pgTable(
   },
   (t) => [index("notices_profile_created").on(t.profileId, t.createdAt)],
 ).enableRLS();
+
+/** Status do veículo (GLOSSARY, PRD §5.3). */
+export const vehicleStatus = pgEnum("vehicle_status", [
+  "draft",
+  "pending_approval",
+  "published",
+  "hidden",
+  "sold",
+  "deleted",
+]);
+
+/** Veículo (spec 005). Placa e chassi nunca vão para página pública (VEH-SEC-002). */
+export const vehicles = pgTable(
+  "vehicles",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id),
+    status: vehicleStatus("status").notNull().default("draft"),
+    /** Ids e nomes da tabela FIPE (os nomes ficam mesmo se a FIPE mudar). */
+    fipeBrandId: text("fipe_brand_id"),
+    fipeModelId: text("fipe_model_id"),
+    fipeYearId: text("fipe_year_id"),
+    make: text("make"),
+    model: text("model"),
+    version: text("version"),
+    yearManufacture: smallint("year_manufacture"),
+    yearModel: smallint("year_model"),
+    mileageKm: integer("mileage_km"),
+    transmission: text("transmission"),
+    fuel: text("fuel"),
+    body: text("body"),
+    color: text("color"),
+    doors: smallint("doors"),
+    engine: text("engine"),
+    plate: text("plate"),
+    plateEnd: text("plate_end"),
+    chassis: text("chassis"),
+    priceCents: integer("price_cents"),
+    /** Referência FIPE do mês (VEH-FR-007). */
+    fipeCode: text("fipe_code"),
+    fipePriceCents: integer("fipe_price_cents"),
+    fipeMonth: text("fipe_month"),
+    showInstallment: boolean("show_installment").notNull().default(false),
+    /** Condições Sim/Não do PRD [2a] (lista fechada, validada no domínio). */
+    conditions: jsonb("conditions").notNull().default({}),
+    features: text("features")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
+    description: text("description"),
+    contactWhatsapp: text("contact_whatsapp"),
+    shareOnCajugo: boolean("share_on_cajugo").notNull().default(true),
+    /** Divulgação antes da venda, para "Desfazer venda" (VEH-FR-013). */
+    shareBeforeSale: boolean("share_before_sale"),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    soldAt: timestamp("sold_at", { withTimezone: true }),
+    /** Excluído: guardado 90 dias para o admin (VEH-FR-014). */
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    ...timestamps,
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [
+    index("vehicles_store_status").on(t.storeId, t.status),
+    index("vehicles_status_share").on(t.status, t.shareOnCajugo),
+  ],
+).enableRLS();
+
+/** Fotos do veículo; posição 0 = capa (VEH-FR-004). */
+export const vehiclePhotos = pgTable(
+  "vehicle_photos",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id),
+    publicId: text("public_id").notNull(),
+    position: smallint("position").notNull(),
+    width: integer("width"),
+    height: integer("height"),
+    ...timestamps,
+  },
+  (t) => [uniqueIndex("vehicle_photos_position").on(t.vehicleId, t.position)],
+).enableRLS();
+
+/** Histórico de mudanças do veículo publicado (GLOSSARY); spec 005: `field = price`. */
+export const vehicleHistory = pgTable(
+  "vehicle_history",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id),
+    field: text("field").notNull(),
+    oldValue: text("old_value"),
+    newValue: text("new_value"),
+    userId: uuid("user_id").references(() => profiles.id),
+    ...timestamps,
+  },
+  (t) => [index("vehicle_history_vehicle").on(t.vehicleId, t.createdAt)],
+).enableRLS();
+
+/** Tabela FIPE copiada sob demanda (ADR 0012); só o domínio `fipe` escreve. */
+export const fipeBrands = pgTable("fipe_brands", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  syncedAt: timestamp("synced_at", { withTimezone: true }).notNull(),
+}).enableRLS();
+
+export const fipeModels = pgTable(
+  "fipe_models",
+  {
+    id: text("id").primaryKey(),
+    brandId: text("brand_id").notNull(),
+    name: text("name").notNull(),
+    syncedAt: timestamp("synced_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("fipe_models_brand").on(t.brandId)],
+).enableRLS();
+
+export const fipeYears = pgTable(
+  "fipe_years",
+  {
+    /** `{modelo}:{código do ano}` (ex.: `5940:2020-1`). */
+    id: text("id").primaryKey(),
+    modelId: text("model_id").notNull(),
+    label: text("label").notNull(),
+    syncedAt: timestamp("synced_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("fipe_years_model").on(t.modelId)],
+).enableRLS();
+
+export const fipePrices = pgTable("fipe_prices", {
+  yearId: text("year_id").primaryKey(),
+  fipeCode: text("fipe_code").notNull(),
+  priceCents: integer("price_cents").notNull(),
+  /** Mês de referência da FIPE (ex.: "novembro de 2026"). */
+  month: text("month").notNull(),
+  fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull(),
+}).enableRLS();

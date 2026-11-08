@@ -406,3 +406,6 @@
 
 # 2026-11-08 · 005/T001 documentos de veículos
 - ARCHITECTURE §4: vehicles com ids/nomes/mês da FIPE, conditions jsonb, share_before_sale, deleted_at; vehicle_history (field = price); tabelas fipe_*; GLOSSARY (Histórico do veículo, Referência FIPE); ADR 0012 (FIPE copiada sob demanda).
+
+# 2026-11-08 · 005/T002 migration 0010
+- Enum vehicle_status e tabelas vehicles, vehicle_photos (posição única por veículo), vehicle_history, fipe_brands, fipe_models, fipe_years e fipe_prices, com índices; só CREATE. Aplicada no staging.
