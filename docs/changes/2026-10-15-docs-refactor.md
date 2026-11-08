@@ -253,3 +253,6 @@
 
 # 2026-11-08 · 003/T001 migrations do cadastro
 - 0006: referral_status, referral_codes, referrals (índice referrer/status, 1 por loja), store_slug_redirects e remoção de stores.address (vazia, D2); 0007: endereço em campos, slug_changed_at, slug_reserved_until; testes de migration.
+
+# 2026-11-08 · 003/T002 cidades do IBGE
+- scripts/generate-cities.ts gera src/platform/geo/cities.json (5.571 cidades); searchCities (começo do nome, sem acento) e findCity (nome oficial + UF).

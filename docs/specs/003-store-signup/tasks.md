@@ -8,7 +8,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 1 — Fundação
 - [x] **T001** Migrations `0006` (tabelas e remoção de `stores.address`) e `0007` (campos da loja): endereço em colunas e remoção de `stores.address` (D2), `slug_changed_at`, `slug_reserved_until`, `store_slug_redirects`, enum `referral_status`, `referral_codes`, `referrals` + índice; teste de migration · _—_
-- [ ] **T002** [P] `src/platform/geo/`: script que gera a lista de cidades do IBGE (D3), lista versionada e busca sem acento (`searchCities`, `isValidCity`) · _STO-FR-004_
+- [x] **T002** [P] `src/platform/geo/`: script que gera a lista de cidades do IBGE (D3), lista versionada e busca sem acento (`searchCities`, `findCity`) · _STO-FR-004_
 - [ ] **T003** [P] `src/platform/cloudinary/`: `signUpload` (SHA-256, vetor conhecido), `verifyUpload` (Admin API), `imageUrl`, e um Cloudinary falso para testes · _STO-SEC-004_
 - [ ] **T004** [P] `src/platform/seo/` (`pageMetadata`, `jsonLd` com escape) e `storeUrl(slug)` (função única de URL de loja, ADR 0009) · _STO-NFR-001, STO-FR-011_
 - [ ] **T005** [P] `AuthProvider.adminDeleteUser` (falso e Supabase), para desfazer a conta se o cadastro falhar · _—_
