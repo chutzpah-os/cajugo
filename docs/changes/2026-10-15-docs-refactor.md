@@ -337,3 +337,6 @@
 
 # 2026-11-08 · 004/T005 vencimento
 - billing/due-date.ts: firstDueDate e nextDueAfter, com o dia contado em São Paulo, último dia do mês quando falta o dia (31/01 → 28/02 → 31/03; bissexto), virada de ano e vencimento à meia-noite de São Paulo com o fuso da data.
+
+# 2026-11-08 · 004/T006 arquivos privados no Cloudinary
+- signUpload com type=authenticated, verifyUpload por tipo, destroy (pedido assinado) e fetchPrivate (API de download assinada); Cloudinary falso com tipo, apagados e leitura. Prova real no staging com PNG e PDF (ADR 0011 atualizado com o resultado).

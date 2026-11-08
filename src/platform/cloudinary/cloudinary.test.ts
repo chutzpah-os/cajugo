@@ -96,4 +96,150 @@ describe("Cloudinary", () => {
     });
     expect(await fake.verifyUpload("staging/stores/outra/logo")).toBeNull();
   });
+
+  describe("arquivos privados (ADR 0011)", () => {
+    /** fetch falso que guarda as chamadas e responde o que o teste mandar. */
+    function recorder(respond: (url: URL) => Response) {
+      const calls: { url: URL; init?: RequestInit }[] = [];
+      const fetchFn = (async (input: string | URL, init?: RequestInit) => {
+        const url = new URL(String(input));
+        calls.push({ url, init });
+        return respond(url);
+      }) as typeof fetch;
+      return { calls, fetchFn };
+    }
+
+    it("[PIX-SEC-002] o envio privado assina type=authenticated e aceita PDF", () => {
+      const cloud = createCloudinary(config);
+
+      const signed = cloud.signUpload({
+        folder: "receipts/loja-1",
+        publicId: "receipt-abc",
+        allowedFormats: ["jpg", "png", "webp", "heic", "pdf"],
+        type: "authenticated",
+        now: new Date("2026-11-08T12:00:00Z"),
+      });
+
+      expect(signed.fields.type).toBe("authenticated");
+      expect(signed.fields.signature).toBe(
+        signParams(
+          {
+            allowed_formats: "jpg,png,webp,heic,pdf",
+            folder: "staging/receipts/loja-1",
+            public_id: "receipt-abc",
+            timestamp: 1794139200,
+            type: "authenticated",
+          },
+          "abcd",
+        ),
+      );
+    });
+
+    it("[PIX-SEC-002] confere o envio privado no endereço do tipo authenticated", async () => {
+      const { calls, fetchFn } = recorder(() =>
+        Response.json({ format: "pdf", bytes: 1234 }),
+      );
+      const cloud = createCloudinary(config, fetchFn);
+
+      const image = await cloud.verifyUpload(
+        "staging/receipts/loja-1/receipt-abc",
+        "authenticated",
+      );
+
+      expect(image).toEqual({ format: "pdf", bytes: 1234 });
+      expect(calls[0].url.pathname).toBe(
+        "/v1_1/demo/resources/image/authenticated/staging/receipts/loja-1/receipt-abc",
+      );
+    });
+
+    it("[PIX-SEC-002] apaga o arquivo recusado com pedido assinado", async () => {
+      const { calls, fetchFn } = recorder(() =>
+        Response.json({ result: "ok" }),
+      );
+      const cloud = createCloudinary(config, fetchFn);
+
+      await cloud.destroy(
+        "staging/receipts/loja-1/receipt-abc",
+        "authenticated",
+        new Date("2026-11-08T12:00:00Z"),
+      );
+
+      expect(calls[0].url.pathname).toBe("/v1_1/demo/image/destroy");
+      const body = new URLSearchParams(String(calls[0].init?.body));
+      expect(Object.fromEntries(body)).toEqual({
+        public_id: "staging/receipts/loja-1/receipt-abc",
+        type: "authenticated",
+        invalidate: "true",
+        timestamp: "1794139200",
+        api_key: "123",
+        signature: signParams(
+          {
+            invalidate: "true",
+            public_id: "staging/receipts/loja-1/receipt-abc",
+            timestamp: 1794139200,
+            type: "authenticated",
+          },
+          "abcd",
+        ),
+      });
+    });
+
+    it("[PIX-SEC-002] lê o arquivo privado pela API de download assinada, sem URL pública", async () => {
+      const { calls, fetchFn } = recorder(
+        () =>
+          new Response(new Uint8Array([37, 80, 68, 70]), {
+            headers: { "content-type": "application/pdf" },
+          }),
+      );
+      const cloud = createCloudinary(config, fetchFn);
+
+      const file = await cloud.fetchPrivate(
+        "staging/receipts/loja-1/receipt-abc",
+        "pdf",
+        new Date("2026-11-08T12:00:00Z"),
+      );
+
+      expect(file?.contentType).toBe("application/pdf");
+      expect([...new Uint8Array(file!.body)]).toEqual([37, 80, 68, 70]);
+      const url = calls[0].url;
+      expect(url.host).toBe("api.cloudinary.com");
+      expect(url.pathname).toBe("/v1_1/demo/image/download");
+      expect(url.searchParams.get("type")).toBe("authenticated");
+      expect(url.searchParams.get("signature")).toBe(
+        signParams(
+          {
+            format: "pdf",
+            public_id: "staging/receipts/loja-1/receipt-abc",
+            timestamp: 1794139200,
+            type: "authenticated",
+          },
+          "abcd",
+        ),
+      );
+    });
+
+    it("[PIX-SEC-002] o falso guarda por tipo, apaga e devolve o arquivo", async () => {
+      const fake = new FakeCloudinary();
+      const signed = fake.signUpload({
+        folder: "receipts/loja-1",
+        publicId: "receipt-abc",
+        allowedFormats: ["pdf"],
+        type: "authenticated",
+      });
+      fake.simulateUpload(signed, { format: "pdf", bytes: 4 });
+      const id = "staging/receipts/loja-1/receipt-abc";
+
+      expect(await fake.verifyUpload(id, "upload")).toBeNull();
+      expect(await fake.verifyUpload(id, "authenticated")).toEqual({
+        format: "pdf",
+        bytes: 4,
+      });
+      expect((await fake.fetchPrivate(id, "pdf"))?.contentType).toBe(
+        "application/pdf",
+      );
+      await fake.destroy(id, "authenticated");
+      expect(await fake.verifyUpload(id, "authenticated")).toBeNull();
+      expect(fake.destroyed).toEqual([id]);
+    });
+  });
 });

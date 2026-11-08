@@ -230,3 +230,6 @@
 
 # 2026-11-08 · BR Code próprio, sem biblioteca (004/T004)
 - O formato do BACEN é curto e estável; implementar com teste contra o exemplo oficial evita dependência nova e é o mesmo código que a fatura mensal (011) vai usar.
+
+# 2026-11-08 · Leitura privada pela API de download (004/T006)
+- A prova mostrou que a URL de entrega bloqueia PDF no plano gratuito e que a URL assinada não expira; a API de download assinada lê PNG e PDF só no servidor. O navegador nunca recebe URL nossa do arquivo; o servidor só guarda o public_id.

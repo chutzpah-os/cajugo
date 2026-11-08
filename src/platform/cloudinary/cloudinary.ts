@@ -31,16 +31,33 @@ export type SignedUpload = {
 
 export type UploadedImage = { format: string; bytes: number };
 
+/** `upload`: público (logo, capa, fotos). `authenticated`: privado, sem URL pública (ADR 0011). */
+export type DeliveryType = "upload" | "authenticated";
+
+export type PrivateFile = { body: ArrayBuffer; contentType: string };
+
 export type Cloudinary = {
   signUpload(input: {
     folder: string;
     publicId: string;
     allowedFormats: string[];
+    type?: DeliveryType;
     now?: Date;
   }): SignedUpload;
   fullPublicId(folder: string, publicId: string): string;
-  /** Imagem existe? Devolve formato e tamanho reais (Admin API). */
-  verifyUpload(fullPublicId: string): Promise<UploadedImage | null>;
+  /** Arquivo existe? Devolve formato e tamanho reais (Admin API). */
+  verifyUpload(
+    fullPublicId: string,
+    type?: DeliveryType,
+  ): Promise<UploadedImage | null>;
+  /** Apaga o arquivo (ex.: recusado no envio por formato ou tamanho). */
+  destroy(fullPublicId: string, type?: DeliveryType, now?: Date): Promise<void>;
+  /** Arquivo privado lido só pelo servidor (API de download assinada); `null` se não existe. */
+  fetchPrivate(
+    fullPublicId: string,
+    format: string,
+    now?: Date,
+  ): Promise<PrivateFile | null>;
   imageUrl(fullPublicId: string, opts?: { width?: number }): string;
 };
 
@@ -53,13 +70,24 @@ export function createCloudinary(
   fetchFn: typeof fetch = fetch,
 ): Cloudinary {
   const prefixed = (folder: string) => `${config.folder}/${folder}`;
+  const api = `https://api.cloudinary.com/v1_1/${config.cloudName}`;
+  const seconds = (d: Date) => Math.floor(d.getTime() / 1000);
+  const basicAuth = () =>
+    `Basic ${Buffer.from(`${config.apiKey}:${config.apiSecret}`).toString("base64")}`;
   return {
-    signUpload({ folder, publicId, allowedFormats, now = new Date() }) {
-      const params = {
+    signUpload({
+      folder,
+      publicId,
+      allowedFormats,
+      type = "upload",
+      now = new Date(),
+    }) {
+      const params: Record<string, string | number> = {
         allowed_formats: allowedFormats.join(","),
         folder: prefixed(folder),
         public_id: publicId,
-        timestamp: Math.floor(now.getTime() / 1000),
+        timestamp: seconds(now),
+        ...(type === "authenticated" ? { type } : {}),
       };
       return {
         cloudName: config.cloudName,
@@ -73,18 +101,56 @@ export function createCloudinary(
       };
     },
     fullPublicId: (folder, publicId) => `${prefixed(folder)}/${publicId}`,
-    async verifyUpload(fullPublicId) {
-      const auth = Buffer.from(`${config.apiKey}:${config.apiSecret}`).toString(
-        "base64",
-      );
+    async verifyUpload(fullPublicId, type = "upload") {
       const res = await fetchFn(
-        `https://api.cloudinary.com/v1_1/${config.cloudName}/resources/image/upload/${fullPublicId}`,
-        { headers: { authorization: `Basic ${auth}` } },
+        `${api}/resources/image/${type}/${fullPublicId}`,
+        { headers: { authorization: basicAuth() } },
       );
       if (res.status === 404) return null;
       if (!res.ok) throw new Error(`Cloudinary respondeu ${res.status}`);
       const body = (await res.json()) as UploadedImage;
       return { format: body.format, bytes: body.bytes };
+    },
+    async destroy(fullPublicId, type = "upload", now = new Date()) {
+      const params = {
+        public_id: fullPublicId,
+        type,
+        invalidate: "true",
+        timestamp: seconds(now),
+      };
+      const res = await fetchFn(`${api}/image/destroy`, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          ...Object.fromEntries(
+            Object.entries(params).map(([k, v]) => [k, String(v)]),
+          ),
+          api_key: config.apiKey,
+          signature: signParams(params, config.apiSecret),
+        }).toString(),
+      });
+      if (!res.ok) throw new Error(`Cloudinary respondeu ${res.status}`);
+    },
+    async fetchPrivate(fullPublicId, format, now = new Date()) {
+      const params = {
+        public_id: fullPublicId,
+        format,
+        type: "authenticated",
+        timestamp: seconds(now),
+      };
+      const url = new URL(`${api}/image/download`);
+      for (const [k, v] of Object.entries(params))
+        url.searchParams.set(k, String(v));
+      url.searchParams.set("api_key", config.apiKey);
+      url.searchParams.set("signature", signParams(params, config.apiSecret));
+      const res = await fetchFn(url);
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error(`Cloudinary respondeu ${res.status}`);
+      return {
+        body: await res.arrayBuffer(),
+        contentType:
+          res.headers.get("content-type") ?? "application/octet-stream",
+      };
     },
     imageUrl(fullPublicId, opts = {}) {
       const t = ["f_auto", "q_auto", opts.width && `w_${opts.width}`]
