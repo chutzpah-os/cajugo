@@ -268,3 +268,6 @@
 
 # 2026-11-08 · 003/T006 endereço do catálogo
 - domains/stores/slug.ts: slugSchema (3–40, [a-z0-9] com hífen interno), suggestSlug e checkSlug (em uso inclui endereço antigo ainda redirecionando).
+
+# 2026-11-08 · 003/T007 referrals
+- domains/referrals/service.ts: getOrCreateCode (NOME10, NOME11…, idempotente), checkCode (ok/not-found/self-referral por e-mail ou celular; só o primeiro nome), registerReferral.
