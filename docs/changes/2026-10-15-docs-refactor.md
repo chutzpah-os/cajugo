@@ -448,3 +448,6 @@
 
 # 2026-11-08 · 005/T015 catálogo público e primeiro veículo
 - vehicles.publicVehicles (só publicado de loja no ar; saída sem placa nem chassi; capa) e hasPublishedVehicle; stores.onboardingStatus recebe firstVehicle de quem chama (a página /painel/veiculos junta os dois domínios, sem ciclo).
+
+# 2026-11-08 · 005/T016 componentes base
+- src/ui: ConfirmSheet (diálogo [6f] em folha de baixo, <dialog> nativo, controlado), SelectField (rótulo, ajuda, erro apontado) e TextAreaField (contador N/máx); testes de marcação.

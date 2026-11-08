@@ -26,7 +26,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T015** `publicVehicles` (só publicado de loja no ar, sem placa nem chassi) e `hasPublishedVehicle` no `onboardingStatus` (passado pela página) · _VEH-FR-010, VEH-FR-015, VEH-SEC-002, VEH-SEC-004_
 
 ## Fase 3 — Telas
-- [ ] **T016** `src/ui`: `ConfirmSheet` (diálogo [6f]), seletor dependente e campo de contagem de caracteres · _VEH-NFR-001_
+- [x] **T016** `src/ui`: `ConfirmSheet` (diálogo [6f]), seletor dependente e campo de contagem de caracteres · _VEH-NFR-001_
 - [ ] **T017** [2a] parte 1 em `/painel/veiculos/novo` e `/[id]/editar`: Identificação (FIPE dependente), Ficha técnica, Preço com referência, Condições, Itens, Descrição, Divulgação; autosave com "Rascunho salvo" · _VEH-FR-003, VEH-FR-005, VEH-FR-006, VEH-FR-007, VEH-FR-008_
 - [ ] **T018** [2a] parte 2: Fotos (redução no navegador, progresso, arrastar, remover, limite) e "Publicar" com erros por seção · _VEH-FR-004, VEH-FR-009, VEH-NFR-002_
 - [ ] **T019** [1c] em `/painel/veiculos`: KPIs, card da assinatura, busca, filtros, cards com toggle, Vendido e Editar; onboarding com o 1º veículo; texto de [10a] ajustado · _VEH-FR-001, VEH-FR-002, VEH-FR-010, VEH-FR-015_
