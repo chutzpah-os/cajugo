@@ -4,7 +4,7 @@ import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
 import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
-import { removeE2ESignups } from "@/domains/stores/service";
+import { removeE2ESignups, resetStoreForTests } from "@/domains/stores/service";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -71,7 +71,8 @@ export async function seedE2E(deps: AuthDeps, password: string) {
   let [store] = await deps.db
     .select({ id: stores.id })
     .from(stores)
-    .where(eq(stores.slug, E2E_STORE_SLUG));
+    // Pelo dono, não pelo endereço: um e2e pode ter trocado o endereço.
+    .where(eq(stores.ownerId, ids.owner));
   if (!store) {
     [store] = await deps.db
       .insert(stores)
@@ -113,6 +114,8 @@ export async function seedE2E(deps: AuthDeps, password: string) {
   await restoreInitialSettings(deps.db);
   // Lojas e contas criadas pelos e2e de cadastro (spec 003).
   await removeE2ESignups(deps);
+  // Loja de teste no estado inicial (Minha loja e troca de endereço, spec 003).
+  await resetStoreForTests(deps.db, store.id, E2E_STORE_SLUG);
   // Código pessoal do lojista de teste, para o e2e do link /i/{codigo} (spec 003).
   await getOrCreateCode(deps.db, ids.owner, "Lojista E2E");
 

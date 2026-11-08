@@ -624,3 +624,33 @@ export async function publicStore(
     ? { slug: resolved.slug, redirected: resolved.redirected, ...s }
     : null;
 }
+
+/**
+ * Só testes (`pnpm e2e:seed`): volta a loja de teste ao estado inicial (endereço,
+ * sem troca recente, sem redirecionamentos, sem imagens, sem horário, fora da vitrine).
+ */
+export async function resetStoreForTests(
+  db: Db,
+  storeId: string,
+  slug: string,
+) {
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(storeSlugRedirects)
+      .where(eq(storeSlugRedirects.storeId, storeId));
+    await tx
+      .update(stores)
+      .set({
+        slug,
+        slugChangedAt: null,
+        logoPublicId: null,
+        coverPublicId: null,
+        hours: null,
+        about: null,
+        instagram: null,
+        // Loja de teste nunca vai para a vitrine CajuGo.
+        shareByDefault: false,
+      })
+      .where(eq(stores.id, storeId));
+  });
+}

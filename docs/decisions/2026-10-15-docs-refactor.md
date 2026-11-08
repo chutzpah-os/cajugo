@@ -212,3 +212,6 @@
 
 # 2026-11-08 · /loja/{slug} com cache e status "suave" (003/T021)
 - Página pública com cache (cota gratuita) e placeholder no generateStaticParams para o build não depender do banco. Limitação: com streaming, redirecionamento e 404 saem como 200 (redirecionamento no navegador; noindex). Aceito enquanto a página é mínima e noindex; status real virou item obrigatório da 006 no PLAN.
+
+# 2026-11-08 · Checagem de alvo de toque segue o WCAG 2.5.8 (003/T022)
+- O alvo de um checkbox dentro de <label> é o rótulo inteiro (min-h-11), link no meio de uma frase é exceção do WCAG e o campo isca (aria-hidden) não é alvo; a checagem passou a medir assim em vez de reprovar telas corretas. Seed busca a loja de teste pelo dono porque o e2e troca o endereço.

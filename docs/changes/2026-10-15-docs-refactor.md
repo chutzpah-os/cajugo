@@ -313,3 +313,6 @@
 
 # 2026-11-08 · 003/T021 troca do endereço e /loja/{slug}
 - Minha loja: SlugChangeForm (checagem ao vivo, aviso + confirmação, data da próxima troca) e changeSlugAction; /loja/[slug] mínima (D4) com cachedPublicStore ('use cache', tag stores) e placeholder de build; actions de loja invalidam a tag. Endereço antigo leva ao novo (testado no navegador).
+
+# 2026-11-08 · 003/T022 e2e do cadastro e de Minha loja
+- tests/e2e/store-signup.spec.ts (11 cenários: menu, landing com SEO no HTML, cadastro pelo /i/lojista10 até o pagamento, Indisponível, conta existente, Minha loja com horário, logo no Cloudinary, link e QR, troca de endereço com redirecionamento, termos, Sem permissão, 390 px). Seed acha a loja de teste pelo dono e a deixa fora da vitrine; IP de teste só no localhost; audit mede o rótulo do campo. 35 e2e verdes.
