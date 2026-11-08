@@ -352,3 +352,6 @@
 
 # 2026-11-08 · 004/T010 tela de pagamento no servidor
 - billing: checkoutView (mensalidade vigente ou da fatura aberta, documento mascarado, pixReady, wa.me do atendimento, última recusa) e startCheckout (CPF/CNPJ validado e gravado na loja, fatura first aberta uma vez, sem chave Pix → 409); AppError.conflict substituiu o Object.assign do 409 do endereço (achado da revisão da 003); fixtures de teste do billing.
+
+# 2026-11-08 · 004/T011 autoindicação por CPF/CNPJ
+- referrals.rejectSelfReferralsByTaxId: ao gravar o documento da loja, compara nos dois sentidos (indicação desta loja × documentos de quem indicou; indicações do dono × documento das lojas indicadas) e marca rejected/self_referral, com log só do motivo; chamado por startCheckout. Documentos de quem indicou: lojas dele hoje, CPF do perfil nas specs 008/010.

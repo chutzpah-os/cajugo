@@ -11,6 +11,7 @@ export async function storeOwner(
   db: Db,
   slug: string,
   email: string,
+  extra: { referralCode?: string; name?: string } = {},
 ): Promise<Session & { storeId: string }> {
   const { userId, storeId } = await registerStore(
     { db, auth: new FakeAuthProvider() },
@@ -21,11 +22,12 @@ export async function storeOwner(
       state: "SE",
       whatsapp: "79981360206",
       slug,
-      name: "Dono",
+      name: extra.name ?? "Dono",
       email,
       phone: `7998${Math.floor(1000000 + Math.random() * 8999999)}`,
       password: "senha-forte-1",
       terms: true,
+      ...(extra.referralCode ? { referralCode: extra.referralCode } : {}),
     },
     { ipHash: crypto.randomUUID() },
   );

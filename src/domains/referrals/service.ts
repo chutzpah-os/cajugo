@@ -1,5 +1,11 @@
-import { eq, inArray, or } from "drizzle-orm";
-import { profiles, referralCodes, referrals } from "@/platform/db/schema";
+import { and, eq, inArray, ne, or } from "drizzle-orm";
+import {
+  profiles,
+  referralCodes,
+  referrals,
+  stores,
+} from "@/platform/db/schema";
+import { logActivity } from "@/platform/http/activity-log";
 import type { Db } from "@/platform/db/types";
 
 /** Primeiro nome sem acento e em maiúsculas (até 12 letras); sem letras: CAJU. */
@@ -112,6 +118,87 @@ export async function registerReferral(db: Db, code: string, storeId: string) {
     referrerId: owner?.profileId ?? null,
     referredStoreId: storeId,
   });
+}
+
+/** Indicações que ainda podem render (as encerradas ou já rejeitadas ficam como estão). */
+const LIVE_REFERRAL = ["invited", "registered", "active", "paused"] as const;
+
+/**
+ * CPF/CNPJ de alguém: hoje, os documentos das lojas de que é dono (spec 004); o CPF
+ * do vendedor e do indicador entra aqui quando existir (specs 008 e 010).
+ */
+async function taxIdsOf(db: Db, profileId: string, exceptStoreId?: string) {
+  const rows = await db
+    .select({ taxId: stores.taxId })
+    .from(stores)
+    .where(
+      and(
+        eq(stores.ownerId, profileId),
+        exceptStoreId ? ne(stores.id, exceptStoreId) : undefined,
+      ),
+    );
+  return new Set(rows.map((r) => r.taxId).filter((t): t is string => !!t));
+}
+
+/**
+ * Autoindicação por CPF/CNPJ (PIX-FR-003), chamada quando a loja grava o documento.
+ * Confere nos dois sentidos: a indicação desta loja contra os documentos de quem
+ * indicou, e as indicações feitas pelo dono desta loja contra o documento das lojas
+ * indicadas. Igual → `rejected` (`self_referral`); nada aparece para o indicado. O
+ * log guarda só o motivo, nunca o documento (SECURITY.md §8).
+ */
+export async function rejectSelfReferralsByTaxId(
+  db: Db,
+  storeId: string,
+): Promise<void> {
+  const [store] = await db
+    .select({ taxId: stores.taxId, ownerId: stores.ownerId })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  if (!store?.taxId) return;
+
+  const toReject: string[] = [];
+  const [own] = await db
+    .select({ id: referrals.id, referrerId: referrals.referrerId })
+    .from(referrals)
+    .where(
+      and(
+        eq(referrals.referredStoreId, storeId),
+        inArray(referrals.status, LIVE_REFERRAL),
+      ),
+    );
+  if (
+    own?.referrerId &&
+    (await taxIdsOf(db, own.referrerId, storeId)).has(store.taxId)
+  )
+    toReject.push(own.id);
+
+  const made = await db
+    .select({ id: referrals.id, taxId: stores.taxId })
+    .from(referrals)
+    .innerJoin(stores, eq(stores.id, referrals.referredStoreId))
+    .where(
+      and(
+        eq(referrals.referrerId, store.ownerId),
+        inArray(referrals.status, LIVE_REFERRAL),
+        ne(referrals.referredStoreId, storeId),
+      ),
+    );
+  for (const r of made) if (r.taxId === store.taxId) toReject.push(r.id);
+
+  if (!toReject.length) return;
+  await db
+    .update(referrals)
+    .set({ status: "rejected", rejectReason: "self_referral" })
+    .where(inArray(referrals.id, toReject));
+  for (const id of toReject)
+    await logActivity(db, {
+      userId: null,
+      action: "referral.rejected",
+      entity: "referral",
+      entityId: id,
+      data: { reason: "self_referral" },
+    });
 }
 
 /**

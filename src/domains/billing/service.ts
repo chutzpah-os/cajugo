@@ -1,5 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
 import { authorizeTo } from "@/domains/auth/service";
+import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
 import { invoices, payments, stores } from "@/platform/db/schema";
@@ -122,7 +123,8 @@ const TAX_ID_MESSAGE: Record<number, string> = {
 
 /**
  * "Pagar com Pix" em [5d] (PIX-FR-002): grava o CPF/CNPJ na loja e abre a fatura da
- * 1ª mensalidade com a mensalidade vigente (ou reaproveita a aberta). Sem chave Pix
+ * 1ª mensalidade com a mensalidade vigente (ou reaproveita a aberta); confere a
+ * autoindicação por documento (PIX-FR-003). Sem chave Pix
  * pronta, recusa (PIX-FR-004). Só com a loja `registered`.
  */
 export async function startCheckout(
@@ -162,6 +164,8 @@ export async function startCheckout(
       .update(stores)
       .set({ taxId: taxId.digits, taxIdType: taxId.type })
       .where(eq(stores.id, storeId));
+    // Autoindicação por documento, nos dois sentidos (PIX-FR-003).
+    await rejectSelfReferralsByTaxId(tx, storeId);
 
     if (await openFirstInvoice(tx, storeId)) return;
     const [invoice] = await tx

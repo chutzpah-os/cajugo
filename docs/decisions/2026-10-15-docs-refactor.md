@@ -239,3 +239,6 @@
 
 # 2026-11-08 · Aviso guarda dados, não a frase (004/T009)
 - O aviso grava o tipo e os dados (motivo, valores) e a frase é montada na leitura: mudar o texto não exige migrar avisos antigos, e nenhum dado pessoal vai para a tabela. Formatação de dinheiro foi para a plataforma para os domínios não dependerem das regras.
+
+# 2026-11-08 · Uma função de documentos de quem indica (004/T011)
+- taxIdsOf concentra "quais CPF/CNPJ esta pessoa tem": hoje os das lojas dela; quando vendedor e indicador tiverem CPF (008/010), entram ali e a checagem nos dois sentidos passa a cobrir os novos casos sem mudar quem chama.
