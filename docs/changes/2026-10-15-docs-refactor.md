@@ -430,3 +430,6 @@
 
 # 2026-11-08 · 005/T009 fotos do veículo
 - photoUpload (pasta vehicles/{id}, nome gerado, jpg/png/webp/heic, transformação de entrada de 1.600 px sem metadados, limite de 20), addPhoto (nome exato, formato, 15 MB, dimensões; recusado apagado; posição no fim), removePhoto (apaga no Cloudinary e fecha o buraco) e reorderPhotos (lista inteira; 1ª = capa); vehicleForm traz as fotos; loja B → 404 em tudo.
+
+# 2026-11-08 · 005/T010 publicar veículo
+- vehicles.publish: exige 1 foto e marca, versão, ano modelo, ano de fabricação, km, câmbio, combustível e preço, com erro em cada campo que falta; draft → published condicional com published_at e log vehicle.published; repetir não faz nada; loja não ativada publica; loja B → 404.

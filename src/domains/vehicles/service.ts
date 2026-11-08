@@ -11,9 +11,14 @@ import type {
   SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
 import type { Db } from "@/platform/db/types";
-import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
+import {
+  AppError,
+  fieldErrorsFromZod,
+  type FieldError,
+} from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { MAX_PHOTOS } from "./lists";
+import { logActivity } from "@/platform/http/activity-log";
 import { draftSchema } from "./schemas";
 
 /**
@@ -438,4 +443,64 @@ export async function reorderPhotos(
   )
     throw fieldError("photos", "Envie a ordem de todas as fotos do veículo.");
   await deps.db.transaction((tx) => renumber(tx, vehicle.id, ids));
+}
+
+/** O que falta para publicar (VEH-FR-009), campo a campo. */
+const REQUIRED: [field: keyof typeof vehicles.$inferSelect, message: string][] =
+  [
+    ["fipeBrandId", "Escolha a marca."],
+    ["fipeModelId", "Escolha o modelo e a versão."],
+    ["fipeYearId", "Escolha o ano modelo."],
+    ["yearManufacture", "Informe o ano de fabricação."],
+    ["mileageKm", "Informe a quilometragem."],
+    ["transmission", "Escolha o câmbio."],
+    ["fuel", "Escolha o combustível."],
+    ["priceCents", "Informe o preço."],
+  ];
+
+/**
+ * Publicar (VEH-FR-009, VEH-FR-010): pelo menos 1 foto e os campos obrigatórios; o
+ * que faltar volta como erro em cada campo e o veículo continua rascunho. Loja ainda
+ * não ativada também publica: o veículo aparece quando ela for ativada. Repetir não
+ * faz nada.
+ */
+export async function publish(
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+): Promise<void> {
+  const { userId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  if (vehicle.status === "published") return;
+  if (vehicle.status !== "draft")
+    throw AppError.conflict("Este veículo não pode ser publicado agora.");
+  const [v] = await deps.db
+    .select()
+    .from(vehicles)
+    .where(eq(vehicles.id, vehicle.id));
+  const errors: FieldError[] = REQUIRED.filter(
+    ([field]) => v[field] === null || v[field] === "",
+  ).map(([field, message]) => ({ field, code: "required", message }));
+  if ((await photoCount(deps.db, vehicle.id)) === 0)
+    errors.unshift({
+      field: "photos",
+      code: "required",
+      message: "Envie pelo menos 1 foto.",
+    });
+  if (errors.length) throw AppError.validation(errors);
+
+  const now = clock(deps);
+  await deps.db.transaction(async (tx) => {
+    const done = await tx
+      .update(vehicles)
+      .set({ status: "published", publishedAt: now, updatedAt: now })
+      .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.status, "draft")))
+      .returning({ id: vehicles.id });
+    if (!done.length) return;
+    await logActivity(tx, {
+      userId,
+      action: "vehicle.published",
+      entity: "vehicle",
+      entityId: vehicle.id,
+    });
+  });
 }
