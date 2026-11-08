@@ -23,6 +23,8 @@ export interface AuthProvider {
   /** Encerra todas as sessões da conta, em qualquer aparelho. */
   adminSignOutAll(userId: string): Promise<void>;
   adminCreateUser(email: string, password: string): Promise<AuthUser>;
+  /** Apaga a conta (desfazer um cadastro que falhou no meio). */
+  adminDeleteUser(userId: string): Promise<void>;
 }
 
 /** Senha nova igual à atual: o provedor recusa; vira erro no campo, não falha genérica. */

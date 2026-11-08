@@ -158,4 +158,10 @@ export class SupabaseAuthProvider implements AuthProvider {
     if (error) throw error;
     return toUser(data.user);
   }
+
+  async adminDeleteUser(userId: string) {
+    const { error } =
+      await createSupabaseAdminClient().auth.admin.deleteUser(userId);
+    if (error) throw error;
+  }
 }

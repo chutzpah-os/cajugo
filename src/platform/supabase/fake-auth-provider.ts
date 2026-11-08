@@ -76,6 +76,10 @@ export class FakeAuthProvider implements AuthProvider {
     this.accounts.get(userId)?.sessions.clear();
   }
 
+  async adminDeleteUser(userId: string) {
+    this.accounts.delete(userId);
+  }
+
   async adminCreateUser(email: string, password: string) {
     const id = randomUUID();
     this.accounts.set(id, {

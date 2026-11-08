@@ -11,7 +11,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T002** [P] `src/platform/geo/`: script que gera a lista de cidades do IBGE (D3), lista versionada e busca sem acento (`searchCities`, `findCity`) · _STO-FR-004_
 - [x] **T003** [P] `src/platform/cloudinary/`: `signUpload` (SHA-1, padrão do Cloudinary; vetor da documentação), `verifyUpload` (Admin API), `imageUrl`, e um Cloudinary falso para testes · _STO-SEC-004_
 - [x] **T004** [P] `src/platform/seo/` (`pageMetadata`, `jsonLd` com escape) e `storeUrl(slug)` (função única de URL de loja, ADR 0009) · _STO-NFR-001, STO-FR-011_
-- [ ] **T005** [P] `AuthProvider.adminDeleteUser` (falso e Supabase), para desfazer a conta se o cadastro falhar · _—_
+- [x] **T005** [P] `AuthProvider.adminDeleteUser` (falso e Supabase), para desfazer a conta se o cadastro falhar · _—_
 
 ## Fase 2 — Fatias verticais (domínios `stores` e `referrals`)
 - [ ] **T006** `suggestSlug` e regras do endereço do catálogo; `checkSlug` (disponível, em uso, inválido) · _STO-FR-005_

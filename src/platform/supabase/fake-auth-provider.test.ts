@@ -49,4 +49,21 @@ describe("FakeAuthProvider (contrato do AuthProvider)", () => {
     expect([right, wrong, other]).toEqual([true, false, true]);
     expect(await auth.getUser()).toMatchObject({ id: a.id });
   });
+
+  it("[STO-FR-003] adminDeleteUser apaga a conta: o e-mail fica livre e o login falha", async () => {
+    // Arrange
+    const auth = new FakeAuthProvider();
+    const user = await auth.adminCreateUser("novo@x.com", "senha-boa-123");
+
+    // Act
+    await auth.adminDeleteUser(user.id);
+
+    // Assert
+    expect(
+      await auth.signInWithPassword("novo@x.com", "senha-boa-123"),
+    ).toBeNull();
+    await expect(
+      auth.adminCreateUser("novo@x.com", "outra-123"),
+    ).resolves.toMatchObject({ email: "novo@x.com" });
+  });
 });

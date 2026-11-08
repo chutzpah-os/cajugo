@@ -262,3 +262,6 @@
 
 # 2026-11-08 · 003/T004 SEO e URL da loja
 - src/platform/seo/seo.tsx: pageMetadata (título com marca, canônica absoluta sem query, Open Graph/Twitter) e JsonLd/jsonLdText (escapa <); src/platform/http/urls.ts: appUrl e storeUrl.
+
+# 2026-11-08 · 003/T005 apagar conta
+- AuthProvider.adminDeleteUser (falso e Supabase), testado no staging; usado para desfazer o cadastro se a transação do banco falhar.
