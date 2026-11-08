@@ -1,6 +1,7 @@
 import { and, desc, eq } from "drizzle-orm";
 import { authorizeTo } from "@/domains/auth/service";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
+import { markPaymentReview } from "@/domains/stores/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
 import type {
@@ -14,7 +15,7 @@ import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { startCheckoutSchema } from "./schemas";
+import { startCheckoutSchema, submitReceiptSchema } from "./schemas";
 
 /**
  * Cobrança da loja (spec 004; mensais na 011): fatura, pagamento por Pix manual e
@@ -268,4 +269,103 @@ export async function receiptUpload(
     allowedFormats: RECEIPT_FORMATS,
     type: "authenticated",
   });
+}
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const IN_REVIEW = "Já recebemos um comprovante. Aguarde a conferência.";
+
+/** Unicidade violada no Postgres (ex.: segundo comprovante em análise na corrida). */
+function isUniqueViolation(error: unknown): boolean {
+  for (
+    let e = error;
+    e && typeof e === "object";
+    e = (e as { cause?: unknown }).cause
+  )
+    if ((e as { code?: string }).code === "23505") return true;
+  return false;
+}
+
+/**
+ * Envio do comprovante (PIX-FR-005, PIX-FR-006): o arquivo tem que ser exatamente o
+ * nome assinado para a loja da sessão (outra loja ou fora do padrão → 404,
+ * PIX-SEC-001), existir, ser imagem ou PDF de até 10 MB (recusado é apagado,
+ * PIX-SEC-002). Cria o pagamento `submitted` com o valor pago e passa a loja para
+ * "pagamento em análise"; com outro em análise, recusa e apaga o arquivo.
+ */
+export async function submitReceipt(
+  deps: FileDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<void> {
+  const { userId, storeId } = ownerOf(session);
+  const parsed = submitReceiptSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { publicId, paidCents } = parsed.data;
+  const prefix = deps.cloudinary.fullPublicId(
+    receiptFolder(storeId),
+    "receipt-",
+  );
+  if (!publicId.startsWith(prefix) || !UUID.test(publicId.slice(prefix.length)))
+    throw AppError.notFound();
+
+  const file = await deps.cloudinary.verifyUpload(publicId, "authenticated");
+  const receiptError = (code: string, message: string) =>
+    AppError.validation([{ field: "receipt", code, message }]);
+  if (!file)
+    throw receiptError(
+      "not_uploaded",
+      "Não encontramos o comprovante enviado. Tente de novo.",
+    );
+  const refusal = !RECEIPT_FORMATS.includes(file.format)
+    ? receiptError(
+        "format",
+        "Envie uma foto (JPG, PNG, WEBP ou HEIC) ou um PDF.",
+      )
+    : file.bytes > RECEIPT_MAX_BYTES
+      ? receiptError("too_large", "O arquivo pode ter no máximo 10 MB.")
+      : null;
+  const discard = () => deps.cloudinary.destroy(publicId, "authenticated");
+  if (refusal) {
+    await discard();
+    throw refusal;
+  }
+
+  const now = clock(deps);
+  try {
+    await deps.db.transaction(async (tx) => {
+      const invoice = await openFirstInvoice(tx, storeId);
+      if (!invoice || !(await markPaymentReview(tx, storeId)))
+        throw AppError.conflict(IN_REVIEW);
+      const [payment] = await tx
+        .insert(payments)
+        .values({
+          invoiceId: invoice.id,
+          storeId,
+          paidCents,
+          amountCents: paidCents,
+          receiptPublicId: publicId,
+          receiptFormat: file.format,
+          status: "submitted",
+          submittedBy: userId,
+          submittedAt: now,
+        })
+        .returning({ id: payments.id });
+      await logActivity(tx, {
+        userId,
+        action: "payment.submitted",
+        entity: "payment",
+        entityId: payment.id,
+        data: {
+          invoiceId: invoice.id,
+          paidCents,
+          expectedCents: invoice.totalCents,
+        },
+      });
+    });
+  } catch (error) {
+    await discard();
+    if (isUniqueViolation(error)) throw AppError.conflict(IN_REVIEW);
+    throw error;
+  }
 }

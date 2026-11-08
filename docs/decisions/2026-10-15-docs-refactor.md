@@ -242,3 +242,6 @@
 
 # 2026-11-08 · Uma função de documentos de quem indica (004/T011)
 - taxIdsOf concentra "quais CPF/CNPJ esta pessoa tem": hoje os das lojas dela; quando vendedor e indicador tiverem CPF (008/010), entram ali e a checagem nos dois sentidos passa a cobrir os novos casos sem mudar quem chama.
+
+# 2026-11-08 · Status da loja mudado só pelo domínio stores (004/T013)
+- O billing não escreve stores.status direto: chama transições com status de origem fixo (registered → payment_review → active ou de volta), que devolvem se mudaram. Repetição ou ordem errada não corrompem o estado, e a 011 acrescenta as suas transições no mesmo lugar.

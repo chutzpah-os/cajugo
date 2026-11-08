@@ -544,6 +544,58 @@ export async function setStoreImage(
   });
 }
 
+/**
+ * Transições de status ligadas à cobrança (PRD §5.2), chamadas pelo `billing` dentro
+ * da transação dele. Cada uma só muda a loja que está no status de origem esperado e
+ * diz se mudou: chamada repetida ou fora de ordem não faz nada.
+ */
+export async function markPaymentReview(db: Db, storeId: string) {
+  const done = await db
+    .update(stores)
+    .set({ status: "payment_review" })
+    .where(and(eq(stores.id, storeId), eq(stores.status, "registered")))
+    .returning({ id: stores.id });
+  return done.length > 0;
+}
+
+/** Comprovante da 1ª mensalidade recusado: volta a "cadastrada" para reenviar. */
+export async function backToRegistered(db: Db, storeId: string) {
+  const done = await db
+    .update(stores)
+    .set({ status: "registered" })
+    .where(and(eq(stores.id, storeId), eq(stores.status, "payment_review")))
+    .returning({ id: stores.id });
+  return done.length > 0;
+}
+
+/**
+ * 1º pagamento confirmado (PIX-FR-009, PIX-FR-011): loja ativa, dia e próximo
+ * vencimento, data da ativação; o endereço deixa de ser só reservado.
+ */
+export async function activateFirstTime(
+  db: Db,
+  storeId: string,
+  input: { billingDay: number; nextDueAt: Date; at: Date },
+) {
+  const done = await db
+    .update(stores)
+    .set({
+      status: "active",
+      billingDay: input.billingDay,
+      nextDueAt: input.nextDueAt,
+      activatedAt: input.at,
+      slugReservedUntil: null,
+    })
+    .where(
+      and(
+        eq(stores.id, storeId),
+        inArray(stores.status, ["registered", "payment_review"]),
+      ),
+    )
+    .returning({ id: stores.id });
+  return done.length > 0;
+}
+
 /** E-mails dos cadastros feitos pelos testes ponta a ponta (spec 003). */
 export const E2E_SIGNUP_EMAIL = /^e2e-cadastro-[a-z0-9-]+@cajugo\.test$/;
 

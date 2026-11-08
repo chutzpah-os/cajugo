@@ -358,3 +358,6 @@
 
 # 2026-11-08 · 004/T012 Pix e assinatura do comprovante
 - billing.pixView (valor da fatura aberta, chave, favorecido, cidade, BR Code com valor, prazo; sem fatura → null; chave não pronta → 409) e receiptUpload (pasta privada receipts/{loja da sessão}, nome gerado, jpg/png/webp/heic/pdf, type authenticated; só com loja registered e fatura aberta).
+
+# 2026-11-08 · 004/T013 envio do comprovante
+- billing.submitReceipt: nome exato assinado para a loja da sessão (senão 404), arquivo conferido (jpg/png/webp/heic/pdf, até 10 MB; recusado é apagado), valor pago obrigatório, pagamento submitted e loja payment_review numa transação, log com valor pago e esperado; segundo envio (ou corrida no índice único) → 409 e arquivo apagado. stores: markPaymentReview, backToRegistered e activateFirstTime, cada uma só a partir do status esperado.
