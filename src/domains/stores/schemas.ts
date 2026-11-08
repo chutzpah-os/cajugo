@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { findCity } from "@/platform/geo/cities";
+import { hoursSchema } from "./hours";
 import { slugSchema } from "./slug";
 
 /** Telefone brasileiro (DDD + número), guardado com DDI: `55` + 10 ou 11 dígitos. */
@@ -77,3 +78,62 @@ export const addStoreSchema = z
   .transform(withCity);
 
 export type RegisterStoreInput = z.input<typeof registerStoreSchema>;
+
+/** Texto opcional: vazio vira `null`. */
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, `Use no máximo ${max} caracteres.`)
+    .transform((v) => v || null)
+    .nullable()
+    .optional();
+
+/** Instagram como `@usuario` ou link; guarda só o usuário. */
+const instagramSchema = z
+  .string()
+  .trim()
+  .transform((v) =>
+    v
+      .replace(/^https?:\/\/(www\.)?instagram\.com\//i, "")
+      .replace(/^@/, "")
+      .replace(/\/.*$/, ""),
+  )
+  .pipe(
+    z
+      .string()
+      .regex(
+        /^$|^[A-Za-z0-9._]{1,30}$/,
+        "Informe o usuário do Instagram (ex.: @silvaautocar).",
+      ),
+  )
+  .transform((v) => v || null)
+  .nullable()
+  .optional();
+
+/** Minha loja [3b] (STO-FR-008, 009, 012). Sem `storeId`, `status` nem endereço do catálogo. */
+export const storeUpdateSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(2, "Use pelo menos 2 caracteres.")
+      .max(60, "Use no máximo 60 caracteres."),
+    about: optionalText(2000),
+    whatsapp: brPhoneSchema,
+    instagram: instagramSchema,
+    addressStreet: optionalText(120),
+    addressNumber: optionalText(10),
+    addressComplement: optionalText(60),
+    addressDistrict: optionalText(60),
+    addressZip: z
+      .string()
+      .transform((v) => v.replace(/\D/g, ""))
+      .pipe(z.string().regex(/^$|^\d{8}$/, "O CEP tem 8 dígitos."))
+      .transform((v) => v || null)
+      .nullable()
+      .optional(),
+    hours: hoursSchema.nullable().optional(),
+    shareByDefault: z.boolean(),
+  })
+  .strict();

@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { grantRole, type AuthDeps } from "@/domains/auth/service";
+import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
 import {
   checkCode,
   getOrCreateCode,
@@ -11,7 +11,12 @@ import { logActivity } from "@/platform/http/activity-log";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
-import { addStoreSchema, registerStoreSchema } from "./schemas";
+import {
+  addStoreSchema,
+  registerStoreSchema,
+  storeUpdateSchema,
+} from "./schemas";
+import type { StoreHours } from "./hours";
 import { checkSlug } from "./slug";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -215,4 +220,109 @@ async function addStoreToAccount(
     createStore(tx, session.userId, profile.name, data, code, now),
   );
   return { userId: session.userId, storeId };
+}
+
+/** Loja da sessão para quem pode editar Minha loja (STO-SEC-001, STO-SEC-003). */
+function ownStore(session: Session | null): {
+  userId: string;
+  storeId: string;
+} {
+  const s = authorizeTo(session, "store.edit");
+  if (!s.storeId) throw AppError.forbidden();
+  return { userId: s.userId, storeId: s.storeId };
+}
+
+/**
+ * Minha loja [3b] (STO-FR-008, 009, 012): só a loja da sessão; o formulário não
+ * recebe id de loja (campo desconhecido é recusado). Usuário da loja: 403.
+ */
+export async function updateStore(
+  deps: AuthDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<void> {
+  const { userId, storeId } = ownStore(session);
+  const parsed = storeUpdateSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const d = parsed.data;
+  await deps.db.transaction(async (tx) => {
+    await tx
+      .update(stores)
+      .set({
+        name: d.name,
+        about: d.about ?? null,
+        whatsapp: d.whatsapp,
+        instagram: d.instagram ?? null,
+        addressStreet: d.addressStreet ?? null,
+        addressNumber: d.addressNumber ?? null,
+        addressComplement: d.addressComplement ?? null,
+        addressDistrict: d.addressDistrict ?? null,
+        addressZip: d.addressZip ?? null,
+        hours: d.hours ?? null,
+        shareByDefault: d.shareByDefault,
+      })
+      .where(eq(stores.id, storeId));
+    await logActivity(tx, {
+      userId,
+      action: "store.updated",
+      entity: "store",
+      entityId: storeId,
+    });
+  });
+}
+
+/** Minha loja como a tela mostra (saída montada à mão). */
+export type StoreSummary = {
+  name: string;
+  slug: string;
+  status: string;
+  about: string | null;
+  whatsapp: string;
+  instagram: string | null;
+  address: {
+    street: string | null;
+    number: string | null;
+    complement: string | null;
+    district: string | null;
+    zip: string | null;
+    city: string;
+    state: string;
+  };
+  hours: StoreHours | null;
+  shareByDefault: boolean;
+  logoPublicId: string | null;
+  coverPublicId: string | null;
+  slugChangedAt: Date | null;
+};
+
+export async function storeSummary(
+  db: Db,
+  session: Session | null,
+): Promise<StoreSummary> {
+  const { storeId } = ownStore(session);
+  const [s] = await db.select().from(stores).where(eq(stores.id, storeId));
+  if (!s) throw AppError.notFound();
+  return {
+    name: s.name,
+    slug: s.slug,
+    status: s.status,
+    about: s.about,
+    whatsapp: s.whatsapp,
+    instagram: s.instagram,
+    address: {
+      street: s.addressStreet,
+      number: s.addressNumber,
+      complement: s.addressComplement,
+      district: s.addressDistrict,
+      zip: s.addressZip,
+      city: s.city,
+      state: s.state,
+    },
+    hours: (s.hours as StoreHours | null) ?? null,
+    shareByDefault: s.shareByDefault,
+    logoPublicId: s.logoPublicId,
+    coverPublicId: s.coverPublicId,
+    slugChangedAt: s.slugChangedAt,
+  };
 }

@@ -277,3 +277,6 @@
 
 # 2026-11-08 · 003/T009 proteções do cadastro
 - registerStore: limite por rede (5/min e 30/dia) e campo isca; e-mail existente com convite neutro para entrar; conectado (cliente sem loja) cria só a loja e ganha o papel de lojista; equipe 403; quem já tem loja 409.
+
+# 2026-11-08 · 003/T010 Minha loja (dados)
+- stores: hours.ts (intervalos por dia ou Fechado, até 3, sem sobreposição), storeUpdateSchema (CEP 8 dígitos, Instagram normalizado), updateStore e storeSummary só na loja da sessão; usuário da loja 403; auditoria store.updated.
