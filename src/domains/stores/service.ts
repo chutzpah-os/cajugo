@@ -7,6 +7,10 @@ import {
 } from "@/domains/referrals/service";
 import { profiles, storeSlugRedirects, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
+import type {
+  Cloudinary,
+  SignedUpload,
+} from "@/platform/cloudinary/cloudinary";
 import { logActivity } from "@/platform/http/activity-log";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
@@ -435,4 +439,84 @@ export async function resolveSlug(
       ),
     );
   return old ? { storeId: old.id, slug: old.slug, redirected: true } : null;
+}
+
+/** Imagens públicas da loja (SECURITY.md §5): formatos e tamanho. */
+const IMAGE_FORMATS = ["jpg", "png", "webp", "heic"];
+export const STORE_IMAGE_MAX_BYTES = 15 * 1024 * 1024;
+const IMAGE_KINDS = ["logo", "cover"] as const;
+export type StoreImageKind = (typeof IMAGE_KINDS)[number];
+
+type ImageDeps = AuthDeps & { cloudinary: Cloudinary };
+
+function imageKind(kind: unknown): StoreImageKind {
+  const k = IMAGE_KINDS.find((x) => x === kind);
+  if (!k) throw fieldError("kind", "invalid", "Tipo de imagem inválido.");
+  return k;
+}
+
+/**
+ * Assinatura para enviar logo ou capa direto ao Cloudinary (STO-FR-010, STO-SEC-004):
+ * pasta da loja da sessão, nome gerado aqui, só imagens. Usuário da loja: 403.
+ */
+export async function storeImageUpload(
+  deps: ImageDeps,
+  session: Session | null,
+  kind: unknown,
+): Promise<SignedUpload> {
+  const { storeId } = ownStore(session);
+  const k = imageKind(kind);
+  return deps.cloudinary.signUpload({
+    folder: `stores/${storeId}`,
+    publicId: `${k}-${crypto.randomUUID()}`,
+    allowedFormats: IMAGE_FORMATS,
+  });
+}
+
+/**
+ * Salva a imagem enviada (STO-FR-010) depois de conferir no Cloudinary: pasta da loja
+ * da sessão (outra loja: 404), formato permitido e até 15 MB (STO-SEC-004).
+ */
+export async function setStoreImage(
+  deps: ImageDeps,
+  session: Session | null,
+  kind: unknown,
+  publicId: unknown,
+): Promise<void> {
+  const { userId, storeId } = ownStore(session);
+  const k = imageKind(kind);
+  const prefix = deps.cloudinary.fullPublicId(`stores/${storeId}`, `${k}-`);
+  if (
+    typeof publicId !== "string" ||
+    !publicId.startsWith(prefix) ||
+    publicId.length > 200
+  )
+    throw AppError.notFound();
+
+  const image = await deps.cloudinary.verifyUpload(publicId);
+  if (!image)
+    throw fieldError(
+      k,
+      "not_uploaded",
+      "Não encontramos a imagem enviada. Tente de novo.",
+    );
+  if (!IMAGE_FORMATS.includes(image.format))
+    throw fieldError(k, "format", "Use uma imagem JPG, PNG, WEBP ou HEIC.");
+  if (image.bytes > STORE_IMAGE_MAX_BYTES)
+    throw fieldError(k, "too_large", "A imagem pode ter no máximo 15 MB.");
+
+  await deps.db.transaction(async (tx) => {
+    await tx
+      .update(stores)
+      .set(
+        k === "logo" ? { logoPublicId: publicId } : { coverPublicId: publicId },
+      )
+      .where(eq(stores.id, storeId));
+    await logActivity(tx, {
+      userId,
+      action: `store.${k}_changed`,
+      entity: "store",
+      entityId: storeId,
+    });
+  });
 }

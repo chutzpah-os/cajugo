@@ -283,3 +283,6 @@
 
 # 2026-11-08 · 003/T011 troca do endereço
 - stores: changeSlug (1×/30 dias com data em dd/mm/aaaa; antigo redireciona 90 dias; voltar a um antigo da própria loja; transação + auditoria store.slug_changed) e resolveSlug (atual ou antigo válido).
+
+# 2026-11-08 · 003/T012 logo e capa
+- stores: storeImageUpload (assinatura na pasta stores/{storeId}, nome do servidor, jpg/png/webp/heic) e setStoreImage (pasta da loja ou 404; confere formato e ≤ 15 MB no Cloudinary; auditoria).
