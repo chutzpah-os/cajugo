@@ -487,7 +487,8 @@ export async function storeImageUpload(
 
 /**
  * Salva a imagem enviada (STO-FR-010) depois de conferir no Cloudinary: pasta da loja
- * da sessão (outra loja: 404), formato permitido e até 15 MB (STO-SEC-004).
+ * da sessão (outra loja: 404), formato permitido e até 15 MB (STO-SEC-004); o
+ * arquivo recusado é apagado do Cloudinary.
  */
 export async function setStoreImage(
   deps: ImageDeps,
@@ -516,10 +517,16 @@ export async function setStoreImage(
       "not_uploaded",
       "Não encontramos a imagem enviada. Tente de novo.",
     );
-  if (!IMAGE_FORMATS.includes(image.format))
-    throw fieldError(k, "format", "Use uma imagem JPG, PNG, WEBP ou HEIC.");
-  if (image.bytes > STORE_IMAGE_MAX_BYTES)
-    throw fieldError(k, "too_large", "A imagem pode ter no máximo 15 MB.");
+  const refusal = !IMAGE_FORMATS.includes(image.format)
+    ? fieldError(k, "format", "Use uma imagem JPG, PNG, WEBP ou HEIC.")
+    : image.bytes > STORE_IMAGE_MAX_BYTES
+      ? fieldError(k, "too_large", "A imagem pode ter no máximo 15 MB.")
+      : null;
+  if (refusal) {
+    // Recusado não fica na pasta da loja (cota e SECURITY.md §5).
+    await deps.cloudinary.destroy(publicId);
+    throw refusal;
+  }
 
   await deps.db.transaction(async (tx) => {
     await tx

@@ -340,3 +340,6 @@
 
 # 2026-11-08 · 004/T006 arquivos privados no Cloudinary
 - signUpload com type=authenticated, verifyUpload por tipo, destroy (pedido assinado) e fetchPrivate (API de download assinada); Cloudinary falso com tipo, apagados e leitura. Prova real no staging com PNG e PDF (ADR 0011 atualizado com o resultado).
+
+# 2026-11-08 · 004/T007 logo e capa recusados são apagados
+- setStoreImage apaga do Cloudinary a imagem recusada por formato ou tamanho (D4 do plano 004); nota da 005 no PLAN atualizada (falta só a remoção de metadados das fotos públicas).

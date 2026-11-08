@@ -77,7 +77,7 @@
 
 ## 005 · Veículos do lojista e aprovação prévia — telas 1c, 2a, 6e, 6f, 14c
 - Formulário [2a] com autosave; fotos (até 20, upload assinado); FIPE (D6).
-- **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; hoje os 15 MB são conferidos depois do envio e o arquivo recusado fica na pasta. Resolver (transformação de entrada ou limite assinado) e apagar o recusado.
+- **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; os 15 MB são conferidos depois do envio e o arquivo recusado já é apagado (004/T007). Falta resolver a remoção de metadados das fotos públicas (transformação de entrada).
 - Estados: rascunho → (pendente de aprovação) → publicado ⇄ oculto → vendido (desfazer 7 dias) → excluído.
 - Divulgar na CajuGo; histórico de preço; lista com KPIs, busca e filtros; resumo [6e].
 - Aprovação prévia [14c]: checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi), aprovar / pedir ajuste.

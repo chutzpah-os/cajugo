@@ -72,7 +72,7 @@ describe("logo e capa da loja", () => {
     expect(store.logoPublicId).toBe(publicId);
   });
 
-  it("[STO-SEC-004] recusa formato proibido, arquivo acima de 15 MB ou que não foi enviado", async () => {
+  it("[STO-SEC-004] recusa formato proibido, arquivo acima de 15 MB (e apaga o arquivo) ou que não foi enviado", async () => {
     const a = await owner("loja-a", "a@x.com");
     const cases = [
       { format: "svg", bytes: 1000 },
@@ -91,6 +91,10 @@ describe("logo e capa da loja", () => {
           `${signed.fields.folder}/${signed.fields.public_id}`,
         ),
       ).rejects.toMatchObject({ status: 422 });
+      // O arquivo recusado não fica guardado na pasta da loja.
+      expect(cloudinary.destroyed).toContain(
+        `${signed.fields.folder}/${signed.fields.public_id}`,
+      );
     }
     await expect(
       setStoreImage(
