@@ -173,3 +173,6 @@
 
 # 2026-11-08 · Build sem depender do banco (002/T018)
 - Página que lê regras usa connection() antes: o build não consulta o banco, então deploy não falha com o banco pausado (plano gratuito) nem antes de a migration chegar ao prod.
+
+# 2026-11-08 · Rascunho do Pix em campos ocultos (002/T019)
+- O React reinicia o formulário depois de cada envio; o <select> visível voltava ao 1º tipo enquanto o estado guardava outro. Campos ocultos ligados ao estado não são afetados pelo reinício.

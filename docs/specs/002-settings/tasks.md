@@ -31,6 +31,6 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T018** `/recuperar` lê o WhatsApp das regras; `SUPPORT_WHATSAPP` sai do código, do `.env.example` e do DEPLOYMENT; avisar o dono para apagar na Vercel · _CFG-FR-007_
 
 ## Fase 4 — Ponta a ponta e fechamento
-- [ ] **T019** Playwright (390 px, staging): admin altera uma regra e vê o valor e o histórico; suporte sem "Salvar"; lojista "Sem permissão"; troca de chave Pix com senha certa e errada; `/recuperar` com o número das regras; troca de senha; acessibilidade de `/admin/conta`, `/admin/indica/regras` e `/conta/senha` · _CFG-FR-001, CFG-FR-002, CFG-FR-006, CFG-FR-007, CFG-FR-008, CFG-FR-010, CFG-NFR-002, CFG-SEC-001, CFG-SEC-002_
+- [x] **T019** Playwright (390 px, staging): admin altera uma regra e vê o valor e o histórico; suporte sem "Salvar"; lojista "Sem permissão"; troca de chave Pix com senha certa e errada; `/recuperar` com o número das regras; troca de senha; acessibilidade de `/admin/conta`, `/admin/indica/regras` e `/conta/senha` · _CFG-FR-001, CFG-FR-002, CFG-FR-006, CFG-FR-007, CFG-FR-008, CFG-FR-010, CFG-NFR-002, CFG-SEC-001, CFG-SEC-002_
 - [ ] **T020** Aplicar a migration `0005` no staging e no prod e conferir os valores provisórios nos dois · _—_
 - [ ] **T021** `/verify`: rastreabilidade verde; spec `implemented`; registrar em `docs/changes` e `docs/decisions` · _—_

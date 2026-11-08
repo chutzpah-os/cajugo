@@ -1,39 +1,4 @@
-import { accounts, expect, signIn, test } from "./fixtures";
-
-/** Mede a tela atual: rolagem horizontal, alvos de toque e rótulos dos campos. */
-async function audit(page: import("@playwright/test").Page) {
-  return page.evaluate(() => {
-    const visible = (el: Element) => {
-      const r = el.getBoundingClientRect();
-      return r.width > 0 && r.height > 0;
-    };
-    const small = [
-      ...document.querySelectorAll(
-        "main a, main button, main input, main select",
-      ),
-    ]
-      .filter(visible)
-      .filter((el) => el.getBoundingClientRect().height < 44)
-      .map((el) => el.outerHTML.slice(0, 80));
-    const unlabeled = [
-      ...document.querySelectorAll(
-        "main input:not([type=hidden]), main select",
-      ),
-    ]
-      .filter(
-        (el) =>
-          !(el as HTMLInputElement).labels?.length &&
-          !el.getAttribute("aria-label"),
-      )
-      .map((el) => el.outerHTML.slice(0, 80));
-    return {
-      horizontalScroll:
-        document.documentElement.scrollWidth > window.innerWidth,
-      small,
-      unlabeled,
-    };
-  });
-}
+import { accounts, audit, expect, signIn, test } from "./fixtures";
 
 test.describe("telas de conta no celular", () => {
   for (const path of ["/entrar", "/recuperar"]) {

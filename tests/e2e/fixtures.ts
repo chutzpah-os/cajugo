@@ -30,3 +30,38 @@ export async function signIn(page: Page, email: string, pass = password()) {
 }
 
 export const heading = (page: Page) => page.locator("main h1").first();
+
+/** Acessibilidade da tela atual (AUT-NFR-002, CFG-NFR-002): rolagem horizontal, alvos de toque e rótulos dos campos. */
+export async function audit(page: Page) {
+  return page.evaluate(() => {
+    const visible = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0;
+    };
+    const small = [
+      ...document.querySelectorAll(
+        "main a, main button, main input, main select",
+      ),
+    ]
+      .filter(visible)
+      .filter((el) => el.getBoundingClientRect().height < 44)
+      .map((el) => el.outerHTML.slice(0, 80));
+    const unlabeled = [
+      ...document.querySelectorAll(
+        "main input:not([type=hidden]), main select",
+      ),
+    ]
+      .filter(
+        (el) =>
+          !(el as HTMLInputElement).labels?.length &&
+          !el.getAttribute("aria-label"),
+      )
+      .map((el) => el.outerHTML.slice(0, 80));
+    return {
+      horizontalScroll:
+        document.documentElement.scrollWidth > window.innerWidth,
+      small,
+      unlabeled,
+    };
+  });
+}

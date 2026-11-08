@@ -236,3 +236,7 @@
 
 # 2026-11-08 · 002/T018 WhatsApp pelas regras
 - /recuperar lê o WhatsApp de atendimento das regras (botão por requisição com connection(), cache de 1 min); SUPPORT_WHATSAPP removida do código, do .env.example e do DEPLOYMENT.
+
+# 2026-11-08 · 002/T019 e2e das regras
+- tests/e2e/settings.spec.ts (10 cenários: salvar e histórico, faixa, suporte, lojista, chave Pix com senha, WhatsApp no recuperar, troca de senha, acessibilidade de 3 telas); audit() movida para fixtures.
+- Corrigido: tipo da chave Pix voltava a CPF depois de um envio com erro (rascunho agora em campos ocultos).

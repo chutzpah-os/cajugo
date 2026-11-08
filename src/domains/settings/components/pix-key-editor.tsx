@@ -17,7 +17,9 @@ const TYPES = [
 /**
  * Chave Pix da CajuGo [4c]: mostra a atual (mascarada) e, para o admin, a troca em
  * 2 passos: nova chave → revisão lado a lado + senha (CFG-FR-008, CFG-SEC-005).
- * Um formulário só: os campos do passo 1 ficam escondidos no passo 2 e seguem no envio.
+ * Um formulário só: o rascunho vai em campos ocultos ligados ao estado. O React
+ * reinicia o formulário depois de cada envio, e o reinício apagaria o tipo escolhido
+ * num campo visível (voltaria a "CPF"); campo oculto mantém o valor.
  */
 export function PixKeyEditor({
   current,
@@ -85,6 +87,9 @@ export function PixKeyEditor({
 
       {canEdit && step !== "view" && (
         <form action={action} className="flex flex-col gap-4" noValidate>
+          <input type="hidden" name="type" value={draft.type} />
+          <input type="hidden" name="key" value={draft.key} />
+          <input type="hidden" name="beneficiary" value={draft.beneficiary} />
           <div className={step === "edit" ? "flex flex-col gap-4" : "hidden"}>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="pix-type" className="text-[13px] font-semibold">
@@ -92,7 +97,6 @@ export function PixKeyEditor({
               </label>
               <select
                 id="pix-type"
-                name="type"
                 value={draft.type}
                 onChange={(e) => setDraft({ ...draft, type: e.target.value })}
                 className="h-[50px] rounded-input border border-field bg-surface px-3 text-[15px]"
@@ -106,7 +110,6 @@ export function PixKeyEditor({
             </div>
             <TextField
               id="pix-key"
-              name="key"
               label="Nova chave Pix"
               autoComplete="off"
               value={draft.key}
@@ -115,7 +118,6 @@ export function PixKeyEditor({
             />
             <TextField
               id="pix-beneficiary"
-              name="beneficiary"
               label="Favorecido"
               autoComplete="off"
               value={draft.beneficiary}
