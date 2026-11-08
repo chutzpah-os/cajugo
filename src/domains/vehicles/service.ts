@@ -1,14 +1,19 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, asc, count, eq, inArray } from "drizzle-orm";
 import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { identify } from "@/domains/fipe/service";
 import { vehicleDefaults } from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
 import type { FipeClient } from "@/platform/fipe/client";
-import { vehicles } from "@/platform/db/schema";
+import { vehiclePhotos, vehicles } from "@/platform/db/schema";
+import type {
+  Cloudinary,
+  SignedUpload,
+} from "@/platform/cloudinary/cloudinary";
 import type { Db } from "@/platform/db/types";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
+import { MAX_PHOTOS } from "./lists";
 import { draftSchema } from "./schemas";
 
 /**
@@ -181,7 +186,16 @@ export type VehicleFormView = {
   description: string | null;
   contactWhatsapp: string | null;
   shareOnCajugo: boolean;
+  photos: PhotoView[];
   updatedAt: Date;
+};
+
+export type PhotoView = {
+  id: string;
+  publicId: string;
+  position: number;
+  width: number | null;
+  height: number | null;
 };
 
 /** Formulário [2a] preenchido, só da loja da sessão (VEH-SEC-001). */
@@ -196,8 +210,10 @@ export async function vehicleForm(
     .from(vehicles)
     .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)));
   if (!v || v.status === "deleted") throw AppError.notFound();
+  const photos = await photosOf(db, v.id);
   return {
     vehicleId: v.id,
+    photos,
     status: v.status,
     make: v.make,
     model: v.model,
@@ -226,4 +242,200 @@ export async function vehicleForm(
     shareOnCajugo: v.shareOnCajugo,
     updatedAt: v.updatedAt,
   };
+}
+
+async function photosOf(db: Db, vehicleId: string): Promise<PhotoView[]> {
+  return db
+    .select({
+      id: vehiclePhotos.id,
+      publicId: vehiclePhotos.publicId,
+      position: vehiclePhotos.position,
+      width: vehiclePhotos.width,
+      height: vehiclePhotos.height,
+    })
+    .from(vehiclePhotos)
+    .where(eq(vehiclePhotos.vehicleId, vehicleId))
+    .orderBy(asc(vehiclePhotos.position));
+}
+
+export type PhotoDeps = VehicleDeps & { cloudinary: Cloudinary };
+
+/** Fotos públicas: formatos e tamanho (VEH-SEC-003, SECURITY.md §5). */
+const PHOTO_FORMATS = ["jpg", "png", "webp", "heic"];
+const PHOTO_MAX_BYTES = 15 * 1024 * 1024;
+/** Reduz e regrava sem metadados ao guardar (VEH-SEC-003, VEH-NFR-002). */
+const PHOTO_TRANSFORMATION = "c_limit,w_1600,h_1600";
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/** Veículo editável da loja da sessão; de outra loja ou excluído → 404. */
+async function ownVehicle(db: Db, session: Session | null, vehicleId: string) {
+  const { userId, storeId } = storeOf(session);
+  if (!UUID.test(vehicleId)) throw AppError.notFound();
+  const [v] = await db
+    .select({ id: vehicles.id, status: vehicles.status })
+    .from(vehicles)
+    .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)));
+  if (!v || v.status === "deleted") throw AppError.notFound();
+  return { userId, storeId, vehicle: v };
+}
+
+const photoFolder = (vehicleId: string) => `vehicles/${vehicleId}`;
+const LIMIT = `Limite de ${MAX_PHOTOS} fotos por veículo.`;
+
+async function photoCount(db: Db, vehicleId: string) {
+  const [{ n }] = await db
+    .select({ n: count() })
+    .from(vehiclePhotos)
+    .where(eq(vehiclePhotos.vehicleId, vehicleId));
+  return n;
+}
+
+/** Assinatura do envio de foto (VEH-FR-004): pasta do veículo, nome gerado aqui. */
+export async function photoUpload(
+  deps: PhotoDeps,
+  session: Session | null,
+  vehicleId: string,
+): Promise<SignedUpload> {
+  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  if ((await photoCount(deps.db, vehicle.id)) >= MAX_PHOTOS)
+    throw AppError.conflict(LIMIT);
+  return deps.cloudinary.signUpload({
+    folder: photoFolder(vehicle.id),
+    publicId: `photo-${crypto.randomUUID()}`,
+    allowedFormats: PHOTO_FORMATS,
+    transformation: PHOTO_TRANSFORMATION,
+  });
+}
+
+/**
+ * Grava a foto enviada (VEH-FR-004): nome exatamente o assinado para este veículo
+ * (outro → 404), arquivo conferido no Cloudinary (formato, 15 MB; recusado é
+ * apagado, VEH-SEC-003) e posição no fim da lista.
+ */
+export async function addPhoto(
+  deps: PhotoDeps,
+  session: Session | null,
+  vehicleId: string,
+  publicId: unknown,
+): Promise<PhotoView> {
+  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const prefix = deps.cloudinary.fullPublicId(
+    photoFolder(vehicle.id),
+    "photo-",
+  );
+  if (
+    typeof publicId !== "string" ||
+    !publicId.startsWith(prefix) ||
+    !UUID.test(publicId.slice(prefix.length))
+  )
+    throw AppError.notFound();
+
+  const file = await deps.cloudinary.verifyUpload(publicId);
+  if (!file)
+    throw fieldError(
+      "photos",
+      "Não encontramos a foto enviada. Tente de novo.",
+    );
+  const refusal = !PHOTO_FORMATS.includes(file.format)
+    ? fieldError("photos", "Use fotos JPG, PNG, WEBP ou HEIC.")
+    : file.bytes > PHOTO_MAX_BYTES
+      ? fieldError("photos", "Cada foto pode ter no máximo 15 MB.")
+      : null;
+  if (refusal) {
+    await deps.cloudinary.destroy(publicId);
+    throw refusal;
+  }
+
+  return deps.db.transaction(async (tx) => {
+    const n = await photoCount(tx, vehicle.id);
+    if (n >= MAX_PHOTOS) {
+      await deps.cloudinary.destroy(publicId);
+      throw AppError.conflict(LIMIT);
+    }
+    const [row] = await tx
+      .insert(vehiclePhotos)
+      .values({
+        vehicleId: vehicle.id,
+        publicId,
+        position: n,
+        width: file.width ?? null,
+        height: file.height ?? null,
+      })
+      .returning();
+    return {
+      id: row.id,
+      publicId: row.publicId,
+      position: row.position,
+      width: row.width,
+      height: row.height,
+    };
+  });
+}
+
+/** Renumera as posições 0..n-1 na ordem dada (sem colidir no índice único). */
+async function renumber(db: Db, vehicleId: string, ids: string[]) {
+  for (const [i, id] of ids.entries())
+    await db
+      .update(vehiclePhotos)
+      .set({ position: 1000 + i })
+      .where(
+        and(eq(vehiclePhotos.id, id), eq(vehiclePhotos.vehicleId, vehicleId)),
+      );
+  for (const [i, id] of ids.entries())
+    await db
+      .update(vehiclePhotos)
+      .set({ position: i })
+      .where(
+        and(eq(vehiclePhotos.id, id), eq(vehiclePhotos.vehicleId, vehicleId)),
+      );
+}
+
+/** Remove a foto e fecha o buraco nas posições (VEH-FR-004). */
+export async function removePhoto(
+  deps: PhotoDeps,
+  session: Session | null,
+  vehicleId: string,
+  photoId: string,
+): Promise<void> {
+  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  if (!UUID.test(photoId)) throw AppError.notFound();
+  const removed = await deps.db.transaction(async (tx) => {
+    const [row] = await tx
+      .delete(vehiclePhotos)
+      .where(
+        and(
+          eq(vehiclePhotos.id, photoId),
+          eq(vehiclePhotos.vehicleId, vehicle.id),
+        ),
+      )
+      .returning({ publicId: vehiclePhotos.publicId });
+    if (!row) throw AppError.notFound();
+    const rest = await photosOf(tx, vehicle.id);
+    await renumber(
+      tx,
+      vehicle.id,
+      rest.map((p) => p.id),
+    );
+    return row.publicId;
+  });
+  await deps.cloudinary.destroy(removed);
+}
+
+/** Nova ordem das fotos; a primeira é a capa (VEH-FR-004). Tem que ser a lista inteira. */
+export async function reorderPhotos(
+  deps: PhotoDeps,
+  session: Session | null,
+  vehicleId: string,
+  photoIds: unknown,
+): Promise<void> {
+  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const current = (await photosOf(deps.db, vehicle.id)).map((p) => p.id);
+  const ids = Array.isArray(photoIds) ? photoIds.map(String) : [];
+  if (
+    ids.length !== current.length ||
+    new Set(ids).size !== ids.length ||
+    !ids.every((id) => current.includes(id))
+  )
+    throw fieldError("photos", "Envie a ordem de todas as fotos do veículo.");
+  await deps.db.transaction((tx) => renumber(tx, vehicle.id, ids));
 }

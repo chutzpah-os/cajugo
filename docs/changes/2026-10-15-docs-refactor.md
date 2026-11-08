@@ -427,3 +427,6 @@
 
 # 2026-11-08 · 005/T008 identificação do veículo
 - fipe.identify confere marca → versão → ano contra a FIPE guardada e devolve nomes (marca, família = Modelo, versão), ano modelo (Zero KM = ano corrente) e referência do mês; saveDraft grava esses dados e a referência (nunca da tela), aplica a regra dos anos e a placa com final. vehicles/price.priceVsFipe ("4,6% abaixo").
+
+# 2026-11-08 · 005/T009 fotos do veículo
+- photoUpload (pasta vehicles/{id}, nome gerado, jpg/png/webp/heic, transformação de entrada de 1.600 px sem metadados, limite de 20), addPhoto (nome exato, formato, 15 MB, dimensões; recusado apagado; posição no fim), removePhoto (apaga no Cloudinary e fecha o buraco) e reorderPhotos (lista inteira; 1ª = capa); vehicleForm traz as fotos; loja B → 404 em tudo.
