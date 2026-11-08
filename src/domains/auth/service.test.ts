@@ -5,6 +5,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import type { Role, Session } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import {
+  accountMenu,
   changePassword,
   findAccountByEmail,
   generateTemporaryPassword,
@@ -1044,6 +1045,31 @@ describe("signIn", () => {
           { current: PASSWORD, password: NEW, confirmation: NEW },
         ),
       ).rejects.toMatchObject({ type: "must-change-password" });
+    });
+  });
+
+  describe("accountMenu", () => {
+    it("[STO-FR-001] mostra o primeiro nome e os painéis da conta", async () => {
+      // Arrange
+      await createAccount("vr@x.com", ["seller", "referrer"]);
+      await login({ email: "vr@x.com", password: PASSWORD }, "rede-m");
+      const session = (await getSession(deps()))!;
+
+      // Act
+      const menu = await accountMenu(t.db, session);
+
+      // Assert
+      expect(menu).toEqual({
+        name: "Fulano",
+        panels: [
+          { label: "Rede Caju", href: "/rede" },
+          { label: "Caju Indica", href: "/indica" },
+        ],
+      });
+    });
+
+    it("[STO-FR-001] sem sessão não há menu de conta", async () => {
+      expect(await accountMenu(t.db, null)).toBeNull();
     });
   });
 });

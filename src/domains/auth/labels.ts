@@ -9,3 +9,13 @@ export const PANEL_LABEL: Record<Role, string> = {
   admin: "Admin",
   support: "Suporte",
 };
+
+/** Endereço de entrada de cada painel (o painel decide a tela inicial). */
+export const PANEL_HREF: Record<Role, string> = {
+  store_owner: "/painel",
+  store_staff: "/painel",
+  seller: "/rede",
+  referrer: "/indica",
+  admin: "/admin",
+  support: "/admin",
+};

@@ -292,3 +292,6 @@
 
 # 2026-11-08 · 003/T014 componentes
 - src/ui: Drawer (gaveta em <dialog>, fecha ao tocar num link), AutocompleteField (combobox WAI-ARIA), AvailabilityHint (Disponível/Indisponível com role=status) e ImageField (recusa > tamanho no aparelho).
+
+# 2026-11-08 · 003/T015 menu da home
+- ui/site-menu.tsx (gaveta [11a]) e auth/components/site-header.tsx (sessão em <Suspense>); auth.accountMenu (primeiro nome e painéis, PANEL_HREF); home com cabeçalho.

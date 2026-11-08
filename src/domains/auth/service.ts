@@ -14,6 +14,7 @@ import {
 import { safeNext } from "@/platform/http/safe-next";
 import { authorize, type Role, type Session } from "@/platform/http/session";
 import type { AuthProvider } from "@/platform/supabase/auth-provider";
+import { PANEL_HREF, PANEL_LABEL } from "./labels";
 import { landingFor, pickPanel } from "./landing";
 import { AREAS, authorizeTo, type Area } from "./permissions";
 import { TEAM_ROLES } from "./roles";
@@ -467,6 +468,26 @@ export async function changePassword(
     entity: "profile",
     entityId: s.userId,
   });
+}
+
+/** Menu de conta no cabeçalho público (STO-FR-001): primeiro nome e painéis. */
+export async function accountMenu(
+  db: Db,
+  session: Session | null,
+): Promise<{ name: string; panels: { label: string; href: string }[] } | null> {
+  if (!session) return null;
+  const [profile] = await db
+    .select({ name: profiles.name })
+    .from(profiles)
+    .where(eq(profiles.id, session.userId));
+  if (!profile) return null;
+  return {
+    name: profile.name.trim().split(/\s+/)[0],
+    panels: session.roles.map((r) => ({
+      label: PANEL_LABEL[r],
+      href: PANEL_HREF[r],
+    })),
+  };
 }
 
 // Interface pública do domínio `auth` para os outros domínios (ARCHITECTURE §3).
