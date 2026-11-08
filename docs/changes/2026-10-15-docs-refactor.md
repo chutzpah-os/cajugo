@@ -325,3 +325,6 @@
 
 # 2026-11-08 · 004/T001 documentos do Pix manual
 - ARCHITECTURE §4: documento fiscal na loja (tax_id/tax_id_type), invoices.kind, payments com valor pago, método e observação, tabela notices, indicação rejected; SECURITY §8 (comprovante pela rota do servidor; valor pago e motivo); GLOSSARY (valor pago, documento fiscal, aviso, indicação não válida); ADR 0011.
+
+# 2026-11-08 · 004/T002 migration 0008
+- Enums e tabelas invoices, payments, notices; stores.tax_id/tax_id_type/billing_day/next_due_at/activated_at; referrals.reject_reason e status rejected; regra membership_cents (R$ 100). Índices únicos parciais: uma fatura first por loja e um comprovante em análise por fatura (testados). Aplicada no staging.

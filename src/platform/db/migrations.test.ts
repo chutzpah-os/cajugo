@@ -101,7 +101,7 @@ describe("migrations", () => {
     await insert("0192f1e0-0000-7000-8000-000000000013", "{seller,referrer}");
   });
 
-  describe("0005 regras configuráveis", () => {
+  describe("0005 e 0008 regras configuráveis", () => {
     async function migrated() {
       const client = new PGlite();
       const db = drizzle(client, { schema });
@@ -124,6 +124,7 @@ describe("migrations", () => {
         cajugo_fee_bps: 100,
         installment_rate_bps: 179,
         min_photos: 6,
+        membership_cents: 10000,
         past_due_tolerance_days: 5,
         payout_min_cents: 5000,
         pix: null,

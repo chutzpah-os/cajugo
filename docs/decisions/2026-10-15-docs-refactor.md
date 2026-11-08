@@ -224,3 +224,6 @@
 
 # 2026-11-08 · Comprovante privado pela nossa rota (004/T001, ADR 0011)
 - URL assinada do Cloudinary não expira e o plano gratuito bloqueia PDF; servir pelo servidor confere sessão a cada abertura e vale igual para documentos do vendedor (008) e para a VPS. Documento fiscal fica na loja (quem paga), não no perfil.
+
+# 2026-11-08 · Unicidade no banco, não só no código (004/T002)
+- "Um comprovante em análise por fatura" e "uma 1ª mensalidade por loja" são índices únicos parciais: duas abas ou dois admins ao mesmo tempo não conseguem burlar a regra, e a 011 herda a mesma garantia para as faturas mensais.

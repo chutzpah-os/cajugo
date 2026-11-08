@@ -57,6 +57,13 @@
       "when": 1794112990005,
       "tag": "0007_store_address_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794160568827,
+      "tag": "0008_billing_payments_notices",
+      "breakpoints": true
     }
   ]
 }

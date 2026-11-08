@@ -8,7 +8,9 @@ import {
   pgTable,
   primaryKey,
   text,
+  smallint,
   timestamp,
+  uniqueIndex,
   uuid,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
@@ -82,41 +84,56 @@ export const profiles = pgTable(
   ],
 ).enableRLS();
 
-export const stores = pgTable("stores", {
-  id: uuid("id").primaryKey().$defaultFn(uuidv7),
-  name: text("name").notNull(),
-  // Só [a-z0-9-], validado na entrada; por isso não precisa de citext.
-  slug: text("slug").notNull().unique(),
-  city: text("city").notNull(),
-  state: text("state").notNull(),
-  whatsapp: text("whatsapp").notNull(),
-  /** Endereço em campos (SEO local); cidade e UF ficam em `city`/`state`. */
-  addressStreet: text("address_street"),
-  addressNumber: text("address_number"),
-  addressComplement: text("address_complement"),
-  addressDistrict: text("address_district"),
-  /** CEP, 8 dígitos. */
-  addressZip: text("address_zip"),
-  about: text("about"),
-  instagram: text("instagram"),
-  logoPublicId: text("logo_public_id"),
-  coverPublicId: text("cover_public_id"),
-  hours: jsonb("hours"),
-  shareByDefault: boolean("share_by_default").notNull().default(true),
-  status: storeStatus("status").notNull().default("registered"),
-  /** Última troca de endereço do catálogo: no máximo 1 a cada 30 dias (STO-FR-013). */
-  slugChangedAt: timestamp("slug_changed_at", { withTimezone: true }),
-  /** Endereço reservado até o 1º pagamento; liberado pela spec 011. */
-  slugReservedUntil: timestamp("slug_reserved_until", { withTimezone: true }),
-  ownerId: uuid("owner_id")
-    .notNull()
-    .references((): AnyPgColumn => profiles.id),
-  ...timestamps,
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-}).enableRLS();
+/** CPF ou CNPJ de quem paga a loja (spec 004). */
+export const taxIdType = pgEnum("tax_id_type", ["cpf", "cnpj"]);
+
+export const stores = pgTable(
+  "stores",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    name: text("name").notNull(),
+    // Só [a-z0-9-], validado na entrada; por isso não precisa de citext.
+    slug: text("slug").notNull().unique(),
+    city: text("city").notNull(),
+    state: text("state").notNull(),
+    whatsapp: text("whatsapp").notNull(),
+    /** Endereço em campos (SEO local); cidade e UF ficam em `city`/`state`. */
+    addressStreet: text("address_street"),
+    addressNumber: text("address_number"),
+    addressComplement: text("address_complement"),
+    addressDistrict: text("address_district"),
+    /** CEP, 8 dígitos. */
+    addressZip: text("address_zip"),
+    about: text("about"),
+    instagram: text("instagram"),
+    logoPublicId: text("logo_public_id"),
+    coverPublicId: text("cover_public_id"),
+    hours: jsonb("hours"),
+    shareByDefault: boolean("share_by_default").notNull().default(true),
+    status: storeStatus("status").notNull().default("registered"),
+    /** Última troca de endereço do catálogo: no máximo 1 a cada 30 dias (STO-FR-013). */
+    slugChangedAt: timestamp("slug_changed_at", { withTimezone: true }),
+    /** Endereço reservado até o 1º pagamento; liberado pela spec 011. */
+    slugReservedUntil: timestamp("slug_reserved_until", { withTimezone: true }),
+    ownerId: uuid("owner_id")
+      .notNull()
+      .references((): AnyPgColumn => profiles.id),
+    /** Documento fiscal, só dígitos (PIX-FR-002); mascarado para o lojista. */
+    taxId: text("tax_id"),
+    taxIdType: taxIdType("tax_id_type"),
+    /** Dia do vencimento (1–31), fixado na 1ª confirmação (PIX-FR-009). */
+    billingDay: smallint("billing_day"),
+    nextDueAt: timestamp("next_due_at", { withTimezone: true }),
+    /** Primeira ativação (onboarding [5e]). */
+    activatedAt: timestamp("activated_at", { withTimezone: true }),
+    ...timestamps,
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [index("stores_tax_id").on(t.taxId)],
+).enableRLS();
 
 /** Contador por janela de tempo para rate limit de formulários públicos e login. */
 export const rateLimits = pgTable(
@@ -176,6 +193,7 @@ export const referralStatus = pgEnum("referral_status", [
   "active",
   "paused",
   "ended",
+  "rejected",
 ]);
 
 /** Código de indicação (GLOSSARY): pessoal (`profile_id`) ou de campanha (spec 010). */
@@ -204,8 +222,122 @@ export const referrals = pgTable(
       .references(() => stores.id)
       .unique(),
     status: referralStatus("status").notNull().default("registered"),
+    /** Por que a indicação não vale (ex.: `self_referral`, PIX-FR-003). */
+    rejectReason: text("reject_reason"),
     monthsPaid: integer("months_paid").notNull().default(0),
     ...timestamps,
   },
   (t) => [index("referrals_referrer_status").on(t.referrerId, t.status)],
+).enableRLS();
+
+/** Fatura (GLOSSARY): a 1ª mensalidade (`first`, spec 004) e as mensais (`monthly`, spec 011). */
+export const invoiceKind = pgEnum("invoice_kind", ["first", "monthly"]);
+export const invoiceStatus = pgEnum("invoice_status", [
+  "open",
+  "paid",
+  "overdue",
+  "canceled",
+]);
+
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id),
+    kind: invoiceKind("kind").notNull(),
+    /** AAAA-MM nas mensais; vazio na 1ª mensalidade. */
+    period: text("period"),
+    membershipCents: integer("membership_cents").notNull(),
+    feesCents: integer("fees_cents").notNull().default(0),
+    creditCents: integer("credit_cents").notNull().default(0),
+    /** Valor esperado, fixado na abertura pela regra vigente (PIX-SEC-004). */
+    totalCents: integer("total_cents").notNull(),
+    dueAt: timestamp("due_at", { withTimezone: true }).notNull(),
+    status: invoiceStatus("status").notNull().default("open"),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [
+    uniqueIndex("invoices_first_per_store")
+      .on(t.storeId)
+      .where(sql`${t.kind} = 'first'`),
+    uniqueIndex("invoices_store_period").on(t.storeId, t.period),
+    index("invoices_store_status").on(t.storeId, t.status),
+  ],
+).enableRLS();
+
+/** Pagamento (GLOSSARY): comprovante enviado → confirmado ou recusado; ou registro sem comprovante. */
+export const paymentStatus = pgEnum("payment_status", [
+  "submitted",
+  "confirmed",
+  "rejected",
+]);
+export const paymentMethod = pgEnum("payment_method", [
+  "pix",
+  "cash",
+  "transfer",
+  "other",
+]);
+
+export const payments = pgTable(
+  "payments",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    invoiceId: uuid("invoice_id")
+      .notNull()
+      .references(() => invoices.id),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id),
+    /** Valor pago informado pelo lojista; vazio no registro sem comprovante. */
+    paidCents: integer("paid_cents"),
+    /** Valor que vale: o informado ou o corrigido pelo admin (PIX-FR-008). */
+    amountCents: integer("amount_cents").notNull(),
+    /** Arquivo privado no Cloudinary (`authenticated`, ADR 0011). */
+    receiptPublicId: text("receipt_public_id"),
+    receiptFormat: text("receipt_format"),
+    status: paymentStatus("status").notNull(),
+    rejectReason: text("reject_reason"),
+    manual: boolean("manual").notNull().default(false),
+    method: paymentMethod("method").notNull().default("pix"),
+    note: text("note"),
+    submittedBy: uuid("submitted_by")
+      .notNull()
+      .references(() => profiles.id),
+    submittedAt: timestamp("submitted_at", { withTimezone: true }).notNull(),
+    reviewedBy: uuid("reviewed_by").references(() => profiles.id),
+    reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("payments_status_submitted").on(t.status, t.submittedAt),
+    index("payments_store").on(t.storeId, t.submittedAt),
+    // Um comprovante em análise por fatura (PIX-FR-006, PIX-SEC-007).
+    uniqueIndex("payments_one_in_review")
+      .on(t.invoiceId)
+      .where(sql`${t.status} = 'submitted'`),
+  ],
+).enableRLS();
+
+/** Aviso no painel (GLOSSARY, ADR 0007). Cada spec acrescenta os seus tipos. */
+export const noticeKind = pgEnum("notice_kind", [
+  "payment_confirmed",
+  "payment_rejected",
+]);
+
+export const notices = pgTable(
+  "notices",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    profileId: uuid("profile_id")
+      .notNull()
+      .references(() => profiles.id),
+    kind: noticeKind("kind").notNull(),
+    /** Só o necessário para a frase (motivo, valores); nunca dado pessoal. */
+    data: jsonb("data").notNull(),
+    ...timestamps,
+    dismissedAt: timestamp("dismissed_at", { withTimezone: true }),
+  },
+  (t) => [index("notices_profile_created").on(t.profileId, t.createdAt)],
 ).enableRLS();

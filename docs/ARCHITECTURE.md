@@ -177,7 +177,7 @@ search_alerts            id, contact, filters (jsonb), active, notified_at, crea
 # Plataforma
 setting_values           id, key, value (jsonb), valid_from, changed_by    # só INSERT; ADR 0010
                          uma linha por alteração; valor atual = mais recente por key; chaves e limites
-                         em src/domains/settings/definitions.ts (support_whatsapp, pix, review_business_days,
+                         em src/domains/settings/definitions.ts (support_whatsapp, pix [chave, favorecido, cidade], membership_cents, review_business_days,
                          past_due_tolerance_days, cajugo_fee_bps, installment_rate_bps, require_approval,
                          min_photos, retention_days, referral_enabled, referral_who, referral_pct_bps,
                          referral_months, payout_min_cents)
