@@ -221,3 +221,6 @@
 
 # 2026-11-08 · 002/T013 tela [4c]
 - /admin/conta real: grupos com Salvar (saveSettingsAction + updateTag), suporte só leitura, chave Pix mascarada, link Alterar senha; settings/form.ts (conversão do formulário); conta e2e-admin no seed; migration 0005 aplicada no staging.
+
+# 2026-11-08 · 002/T014 fluxo da chave Pix
+- [4c] PixKeyEditor (nova chave → revisão lado a lado + senha) e savePixAction; testado no navegador: CPF inválido volta ao passo 1, senha errada fica no passo 2, troca certa mostra a chave mascarada.

@@ -4,6 +4,7 @@ import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireArea } from "@/domains/auth/guards";
 import { can } from "@/domains/auth/permissions";
+import { PixKeyEditor } from "@/domains/settings/components/pix-key-editor";
 import { SettingsGroupForm } from "@/domains/settings/components/settings-group-form";
 import { currentSettings } from "@/domains/settings/current";
 import { groupFields } from "@/domains/settings/form";
@@ -59,22 +60,17 @@ async function Content() {
       {form("showcase", "Atendimento")}
       {form("network", "Rede Caju")}
 
-      <div className="flex flex-col gap-1 rounded-card border border-line bg-surface p-4">
-        <h2 className="text-[17px] font-extrabold">Chave Pix da CajuGo</h2>
-        {settings.pix ? (
-          <p className="text-sm text-text-2">
-            <strong className="font-mono text-ink">
-              {maskPixKey(settings.pix)}
-            </strong>
-            {" · "}
-            {settings.pix.beneficiary}
-          </p>
-        ) : (
-          <p className="text-sm font-semibold text-caju-deep">
-            Não configurada
-          </p>
-        )}
-      </div>
+      <PixKeyEditor
+        canEdit={canEdit}
+        current={
+          settings.pix
+            ? {
+                masked: maskPixKey(settings.pix),
+                beneficiary: settings.pix.beneficiary,
+              }
+            : null
+        }
+      />
       {form("payment", "Pagamento")}
       {form("approval", "Aprovação prévia")}
       {form("data", "Dados")}

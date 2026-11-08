@@ -164,3 +164,6 @@
 
 # 2026-11-08 · 0005 no staging antes da T020 (002/T013)
 - A tela precisa da tabela para rodar localmente; o prod só recebe a migration na T020, junto do primeiro push que lê as regras. Conta e2e-admin separada da do dono, para os e2e editarem regras.
+
+# 2026-11-08 · Pix em um formulário de 2 passos (002/T014)
+- Os campos do passo 1 ficam escondidos no passo 2 e seguem no envio: uma action só, sem guardar rascunho no servidor. O passo se ajusta na renderização (sem efeito), como pede a regra do React.

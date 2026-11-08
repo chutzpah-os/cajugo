@@ -1,8 +1,10 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { headers } from "next/headers";
 import { currentSession } from "@/domains/auth/current";
 import { getDb } from "@/platform/db/client";
+import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { AppError } from "@/platform/http/errors";
 import { logger } from "@/platform/http/logger";
 import { requestAuthProvider } from "@/platform/supabase/next";
@@ -65,6 +67,59 @@ export async function saveSettingsAction(
         ),
       };
     logger.error("settings.save_failed", {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return {
+      ok: false,
+      message: "Não foi possível salvar agora. Tente de novo em instantes.",
+      errors: {},
+    };
+  }
+}
+
+export type SavePixState = {
+  ok: boolean;
+  message?: string;
+  /** Erros por campo: `type`, `key`, `beneficiary` (passo 1) ou `password` (passo 2). */
+  errors: Record<string, string>;
+} | null;
+
+/** Troca da chave Pix com a senha do admin (CFG-FR-008, CFG-SEC-005). */
+export async function savePixAction(
+  _prev: SavePixState,
+  form: FormData,
+): Promise<SavePixState> {
+  try {
+    await updateSettings(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      {
+        pix: {
+          type: String(form.get("type") ?? ""),
+          key: String(form.get("key") ?? ""),
+          beneficiary: String(form.get("beneficiary") ?? ""),
+        },
+        password: String(form.get("password") ?? "") || undefined,
+      },
+      { ipHash: hashIp(clientIp(await headers())) },
+    );
+    updateTag(SETTINGS_TAG);
+    return { ok: true, message: "Chave Pix atualizada.", errors: {} };
+  } catch (error) {
+    if (error instanceof AppError)
+      return {
+        ok: false,
+        message:
+          error.type === "too-many-requests"
+            ? "Muitas tentativas. Aguarde alguns minutos e tente de novo."
+            : error.errors.length
+              ? undefined
+              : error.title,
+        errors: Object.fromEntries(
+          error.errors.map((e) => [e.field.replace(/^pix\./, ""), e.message]),
+        ),
+      };
+    logger.error("settings.pix_failed", {
       error: error instanceof Error ? error.message : String(error),
     });
     return {

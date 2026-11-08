@@ -24,7 +24,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 3 — Telas
 - [x] **T012** [P] `src/ui`: campos de porcentagem e de dinheiro (pt-BR) e aviso de "somente leitura", com testes · _CFG-NFR-002_
 - [x] **T013** [4c] `/admin/conta`: grupos Vitrine (nome e domínio só leitura, WhatsApp), Rede Caju, Pagamento, Aprovação prévia e Dados; "Salvar" por grupo só para admin; campos desabilitados para suporte; link "Alterar senha" · _CFG-FR-001, CFG-FR-002, CFG-FR-004, CFG-SEC-001, CFG-SEC-002_
-- [ ] **T014** [4c] Chave Pix: bloco com a chave mascarada ou "não configurada" e o fluxo em 2 passos (nova chave → revisão lado a lado + senha) · _CFG-FR-003, CFG-FR-008, CFG-SEC-005_
+- [x] **T014** [4c] Chave Pix: bloco com a chave mascarada ou "não configurada" e o fluxo em 2 passos (nova chave → revisão lado a lado + senha) · _CFG-FR-003, CFG-FR-008, CFG-SEC-005_
 - [ ] **T015** Histórico por regra na tela (link "Histórico" em cada regra) · _CFG-FR-006_
 - [ ] **T016** [8f] `/admin/indica/regras`: programa ativo, quem pode indicar, recompensa, duração e resgate mínimo; link "Regras do programa" em `/admin/indica` · _CFG-FR-001, CFG-FR-002_
 - [ ] **T017** `/conta/senha` (senha atual, nova, confirmação) para qualquer papel; `/conta` protegida no `proxy.ts` · _CFG-FR-010, CFG-SEC-006_
