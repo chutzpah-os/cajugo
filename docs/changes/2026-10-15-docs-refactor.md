@@ -343,3 +343,6 @@
 
 # 2026-11-08 · 004/T007 logo e capa recusados são apagados
 - setStoreImage apaga do Cloudinary a imagem recusada por formato ou tamanho (D4 do plano 004); nota da 005 no PLAN atualizada (falta só a remoção de metadados das fotos públicas).
+
+# 2026-11-08 · 004/T008 mensalidade e cidade do favorecido
+- Regra membership_cents ("Mensalidade do Plano Catálogo", grupo Pagamento, R$ 10–1.000) em [4c]; a chave Pix ganhou "Cidade do favorecido", obrigatória na troca (pixWriteSchema) e opcional na leitura; pixReady(); aviso no editor quando a chave atual não tem cidade; e2e da troca com cidade.

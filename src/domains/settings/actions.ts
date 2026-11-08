@@ -69,7 +69,7 @@ export async function saveSettingsAction(
 export type SavePixState = {
   ok: boolean;
   message?: string;
-  /** Erros por campo: `type`, `key`, `beneficiary` (passo 1) ou `password` (passo 2). */
+  /** Erros por campo: `type`, `key`, `beneficiary`, `city` (passo 1) ou `password` (passo 2). */
   errors: Record<string, string>;
 } | null;
 
@@ -87,6 +87,7 @@ export async function savePixAction(
           type: String(form.get("type") ?? ""),
           key: String(form.get("key") ?? ""),
           beneficiary: String(form.get("beneficiary") ?? ""),
+          city: String(form.get("city") ?? ""),
         },
         password: String(form.get("password") ?? "") || undefined,
       },

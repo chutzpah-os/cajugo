@@ -314,7 +314,7 @@ Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f] (spec
 | Regra | Valor provisório |
 |---|---|
 | Mensalidade do Plano Catálogo | R$ 100 |
-| Chave Pix e favorecido da CajuGo | vazio até o admin preencher em [4c] |
+| Chave Pix, favorecido e cidade do favorecido da CajuGo (a cidade vai no QR do Pix) | vazio até o admin preencher em [4c] |
 | Prazo de conferência do comprovante | 1 dia útil |
 | Tolerância de atraso antes da suspensão | 5 dias |
 | Taxa CajuGo por venda via vendedor | 1% |

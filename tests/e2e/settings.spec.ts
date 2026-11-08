@@ -75,14 +75,15 @@ test.describe("regras configuráveis", () => {
     await expect(heading(page)).toHaveText("Sem permissão");
   });
 
-  test("[CFG-FR-008] [CFG-SEC-005] chave Pix: senha errada não troca; senha certa troca", async ({
+  test("[CFG-FR-008] [CFG-SEC-005] [PIX-FR-004] chave Pix com cidade: senha errada não troca; senha certa troca", async ({
     page,
   }) => {
     await enterAs(page, accounts.admin.email, "/admin/conta");
     await page.getByRole("button", { name: /chave Pix/ }).click();
     await page.getByLabel("Nova chave Pix").fill("pix@cajugo.test");
     await page.getByLabel("Tipo da chave").selectOption("email");
-    await page.getByLabel("Favorecido").fill("CajuGo Testes");
+    await page.getByLabel("Favorecido", { exact: true }).fill("CajuGo Testes");
+    await page.getByLabel("Cidade do favorecido").fill("Aracaju");
     await page.getByRole("button", { name: "Revisar" }).click();
     await expect(page.getByText("pix@cajugo.test")).toBeVisible();
 

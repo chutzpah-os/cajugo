@@ -233,3 +233,6 @@
 
 # 2026-11-08 · Leitura privada pela API de download (004/T006)
 - A prova mostrou que a URL de entrega bloqueia PDF no plano gratuito e que a URL assinada não expira; a API de download assinada lê PNG e PDF só no servidor. O navegador nunca recebe URL nossa do arquivo; o servidor só guarda o public_id.
+
+# 2026-11-08 · Cidade opcional só na leitura (004/T008, D1)
+- O histórico de regras é só de inserção, então valores antigos da chave Pix (sem cidade) existem para sempre; a leitura aceita, a gravação exige e, sem cidade, a chave conta como não pronta (sem QR). Assim o histórico nunca quebra e nenhum dado precisa ser reescrito.

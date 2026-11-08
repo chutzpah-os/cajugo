@@ -12,7 +12,7 @@ import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import {
   parseSettingValue,
-  pixSchema,
+  pixWriteSchema,
   sameSettingValue,
   SETTINGS,
   SETTING_KEYS,
@@ -90,7 +90,7 @@ const updateSchema = z
     ...(Object.fromEntries(
       SETTING_KEYS.map((k) => [k, SETTINGS[k].schema.optional()]),
     ) as { [K in SettingKey]?: z.ZodOptional<(typeof SETTINGS)[K]["schema"]> }),
-    pix: pixSchema.optional(),
+    pix: pixWriteSchema.optional(),
     password: z.string().max(200).optional(),
   })
   .strict();

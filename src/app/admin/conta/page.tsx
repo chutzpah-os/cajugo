@@ -74,6 +74,7 @@ async function Content() {
                 // A chave inteira só vai para quem pode trocá-la (revisão lado a lado).
                 full: canEdit ? settings.pix.key : undefined,
                 beneficiary: settings.pix.beneficiary,
+                city: settings.pix.city,
               }
             : null
         }

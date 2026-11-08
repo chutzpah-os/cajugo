@@ -59,6 +59,17 @@ export const pixSchema = z
       .trim()
       .min(2, "Informe o favorecido.")
       .max(100, "Use no máximo 100 caracteres."),
+    /**
+     * Cidade do favorecido, exigida pelo QR do Pix (BR Code, PIX-FR-004). Opcional na
+     * leitura: valores do histórico (só de inserção) são de antes dela existir. Toda
+     * gravação nova exige (`pixWriteSchema`).
+     */
+    city: z
+      .string()
+      .trim()
+      .min(2, "Informe a cidade do favorecido.")
+      .max(60, "Use no máximo 60 caracteres.")
+      .optional(),
   })
   .transform((pix, ctx) => {
     const fail = (message: string) => {
@@ -99,6 +110,21 @@ export const pixSchema = z
 
 export type Pix = z.output<typeof pixSchema>;
 
+/** Chave nova (CFG-FR-008): tudo de `pixSchema`, com a cidade obrigatória. */
+export const pixWriteSchema = pixSchema.superRefine((pix, ctx) => {
+  if (!pix.city)
+    ctx.addIssue({
+      code: "custom",
+      path: ["city"],
+      message: "Informe a cidade do favorecido.",
+    });
+});
+
+/** A chave está pronta para cobrar (chave, favorecido e cidade para o QR)? */
+export function pixReady(pix: Pix | null): pix is Pix & { city: string } {
+  return !!pix?.city;
+}
+
 /** Como a regra aparece no formulário (conversão em `form.ts`). */
 export type SettingInput =
   "int" | "percent" | "money" | "bool" | "phone" | "pix" | "who";
@@ -136,6 +162,13 @@ export const SETTINGS = {
     label: "Chave Pix da CajuGo",
     schema: pixSchema.nullable(),
     initial: null,
+  }),
+  membership_cents: define({
+    group: "payment",
+    input: "money",
+    label: "Mensalidade do Plano Catálogo",
+    schema: money(1000, 100000),
+    initial: 10000,
   }),
   review_business_days: define({
     group: "payment",

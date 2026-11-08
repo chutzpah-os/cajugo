@@ -32,11 +32,12 @@ describe("lista de regras", () => {
     await t.close();
   });
 
-  it("[CFG-FR-005] tem as 14 regras da spec, cada uma com grupo e rótulo", () => {
+  it("[CFG-FR-005] [PIX-FR-001] tem as regras das specs 002 e 004, cada uma com grupo e rótulo", () => {
     expect([...SETTING_KEYS].sort()).toEqual(
       [
         "cajugo_fee_bps",
         "installment_rate_bps",
+        "membership_cents",
         "min_photos",
         "past_due_tolerance_days",
         "payout_min_cents",

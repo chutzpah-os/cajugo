@@ -14,7 +14,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T005** [P] `src/domains/billing/due-date.ts`: `firstDueDate` e `nextDueAfter` (dia em São Paulo; último dia do mês quando falta o dia) · _PIX-FR-009_
 - [x] **T006** `src/platform/cloudinary/`: upload `authenticated` (formatos com PDF), `verifyUpload` por tipo, `destroy` e `fetchPrivate`; Cloudinary falso com os mesmos recursos; prova no staging (envio e leitura de PNG e PDF `authenticated`) · _PIX-SEC-002_
 - [x] **T007** Logo e capa: arquivo recusado é apagado do Cloudinary (D4) · _STO-SEC-004_
-- [ ] **T008** Regras: `membership_cents` ("Mensalidade do Plano Catálogo") e "Cidade do favorecido" na regra `pix` (D1), em [4c], com histórico · _PIX-FR-001, PIX-FR-004_
+- [x] **T008** Regras: `membership_cents` ("Mensalidade do Plano Catálogo") e "Cidade do favorecido" na regra `pix` (D1), em [4c], com histórico · _PIX-FR-001, PIX-FR-004_
 - [ ] **T009** Domínio `notices`: `notify`, `noticesFor` (só do perfil da sessão), `dismiss`; permissão `payments.view` (admin, suporte) · _PIX-FR-013, PIX-SEC-003_
 
 ## Fase 2 — Fatias verticais (domínios `billing`, `stores`, `referrals`)

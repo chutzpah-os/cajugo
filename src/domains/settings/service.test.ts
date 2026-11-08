@@ -10,6 +10,7 @@ import {
   settingHistory,
   updateSettings,
 } from "./service";
+import { pixReady } from "./definitions";
 
 describe("settings", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -31,6 +32,7 @@ describe("settings", () => {
       expect(settings).toEqual({
         support_whatsapp: "557981360206",
         pix: null,
+        membership_cents: 10000,
         review_business_days: 1,
         past_due_tolerance_days: 5,
         installment_rate_bps: 179,
@@ -254,12 +256,32 @@ describe("settings", () => {
     });
   });
 
+  it("[PIX-FR-001] a mensalidade do Plano Catálogo é uma regra editável, com o valor da época", async () => {
+    // Arrange
+    const before = await getSettings(t.db);
+    await t.db.insert(settingValues).values({
+      key: "membership_cents",
+      value: 12000,
+      validFrom: new Date("2030-01-01T00:00:00Z"),
+    });
+
+    // Act
+    const now = await getSettings(t.db, new Date("2030-02-01T00:00:00Z"));
+    const past = await getSettings(t.db, new Date("2029-12-31T00:00:00Z"));
+
+    // Assert
+    expect(before.membership_cents).toBe(10000);
+    expect(now.membership_cents).toBe(12000);
+    expect(past.membership_cents).toBe(10000);
+  });
+
   describe("updateSettings com chave Pix", () => {
     const PASSWORD = "senha-admin-1";
     const PIX = {
       type: "cpf",
       key: "529.982.247-25",
       beneficiary: "CajuGo Ltda",
+      city: "Aracaju",
     };
     let auth: FakeAuthProvider;
     const deps = () => ({ db: t.db, auth });
@@ -300,7 +322,51 @@ describe("settings", () => {
         type: "cpf",
         key: "52998224725",
         beneficiary: "CajuGo Ltda",
+        city: "Aracaju",
       });
+    });
+
+    it("[PIX-FR-004] a chave nova exige a cidade do favorecido (vai no QR do Pix)", async () => {
+      const session = await admin();
+      const { city: _city, ...withoutCity } = PIX;
+
+      await expect(
+        updateSettings(
+          deps(),
+          session,
+          { pix: withoutCity, password: PASSWORD },
+          ctx,
+        ),
+      ).rejects.toMatchObject({
+        status: 422,
+        errors: [
+          expect.objectContaining({
+            field: "pix.city",
+            message: "Informe a cidade do favorecido.",
+          }),
+        ],
+      });
+      expect((await getSettings(t.db)).pix).toBeNull();
+    });
+
+    it("[PIX-FR-004] chave gravada antes da cidade existir continua legível, e sem QR pronto", async () => {
+      // Arrange: valor do histórico (só de inserção) sem a cidade
+      await t.db.insert(settingValues).values({
+        key: "pix",
+        value: { type: "email", key: "a@b.com", beneficiary: "CajuGo" },
+      });
+
+      // Act
+      const { pix } = await getSettings(t.db);
+
+      // Assert
+      expect(pix).toEqual({
+        type: "email",
+        key: "a@b.com",
+        beneficiary: "CajuGo",
+      });
+      expect(pixReady(pix)).toBe(false);
+      expect(pixReady({ ...pix!, city: "Aracaju" })).toBe(true);
     });
 
     it("[CFG-FR-008] sem a senha, a chave não muda", async () => {

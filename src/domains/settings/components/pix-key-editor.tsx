@@ -25,7 +25,12 @@ export function PixKeyEditor({
   current,
   canEdit,
 }: {
-  current: { masked: string; full?: string; beneficiary: string } | null;
+  current: {
+    masked: string;
+    full?: string;
+    beneficiary: string;
+    city?: string;
+  } | null;
   canEdit: boolean;
 }) {
   const [state, action, pending] = useActionState<SavePixState, FormData>(
@@ -33,7 +38,12 @@ export function PixKeyEditor({
     null,
   );
   const [step, setStep] = useState<"view" | "edit" | "review">("view");
-  const [draft, setDraft] = useState({ type: "cpf", key: "", beneficiary: "" });
+  const [draft, setDraft] = useState({
+    type: "cpf",
+    key: "",
+    beneficiary: "",
+    city: "",
+  });
 
   // A cada resposta nova: erro na chave volta ao passo 1; erro de senha fica no
   // passo 2; sucesso fecha. (Ajuste durante a renderização, sem efeito.)
@@ -44,7 +54,8 @@ export function PixKeyEditor({
     else if (
       state?.errors.key ||
       state?.errors.type ||
-      state?.errors.beneficiary
+      state?.errors.beneficiary ||
+      state?.errors.city
     )
       setStep("edit");
   }
@@ -59,9 +70,16 @@ export function PixKeyEditor({
           <strong className="font-mono text-ink">{current.masked}</strong>
           {" · "}
           {current.beneficiary}
+          {current.city ? ` · ${current.city}` : ""}
         </p>
       ) : (
         <p className="text-sm font-semibold text-caju-deep">Não configurada</p>
+      )}
+      {current && !current.city && (
+        <p role="note" className="text-sm text-warn">
+          Falta a cidade do favorecido: o QR code do Pix não aparece para o
+          lojista até você trocar a chave com a cidade.
+        </p>
       )}
       <Link
         href="/admin/conta/historico/pix"
@@ -90,6 +108,7 @@ export function PixKeyEditor({
           <input type="hidden" name="type" value={draft.type} />
           <input type="hidden" name="key" value={draft.key} />
           <input type="hidden" name="beneficiary" value={draft.beneficiary} />
+          <input type="hidden" name="city" value={draft.city} />
           <div className={step === "edit" ? "flex flex-col gap-4" : "hidden"}>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="pix-type" className="text-[13px] font-semibold">
@@ -126,9 +145,23 @@ export function PixKeyEditor({
               }
               error={state?.errors.beneficiary}
             />
+            <TextField
+              id="pix-city"
+              label="Cidade do favorecido"
+              help="Vai no QR code do Pix."
+              autoComplete="off"
+              maxLength={60}
+              value={draft.city}
+              onChange={(e) => setDraft({ ...draft, city: e.target.value })}
+              error={state?.errors.city}
+            />
             <div className="flex gap-2">
               <Button
-                disabled={!draft.key.trim() || !draft.beneficiary.trim()}
+                disabled={
+                  !draft.key.trim() ||
+                  !draft.beneficiary.trim() ||
+                  !draft.city.trim()
+                }
                 onClick={() => setStep("review")}
               >
                 Revisar
@@ -150,13 +183,18 @@ export function PixKeyEditor({
                       : "Não configurada"}
                   </p>
                   {current && (
-                    <p className="text-text-2">{current.beneficiary}</p>
+                    <p className="text-text-2">
+                      {current.beneficiary}
+                      {current.city ? ` · ${current.city}` : ""}
+                    </p>
                   )}
                 </div>
                 <div className="rounded-input bg-caju-tint p-3">
                   <p className="text-xs text-text-3">Nova ({typeLabel})</p>
                   <p className="font-mono break-all text-ink">{draft.key}</p>
-                  <p className="text-text-2">{draft.beneficiary}</p>
+                  <p className="text-text-2">
+                    {draft.beneficiary} · {draft.city}
+                  </p>
                 </div>
               </div>
               <p className="text-sm text-text-2">
