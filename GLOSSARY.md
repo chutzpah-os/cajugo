@@ -117,6 +117,12 @@ _Evite_: anúncio, listing, carro (no código)
 `rascunho` (`draft`), `pendente de aprovação` (`pending_approval`), `publicado` (`published`), `oculto` (`hidden`), `vendido` (`sold`), `excluído` (`deleted`).
 _Evite_: ativo, pausado, inativo
 
+**Histórico do veículo** (`vehicle_history`):
+Registro de mudanças de um campo do veículo publicado (antes, depois, quem, quando); a primeira é o preço, base do selo "Baixou R$ X" da vitrine.
+
+**Referência FIPE** (`fipe_price_cents`):
+Preço da tabela FIPE para a versão e o ano do veículo, no mês de referência; mostrado ao lojista como "N% abaixo/acima". Vem de uma cópia guardada pela CajuGo (ADR 0012).
+
 **Final de placa** (`plate_end`):
 Último dígito da placa, o único dado da placa que aparece em público.
 

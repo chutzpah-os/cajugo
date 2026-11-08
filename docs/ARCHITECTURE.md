@@ -129,16 +129,23 @@ notices                  id, profile_id (quem vê), kind, data (jsonb, sem dado 
 # Veículos
 vehicles
   id, store_id, type (car), status (draft|pending_approval|published|hidden|sold|deleted),
-  plate (privada), plate_end, chassis (privado), make, model, version, fipe_code,
+  plate (privada), plate_end, chassis (privado),
+  fipe_brand_id, fipe_model_id, fipe_year_id, make, model, version (nomes guardados), fipe_code, fipe_month,
   year_manufacture, year_model, mileage_km, transmission, fuel, body, color, doors, engine,
   price_cents, fipe_price_cents, show_installment,
-  accepts_trade, single_owner, ipva_paid, licensed, dealer_serviced, factory_warranty, armored,
-  features (text[]), description, contact_whatsapp, share_on_cajugo, hidden_reason,
+  conditions (jsonb: accepts_trade, single_owner, ipva_paid, licensed, dealer_serviced, factory_warranty, armored),
+  features (text[]), description, contact_whatsapp, share_on_cajugo, share_before_sale, hidden_reason,
   commission_override_type, commission_override_value,
   search (tsvector de make/model/version com unaccent),
-  published_at, sold_at, created_at, updated_at
+  published_at, sold_at, deleted_at (excluído: guardado 90 dias), created_at, updated_at   # spec 005
 vehicle_photos           id, vehicle_id, public_id, position, width, height     # position 0 = capa
-vehicle_history          id, vehicle_id, field, old_value, new_value, user_id, created_at
+vehicle_history          id, vehicle_id, field, old_value, new_value, user_id, created_at   # spec 005: field = price
+
+# Tabela FIPE copiada sob demanda (ADR 0012); só o domínio fipe escreve
+fipe_brands              id (pk, código FIPE), name, synced_at
+fipe_models              id (pk), brand_id, name, synced_at
+fipe_years               id (pk = modelo:ano), model_id, label, synced_at
+fipe_prices              year_id (pk), fipe_code, price_cents, month, fetched_at
 vehicle_daily_stats      vehicle_id + day (pk), views, whatsapp_clicks, leads, seller_link_clicks
 approvals                id, vehicle_id, checks (jsonb), status (pending|approved|changes_requested), reason,
                          reviewed_by, reviewed_at

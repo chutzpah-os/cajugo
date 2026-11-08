@@ -251,3 +251,6 @@
 
 # 2026-11-08 · Corrida resolvida no banco (004 verificação)
 - O banco de testes executa uma transação por vez, então teste de concorrência ali não prova nada; a garantia de "conferido uma vez só" passou para o Postgres (fatura open → paid condicional, índice único de pagamento confirmado por fatura, SELECT ... FOR UPDATE da loja no registro manual), que vale com conexões paralelas de verdade. PIX-SEC-002 e PIX-FR-003 da spec reescritos para refletir D2 e a tela do admin na 010.
+
+# 2026-11-08 · FIPE sob demanda e histórico genérico (005/T001)
+- A API gratuita da FIPE aceita 500 consultas/dia; copiar no uso cabe na cota e o formulário não depende dela no ar (ADR 0012). O histórico de preço usa a vehicle_history genérica já prevista no ARCHITECTURE, para outros campos entrarem sem tabela nova.

@@ -403,3 +403,6 @@
 
 # 2026-11-08 · rota do comprovante confere a sessão primeiro (004)
 - receiptResponse recebe uma função que monta as dependências: sem sessão responde 401 antes de ler a configuração do Cloudinary; erro inesperado vai para o log (billing.receipt_failed) e vira 500 problem+json sem detalhe interno. No prod a rota respondia 500 vazio sem sessão.
+
+# 2026-11-08 · 005/T001 documentos de veículos
+- ARCHITECTURE §4: vehicles com ids/nomes/mês da FIPE, conditions jsonb, share_before_sale, deleted_at; vehicle_history (field = price); tabelas fipe_*; GLOSSARY (Histórico do veículo, Referência FIPE); ADR 0012 (FIPE copiada sob demanda).

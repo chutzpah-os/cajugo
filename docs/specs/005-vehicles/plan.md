@@ -22,7 +22,7 @@ Como funciona:
 ## Impacto
 | Camada | Mudança |
 |---|---|
-| Dados (migration `0010`, aditiva) | enum `vehicle_status`; tabelas `vehicles`, `vehicle_photos`, `vehicle_price_history`, `fipe_brands`, `fipe_models`, `fipe_years`, `fipe_prices` |
+| Dados (migration `0010`, aditiva) | enum `vehicle_status`; tabelas `vehicles`, `vehicle_photos`, `vehicle_history`, `fipe_brands`, `fipe_models`, `fipe_years`, `fipe_prices` |
 | `src/platform/` | `fipe/client.ts` (API pública, só leitura, com prazo de resposta); `cloudinary`: `signUpload` com `transformation` (entrada) e conferência de dimensões; `br/plate.ts` (placa Mercosul/antiga → final) |
 | `src/domains/fipe/` | `service.ts`: `brands`, `models(brandId)`, `years(modelId)`, `reference(yearId)`; cópia sob demanda com validade (listas 30 dias, preço do mês) e uso do que já está guardado se a API falhar |
 | `src/domains/vehicles/` | `service.ts`, `actions.ts`, `schemas.ts`, `lists.ts` (câmbio, combustível, carroceria, itens, condições), `components/` ([1c], [2a], [6e], [6f], fotos) |
@@ -65,7 +65,7 @@ brands(deps) · models(deps, brandId) · years(deps, modelId) · reference(deps,
 | VEH-FR-009 | `publish` valida o veículo inteiro com `publishSchema` e devolve erros por campo e seção; transição `draft → published` condicional; `published_at` |
 | VEH-FR-010 | visível = `status = published` e loja no ar (`isStoreLive`, 004); loja não ativada pode publicar e passa a aparecer na ativação sem nada a fazer (a consulta pública já filtra a loja); toggle só em publicado; legenda extra "Aparece quando a loja for ativada" para loja não ativada |
 | VEH-FR-011 | `vehicleSummary` com "Dias no ar" = dias desde `published_at` (São Paulo); `saveDraft` também edita publicado (mesmos limites) e renova a tag `vehicles` |
-| VEH-FR-012 | em `saveDraft`/edição de veículo publicado, preço diferente grava `vehicle_price_history` (anterior, novo, quando, quem) na mesma transação |
+| VEH-FR-012 | em `saveDraft`/edição de veículo publicado, preço diferente grava `vehicle_history` (anterior, novo, quando, quem) na mesma transação |
 | VEH-FR-013 | `markSold`: `published → sold`, `sold_at`, guarda `share_before_sale` e desliga a divulgação; `undoSold`: só até 7 dias de `sold_at`, volta `published` com a divulgação de antes; diálogo [6f] (`ConfirmSheet` em `src/ui`) |
 | VEH-FR-014 | `unpublish`: `published → draft`; `remove`: qualquer estado → `deleted` com `deleted_at` (some de tudo; o admin recupera na 012; apagar após 90 dias é da 011) |
 | VEH-FR-015 | `hasPublishedVehicle`; a página `/painel/veiculos` passa `firstVehicle` para `onboardingStatus` |
@@ -99,16 +99,16 @@ export const vehiclePhotos = pgTable("vehicle_photos", {
   id, vehicleId (fk), publicId, position (smallint), width, height, createdAt,
 }, (t) => [uniqueIndex("vehicle_photos_position").on(t.vehicleId, t.position)]);
 
-export const vehiclePriceHistory = pgTable("vehicle_price_history", {
+export const vehiclePriceHistory = pgTable("vehicle_history", {
   id, vehicleId (fk), oldCents, newCents, changedBy, changedAt,
-}, (t) => [index("vehicle_price_history_vehicle").on(t.vehicleId, t.changedAt)]);
+}, (t) => [index("vehicle_history_vehicle").on(t.vehicleId, t.changedAt)]);
 
 // FIPE guardada (só leitura para o app; escrita só pelo domínio fipe)
 fipe_brands (id pk, name, synced_at) · fipe_models (id pk, brand_id, name, synced_at)
 fipe_years (id pk = "{modelId}:{codigo}", model_id, label, synced_at)
 fipe_prices (year_id pk, fipe_code, price_cents, month, fetched_at)
 ```
-No ARCHITECTURE §4, `vehicles` ganha `fipe_*_id`, `fipe_month`, `share_before_sale` e `deleted_at`; `conditions` vira jsonb no lugar de 7 colunas booleanas, porque é uma lista fechada que muda junto com o PRD. As tabelas `fipe_*` e `vehicle_price_history` também entram. "Histórico de preço" e "Referência FIPE" vão para o GLOSSARY.
+No ARCHITECTURE §4, `vehicles` ganha `fipe_*_id`, `fipe_month`, `share_before_sale` e `deleted_at`; `conditions` vira jsonb no lugar de 7 colunas booleanas, porque é uma lista fechada que muda junto com o PRD. As tabelas `fipe_*` e `vehicle_history` também entram. "Histórico de preço" e "Referência FIPE" vão para o GLOSSARY.
 
 ## Testes
 - **Unitários:**
