@@ -6,6 +6,7 @@ const PROTECTED = [
   "/admin",
   "/lojistas/pagamento",
   "/nova-senha",
+  "/conta",
 ];
 const PUBLIC_EXCEPTIONS = ["/rede/cadastro", "/indica/cadastro"];
 

@@ -15,6 +15,7 @@ describe("áreas logadas", () => {
       "/lojistas/pagamento",
       "/lojistas/pagamento/pix",
       "/nova-senha",
+      "/conta/senha",
     ]) {
       expect(isProtectedPath(path), path).toBe(true);
     }

@@ -10,6 +10,7 @@ import { loginUrl } from "@/platform/http/protected-paths";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { currentSession } from "./current";
 import {
+  changePassword,
   findAccountByEmail,
   getSession,
   setTemporaryPassword,
@@ -171,5 +172,55 @@ export async function setTemporaryPasswordAction(
     if (error instanceof AppError) return { message: error.title };
     logUnexpected("auth.temp_password_failed", error);
     return { message: "Não foi possível definir a senha agora." };
+  }
+}
+
+export type ChangePasswordState = {
+  ok: boolean;
+  message?: string;
+  errors: Record<string, string>;
+} | null;
+
+/** Troca da própria senha em /conta/senha (CFG-FR-010, CFG-SEC-006). */
+export async function changePasswordAction(
+  _prev: ChangePasswordState,
+  form: FormData,
+): Promise<ChangePasswordState> {
+  try {
+    await changePassword(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      {
+        current: String(form.get("current") ?? ""),
+        password: String(form.get("password") ?? ""),
+        confirmation: String(form.get("confirmation") ?? ""),
+      },
+      { ipHash: hashIp(clientIp(await headers())) },
+    );
+    return {
+      ok: true,
+      message: "Senha alterada. Os outros aparelhos foram desconectados.",
+      errors: {},
+    };
+  } catch (error) {
+    if (error instanceof AppError)
+      return {
+        ok: false,
+        message:
+          error.type === "too-many-requests"
+            ? "Muitas tentativas. Aguarde alguns minutos e tente de novo."
+            : error.errors.length
+              ? undefined
+              : error.title,
+        errors: Object.fromEntries(
+          error.errors.map((e) => [e.field, e.message]),
+        ),
+      };
+    logUnexpected("auth.change_password_failed", error);
+    return {
+      ok: false,
+      message: "Não foi possível salvar agora. Tente de novo em instantes.",
+      errors: {},
+    };
   }
 }

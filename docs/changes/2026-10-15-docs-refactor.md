@@ -230,3 +230,6 @@
 
 # 2026-11-08 · 002/T016 tela [8f]
 - /admin/indica/regras com as regras do Caju Indica (mesmo formulário por grupo) e link "Regras do programa" em /admin/indica; testado no navegador (resgate mínimo e quem pode indicar).
+
+# 2026-11-08 · 002/T017 /conta/senha
+- Tela de troca da própria senha para qualquer papel (ChangePasswordForm + changePasswordAction); /conta protegida no proxy; testado no navegador (atual errada, troca certa, login com a nova).
