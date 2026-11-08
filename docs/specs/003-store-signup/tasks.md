@@ -14,7 +14,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T005** [P] `AuthProvider.adminDeleteUser` (falso e Supabase), para desfazer a conta se o cadastro falhar · _—_
 
 ## Fase 2 — Fatias verticais (domínios `stores` e `referrals`)
-- [ ] **T006** `suggestSlug` e regras do endereço do catálogo; `checkSlug` (disponível, em uso, inválido) · _STO-FR-005_
+- [x] **T006** `suggestSlug` e regras do endereço do catálogo; `checkSlug` (disponível, em uso, inválido) · _STO-FR-005_
 - [ ] **T007** `referrals`: `getOrCreateCode` (código pessoal único) e `checkCode` (inexistente, autoindicação por e-mail ou celular, só o nome de quem indicou) · _STO-FR-007, STO-FR-014, STO-SEC-005_
 - [ ] **T008** `registerStore` para visitante: conta + perfil + papel + loja `registered` + endereço reservado + código + indicação numa transação; desfaz a conta se falhar; auditoria · _STO-FR-003, STO-FR-004, STO-FR-006, STO-FR-007, STO-FR-014_
 - [ ] **T009** `registerStore`: honeypot e limite por rede; e-mail existente com mensagem neutra; conectado cria só a loja; equipe e quem já tem loja recusados · _STO-FR-015, STO-SEC-002_
