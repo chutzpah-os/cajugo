@@ -112,9 +112,14 @@ export const pixSchema = z
 
 export type Pix = z.output<typeof pixSchema>;
 
+/** Como a regra aparece no formulário (conversão em `form.ts`). */
+export type SettingInput =
+  "int" | "percent" | "money" | "bool" | "phone" | "pix" | "who";
+
 type Definition<S extends z.ZodType> = {
   group: SettingGroup;
   label: string;
+  input: SettingInput;
   schema: S;
   initial: z.output<S>;
 };
@@ -123,6 +128,7 @@ const define = <S extends z.ZodType>(d: Definition<S>) => d;
 export const SETTINGS = {
   support_whatsapp: define({
     group: "showcase",
+    input: "phone",
     label: "WhatsApp de atendimento",
     schema: z
       .string()
@@ -139,60 +145,70 @@ export const SETTINGS = {
   }),
   pix: define({
     group: "payment",
+    input: "pix",
     label: "Chave Pix da CajuGo",
     schema: pixSchema.nullable(),
     initial: null,
   }),
   review_business_days: define({
     group: "payment",
+    input: "int",
     label: "Prazo de conferência do comprovante (dias úteis)",
     schema: integer(1, 10, " dias úteis"),
     initial: 1,
   }),
   past_due_tolerance_days: define({
     group: "payment",
+    input: "int",
     label: "Tolerância de atraso antes da suspensão (dias)",
     schema: integer(0, 30, " dias"),
     initial: 5,
   }),
   installment_rate_bps: define({
     group: "payment",
+    input: "percent",
     label: "Taxa do simulador (% a.m.)",
     schema: percent(0, 1000),
     initial: 179,
   }),
   cajugo_fee_bps: define({
     group: "network",
+    input: "percent",
     label: "Taxa CajuGo por carro vendido via vendedor (%)",
     schema: percent(0, 2000),
     initial: 100,
   }),
   require_approval: define({
     group: "approval",
+    input: "bool",
     label: "Aprovar veículos antes de publicar",
     schema: z.boolean(),
     initial: false,
   }),
   min_photos: define({
     group: "approval",
+    input: "int",
     label: "Mínimo de fotos por veículo",
     schema: integer(1, 20),
     initial: 6,
   }),
   retention_days: define({
     group: "data",
+    input: "int",
     label: "Retenção de dados após o cancelamento (dias)",
     schema: integer(30, 3650, " dias"),
     initial: 90,
   }),
   referral_enabled: define({
     group: "referral",
+    input: "bool",
     label: "Programa ativo",
     schema: z.boolean(),
     initial: true,
   }),
   referral_who: define({
     group: "referral",
+    input: "who",
     label: "Quem pode indicar",
     schema: z.object({
       store_owner: z.boolean(),
@@ -203,18 +219,21 @@ export const SETTINGS = {
   }),
   referral_pct_bps: define({
     group: "referral",
+    input: "percent",
     label: "Recompensa (% da mensalidade)",
     schema: percent(100, 10000),
     initial: 3000,
   }),
   referral_months: define({
     group: "referral",
+    input: "int",
     label: "Duração da recompensa (meses)",
     schema: integer(1, 24, " meses"),
     initial: 3,
   }),
   payout_min_cents: define({
     group: "referral",
+    input: "money",
     label: "Resgate mínimo",
     schema: money(100, 100000),
     initial: 5000,

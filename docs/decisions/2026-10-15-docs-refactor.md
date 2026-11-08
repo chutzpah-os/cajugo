@@ -161,3 +161,6 @@
 
 # 2026-11-07 · Conversão de % e R$ no servidor (002/T012)
 - Os campos só mostram texto pt-BR; a conversão para centésimos de ponto e centavos fica em settings/format.ts, no servidor, para não depender de JavaScript no navegador nem duplicar regra.
+
+# 2026-11-08 · 0005 no staging antes da T020 (002/T013)
+- A tela precisa da tabela para rodar localmente; o prod só recebe a migration na T020, junto do primeiro push que lê as regras. Conta e2e-admin separada da do dono, para os e2e editarem regras.

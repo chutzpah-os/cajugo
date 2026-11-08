@@ -218,3 +218,6 @@
 
 # 2026-11-07 · 002/T012 campos de tela
 - src/ui: TextField com sufixo; PercentField e MoneyField (teclado numérico); ReadOnlyNotice.
+
+# 2026-11-08 · 002/T013 tela [4c]
+- /admin/conta real: grupos com Salvar (saveSettingsAction + updateTag), suporte só leitura, chave Pix mascarada, link Alterar senha; settings/form.ts (conversão do formulário); conta e2e-admin no seed; migration 0005 aplicada no staging.

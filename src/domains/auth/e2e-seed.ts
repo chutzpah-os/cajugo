@@ -22,6 +22,7 @@ export const E2E_ACCOUNTS = {
   },
   referrer: { email: "e2e-indicador@cajugo.test", roles: ["referrer"] },
   support: { email: "e2e-suporte@cajugo.test", roles: ["support"] },
+  admin: { email: "e2e-admin@cajugo.test", roles: ["admin"] },
   temporary: { email: "e2e-temporaria@cajugo.test", roles: ["seller"] },
 } as const satisfies Record<string, { email: string; roles: Role[] }>;
 
