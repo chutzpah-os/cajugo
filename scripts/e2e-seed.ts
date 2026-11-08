@@ -4,6 +4,7 @@
  * Senha de todas: `E2E_PASSWORD` do `.env.local`. Recusa rodar contra a produção.
  */
 import { seedE2E } from "@/domains/auth/e2e-seed";
+import { getCloudinary } from "@/platform/cloudinary/cloudinary";
 import { getDb } from "@/platform/db/client";
 import {
   createSupabaseServerClient,
@@ -27,7 +28,7 @@ async function main() {
   const auth = new SupabaseAuthProvider(
     createSupabaseServerClient({ getAll: () => [], setAll: () => {} }),
   );
-  await seedE2E({ db: getDb(), auth }, password);
+  await seedE2E({ db: getDb(), auth, cloudinary: getCloudinary() }, password);
   console.log("Contas de teste prontas no staging.");
 }
 
