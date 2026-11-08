@@ -1,7 +1,8 @@
 import { and, asc, count, desc, eq, gte } from "drizzle-orm";
 import { authorizeTo, can } from "@/domains/auth/service";
 import { rejectSelfReferralsByTaxId } from "@/domains/referrals/service";
-import { markPaymentReview } from "@/domains/stores/service";
+import { notify } from "@/domains/notices/service";
+import { activateFirstTime, markPaymentReview } from "@/domains/stores/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
 import type {
@@ -14,9 +15,14 @@ import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
+import { storeUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { saoPauloMonthStart } from "./due-date";
-import { startCheckoutSchema, submitReceiptSchema } from "./schemas";
+import { firstDueDate, saoPauloMonthStart } from "./due-date";
+import {
+  confirmPaymentSchema,
+  startCheckoutSchema,
+  submitReceiptSchema,
+} from "./schemas";
 
 /**
  * Cobrança da loja (spec 004; mensais na 011): fatura, pagamento por Pix manual e
@@ -454,4 +460,105 @@ export async function reviewQueue(
     pixReady: pixReady(settings.pix),
     canReview: can(s, "payments.review"),
   };
+}
+
+const ALREADY_REVIEWED = "Este comprovante já foi conferido.";
+
+const brDate = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: "America/Sao_Paulo",
+});
+
+/**
+ * Fatura paga → loja no ar (PIX-FR-009, PIX-FR-011), dentro da transação de quem
+ * confirmou: fatura `paid`, 1ª ativação com o vencimento, aviso ao lojista e a
+ * mensagem pronta do `wa.me` para o admin avisar a loja.
+ */
+async function settleInvoice(
+  tx: Db,
+  invoice: { id: string; storeId: string; kind: "first" | "monthly" },
+  at: Date,
+): Promise<{ whatsappUrl: string }> {
+  await tx
+    .update(invoices)
+    .set({ status: "paid", paidAt: at })
+    .where(eq(invoices.id, invoice.id));
+  const [store] = await tx
+    .select({
+      name: stores.name,
+      slug: stores.slug,
+      whatsapp: stores.whatsapp,
+      ownerId: stores.ownerId,
+    })
+    .from(stores)
+    .where(eq(stores.id, invoice.storeId));
+  const { billingDay, nextDueAt } = firstDueDate(at);
+  if (invoice.kind === "first")
+    await activateFirstTime(tx, invoice.storeId, { billingDay, nextDueAt, at });
+  await notify(tx, store.ownerId, { kind: "payment_confirmed" }, at);
+  return {
+    whatsappUrl: whatsappLink(
+      store.whatsapp,
+      `Olá, ${store.name}! Seu pagamento foi confirmado e a sua loja já está no ar na CajuGo: ${storeUrl(store.slug)}. Próximo vencimento: ${brDate.format(nextDueAt)}.`,
+    ),
+  };
+}
+
+/**
+ * Admin confirma o comprovante [10b] (PIX-FR-009): pode corrigir o valor pelo extrato
+ * (PIX-FR-008). Só `admin` (PIX-SEC-003); conferido uma vez só, mesmo com dois admins
+ * ao mesmo tempo (PIX-SEC-007). Histórico com valores e referência (PIX-SEC-004).
+ */
+export async function confirmPayment(
+  deps: BillingDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<{ whatsappUrl: string }> {
+  const admin = authorizeTo(session, "payments.review");
+  const parsed = confirmPaymentSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { paymentId, amountCents } = parsed.data;
+  const now = clock(deps);
+
+  return deps.db.transaction(async (tx) => {
+    const [payment] = await tx
+      .update(payments)
+      .set({
+        status: "confirmed",
+        reviewedBy: admin.userId,
+        reviewedAt: now,
+        ...(amountCents ? { amountCents } : {}),
+      })
+      .where(and(eq(payments.id, paymentId), eq(payments.status, "submitted")))
+      .returning();
+    if (!payment) throw await notOpenForReview(tx, paymentId);
+    const [invoice] = await tx
+      .select()
+      .from(invoices)
+      .where(eq(invoices.id, payment.invoiceId));
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "payment.confirmed",
+      entity: "payment",
+      entityId: payment.id,
+      data: {
+        storeId: payment.storeId,
+        invoiceId: invoice.id,
+        reference: REFERENCE[invoice.kind],
+        paidCents: payment.paidCents,
+        amountCents: payment.amountCents,
+        expectedCents: invoice.totalCents,
+      },
+    });
+    return settleInvoice(tx, invoice, now);
+  });
+}
+
+/** Pagamento que não está em análise: já conferido (409) ou inexistente (404). */
+async function notOpenForReview(db: Db, paymentId: string): Promise<AppError> {
+  const [exists] = await db
+    .select({ id: payments.id })
+    .from(payments)
+    .where(eq(payments.id, paymentId));
+  return exists ? AppError.conflict(ALREADY_REVIEWED) : AppError.notFound();
 }

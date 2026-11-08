@@ -364,3 +364,6 @@
 
 # 2026-11-08 · 004/T014 fila de comprovantes
 - billing.reviewQueue (payments.view: admin e suporte): comprovantes em análise do mais antigo, com loja, referência, valor pago × esperado ("Valor diferente do esperado"), horário e formato; totais aguardando e confirmados no mês (São Paulo); pixReady e canReview (suporte sem botões). due-date.saoPauloMonthStart; auth/service reexporta can.
+
+# 2026-11-08 · 004/T015 confirmar comprovante
+- billing.confirmPayment (só admin): atualização condicional (submitted → confirmed, valor corrigido opcional), fatura paga, 1ª ativação com dia e próximo vencimento, aviso "Pagamento confirmado", log com valor pago/vale/esperado e referência, link wa.me com o endereço da loja e o vencimento; segundo admin → 409 "Este comprovante já foi conferido.", inexistente → 404. settleInvoice fica para o registro manual (T017) e para as mensais (011).
