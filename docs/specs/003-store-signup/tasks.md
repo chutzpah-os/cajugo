@@ -24,7 +24,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T013** `pnpm e2e:seed` apaga as lojas e contas criadas pelos e2e de cadastro (`e2e-cadastro-*@cajugo.test`) · _—_
 
 ## Fase 3 — Telas
-- [ ] **T014** [P] `src/ui`: menu em gaveta, campo com sugestões (autocomplete), campo de imagem (enviar/trocar) e aviso "Disponível/Indisponível", com testes · _STO-NFR-002_
+- [x] **T014** [P] `src/ui`: menu em gaveta, campo com sugestões (autocomplete), campo de imagem (enviar/trocar) e aviso "Disponível/Indisponível", com testes · _STO-NFR-002_
 - [ ] **T015** Menu da home [11a] no cabeçalho de `/`: visitante e conectado (nome + painéis) · _STO-FR-001_
 - [ ] **T016** Landing `/lojistas` [5b] com metadata, canônica, JSON-LD e Open Graph; `sitemap.xml` e `robots.txt` · _STO-FR-002, STO-NFR-001_
 - [ ] **T017** [P] `/termos` [12i] com abas Termos e Privacidade e aviso de versão inicial · _STO-FR-016_

@@ -289,3 +289,6 @@
 
 # 2026-11-08 · 003/T013 limpeza dos cadastros de teste
 - stores.removeE2ESignups (lojas, redirecionamentos, perfis e contas de e2e-cadastro-*@cajugo.test) e referrals.removeReferralData; chamado pelo pnpm e2e:seed. Migrations 0006/0007 aplicadas no staging para o seed rodar.
+
+# 2026-11-08 · 003/T014 componentes
+- src/ui: Drawer (gaveta em <dialog>, fecha ao tocar num link), AutocompleteField (combobox WAI-ARIA), AvailabilityHint (Disponível/Indisponível com role=status) e ImageField (recusa > tamanho no aparelho).
