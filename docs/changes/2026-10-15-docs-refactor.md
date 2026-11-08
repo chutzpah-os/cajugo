@@ -409,3 +409,6 @@
 
 # 2026-11-08 · 005/T002 migration 0010
 - Enum vehicle_status e tabelas vehicles, vehicle_photos (posição única por veículo), vehicle_history, fipe_brands, fipe_models, fipe_years e fipe_prices, com índices; só CREATE. Aplicada no staging.
+
+# 2026-11-08 · 005/T003 placa
+- src/platform/br/plate.ts: parsePlate aceita Mercosul (ABC1D23) e antiga (ABC1234), com ou sem hífen, guarda em maiúsculas e devolve o final de placa.

@@ -9,7 +9,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 1 — Fundação
 - [x] **T001** Documentos: ARCHITECTURE §4 (`vehicles` com ids/mês da FIPE, `share_before_sale`, `deleted_at`, `conditions` jsonb; `vehicle_history`; `fipe_*`), GLOSSARY ("Histórico de preço", "Referência FIPE"), ADR 0012 (FIPE copiada sob demanda para o banco, D1) · _—_
 - [x] **T002** Migration `0010`: enum `vehicle_status`, `vehicles`, `vehicle_photos`, `vehicle_history`, `fipe_brands`, `fipe_models`, `fipe_years`, `fipe_prices` + índices; teste de migration (posição única da foto) · _—_
-- [ ] **T003** [P] `src/platform/br/plate.ts`: placa Mercosul e antiga, normalização e final de placa · _VEH-FR-005, VEH-SEC-002_
+- [x] **T003** [P] `src/platform/br/plate.ts`: placa Mercosul e antiga, normalização e final de placa · _VEH-FR-005, VEH-SEC-002_
 - [ ] **T004** [P] `src/platform/fipe/client.ts`: marcas, modelos, anos e preço da API pública, com prazo de 5 s e validação do formato da resposta (`fetch` falso nos testes) · _VEH-FR-005, VEH-FR-007_
 - [ ] **T005** `src/platform/cloudinary`: transformação de entrada assinada (`c_limit,w_1600,h_1600`) e dimensões no `verifyUpload`; prova no staging (foto com GPS sai sem metadados e com no máximo 1.600 px) · _VEH-SEC-003, VEH-NFR-002_
 - [ ] **T006** Domínio `fipe`: `brands`, `models`, `years`, `reference` lendo do banco e buscando só o que falta ou venceu (30 dias; preço do mês); API fora → o guardado · _VEH-FR-005, VEH-FR-007, VEH-NFR-004_
