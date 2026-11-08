@@ -37,4 +37,4 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 4 — Fechamento
 - [x] **T024** Playwright (390 px, staging): [5d] → [6c] com PNG e PDF reais → [10a]; admin recusa → [12e] → reenvio → confirma → [5e] e `/loja/{slug}` abre; registro manual; suporte sem botões; usuário da loja bloqueado; `audit()`; seed limpa faturas e pagamentos do e2e · _PIX-FR-001 a PIX-FR-014, PIX-NFR-001, PIX-SEC-003, PIX-SEC-006_
-- [ ] **T025** _(staging feito: 0008 e 0009; prod pendente com o dono)_ Migration `0008` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_
+- [x] **T025** _(0008 e 0009 no staging e no prod, conferidas)_ Migration `0008` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_

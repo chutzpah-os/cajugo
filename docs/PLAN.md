@@ -71,7 +71,7 @@
 - Minha loja: dados públicos, horário, logo e capa (Cloudinary), link + QR code pela função única de URL, divulgar por padrão, troca de slug com redirecionamento.
 
 ## 004 · Pix manual e ativação — telas 5d, 6c, 10a, 10b, 12e, 5e, 6g (registro manual)
-> ✅ **Implementada** em 2026-11-08 (`docs/specs/004-pix-activation/`): [5d] com CPF/CNPJ e autoindicação por documento, [6c] com BR Code e comprovante privado (rota do servidor, ADR 0011), [10a], [10b] com correção de valor, confirmar/recusar e registro sem comprovante, [12e], [5e] e avisos no painel; fatura, pagamento e vencimento já no formato da 011; 345 testes de unidade/integração e 38 e2e; todos os FR/SEC com teste. Migrations 0008 e 0009 no staging; **no prod pendentes (T025), aplicar antes do push**.
+> ✅ **Implementada** em 2026-11-08 (`docs/specs/004-pix-activation/`): [5d] com CPF/CNPJ e autoindicação por documento, [6c] com BR Code e comprovante privado (rota do servidor, ADR 0011), [10a], [10b] com correção de valor, confirmar/recusar e registro sem comprovante, [12e], [5e] e avisos no painel; fatura, pagamento e vencimento já no formato da 011; 345 testes de unidade/integração e 38 e2e; todos os FR/SEC com teste. Migrations 0008 e 0009 no staging e no prod.
 - [5d] só Pix → [6c] chave + **QR estático** + upload **privado** do comprovante (imagem/PDF) → [10a] "em análise" (rascunhos liberados).
 - Admin [10b]: fila com alerta de valor divergente, **Confirmar** (ativa a loja, próximo vencimento, `wa.me`) / **Recusar** com motivo → [12e].
 - Registro manual sem comprovante (exceção) em [6g]; onboarding [5e].

@@ -397,3 +397,6 @@
 
 # 2026-11-08 · 004 verificação
 - Correções da revisão: fatura paga uma vez só (atualização condicional + índice único de pagamento confirmado, migration 0009), loja travada no registro sem comprovante, posse do comprovante no próprio filtro, id do aviso validado, observação no log do registro manual, reenvio [12e] sem redigitar o documento, erros que sumiam agora vão para o log; teste da PIX-NFR-002 (fora da busca) e auditoria de [12e] no e2e. Spec implemented; prod pendente (T025).
+
+# 2026-11-08 · 004/T025 migrations no prod
+- 0008 e 0009 aplicadas no cajugo-prod e conferidas: 10 migrations, tabelas invoices/payments/notices, colunas novas de stores, índices únicos de pagamento em análise e confirmado, mensalidade R$ 100 e status rejected da indicação.
