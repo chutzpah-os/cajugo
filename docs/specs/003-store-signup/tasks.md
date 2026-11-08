@@ -36,4 +36,4 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 4 — Ponta a ponta e fechamento
 - [x] **T022** Playwright (390 px, staging): menu; landing → cadastro → pagamento com código do link; endereço "Indisponível"; conta existente; Minha loja (dados, horário, logo, link, QR); troca de endereço e redirecionamento; termos; SEO no HTML de `/lojistas`; acessibilidade · _STO-FR-001 a STO-FR-016, STO-NFR-001, STO-NFR-002, STO-SEC-002, STO-SEC-003_
 - [ ] **T023** Aplicar as migrations `0006` e `0007` no staging e no prod e conferir · _—_
-- [ ] **T024** `/verify`: rastreabilidade verde; spec `implemented`; registrar em `docs/changes` e `docs/decisions` · _—_
+- [x] **T024** `/verify`: rastreabilidade verde; spec `implemented`; registrar em `docs/changes` e `docs/decisions` · _—_

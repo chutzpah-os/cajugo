@@ -2,6 +2,7 @@ import { and, eq, gt, inArray, like } from "drizzle-orm";
 import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
 import {
   checkCode,
+  codeOf,
   getOrCreateCode,
   registerReferral,
   removeReferralData,
@@ -298,16 +299,20 @@ export type StoreSummary = {
   shareByDefault: boolean;
   logoPublicId: string | null;
   coverPublicId: string | null;
-  slugChangedAt: Date | null;
+  /** dd/mm/aaaa da próxima troca de endereço permitida; `null`: pode trocar já (STO-FR-013). */
+  nextSlugChange: string | null;
+  /** Código pessoal de indicação do lojista (STO-FR-014). */
+  referralCode: string | null;
 };
 
 export async function storeSummary(
   db: Db,
   session: Session | null,
 ): Promise<StoreSummary> {
-  const { storeId } = ownStore(session);
+  const { userId, storeId } = ownStore(session);
   const [s] = await db.select().from(stores).where(eq(stores.id, storeId));
   if (!s) throw AppError.notFound();
+  const next = nextSlugChangeAt(s.slugChangedAt);
   return {
     name: s.name,
     slug: s.slug,
@@ -328,7 +333,8 @@ export async function storeSummary(
     shareByDefault: s.shareByDefault,
     logoPublicId: s.logoPublicId,
     coverPublicId: s.coverPublicId,
-    slugChangedAt: s.slugChangedAt,
+    nextSlugChange: next && next > new Date() ? brDate.format(next) : null,
+    referralCode: await codeOf(db, userId),
   };
 }
 
@@ -337,6 +343,13 @@ const SLUG_REDIRECT_DAYS = 90;
 const brDate = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "America/Sao_Paulo",
 });
+
+/** Quando a loja pode trocar de endereço de novo (30 dias depois da última troca). */
+function nextSlugChangeAt(changedAt: Date | null): Date | null {
+  return changedAt
+    ? new Date(changedAt.getTime() + SLUG_CHANGE_INTERVAL_DAYS * DAY_MS)
+    : null;
+}
 
 /**
  * Troca do endereço do catálogo (STO-FR-013): no máximo 1 vez a cada 30 dias; o
@@ -363,10 +376,8 @@ export async function changeSlug(
     .where(eq(stores.id, storeId));
   if (!store) throw AppError.notFound();
   if (store.slug === slug) return { slug };
-  if (store.changedAt) {
-    const next = new Date(
-      store.changedAt.getTime() + SLUG_CHANGE_INTERVAL_DAYS * DAY_MS,
-    );
+  const next = nextSlugChangeAt(store.changedAt);
+  if (next) {
     if (now < next)
       throw fieldError(
         "slug",
@@ -487,10 +498,14 @@ export async function setStoreImage(
   const { userId, storeId } = ownStore(session);
   const k = imageKind(kind);
   const prefix = deps.cloudinary.fullPublicId(`stores/${storeId}`, `${k}-`);
+  // Exatamente o nome que o servidor assinou ({pasta da loja}/{tipo}-{uuid}): sem
+  // isso, `../` depois do prefixo apontaria para a pasta de outra loja.
   if (
     typeof publicId !== "string" ||
     !publicId.startsWith(prefix) ||
-    publicId.length > 200
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(
+      publicId.slice(prefix.length),
+    )
   )
     throw AppError.notFound();
 
@@ -602,7 +617,8 @@ export async function checkReferralCode(
 
 /**
  * Loja do endereço público `/loja/{slug}` (só dados públicos). `redirected`: o
- * endereço é antigo e leva ao atual (STO-FR-013). `null`: endereço inexistente.
+ * endereço é antigo e leva ao atual (STO-FR-013). `null`: endereço inexistente ou
+ * loja fora do ar.
  */
 export async function publicStore(
   db: Db,
@@ -619,7 +635,9 @@ export async function publicStore(
   const [s] = await db
     .select({ name: stores.name, city: stores.city, state: stores.state })
     .from(stores)
-    .where(eq(stores.id, resolved.storeId));
+    // Só loja no ar: cadastrada (sem pagamento), suspensa ou cancelada não é pública
+    // (STO-FR-006, SECURITY.md §4).
+    .where(and(eq(stores.id, resolved.storeId), eq(stores.status, "active")));
   return s
     ? { slug: resolved.slug, redirected: resolved.redirected, ...s }
     : null;

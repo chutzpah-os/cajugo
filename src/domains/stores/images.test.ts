@@ -97,7 +97,7 @@ describe("logo e capa da loja", () => {
         deps(),
         a,
         "cover",
-        `staging/stores/${a.storeId}/cover-nunca-enviado`,
+        `staging/stores/${a.storeId}/cover-00000000-0000-4000-8000-000000000000`,
       ),
     ).rejects.toMatchObject({ status: 422 });
     const [store] = await t.db
@@ -143,5 +143,20 @@ describe("logo e capa da loja", () => {
     await expect(
       storeImageUpload(deps(), a, "banner" as never),
     ).rejects.toMatchObject({ status: 422 });
+  });
+
+  it("[STO-SEC-004] [STO-SEC-001] nome fora do padrão assinado (ex.: ../ para outra loja) é recusado", async () => {
+    const a = await owner("loja-a", "a@x.com");
+    const b = await owner("loja-b", "b@x.com");
+    const signedB = await storeImageUpload(deps(), b, "logo");
+    cloudinary.simulateUpload(signedB, { format: "jpg", bytes: 1000 });
+
+    for (const publicId of [
+      `staging/stores/${a.storeId}/logo-x/../../${b.storeId}/${signedB.fields.public_id}`,
+      `staging/stores/${a.storeId}/logo-qualquer`,
+    ])
+      await expect(
+        setStoreImage(deps(), a, "logo", publicId),
+      ).rejects.toMatchObject({ status: 404 });
   });
 });

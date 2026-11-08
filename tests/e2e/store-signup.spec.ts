@@ -185,7 +185,7 @@ test.describe("cadastro do lojista e Minha loja", () => {
     ).toBeChecked();
   });
 
-  test("[STO-FR-010] [STO-FR-011] logo enviado ao Cloudinary, link copiado e QR code baixado", async ({
+  test("[STO-FR-010] [STO-FR-011] [STO-FR-014] logo enviado ao Cloudinary, link copiado e QR code baixado", async ({
     page,
     context,
   }) => {
@@ -212,6 +212,11 @@ test.describe("cadastro do lojista e Minha loja", () => {
     await expect(
       page.getByRole("link", { name: "Ver como cliente" }),
     ).toHaveAttribute("href", url!);
+    // Código pessoal e link de indicação (STO-FR-014).
+    await expect(page.getByTestId("referral-code")).toHaveText("LOJISTA10");
+    await expect(page.getByTestId("referral-url")).toHaveText(
+      /\/i\/lojista10$/,
+    );
   });
 
   test("[STO-FR-013] troca do endereço: o antigo redireciona e a próxima troca espera 30 dias", async ({

@@ -2,7 +2,7 @@
 id: 003
 slug: store-signup
 title: Cadastro do lojista, Minha loja e menu
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-08
 ---
@@ -98,7 +98,7 @@ Sucesso: um lojista sai da landing para a tela de pagamento em poucos minutos, s
 - **Então** o código vem preenchido e aparece "Indicação de Ricardo aplicada"
 - **E** um código inexistente mostra "Código não encontrado" e não impede concluir o cadastro sem código
 - **E** um código de quem tem o mesmo e-mail ou o mesmo celular do visitante mostra que autoindicação não vale
-- **E** com o código aceito, a indicação aparece como "Cadastrada" para quem indicou (sem dados pessoais do indicado)
+- **E** com o código aceito, a indicação fica registrada como "Cadastrada" (a tela em que quem indicou a vê, sem dados pessoais do indicado, é da spec 010)
 
 ### STO-FR-008
 - **Dado** um lojista em Minha loja
@@ -175,8 +175,8 @@ Sucesso: um lojista sai da landing para a tela de pagamento em poucos minutos, s
 
 ### STO-SEC-005
 - **Dado** um cadastro recusado por autoindicação
-- **Quando** quem indicou consulta as suas indicações
-- **Então** não vê CPF, CNPJ nem celular de ninguém
+- **Quando** o código é checado (ao vivo ou ao concluir)
+- **Então** a resposta traz só o primeiro nome de quem indicou, nunca CPF, CNPJ, celular ou e-mail de ninguém (a tela de indicações da spec 010 herda esta regra)
 
 ## Pendências
 Nenhuma. Respostas do `/clarify` (2026-11-08): código pessoal antecipado da 010 (só código, link e registro da indicação); autoindicação por e-mail e celular aqui e por CPF/CNPJ na 004; conta existente entra e adiciona a loja (mensagem neutra); termos com o rascunho do PRD como versão inicial; troca de endereço no máximo 1 vez a cada 30 dias; endereço em campos separados.

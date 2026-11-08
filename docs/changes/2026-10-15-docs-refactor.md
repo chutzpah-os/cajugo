@@ -316,3 +316,6 @@
 
 # 2026-11-08 · 003/T022 e2e do cadastro e de Minha loja
 - tests/e2e/store-signup.spec.ts (11 cenários: menu, landing com SEO no HTML, cadastro pelo /i/lojista10 até o pagamento, Indisponível, conta existente, Minha loja com horário, logo no Cloudinary, link e QR, troca de endereço com redirecionamento, termos, Sem permissão, 390 px). Seed acha a loja de teste pelo dono e a deixa fora da vitrine; IP de teste só no localhost; audit mede o rótulo do campo. 35 e2e verdes.
+
+# 2026-11-08 · 003/T024 verificação da spec 003
+- Rastreabilidade: 23 requisitos com teste, 268 unidade/integração e 35 e2e verdes. Correções da revisão: imagem só com o nome exato assinado (bloqueia `../` para outra loja), /loja/{slug} só para loja ativa, código pessoal e link /i/ em Minha loja (STO-FR-014), regra dos 30 dias só no serviço. Spec `implemented`; prod pendente (T023).

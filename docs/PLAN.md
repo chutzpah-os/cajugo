@@ -65,6 +65,7 @@
 - Base para todas as specs seguintes (nada de número fixo no código).
 
 ## 003 · Cadastro do lojista, Minha loja e menu — telas 11a, 5b, 5c (+ código 8d), 3b
+> ✅ **Implementada** em 2026-11-08 (`docs/specs/003-store-signup/`): menu [11a], landing [5b] com SEO, cadastro [5c] com código de indicação e autoindicação por e-mail/celular, Minha loja [3b] (dados, horário, logo/capa no Cloudinary, link, QR, código pessoal, troca de endereço com redirecionamento), termos [12i]; 268 testes de unidade/integração e 35 e2e; todos os FR/SEC com teste. Migrations 0006 e 0007 no staging; **no prod pendentes (T023), aplicar antes do push**.
 - Menu da home [11a] e landing [5b].
 - Cadastro: loja + responsável, slug `[a-z0-9-]` (loja em `/loja/{slug}`), código Caju Indica opcional (validado, bloqueia autoindicação); loja nasce `registered`.
 - Minha loja: dados públicos, horário, logo e capa (Cloudinary), link + QR code pela função única de URL, divulgar por padrão, troca de slug com redirecionamento.
@@ -76,6 +77,7 @@
 
 ## 005 · Veículos do lojista e aprovação prévia — telas 1c, 2a, 6e, 6f, 14c
 - Formulário [2a] com autosave; fotos (até 20, upload assinado); FIPE (D6).
+- **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; hoje os 15 MB são conferidos depois do envio e o arquivo recusado fica na pasta. Resolver (transformação de entrada ou limite assinado) e apagar o recusado.
 - Estados: rascunho → (pendente de aprovação) → publicado ⇄ oculto → vendido (desfazer 7 dias) → excluído.
 - Divulgar na CajuGo; histórico de preço; lista com KPIs, busca e filtros; resumo [6e].
 - Aprovação prévia [14c]: checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi), aprovar / pedir ajuste.

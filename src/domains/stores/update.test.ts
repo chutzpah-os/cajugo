@@ -168,4 +168,13 @@ describe("Minha loja", () => {
       status: 403,
     });
   });
+
+  it("[STO-FR-014] [STO-FR-013] Minha loja mostra o código pessoal e se o endereço pode ser trocado", async () => {
+    const a = await owner("loja-a", "a@x.com");
+
+    const summary = await storeSummary(t.db, a);
+
+    expect(summary.referralCode).toMatch(/^DONO\d{2}$/);
+    expect(summary.nextSlugChange).toBeNull();
+  });
 });

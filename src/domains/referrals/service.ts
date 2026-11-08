@@ -41,6 +41,18 @@ export async function getOrCreateCode(
   throw new Error(`Sem código livre para ${base}`);
 }
 
+/** Código pessoal já criado, para mostrar a quem é dono dele (STO-FR-014). */
+export async function codeOf(
+  db: Db,
+  profileId: string,
+): Promise<string | null> {
+  const [row] = await db
+    .select({ code: referralCodes.code })
+    .from(referralCodes)
+    .where(eq(referralCodes.profileId, profileId));
+  return row?.code ?? null;
+}
+
 const digits = (s: string) =>
   s.replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "");
 

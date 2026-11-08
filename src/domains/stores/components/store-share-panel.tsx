@@ -38,11 +38,15 @@ async function uploadToCloudinary(kind: "logo" | "cover", file: File) {
 export function StoreSharePanel({
   storeName,
   catalogUrl,
+  referralCode,
+  referralUrl,
   logoUrl,
   coverUrl,
 }: {
   storeName: string;
   catalogUrl: string;
+  referralCode: string | null;
+  referralUrl: string | null;
   logoUrl: string | null;
   coverUrl: string | null;
 }) {
@@ -153,6 +157,24 @@ export function StoreSharePanel({
           </p>
         )}
       </section>
+
+      {referralCode && referralUrl && (
+        <section className="flex flex-col gap-2 rounded-card border border-line bg-surface p-4">
+          <h2 className="text-[17px] font-extrabold">
+            Seu código de indicação
+          </h2>
+          <p className="text-sm text-text-2">
+            Indique a CajuGo para outras lojas com o código{" "}
+            <strong className="font-mono text-ink" data-testid="referral-code">
+              {referralCode}
+            </strong>{" "}
+            ou o link:
+          </p>
+          <p className="font-mono text-sm break-all" data-testid="referral-url">
+            {referralUrl}
+          </p>
+        </section>
+      )}
     </div>
   );
 }

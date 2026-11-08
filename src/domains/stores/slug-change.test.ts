@@ -4,7 +4,7 @@ import { activityLog, stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import type { Session } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
-import { changeSlug, registerStore, resolveSlug } from "./service";
+import { changeSlug, publicStore, registerStore, resolveSlug } from "./service";
 
 const DAY = 86_400_000;
 const T0 = new Date("2026-11-08T12:00:00Z");
@@ -161,5 +161,26 @@ describe("troca do endereço do catálogo", () => {
     await expect(
       changeSlug(deps(), staff, "outro-endereco"),
     ).rejects.toMatchObject({ status: 403 });
+  });
+
+  it("[STO-FR-006] a página pública só mostra loja no ar (cadastrada ou suspensa: nada)", async () => {
+    const a = await owner("silvautocar", "a@x.com");
+    expect(await publicStore(t.db, "silvautocar")).toBeNull();
+
+    await t.db
+      .update(stores)
+      .set({ status: "active" })
+      .where(eq(stores.id, a.storeId!));
+    expect(await publicStore(t.db, "silvautocar")).toMatchObject({
+      slug: "silvautocar",
+      redirected: false,
+      city: "Aracaju",
+    });
+
+    await t.db
+      .update(stores)
+      .set({ status: "suspended" })
+      .where(eq(stores.id, a.storeId!));
+    expect(await publicStore(t.db, "silvautocar")).toBeNull();
   });
 });

@@ -215,3 +215,6 @@
 
 # 2026-11-08 · Checagem de alvo de toque segue o WCAG 2.5.8 (003/T022)
 - O alvo de um checkbox dentro de <label> é o rótulo inteiro (min-h-11), link no meio de uma frase é exceção do WCAG e o campo isca (aria-hidden) não é alvo; a checagem passou a medir assim em vez de reprovar telas corretas. Seed busca a loja de teste pelo dono porque o e2e troca o endereço.
+
+# 2026-11-08 · Ajustes da verificação da 003 (003/T024)
+- A revisão achou que um publicId com `../` depois do prefixo da loja apontava para a pasta de outra loja: agora só vale o nome exato que o servidor assinou. Loja cadastrada/suspensa não aparece em /loja (SECURITY §4). FR-007/SEC-005 reescritos: a tela de quem indicou é da 010 (decisão do /clarify). Tamanho e EXIF na assinatura ficaram para antes das fotos de veículo (005).

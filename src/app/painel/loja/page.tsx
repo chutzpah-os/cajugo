@@ -13,17 +13,6 @@ import { appUrl, storeUrl } from "@/platform/http/urls";
 
 export const metadata: Metadata = { title: "Minha loja | CajuGo" };
 
-const brDate = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: "America/Sao_Paulo",
-});
-
-/** Data da próxima troca de endereço, se ainda não passaram 30 dias (STO-FR-013). */
-function nextSlugChange(changedAt: Date | null): string | null {
-  if (!changedAt) return null;
-  const next = new Date(changedAt.getTime() + 30 * 86_400_000);
-  return next > new Date() ? brDate.format(next) : null;
-}
-
 async function Content() {
   const { session, allowed, home } = await requireStorePage(
     "/painel/loja",
@@ -38,6 +27,12 @@ async function Content() {
       <StoreSharePanel
         storeName={s.name}
         catalogUrl={storeUrl(s.slug)}
+        referralUrl={
+          s.referralCode
+            ? `${appUrl()}/i/${s.referralCode.toLowerCase()}`
+            : null
+        }
+        referralCode={s.referralCode}
         logoUrl={
           s.logoPublicId
             ? cloudinary.imageUrl(s.logoPublicId, { width: 200 })
@@ -52,7 +47,7 @@ async function Content() {
       <SlugChangeForm
         current={s.slug}
         appHost={new URL(appUrl()).host}
-        nextAllowed={nextSlugChange(s.slugChangedAt)}
+        nextAllowed={s.nextSlugChange}
       />
       <StoreInfoForm
         initial={{
