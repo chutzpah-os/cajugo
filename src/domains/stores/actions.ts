@@ -9,7 +9,7 @@ import { searchCities, type City } from "@/platform/geo/cities";
 import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { AppError } from "@/platform/http/errors";
 import { isHoneypotFilled } from "@/platform/http/honeypot";
-import { logger } from "@/platform/http/logger";
+import { errorMessage, logger } from "@/platform/http/logger";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import {
   getCloudinary,
@@ -127,7 +127,7 @@ export async function registerStoreAction(
         ),
       };
     logger.error("stores.register_failed", {
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage(error),
     });
     return {
       message: "Não foi possível concluir agora. Tente de novo em instantes.",
@@ -160,7 +160,7 @@ function formError(error: unknown): StoreFormState {
       ),
     };
   logger.error("stores.save_failed", {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage(error),
   });
   return {
     ok: false,

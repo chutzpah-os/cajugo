@@ -141,7 +141,11 @@ async function Content({ searchParams }: PageProps<"/painel/veiculos">) {
       {list.items.length ? (
         <ul className="flex flex-col gap-3">
           {list.items.map((v) => (
-            <VehicleCard key={v.vehicleId} v={v} cloudName={cloud} />
+            <VehicleCard
+              key={`${v.vehicleId}-${v.status}-${v.shareOnCajugo}`}
+              v={v}
+              cloudName={cloud}
+            />
           ))}
         </ul>
       ) : q || status !== "all" ? (

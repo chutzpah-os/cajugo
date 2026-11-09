@@ -32,3 +32,11 @@ export const STATUS_TONE: Record<
   sold: "dark",
   deleted: "neutral",
 };
+
+/** Nome do veículo: a versão da FIPE já traz o modelo ("ONIX HATCH LT 1.0…"). */
+export function vehicleName(v: {
+  version: string | null;
+  model: string | null;
+}) {
+  return v.version ?? v.model ?? "Veículo sem nome";
+}

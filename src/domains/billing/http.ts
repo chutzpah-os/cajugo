@@ -1,5 +1,5 @@
 import { AppError, problemResponse } from "@/platform/http/errors";
-import { logger } from "@/platform/http/logger";
+import { errorMessage, logger } from "@/platform/http/logger";
 import type { Session } from "@/platform/http/session";
 import { receiptFile, type FileDeps } from "./service";
 
@@ -32,7 +32,7 @@ export async function receiptResponse(
         error.status === 403 ? AppError.notFound() : error,
       );
     logger.error("billing.receipt_failed", {
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage(error),
     });
     return problemResponse(
       new AppError(

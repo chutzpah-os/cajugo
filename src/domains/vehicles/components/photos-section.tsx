@@ -18,6 +18,8 @@ import type { PhotoView } from "../service";
 import { useVehicleForm } from "./vehicle-form";
 
 const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,.heic";
+/** Conferido antes de reduzir: depois, o tamanho original já se perdeu (VEH-SEC-003). */
+const MAX_BYTES = 15 * 1024 * 1024;
 
 /**
  * Fotos [2a] (VEH-FR-004): até 20, reduzidas no navegador, com progresso; a 1ª é a
@@ -34,6 +36,12 @@ export function PhotosSection({ cloudName }: { cloudName: string }) {
   const add = async (files: File[]) => {
     if (!files.length) return;
     setError(undefined);
+    const refused = files.find(
+      (f) =>
+        f.size > MAX_BYTES || (f.type && !ACCEPT.split(",").includes(f.type)),
+    );
+    if (refused)
+      return setError("Use fotos JPG, PNG, WEBP ou HEIC de até 15 MB.");
     const room = MAX_PHOTOS - photos.length;
     if (room <= 0)
       return setError(`Limite de ${MAX_PHOTOS} fotos por veículo.`);

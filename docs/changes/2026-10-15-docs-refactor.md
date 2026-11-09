@@ -472,3 +472,6 @@
 
 # 2026-11-09 · 005/T023 migration no prod
 - 0010 aplicada no cajugo-prod e conferida: 11 migrations, tabelas vehicles, vehicle_photos, vehicle_history e fipe_*, índices e os 6 status do veículo. Falta o /verify.
+
+# 2026-11-09 · 005 verificação
+- Correções da revisão: publicado não perde identificação, preço, km nem a última foto; fotos travadas em vendido; corridas resolvidas com trava do veículo (fotos, publicar, histórico de preço); log sem parâmetros de consulta em todas as actions (errorMessage); id inválido → 404; busca sem curinga; referência FIPE renovada ao abrir a edição; autosave em fila, sem perder o lote nem duplicar rascunho; /novo mostra os padrões da loja; 15 MB conferidos antes de reduzir; selo Na CajuGo. 408 testes e 40 e2e verdes. Spec implemented.

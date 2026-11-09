@@ -13,7 +13,7 @@ import {
 import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { saoPauloMonthStart } from "@/domains/billing/service";
-import { identify } from "@/domains/fipe/service";
+import { identify, reference } from "@/domains/fipe/service";
 import {
   LIVE_STATUSES,
   storeIsLive,
@@ -39,8 +39,9 @@ import {
 } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { MAX_PHOTOS, UNDO_SALE_DAYS } from "./lists";
-import { shareCaption, STATUS_LABEL } from "./captions";
+import { shareCaption, STATUS_LABEL, vehicleName } from "./captions";
 import { logActivity } from "@/platform/http/activity-log";
+import { PHOTO_REQUIRED, PUBLISH_REQUIRED } from "./publish-rules";
 import { draftSchema } from "./schemas";
 
 /**
@@ -60,6 +61,9 @@ function storeOf(session: Session | null): { userId: string; storeId: string } {
 
 /** Status em que o veículo ainda pode ser editado pela tela [2a]/[6e]. */
 const EDITABLE = ["draft", "pending_approval", "published"] as const;
+const NOT_EDITABLE = "Este veículo não pode mais ser editado.";
+const isEditable = (status: string) =>
+  (EDITABLE as readonly string[]).includes(status);
 
 function parse<T>(schema: z.ZodType<T>, input: unknown): T {
   const parsed = schema.safeParse(input);
@@ -81,23 +85,9 @@ export async function saveDraft(
   const { userId, storeId } = storeOf(session);
   const { vehicleId, ...parsed } = parse(draftSchema, input);
   const now = clock(deps);
-  const existing = vehicleId
-    ? await deps.db
-        .select({
-          status: vehicles.status,
-          yearModel: vehicles.yearModel,
-          yearManufacture: vehicles.yearManufacture,
-          priceCents: vehicles.priceCents,
-        })
-        .from(vehicles)
-        .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)))
-        .then((r) => r[0])
-    : undefined;
-  if (vehicleId && (!existing || existing.status === "deleted"))
-    throw AppError.notFound();
-  const fields = await resolveFields(deps, parsed, existing);
 
   if (!vehicleId) {
+    const fields = await resolveFields(deps, parsed);
     const defaults = await vehicleDefaults(deps.db, storeId);
     const [created] = await deps.db
       .insert(vehicles)
@@ -106,31 +96,39 @@ export async function saveDraft(
     return { vehicleId: created.id, savedAt: now };
   }
 
-  if (!(EDITABLE as readonly string[]).includes(existing!.status))
-    throw AppError.conflict("Este veículo não pode mais ser editado.");
-  const newPrice = fields.priceCents as number | undefined;
-  const priceChanged =
-    existing!.status === "published" &&
-    newPrice !== undefined &&
-    newPrice !== existing!.priceCents;
+  const mine = and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId));
+  const [existing] = await deps.db
+    .select({
+      status: vehicles.status,
+      yearModel: vehicles.yearModel,
+      yearManufacture: vehicles.yearManufacture,
+    })
+    .from(vehicles)
+    .where(mine);
+  if (!existing || existing.status === "deleted") throw AppError.notFound();
+  if (!isEditable(existing.status)) throw AppError.conflict(NOT_EDITABLE);
+  // Fora da transação: pode consultar a FIPE, e a linha não fica travada na rede.
+  const fields = await resolveFields(deps, parsed, existing);
+
   await deps.db.transaction(async (tx) => {
+    const [row] = await tx
+      .select({ status: vehicles.status, priceCents: vehicles.priceCents })
+      .from(vehicles)
+      .where(mine)
+      .for("update");
+    if (!row || !isEditable(row.status)) throw AppError.conflict(NOT_EDITABLE);
     await tx
       .update(vehicles)
       .set({ ...fields, updatedAt: now })
-      .where(
-        and(
-          eq(vehicles.id, vehicleId),
-          eq(vehicles.storeId, storeId),
-          inArray(vehicles.status, [...EDITABLE]),
-        ),
-      );
-    if (!priceChanged) return;
+      .where(mine);
+    const newPrice = fields.priceCents as number | null | undefined;
+    if (row.status !== "published" || typeof newPrice !== "number") return;
+    if (newPrice === row.priceCents) return;
     // Histórico de preço do publicado (VEH-FR-012), base do "Baixou R$ X" (006).
     await tx.insert(vehicleHistory).values({
       vehicleId,
       field: "price",
-      oldValue:
-        existing!.priceCents === null ? null : String(existing!.priceCents),
+      oldValue: row.priceCents === null ? null : String(row.priceCents),
       newValue: String(newPrice),
       userId,
       createdAt: now,
@@ -140,7 +138,7 @@ export async function saveDraft(
       action: "vehicle.price_changed",
       entity: "vehicle",
       entityId: vehicleId,
-      data: { oldCents: existing!.priceCents, newCents: newPrice },
+      data: { oldCents: row.priceCents, newCents: newPrice },
     });
   });
   return { vehicleId, savedAt: now };
@@ -158,7 +156,11 @@ const fieldError = (field: string, message: string) =>
 async function resolveFields(
   deps: VehicleDeps,
   input: Omit<DraftInput, "vehicleId">,
-  existing?: { yearModel: number | null; yearManufacture: number | null },
+  existing?: {
+    status: string;
+    yearModel: number | null;
+    yearManufacture: number | null;
+  },
 ) {
   const { fipeBrandId, fipeModelId, fipeYearId, plate, ...rest } = input;
   const out: Record<string, unknown> = { ...rest };
@@ -188,7 +190,9 @@ async function resolveFields(
   }
 
   const yearManufacture =
-    input.yearManufacture ?? existing?.yearManufacture ?? null;
+    input.yearManufacture !== undefined
+      ? input.yearManufacture
+      : (existing?.yearManufacture ?? null);
   if (
     yearModel &&
     yearManufacture &&
@@ -207,6 +211,21 @@ async function resolveFields(
         throw fieldError("plate", "Placa inválida (ex.: ABC1D23 ou ABC1234).");
       Object.assign(out, { plate: p.plate, plateEnd: p.end });
     }
+  }
+
+  // Publicado não perde o que é obrigatório (VEH-FR-009).
+  if (existing?.status === "published") {
+    const missing = PUBLISH_REQUIRED.filter(
+      ([field]) => field in out && (out[field] === null || out[field] === ""),
+    );
+    if (missing.length)
+      throw AppError.validation(
+        missing.map(([field, message]) => ({
+          field,
+          code: "required",
+          message,
+        })),
+      );
   }
   return out;
 }
@@ -258,6 +277,7 @@ export async function vehicleForm(
   vehicleId: string,
 ): Promise<VehicleFormView> {
   const { storeId } = storeOf(session);
+  if (!UUID.test(vehicleId)) throw AppError.notFound();
   const [v] = await db
     .select()
     .from(vehicles)
@@ -332,6 +352,28 @@ async function ownVehicle(db: Db, session: Session | null, vehicleId: string) {
   return { userId, storeId, vehicle: v };
 }
 
+/** Veículo da loja que ainda pode mudar (vendido ou oculto: 409). */
+async function editableVehicle(
+  db: Db,
+  session: Session | null,
+  vehicleId: string,
+) {
+  const own = await ownVehicle(db, session, vehicleId);
+  if (!isEditable(own.vehicle.status)) throw AppError.conflict(NOT_EDITABLE);
+  return own;
+}
+
+/** Trava o veículo na transação: fotos e publicar não correm em paralelo. */
+async function lockVehicle(tx: Db, vehicleId: string) {
+  const [v] = await tx
+    .select({ status: vehicles.status })
+    .from(vehicles)
+    .where(eq(vehicles.id, vehicleId))
+    .for("update");
+  if (!v || !isEditable(v.status)) throw AppError.conflict(NOT_EDITABLE);
+  return v;
+}
+
 const photoFolder = (vehicleId: string) => `vehicles/${vehicleId}`;
 const LIMIT = `Limite de ${MAX_PHOTOS} fotos por veículo.`;
 
@@ -349,7 +391,7 @@ export async function photoUpload(
   session: Session | null,
   vehicleId: string,
 ): Promise<SignedUpload> {
-  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const { vehicle } = await editableVehicle(deps.db, session, vehicleId);
   if ((await photoCount(deps.db, vehicle.id)) >= MAX_PHOTOS)
     throw AppError.conflict(LIMIT);
   return deps.cloudinary.signUpload({
@@ -371,7 +413,7 @@ export async function addPhoto(
   vehicleId: string,
   publicId: unknown,
 ): Promise<PhotoView> {
-  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const { vehicle } = await editableVehicle(deps.db, session, vehicleId);
   const prefix = deps.cloudinary.fullPublicId(
     photoFolder(vehicle.id),
     "photo-",
@@ -400,6 +442,11 @@ export async function addPhoto(
   }
 
   return deps.db.transaction(async (tx) => {
+    await lockVehicle(tx, vehicle.id);
+    const [already] = (await photosOf(tx, vehicle.id)).filter(
+      (p) => p.publicId === publicId,
+    );
+    if (already) return already;
     const n = await photoCount(tx, vehicle.id);
     if (n >= MAX_PHOTOS) {
       await deps.cloudinary.destroy(publicId);
@@ -450,9 +497,10 @@ export async function removePhoto(
   vehicleId: string,
   photoId: string,
 ): Promise<void> {
-  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const { vehicle } = await editableVehicle(deps.db, session, vehicleId);
   if (!UUID.test(photoId)) throw AppError.notFound();
   const removed = await deps.db.transaction(async (tx) => {
+    const { status } = await lockVehicle(tx, vehicle.id);
     const [row] = await tx
       .delete(vehiclePhotos)
       .where(
@@ -464,6 +512,10 @@ export async function removePhoto(
       .returning({ publicId: vehiclePhotos.publicId });
     if (!row) throw AppError.notFound();
     const rest = await photosOf(tx, vehicle.id);
+    if (status === "published" && rest.length === 0)
+      throw AppError.conflict(
+        "O veículo publicado precisa de pelo menos 1 foto.",
+      );
     await renumber(
       tx,
       vehicle.id,
@@ -481,30 +533,20 @@ export async function reorderPhotos(
   vehicleId: string,
   photoIds: unknown,
 ): Promise<void> {
-  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
-  const current = (await photosOf(deps.db, vehicle.id)).map((p) => p.id);
+  const { vehicle } = await editableVehicle(deps.db, session, vehicleId);
   const ids = Array.isArray(photoIds) ? photoIds.map(String) : [];
-  if (
-    ids.length !== current.length ||
-    new Set(ids).size !== ids.length ||
-    !ids.every((id) => current.includes(id))
-  )
-    throw fieldError("photos", "Envie a ordem de todas as fotos do veículo.");
-  await deps.db.transaction((tx) => renumber(tx, vehicle.id, ids));
+  await deps.db.transaction(async (tx) => {
+    await lockVehicle(tx, vehicle.id);
+    const current = (await photosOf(tx, vehicle.id)).map((p) => p.id);
+    if (
+      ids.length !== current.length ||
+      new Set(ids).size !== ids.length ||
+      !ids.every((id) => current.includes(id))
+    )
+      throw fieldError("photos", "Envie a ordem de todas as fotos do veículo.");
+    await renumber(tx, vehicle.id, ids);
+  });
 }
-
-/** O que falta para publicar (VEH-FR-009), campo a campo. */
-const REQUIRED: [field: keyof typeof vehicles.$inferSelect, message: string][] =
-  [
-    ["fipeBrandId", "Escolha a marca."],
-    ["fipeModelId", "Escolha o modelo e a versão."],
-    ["fipeYearId", "Escolha o ano modelo."],
-    ["yearManufacture", "Informe o ano de fabricação."],
-    ["mileageKm", "Informe a quilometragem."],
-    ["transmission", "Escolha o câmbio."],
-    ["fuel", "Escolha o combustível."],
-    ["priceCents", "Informe o preço."],
-  ];
 
 /**
  * Publicar (VEH-FR-009, VEH-FR-010): pelo menos 1 foto e os campos obrigatórios; o
@@ -517,38 +559,44 @@ export async function publish(
   session: Session | null,
   vehicleId: string,
 ): Promise<void> {
-  const { userId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const { userId, storeId, vehicle } = await ownVehicle(
+    deps.db,
+    session,
+    vehicleId,
+  );
   if (vehicle.status === "published") return;
   if (vehicle.status !== "draft")
     throw AppError.conflict("Este veículo não pode ser publicado agora.");
-  const [v] = await deps.db
-    .select()
-    .from(vehicles)
-    .where(eq(vehicles.id, vehicle.id));
-  const errors: FieldError[] = REQUIRED.filter(
-    ([field]) => v[field] === null || v[field] === "",
-  ).map(([field, message]) => ({ field, code: "required", message }));
-  if ((await photoCount(deps.db, vehicle.id)) === 0)
-    errors.unshift({
-      field: "photos",
-      code: "required",
-      message: "Envie pelo menos 1 foto.",
-    });
-  if (errors.length) throw AppError.validation(errors);
-
   const now = clock(deps);
   await deps.db.transaction(async (tx) => {
-    const done = await tx
+    // Travado: uma foto removida em paralelo não passa por esta conferência.
+    const [v] = await tx
+      .select()
+      .from(vehicles)
+      .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.storeId, storeId)))
+      .for("update");
+    if (!v || v.status === "published") return;
+    if (v.status !== "draft")
+      throw AppError.conflict("Este veículo não pode ser publicado agora.");
+    const errors: FieldError[] = PUBLISH_REQUIRED.filter(
+      ([field]) => v[field] === null || v[field] === "",
+    ).map(([field, message]) => ({ field, code: "required", message }));
+    if ((await photoCount(tx, v.id)) === 0)
+      errors.unshift({
+        field: "photos",
+        code: "required",
+        message: PHOTO_REQUIRED,
+      });
+    if (errors.length) throw AppError.validation(errors);
+    await tx
       .update(vehicles)
       .set({ status: "published", publishedAt: now, updatedAt: now })
-      .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.status, "draft")))
-      .returning({ id: vehicles.id });
-    if (!done.length) return;
+      .where(eq(vehicles.id, v.id));
     await logActivity(tx, {
       userId,
       action: "vehicle.published",
       entity: "vehicle",
-      entityId: vehicle.id,
+      entityId: v.id,
     });
   });
 }
@@ -560,11 +608,19 @@ export async function setShare(
   vehicleId: string,
   on: boolean,
 ): Promise<void> {
-  const { vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const { storeId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  if (typeof on !== "boolean")
+    throw fieldError("shareOnCajugo", "Valor inválido.");
   const done = await deps.db
     .update(vehicles)
-    .set({ shareOnCajugo: !!on, updatedAt: clock(deps) })
-    .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.status, "published")))
+    .set({ shareOnCajugo: on, updatedAt: clock(deps) })
+    .where(
+      and(
+        eq(vehicles.id, vehicle.id),
+        eq(vehicles.storeId, storeId),
+        eq(vehicles.status, "published"),
+      ),
+    )
     .returning({ id: vehicles.id });
   if (!done.length) throw AppError.conflict("Publique para liberar.");
 }
@@ -598,13 +654,13 @@ export async function vehicleSummary(
   const [v] = await deps.db
     .select()
     .from(vehicles)
-    .where(eq(vehicles.id, vehicle.id));
+    .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.storeId, storeId)));
   const [cover] = await photosOf(deps.db, v.id);
   const now = clock(deps);
   return {
     vehicleId: v.id,
     // A versão da FIPE já traz o modelo ("ONIX HATCH LT 1.0…").
-    name: v.version ?? v.model ?? "Veículo sem nome",
+    name: vehicleName(v),
     status: v.status,
     statusLabel: STATUS_LABEL[v.status],
     yearModel: v.yearModel,
@@ -647,13 +703,17 @@ async function transition(
     allowed?: (v: typeof vehicles.$inferSelect, now: Date) => boolean;
   },
 ): Promise<void> {
-  const { userId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
+  const { userId, storeId, vehicle } = await ownVehicle(
+    deps.db,
+    session,
+    vehicleId,
+  );
   const now = clock(deps);
   await deps.db.transaction(async (tx) => {
     const [v] = await tx
       .select()
       .from(vehicles)
-      .where(eq(vehicles.id, vehicle.id))
+      .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.storeId, storeId)))
       .for("update");
     if (
       !rule.from.includes(v.status) ||
@@ -808,7 +868,7 @@ export async function listVehicles(
 
   const q = input.q?.trim().slice(0, 40) ?? "";
   const like = `%${q.replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
-  const plate = q.toUpperCase().replace(/[\s-]/g, "");
+  const plate = q.toUpperCase().replace(/[^A-Z0-9]/g, "");
   const rows = await deps.db
     .select()
     .from(vehicles)
@@ -862,7 +922,7 @@ export async function listVehicles(
     },
     items: rows.map((v) => ({
       vehicleId: v.id,
-      name: v.version ?? v.model ?? "Veículo sem nome",
+      name: vehicleName(v),
       status: v.status,
       statusLabel: STATUS_LABEL[v.status],
       yearModel: v.yearModel,
@@ -927,7 +987,7 @@ export async function publicVehicles(
     .orderBy(desc(vehicles.publishedAt));
   return rows.map((r) => ({
     vehicleId: r.vehicleId,
-    name: r.version ?? r.model ?? "Veículo",
+    name: vehicleName(r),
     yearModel: r.yearModel,
     mileageKm: r.mileageKm,
     priceCents: r.priceCents,
@@ -984,4 +1044,39 @@ export async function removeVehiclesForTests(
     await tx.delete(vehicles).where(inArray(vehicles.id, ids));
     return photos.map((p) => p.publicId);
   });
+}
+
+/**
+ * Renova a referência FIPE guardada no veículo quando a tabela muda de mês
+ * (VEH-FR-007), ao abrir a edição. A API fora do ar não atrapalha: fica a anterior.
+ */
+export async function refreshFipeReference(
+  deps: VehicleDeps,
+  session: Session | null,
+  vehicleId: string,
+): Promise<void> {
+  const { storeId } = storeOf(session);
+  if (!UUID.test(vehicleId)) return;
+  const mine = and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId));
+  const [v] = await deps.db
+    .select({
+      brand: vehicles.fipeBrandId,
+      model: vehicles.fipeModelId,
+      year: vehicles.fipeYearId,
+      month: vehicles.fipeMonth,
+      status: vehicles.status,
+    })
+    .from(vehicles)
+    .where(mine);
+  if (!v?.brand || !v.model || !v.year || !isEditable(v.status)) return;
+  const ref = await reference(deps, v.brand, v.model, v.year.split(":")[1]);
+  if (!ref || ref.month === v.month) return;
+  await deps.db
+    .update(vehicles)
+    .set({
+      fipeCode: ref.fipeCode,
+      fipePriceCents: ref.priceCents,
+      fipeMonth: ref.month,
+    })
+    .where(mine);
 }

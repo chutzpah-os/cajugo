@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FakeCloudinary } from "@/platform/cloudinary/fake-cloudinary";
+import { vehicles } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import {
   addPhoto,
@@ -155,5 +156,36 @@ describe("fotos do veículo", () => {
       reorderPhotos(deps(), b, vehicleId, [fromA.photo.id]),
     ).rejects.toMatchObject({ status: 404 });
     expect((await vehicleForm(t.db, a, vehicleId)).photos).toHaveLength(1);
+  });
+
+  it("[VEH-FR-009] publicado mantém pelo menos 1 foto; vendido não muda fotos", async () => {
+    const { s, vehicleId } = await owner();
+    const a = await sendPhoto(s, vehicleId);
+    await t.db.update(vehicles).set({ status: "published" });
+
+    await expect(
+      removePhoto(deps(), s, vehicleId, a.photo.id),
+    ).rejects.toMatchObject({
+      status: 409,
+      detail: "O veículo publicado precisa de pelo menos 1 foto.",
+    });
+
+    await t.db.update(vehicles).set({ status: "sold" });
+    await expect(photoUpload(deps(), s, vehicleId)).rejects.toMatchObject({
+      status: 409,
+    });
+    await expect(
+      removePhoto(deps(), s, vehicleId, a.photo.id),
+    ).rejects.toMatchObject({ status: 409 });
+  });
+
+  it("[VEH-FR-004] gravar a mesma foto duas vezes não duplica", async () => {
+    const { s, vehicleId } = await owner();
+    const a = await sendPhoto(s, vehicleId);
+
+    const again = await addPhoto(deps(), s, vehicleId, a.publicId);
+
+    expect(again.id).toBe(a.photo.id);
+    expect((await vehicleForm(t.db, s, vehicleId)).photos).toHaveLength(1);
   });
 });

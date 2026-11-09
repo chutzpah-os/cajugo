@@ -35,4 +35,4 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 4 — Fechamento
 - [x] **T022** Playwright (390 px, staging): cadastro completo com FIPE real e 2 fotos; autosave; publicar com erro e certo; [1c]; preço e histórico; vendido some do catálogo e desfazer; excluir; loja B; `audit()`; seed apaga veículos e fotos dos testes · _VEH-FR-001 a VEH-FR-015, VEH-NFR-001, VEH-NFR-003, VEH-SEC-001, VEH-SEC-002, VEH-SEC-004_
-- [ ] **T023** _(0010 no staging e no prod, conferida; falta o `/verify`)_ Migration `0010` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_
+- [x] **T023** _(0010 no staging e no prod, conferida; `/verify` feito)_ Migration `0010` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_

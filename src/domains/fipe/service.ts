@@ -22,6 +22,8 @@ import {
 export type FipeDeps = { db: Db; fipe?: FipeClient; now?: () => Date };
 
 const FRESH_MS = 30 * 86_400_000;
+/** Código de ano que a FIPE usa para "Zero KM". */
+const ZERO_KM_CODE = "32000";
 
 const clientOf = (deps: FipeDeps) => deps.fipe ?? createFipeClient();
 const nowOf = (deps: FipeDeps) => deps.now?.() ?? new Date();
@@ -261,7 +263,7 @@ export async function identify(
   );
   if (!year) throw fail("fipeYearId", "Escolha o ano da lista.");
   const code = year.id.split(":")[1];
-  const yearModel = code.startsWith("32000")
+  const yearModel = code.startsWith(ZERO_KM_CODE)
     ? Number(
         new Intl.DateTimeFormat("en-CA", {
           timeZone: "America/Sao_Paulo",

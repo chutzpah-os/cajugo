@@ -138,4 +138,11 @@ describe("Meus veículos [1c]", () => {
       status: 403,
     });
   });
+
+  it("[VEH-FR-001] % na busca é texto comum, não curinga", async () => {
+    const a = await seed();
+
+    expect((await listVehicles(deps(), a, { q: "%" })).items).toEqual([]);
+    expect((await listVehicles(deps(), a, { q: "_" })).items).toEqual([]);
+  });
 });

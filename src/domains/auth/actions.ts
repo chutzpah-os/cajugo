@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/platform/db/client";
 import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { AppError } from "@/platform/http/errors";
-import { logger } from "@/platform/http/logger";
+import { errorMessage, logger } from "@/platform/http/logger";
 import { loginUrl } from "@/platform/http/protected-paths";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { currentSession } from "./current";
@@ -25,7 +25,7 @@ import {
 /** Falha inesperada: vai para o log (sem senha, `logger` redige) e a tela mostra mensagem neutra. */
 function logUnexpected(event: string, error: unknown) {
   logger.error(event, {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage(error),
   });
 }
 

@@ -10,10 +10,12 @@ import { VehicleForm } from "./vehicle-form";
 export function VehicleEditor({
   title,
   initial,
+  defaults,
   cloudName,
 }: {
   title: string;
   initial: VehicleFormView | null;
+  defaults?: { shareOnCajugo: boolean; contactWhatsapp: string };
   cloudName: string;
 }) {
   return (
@@ -30,6 +32,7 @@ export function VehicleEditor({
       </header>
       <VehicleForm
         initial={initial}
+        defaults={defaults}
         top={<PhotosSection cloudName={cloudName} />}
         bottom={<PublishBar />}
       />

@@ -2,7 +2,7 @@
 id: 005
 slug: vehicles
 title: Veículos do lojista
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-08
 ---
@@ -31,7 +31,7 @@ Sucesso: um lojista publica um veículo completo, com fotos, em até 5 minutos n
 - **VEH-FR-001** Meus veículos [1c] mostra os indicadores Publicados, Na CajuGo e Vendidos no mês, o card da assinatura (plano, valor, status, próxima cobrança), a busca por modelo ou placa e os filtros com contagem (Todos, Publicados, Rascunhos, Vendidos).
 - **VEH-FR-002** Cada veículo da lista mostra miniatura, nome, selo de status, ano · km, preço, o toggle "Divulgar na CajuGo" com a legenda do estado, "Vendido" (se não vendido) e "Editar"; sem veículos, aparece o estado vazio com "Cadastrar primeiro veículo".
 - **VEH-FR-003** O lojista cadastra um veículo [2a] com as seções Fotos, Identificação, Ficha técnica, Preço, Condições, Itens, Descrição e Divulgação; o que ele preenche é salvo sozinho como rascunho ("Rascunho salvo") e nada se perde ao fechar e voltar.
-- **VEH-FR-004** O lojista envia até 20 fotos por veículo, com barra de progresso, reordena arrastando (a primeira é a capa) e remove fotos; as fotos são reduzidas no celular antes do envio.
+- **VEH-FR-004** O lojista envia até 20 fotos por veículo, com barra de progresso, reordena arrastando no computador ou pelas setas, que funcionam em qualquer aparelho (a primeira é a capa) e remove fotos; as fotos são reduzidas no celular antes do envio.
 - **VEH-FR-005** Na Identificação, marca, modelo e versão vêm da lista da tabela FIPE guardada pela CajuGo (cada uma dependente da anterior), o ano modelo fica entre o ano de fabricação e o ano seguinte, e a placa (formato Mercosul ou antigo) é guardada para a loja, com o final de placa derivado dela.
 - **VEH-FR-006** Ficha técnica, condições (Sim/Não), itens (com contador "N selecionados") e descrição (até 2.000 caracteres, com contador) seguem as listas e limites do PRD [2a].
 - **VEH-FR-007** O preço de venda é obrigatório e mostra a referência FIPE da versão (atualizada uma vez por mês) com a diferença percentual ("4,6% abaixo"), quando houver referência; o lojista escolhe se exibe a parcela estimada.
@@ -84,7 +84,7 @@ Sucesso: um lojista publica um veículo completo, com fotos, em até 5 minutos n
 ### VEH-FR-005
 - **Dado** o lojista escolhendo a marca "Chevrolet"
 - **Quando** abre o campo Modelo
-- **Então** só vê modelos da Chevrolet, e a Versão só fica disponível depois do modelo e do ano
+- **Então** só vê modelos da Chevrolet, a Versão só fica disponível depois do modelo e o Ano modelo depois da versão (é a ordem da tabela FIPE)
 - **E** ano de fabricação 2020 com ano modelo 2022 mostra o erro do ano modelo
 - **E** com a fonte da FIPE fora do ar, as listas continuam aparecendo com o que já estava guardado
 - **E** a placa "ABC1D23" é aceita e o final de placa fica "3"

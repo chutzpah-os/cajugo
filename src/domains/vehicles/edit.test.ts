@@ -2,7 +2,13 @@ import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityLog, vehicleHistory, vehicles } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { saveDraft, vehicleSummary } from "./service";
+import {
+  refreshFipeReference,
+  saveDraft,
+  vehicleForm,
+  vehicleSummary,
+} from "./service";
+import { fakeFipe } from "./testing/fipe";
 import { goLive, storeOwner } from "./testing/fixtures";
 
 const DAY = 86_400_000;
@@ -90,6 +96,55 @@ describe("editar veículo publicado [6e]", () => {
     await expect(
       saveDraft(deps(), b, { vehicleId, priceCents: 100000 }),
     ).rejects.toMatchObject({
+      status: 404,
+    });
+  });
+
+  it("[VEH-FR-009] publicado não perde o que é obrigatório: limpar preço ou identificação é recusado", async () => {
+    const { a, vehicleId } = await published();
+
+    for (const [input, field] of [
+      [{ priceCents: null }, "priceCents"],
+      [{ mileageKm: null }, "mileageKm"],
+      [{ fipeBrandId: null }, "fipeBrandId"],
+    ] as const)
+      await expect(
+        saveDraft(deps(), a, { vehicleId, ...input }),
+      ).rejects.toMatchObject({
+        status: 422,
+        errors: expect.arrayContaining([expect.objectContaining({ field })]),
+      });
+    expect((await vehicleSummary(deps(), a, vehicleId)).priceCents).toBe(
+      8000000,
+    );
+  });
+
+  it("[VEH-FR-007] a referência FIPE guardada no veículo é renovada quando a tabela muda de mês", async () => {
+    const { a, vehicleId } = await published();
+    await t.db
+      .update(vehicles)
+      .set({
+        fipeBrandId: "23",
+        fipeModelId: "1",
+        fipeYearId: "1:2020-1",
+        fipePriceCents: 1,
+        fipeMonth: "outubro de 2026",
+      })
+      .where(eq(vehicles.id, vehicleId));
+    const fipeDeps = { db: t.db, now: () => now, fipe: fakeFipe() };
+
+    await refreshFipeReference(fipeDeps, a, vehicleId);
+
+    expect(await vehicleForm(t.db, a, vehicleId)).toMatchObject({
+      fipePriceCents: 8000000,
+      fipeMonth: "novembro de 2026",
+    });
+  });
+
+  it("[VEH-SEC-001] endereço com id inválido responde 404", async () => {
+    const { a } = await published();
+
+    await expect(vehicleForm(t.db, a, "abc")).rejects.toMatchObject({
       status: 404,
     });
   });

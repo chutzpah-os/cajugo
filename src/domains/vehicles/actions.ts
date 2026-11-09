@@ -6,7 +6,7 @@ import { brands, models, years } from "@/domains/fipe/service";
 import { getCloudinary } from "@/platform/cloudinary/cloudinary";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
-import { logger } from "@/platform/http/logger";
+import { errorMessage, logger } from "@/platform/http/logger";
 import {
   addPhoto,
   isPublished,
@@ -40,7 +40,7 @@ function fail(error: unknown): ActionError {
       errors: Object.fromEntries(error.errors.map((e) => [e.field, e.message])),
     };
   logger.error("vehicles.action_failed", {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage(error),
   });
   return {
     ok: false,

@@ -5,7 +5,7 @@ import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireStorePage } from "@/domains/auth/guards";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { VehicleEditor } from "@/domains/vehicles/components/vehicle-editor";
-import { vehicleForm } from "@/domains/vehicles/service";
+import { refreshFipeReference, vehicleForm } from "@/domains/vehicles/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
 
@@ -18,6 +18,8 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]/editar">) {
     "vehicles.manage",
   );
   if (!allowed) return <NoPermission home={home} />;
+  // Tabela FIPE de outro mês: atualiza a referência antes de mostrar (VEH-FR-007).
+  await refreshFipeReference({ db: getDb() }, session, id);
   const view = await vehicleForm(getDb(), session, id).catch(
     (error: unknown) => {
       if (error instanceof AppError && error.status === 404) notFound();

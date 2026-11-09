@@ -77,6 +77,7 @@
 - Registro manual sem comprovante (exceção) em [6g]; onboarding [5e].
 
 ## 005 · Veículos do lojista — telas 1c, 2a, 6e, 6f
+> ✅ **Implementada** em 2026-11-09 (`docs/specs/005-vehicles/`): [1c], [2a] com FIPE guardada sob demanda (ADR 0012), fotos reduzidas e sem metadados, salvamento automático, publicar, [6e], vendido com desfazer, despublicar, excluir e catálogo simples em `/loja/{slug}`; 408 testes de unidade/integração e 40 e2e; todos os FR/SEC com teste. Migration 0010 no staging e no prod.
 - Formulário [2a] com autosave; fotos (até 20, upload assinado); FIPE (D6).
 - **Antes das fotos de veículo:** a assinatura do Cloudinary (003) fixa pasta, nome e formatos, mas não o tamanho máximo nem a remoção de metadados (EXIF/GPS) pedidos em `SECURITY.md` §5; os 15 MB são conferidos depois do envio e o arquivo recusado já é apagado (004/T007). Remoção de metadados resolvida na 005/T005: transformação de entrada `c_limit,w_1600,h_1600` (prova no staging: foto com GPS guardada com 1600 px e zero EXIF).
 - Estados: rascunho → (pendente de aprovação) → publicado ⇄ oculto → vendido (desfazer 7 dias) → excluído.
@@ -87,6 +88,7 @@
 - Estado "pendente de aprovação"; fila [14c] com checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi), aprovar / pedir ajuste com motivo e aviso à loja. A regra vem desligada por padrão (PRD §5.12).
 
 ## 006 · Vitrine e comprador — telas 1a, 1b, 6d, 9a, 12a–12d, 12g, 14a, 14b, 15a
+- **Paginação (API.md §3):** a lista [1c] e o catálogo da loja (005) ainda trazem todos os veículos de uma vez; o catálogo completo daqui entra com paginação, e [1c] junto.
 - **Status HTTP real nas páginas públicas (SEO):** hoje `/loja/{slug}` (003) responde 200 com redirecionamento no navegador e 404 "suave" (`noindex`), porque o Next 16 envia o layout antes da página (streaming). Catálogo e veículo precisam de 301/404 de verdade: resolver no `proxy.ts` só para `/loja/*` e `/v/*` (consulta indexada) ou renderizar essas páginas sem streaming do layout.
 - Vitrine e catálogo da loja (mesmo layout), busca full-text, filtros, ordenação, cursor; view `showcase_vehicles`; ISR + `revalidateTag`.
 - Página do veículo; guarda `?ref=` do vendedor; [12d] para vendido/oculto; [12g] para loja suspensa.

@@ -6,7 +6,7 @@ import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { AppError } from "@/platform/http/errors";
-import { logger } from "@/platform/http/logger";
+import { errorMessage, logger } from "@/platform/http/logger";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { editableKeys, SETTING_GROUPS } from "./definitions";
 import { SETTINGS_TAG } from "./current";
@@ -56,7 +56,7 @@ export async function saveSettingsAction(
         ),
       };
     logger.error("settings.save_failed", {
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage(error),
     });
     return {
       ok: false,
@@ -116,7 +116,7 @@ export async function savePixAction(
         ),
       };
     logger.error("settings.pix_failed", {
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage(error),
     });
     return {
       ok: false,

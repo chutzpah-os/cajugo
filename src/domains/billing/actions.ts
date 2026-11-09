@@ -6,7 +6,7 @@ import { STORES_TAG } from "@/domains/stores/service";
 import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
-import { logger } from "@/platform/http/logger";
+import { errorMessage, logger } from "@/platform/http/logger";
 import {
   getCloudinary,
   type SignedUpload,
@@ -37,7 +37,7 @@ function formError(error: unknown, fallback: string): FormState {
       errors: Object.fromEntries(error.errors.map((e) => [e.field, e.message])),
     };
   logger.error("billing.action_failed", {
-    error: error instanceof Error ? error.message : String(error),
+    error: errorMessage(error),
   });
   return { ok: false, message: fallback, errors: {} };
 }

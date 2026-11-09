@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { logger, redactForLog } from "./logger";
+import { errorMessage, logger, redactForLog } from "./logger";
 
 describe("logger", () => {
   afterEach(() => vi.restoreAllMocks());
@@ -35,5 +35,18 @@ describe("logger", () => {
       key: "lead",
       token: "[redacted]",
     });
+  });
+});
+
+describe("errorMessage", () => {
+  it("[VEH-SEC-002] [PIX-SEC-005] erro de consulta não leva os parâmetros (placa, CPF) para o log", () => {
+    const error = new Error(
+      'Failed query: update "stores" set "tax_id" = $1\nparams: 52998224725',
+      { cause: new Error("connection terminated") },
+    );
+
+    expect(errorMessage(error)).toBe("connection terminated");
+    expect(errorMessage(new Error("simples"))).toBe("simples");
+    expect(errorMessage("texto")).toBe("texto");
   });
 });

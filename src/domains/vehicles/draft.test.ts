@@ -142,4 +142,26 @@ describe("rascunho do veículo [2a]", () => {
       .where(eq(vehicles.storeId, a.storeId));
     expect(rows).toHaveLength(1);
   });
+
+  it("[VEH-FR-003] no rascunho, preço, km e ano de fabricação podem ser limpos", async () => {
+    const a = await storeOwner(t.db, "loja-a", "a@x.com");
+    const { vehicleId } = await saveDraft(deps(), a, {
+      priceCents: 5000000,
+      mileageKm: 10,
+      yearManufacture: 2020,
+    });
+
+    await saveDraft(deps(), a, {
+      vehicleId,
+      priceCents: null,
+      mileageKm: null,
+      yearManufacture: null,
+    });
+
+    expect(await vehicleForm(t.db, a, vehicleId)).toMatchObject({
+      priceCents: null,
+      mileageKm: null,
+      yearManufacture: null,
+    });
+  });
 });

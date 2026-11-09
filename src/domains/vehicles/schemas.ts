@@ -65,6 +65,13 @@ export const vehicleFields = {
 };
 
 export const draftSchema = z
-  .object({ vehicleId: z.uuid().optional(), ...vehicleFields })
+  .object({
+    vehicleId: z.uuid().optional(),
+    ...vehicleFields,
+    // Podem ser limpos no rascunho; no publicado, o serviço recusa (VEH-FR-009).
+    priceCents: vehicleFields.priceCents.nullable(),
+    mileageKm: vehicleFields.mileageKm.nullable(),
+    yearManufacture: vehicleFields.yearManufacture.nullable(),
+  })
   .partial()
   .strict();

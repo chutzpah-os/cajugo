@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button, ButtonLink } from "@/ui/button";
 import { publishAction } from "../actions";
+import { PHOTO_REQUIRED, PUBLISH_REQUIRED } from "../publish-rules";
 import { useVehicleForm } from "./vehicle-form";
 
 /** Onde fica cada campo que o "Publicar" pode reclamar (VEH-FR-009). */
@@ -31,10 +32,22 @@ export function PublishBar() {
     setBusy(true);
     setMessage(undefined);
     const saved = await ctx.flush();
-    const id = saved ? await ctx.ensureVehicleId() : null;
-    if (!id) {
+    if (!saved) {
       setBusy(false);
-      return setMessage("Não foi possível salvar o rascunho. Tente de novo.");
+      return setMessage("Corrija o que está marcado para publicar.");
+    }
+    const id = ctx.currentVehicleId();
+    if (!id) {
+      // Nada preenchido ainda: mostra o que falta, sem criar rascunho vazio.
+      setBusy(false);
+      ctx.showErrors({
+        photos: PHOTO_REQUIRED,
+        ...Object.fromEntries(PUBLISH_REQUIRED),
+      });
+      setMessage("Falta preencher o que está marcado.");
+      return document
+        .getElementById("fotos")
+        ?.scrollIntoView({ behavior: "smooth" });
     }
     const r = await publishAction(id);
     if (r.ok) return router.push(`/painel/veiculos/${id}`);

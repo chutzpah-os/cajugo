@@ -89,6 +89,9 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
           )}
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone={STATUS_TONE[v.status]}>{v.statusLabel}</Badge>
+            {v.status === "published" && v.shareOnCajugo && (
+              <Badge tone="caju">Na CajuGo</Badge>
+            )}
             {v.daysOnAir !== null && (
               <span className="text-sm text-text-3" data-testid="days-on-air">
                 {v.daysOnAir === 1

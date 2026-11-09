@@ -263,3 +263,6 @@
 
 # 2026-11-09 · Data em SQL manual vai como texto ISO (005/T019)
 - O driver do Postgres recusa Date dentro de sql`...` e o PGlite aceita, então os testes de unidade não pegam; o teste no navegador contra o staging pegou. Regra: em SQL manual, data vai com toISOString() e ::timestamptz.
+
+# 2026-11-09 · Log sem parâmetros e veículo publicado sempre completo (005 verificação)
+- O erro do Drizzle traz os valores da consulta no texto (placa, CPF), então só a causa vai para o log, em todos os domínios. Publicar é uma garantia contínua, não só um clique: o salvamento automático e remover foto respeitam os mesmos obrigatórios. FR-004 e FR-005 da spec ajustados: setas além do arrastar (celular) e a ordem real da FIPE.

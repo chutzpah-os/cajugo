@@ -61,4 +61,16 @@ describe("Divulgar na CajuGo", () => {
     });
     expect((await vehicleRow(t.db, vehicleId)).shareOnCajugo).toBe(true);
   });
+
+  it("[VEH-FR-010] só aceita ligado ou desligado de verdade", async () => {
+    const a = await storeOwner(t.db, "loja-a", "a@x.com");
+    const { vehicleId } = await saveDraft(deps(), a, {});
+    await t.db.update(vehicles).set({ status: "published" });
+
+    await expect(
+      setShare(deps(), a, vehicleId, "false" as unknown as boolean),
+    ).rejects.toMatchObject({
+      status: 422,
+    });
+  });
 });

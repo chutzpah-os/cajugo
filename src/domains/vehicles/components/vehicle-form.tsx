@@ -85,6 +85,7 @@ export type FormContext = {
   errors: Record<string, string>;
   /** Cria o rascunho se ainda não existe (ex.: 1ª foto) e devolve o id. */
   ensureVehicleId: () => Promise<string | null>;
+  currentVehicleId: () => string | null;
   /** Salva já o que estiver pendente (ex.: antes de publicar). */
   flush: () => Promise<boolean>;
   showErrors: (errors: Record<string, string>) => void;
@@ -102,19 +103,23 @@ export function useVehicleForm(): FormContext {
 
 export function VehicleForm({
   initial,
+  defaults,
   top,
   bottom,
 }: {
   initial: VehicleFormView | null;
+  /** Divulgação e WhatsApp da loja, para mostrar em veículo novo (VEH-FR-008). */
+  defaults?: { shareOnCajugo: boolean; contactWhatsapp: string };
   top?: ReactNode;
   bottom?: ReactNode;
 }) {
   const [view, setView] = useState<VehicleFormView | null>(initial);
   const [values, setValues] = useState<Record<string, unknown>>(() => ({
-    ...(initial ?? {}),
+    ...(initial ?? defaults ?? {}),
     priceText: initial?.priceCents ? centsToReais(initial.priceCents) : "",
   }));
   const pending = useRef<Record<string, unknown>>({});
+  const chain = useRef<Promise<boolean>>(Promise.resolve(true));
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">(
     initial ? "saved" : "idle",
   );
@@ -129,7 +134,7 @@ export function VehicleForm({
   const [family, setFamily] = useState(initial?.model ?? "");
   const [fipeError, setFipeError] = useState<string>();
 
-  const flush = async (create = false): Promise<boolean> => {
+  const save = async (create: boolean): Promise<boolean> => {
     clearTimeout(timer.current);
     const changes = pending.current;
     if (!Object.keys(changes).length && !(create && !vehicleId.current))
@@ -144,6 +149,19 @@ export function VehicleForm({
       setStatus("error");
       setErrors((e) => ({ ...e, ...result.errors }));
       setMessage(result.message);
+      // Um campo inválido não descarta os outros: o resto volta para a fila.
+      const bad = Object.keys(result.errors);
+      const rest = Object.fromEntries(
+        Object.entries(changes).filter(
+          ([k]) => !bad.some((b) => b === k || b.startsWith(`${k}.`)),
+        ),
+      );
+      pending.current = { ...rest, ...pending.current };
+      const dropped = Object.keys(rest).length < Object.keys(changes).length;
+      if (dropped && Object.keys(rest).length) {
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => void flush(), AUTOSAVE_MS);
+      }
       return false;
     }
     setErrors((e) => {
@@ -153,7 +171,7 @@ export function VehicleForm({
     });
     setMessage(undefined);
     setView(result.view);
-    setStatus("saved");
+    setStatus(Object.keys(pending.current).length ? "saving" : "saved");
     if (!vehicleId.current) {
       vehicleId.current = result.view.vehicleId;
       window.history.replaceState(
@@ -165,6 +183,12 @@ export function VehicleForm({
     return true;
   };
 
+  /** Um salvamento por vez: o 2º já sabe o id criado pelo 1º. */
+  const flush = (create = false): Promise<boolean> => {
+    chain.current = chain.current.then(() => save(create));
+    return chain.current;
+  };
+
   const ctx: FormContext = {
     view,
     saving: status === "saving",
@@ -172,6 +196,7 @@ export function VehicleForm({
     ensureVehicleId: async () =>
       vehicleId.current ??
       ((await flush(true)) ? (vehicleId.current ?? null) : null),
+    currentVehicleId: () => vehicleId.current ?? null,
     flush: () => flush(),
     showErrors: (next) => setErrors((e) => ({ ...e, ...next })),
     replaceView: setView,
@@ -189,6 +214,8 @@ export function VehicleForm({
   };
 
   // Salva o que faltou ao sair da página.
+  // Só ao desmontar; `flush` usa apenas refs, então a 1ª versão serve.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => () => void flush(), []);
 
   // Alteração ainda não salva: o navegador pergunta antes de sair (PRD [2a]).
@@ -245,15 +272,31 @@ export function VehicleForm({
     };
   }, [brandId, modelId]);
 
+  const str = (k: string) => (values[k] as string | null | undefined) ?? "";
   /** Identificação vai junta: a versão depende da marca e o ano da versão. */
   const identify = (next: {
     fipeBrandId: string | null;
     fipeModelId: string | null;
     fipeYearId: string | null;
-  }) => change(next, next);
+  }) => {
+    // Publicado não fica sem identificação: só salva quando estiver completa.
+    if (view?.status === "published" && !next.fipeYearId) {
+      setValues((v) => ({ ...v, ...next }));
+      return;
+    }
+    change(next, next);
+  };
+
+  /** Ano modelo do item escolhido ("2020 Gasolina"; "Zero KM" = ano corrente). */
+  const yearOf = (yearId: string | null | undefined): number | null => {
+    const label = yearList.find(([id]) => id === yearId)?.[1];
+    if (!label) return null;
+    const year = Number.parseInt(label, 10);
+    return Number.isFinite(year) ? year : new Date().getFullYear();
+  };
 
   const versions = families.find((f) => f.family === family)?.versions ?? [];
-  const yearModel = view?.yearModel ?? null;
+  const yearModel = yearOf(str("fipeYearId")) ?? view?.yearModel ?? null;
   const manufactureOptions: Option[] = yearModel
     ? [yearModel - 1, yearModel].map((y) => [String(y), String(y)])
     : [];
@@ -264,7 +307,6 @@ export function VehicleForm({
     Number.isFinite(priceCents) ? priceCents : null,
     view?.fipePriceCents ?? null,
   );
-  const str = (k: string) => (values[k] as string | null | undefined) ?? "";
 
   return (
     <Ctx value={ctx}>
@@ -352,13 +394,20 @@ export function VehicleForm({
               disabled={!modelId || !yearList.length}
               options={yearList}
               value={str("fipeYearId")}
-              onChange={(e) =>
+              onChange={(e) => {
+                const fipeYearId = e.target.value || null;
+                const year = yearOf(fipeYearId);
+                const made = values.yearManufacture as
+                  number | null | undefined;
+                // Fabricação fora da janela do novo ano modelo vira o próprio ano.
+                if (year && made && (made > year || made < year - 1))
+                  change({ yearManufacture: year }, { yearManufacture: year });
                 identify({
                   fipeBrandId: brandId ?? null,
                   fipeModelId: modelId ?? null,
-                  fipeYearId: e.target.value || null,
-                })
-              }
+                  fipeYearId,
+                });
+              }}
               error={errors.fipeYearId}
             />
             <SelectField
@@ -407,7 +456,7 @@ export function VehicleForm({
               const digits = e.target.value.replace(/\D/g, "");
               change(
                 { mileageKm: digits ? Number(digits) : null },
-                digits ? { mileageKm: Number(digits) } : {},
+                { mileageKm: digits ? Number(digits) : null },
               );
             }}
             error={errors.mileageKm}
@@ -486,7 +535,11 @@ export function VehicleForm({
               const cents = reaisToCents(e.target.value);
               change(
                 { priceText: e.target.value },
-                Number.isFinite(cents) ? { priceCents: cents } : {},
+                !e.target.value.trim()
+                  ? { priceCents: null }
+                  : Number.isFinite(cents)
+                    ? { priceCents: cents }
+                    : {},
               );
             }}
             error={errors.priceCents}

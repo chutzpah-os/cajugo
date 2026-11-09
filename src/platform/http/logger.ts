@@ -42,3 +42,16 @@ export const logger = {
 };
 
 export { redact as redactForLog };
+
+/**
+ * Mensagem de erro segura para log: o erro de consulta do Drizzle traz os parâmetros
+ * no texto (placa, CPF), então vale só a causa (SECURITY.md §8 e §11).
+ */
+export function errorMessage(error: unknown): string {
+  if (!(error instanceof Error)) return String(error);
+  if (error.message.startsWith("Failed query"))
+    return error.cause instanceof Error
+      ? error.cause.message
+      : "Falha na consulta ao banco";
+  return error.message;
+}
