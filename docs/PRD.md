@@ -69,10 +69,11 @@ Tudo por caminho no domínio principal (ADR 0009): concentra a autoridade de bus
 |---|---|---|
 | Vitrine CajuGo | `cajugo.vercel.app` | `cajugo.com.br` |
 | Catálogo da loja | `cajugo.vercel.app/loja/{slug}` (ex.: `/loja/silvautocar`) | `cajugo.com.br/loja/{slug}` |
-| Veículo da loja | `cajugo.vercel.app/loja/{slug}/v/{id}` | `cajugo.com.br/loja/{slug}/v/{id}` |
-| Veículo na vitrine (link do vendedor) | `cajugo.vercel.app/v/{id}?ref={codigo}` | `cajugo.com.br/v/{id}?ref={codigo}` |
+| Veículo (endereço único, divulgado ou não) | `cajugo.vercel.app/v/{id}-marca-modelo-ano-cidade-uf` | `cajugo.com.br/v/{id}-marca-modelo-ano-cidade-uf` |
+| Link do vendedor | o mesmo endereço + `?ref={codigo}` | o mesmo endereço + `?ref={codigo}` |
 | Link Caju Indica | `cajugo.vercel.app/i/{codigo}` | `cajugo.com.br/i/{codigo}` |
 
+- `/loja/{slug}/v/{id}` e o endereço com texto desatualizado redirecionam (301) para o endereço atual do veículo.
 - Na troca de domínio, os links antigos redirecionam (301): QR codes impressos e links já enviados continuam funcionando.
 - O link e o QR code mostrados ao lojista ([3b], [5e]) usam sempre o domínio vigente.
 - Slug: `[a-z0-9-]`, sem hífen no início ou no fim. Como fica sob `/loja/`, não colide com rotas do sistema e dispensa lista de reservados.
@@ -321,6 +322,8 @@ Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f] (spec
 | Caju Indica: % da mensalidade · meses · resgate mínimo | 30% · 3 · R$ 50 |
 | Caju Indica: programa ativo; quem pode indicar | sim; lojistas, vendedores, indicadores |
 | Taxa do simulador | 1,79% a.m. |
+| Entrada da parcela estimada | 20% |
+| Prazo da parcela estimada | 48x |
 | Aprovação prévia · mínimo de fotos | desligada · 6 |
 | Retenção de dados após cancelamento | 90 dias |
 
@@ -401,7 +404,9 @@ Navegação:
 
 **Regras**
 - Selo "Abaixo da FIPE" só se `preco < valor_fipe` (quando FIPE disponível).
-- Parcela estimada exibida somente se o lojista ativou "Exibir parcela estimada" [2a]. Fórmula sugerida: entrada 20%, 48x, taxa configurável pelo admin.
+- Parcela estimada exibida somente se o lojista ativou "Exibir parcela estimada" [2a]; entrada, prazo e taxa são regras editáveis pelo admin (§5.14).
+- Selo: um por card, na ordem Abaixo da FIPE → Único dono → Aceita troca → Garantia de fábrica; na página do veículo aparecem todos.
+- Vitrine sem veículos: "Os primeiros veículos estão chegando" com convite para lojistas, fora do Google até ter pelo menos 1 veículo.
 - Favoritos: §5.10 (no aparelho; sincronizados com conta).
 - Vitrine CajuGo mostra banner e rodapé **Caju Indica** [9a].
 - Relevância (MVP): recência de publicação + completude do anúncio (nº de fotos, descrição).

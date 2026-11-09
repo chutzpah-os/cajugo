@@ -92,9 +92,14 @@
 - **Status HTTP real nas páginas públicas (SEO):** hoje `/loja/{slug}` (003) responde 200 com redirecionamento no navegador e 404 "suave" (`noindex`), porque o Next 16 envia o layout antes da página (streaming). Catálogo e veículo precisam de 301/404 de verdade: resolver no `proxy.ts` só para `/loja/*` e `/v/*` (consulta indexada) ou renderizar essas páginas sem streaming do layout.
 - Vitrine e catálogo da loja (mesmo layout), busca full-text, filtros, ordenação, cursor; view `showcase_vehicles`; ISR + `revalidateTag`.
 - Página do veículo; guarda `?ref=` do vendedor; [12d] para vendido/oculto; [12g] para loja suspensa.
-- Simulador [14b] (Price, valores de `settings`); favoritos [14a] com selos; busca sem resultado + alerta [12a]; banner Caju Indica [9a].
-- Estados [12b, 12c]; desktop [15a].
-- **SEO completo (`SEO.md`)**: funções de título/descrição/canônica/JSON-LD/Open Graph em `src/platform/seo/`, sitemap índice, `robots.txt`, **páginas de descoberta** por marca, modelo e cidade, links internos. Pode virar spec própria no `/spec` se passar do limite.
+- Estados [12a, 12b, 12c]; desktop [15a].
+- **SEO (`SEO.md`)**: título, descrição, canônica, JSON-LD e Open Graph pelas funções de `src/platform/seo/`, sitemap índice e `robots.txt`.
+
+## 006b · Páginas de descoberta
+- Páginas por marca, modelo e cidade (só com pelo menos 1 veículo) e links internos entre veículo, loja e descoberta (`SEO.md`).
+
+## 006c · Ferramentas do comprador — telas 14a, 14b, 12a (alerta), 9a
+- Simulador [14b] (Price, valores das regras); favoritos [14a] com selos; "Avisar quando chegar" [12a]; banner Caju Indica [9a].
 
 ## 007 · Leads e denúncias — telas 1b (formulário/WhatsApp), 3a, 14d, 14e
 - Formulário com honeypot + rate limit; clique no WhatsApp gera lead; origem cajugo / catálogo / vendedor.
