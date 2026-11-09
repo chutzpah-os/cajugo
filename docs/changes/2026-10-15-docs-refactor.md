@@ -487,3 +487,6 @@
 
 # 2026-11-09 · 006/T004 parcela e texto sem acento
 - platform/br/installment.ts (tabela Price) e slug.ts (plainText, slugify).
+
+# 2026-11-09 · 006/T005 filtros e endereço do veículo
+- showcase/filters.ts (URL em português ↔ filtros; inválido ignorado; contador) e urls.ts (vehiclePath, idFromVehicleParam).

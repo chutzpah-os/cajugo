@@ -11,7 +11,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T002** Documentos: ARCHITECTURE §4 e §5 (campos novos de `vehicles`, busca sem `unaccent`), SEO.md (status real pelo proxy), GLOSSARY ("Relevância"), ADR 0013 (status real e reescrita de filtros no proxy, D1/D2) · _—_
 - [x] **T003** Migration `0011`: `make_slug`, `model_slug`, `search_text`, `search` gerado, `rank_score`, índices e as regras `installment_down_bps`/`installment_months`; regras em [4c]; teste de migration · _SHW-FR-003, SHW-FR-004_
 - [x] **T004** [P] `src/platform/br/installment.ts` (Price) e `br/slug.ts` (texto sem acento) · _SHW-FR-003, SHW-FR-004_
-- [ ] **T005** [P] `showcase/filters.ts` (`parseFilters` ignora inválidos, `filtersToQuery`) e `showcase/urls.ts` (`vehiclePath`, `idFromVehicleParam`) · _SHW-FR-005, SHW-FR-008, SHW-SEC-004_
+- [x] **T005** [P] `showcase/filters.ts` (`parseFilters` ignora inválidos, `filtersToQuery`) e `showcase/urls.ts` (`vehiclePath`, `idFromVehicleParam`) · _SHW-FR-005, SHW-FR-008, SHW-SEC-004_
 - [ ] **T006** [P] `src/platform/seo/`: títulos e descrições, canônica, `Car`/`Offer`, `AutoDealer`, `ItemList`, `BreadcrumbList`, `WebSite` · _SHW-FR-013_
 - [ ] **T007** `vehicles` grava `make_slug`, `model_slug`, `search_text` e `rank_score` ao salvar, publicar e mudar fotos; script único para veículos já existentes · _SHW-FR-004, SHW-FR-006_
 
