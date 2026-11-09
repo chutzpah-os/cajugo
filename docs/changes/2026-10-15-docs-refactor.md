@@ -466,3 +466,6 @@
 
 # 2026-11-09 · 005/T021 catálogo com veículos
 - /loja/{slug} lista os veículos publicados (capa, nome, ano, km, preço) ou o aviso de catálogo vazio; vehicles/current.cachedPublicVehicles com tag vehicles + stores e validade de 60 s; publicStore devolve storeId. A página segue fora da busca até a 006.
+
+# 2026-11-09 · 005/T022 e2e de veículos
+- tests/e2e/vehicles.spec.ts: publicar vazio com erros, 2 fotos reais e troca de capa, FIPE real, autosave ao fechar e voltar, publicar, catálogo sem placa, [1c] com indicadores e busca por placa, vendido some do catálogo e desfazer volta, despublicar, excluir (404), usuário da loja cadastra e loja recém-cadastrada não abre. Seed apaga veículos, fotos e histórico (Cloudinary também). Página 404 em português. 40 e2e verdes; staging limpo depois.

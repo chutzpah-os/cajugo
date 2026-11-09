@@ -1,6 +1,12 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { profiles, settingValues, stores } from "@/platform/db/schema";
+import {
+  profiles,
+  settingValues,
+  stores,
+  vehiclePhotos,
+  vehicles,
+} from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { E2E_ACCOUNTS, E2E_PIX, seedE2E } from "./e2e-seed";
@@ -181,5 +187,26 @@ describe("seedE2E", () => {
       .where(eq(profiles.id, real.userId));
     expect(realProfile.storeId).toBe(real.storeId);
     expect(await t.db.select().from(settingValues)).toBeTruthy();
+  });
+
+  it("apaga veículos, fotos e histórico da loja de teste", async () => {
+    // Arrange
+    const { storeId } = await seedE2E(deps(), "senha-e2e-1");
+    const [v] = await t.db
+      .insert(vehicles)
+      .values({ storeId })
+      .returning({ id: vehicles.id });
+    await t.db.insert(vehiclePhotos).values({
+      vehicleId: v.id,
+      publicId: "staging/vehicles/x/photo-1",
+      position: 0,
+    });
+
+    // Act
+    await seedE2E(deps(), "senha-e2e-1");
+
+    // Assert
+    expect(await t.db.select().from(vehicles)).toEqual([]);
+    expect(await t.db.select().from(vehiclePhotos)).toEqual([]);
   });
 });

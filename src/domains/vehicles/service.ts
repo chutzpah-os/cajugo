@@ -957,3 +957,31 @@ export async function isPublished(
   const { vehicle } = await ownVehicle(db, session, vehicleId);
   return vehicle.status === "published";
 }
+
+/**
+ * Só testes (`pnpm e2e:seed`, que recusa a produção): apaga veículos, fotos e histórico
+ * das lojas dos e2e e devolve as fotos para o seed apagar no Cloudinary.
+ */
+export async function removeVehiclesForTests(
+  db: Db,
+  storeIds: string[],
+): Promise<string[]> {
+  if (!storeIds.length) return [];
+  return db.transaction(async (tx) => {
+    const rows = await tx
+      .select({ id: vehicles.id })
+      .from(vehicles)
+      .where(inArray(vehicles.storeId, storeIds));
+    const ids = rows.map((r) => r.id);
+    if (!ids.length) return [];
+    const photos = await tx
+      .delete(vehiclePhotos)
+      .where(inArray(vehiclePhotos.vehicleId, ids))
+      .returning({ publicId: vehiclePhotos.publicId });
+    await tx
+      .delete(vehicleHistory)
+      .where(inArray(vehicleHistory.vehicleId, ids));
+    await tx.delete(vehicles).where(inArray(vehicles.id, ids));
+    return photos.map((p) => p.publicId);
+  });
+}

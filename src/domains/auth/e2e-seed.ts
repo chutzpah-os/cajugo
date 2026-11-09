@@ -6,6 +6,7 @@ import type { Role } from "@/platform/http/session";
 import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
 import { removeBillingForTests } from "@/domains/billing/service";
+import { removeVehiclesForTests } from "@/domains/vehicles/service";
 import {
   e2eSignups,
   removeE2ESignups,
@@ -140,6 +141,12 @@ export async function seedE2E(
   });
   for (const publicId of receipts)
     await deps.cloudinary?.destroy(publicId, "authenticated");
+  // Veículos e fotos da loja de teste e das lojas dos e2e (spec 005).
+  const photos = await removeVehiclesForTests(deps.db, [
+    store.id,
+    ...signups.storeIds,
+  ]);
+  for (const publicId of photos) await deps.cloudinary?.destroy(publicId);
   // Lojas e contas criadas pelos e2e de cadastro (spec 003).
   await removeE2ESignups(deps);
   // Loja de teste no estado inicial (Minha loja e troca de endereço, spec 003).
