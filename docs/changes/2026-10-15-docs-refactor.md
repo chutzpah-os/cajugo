@@ -508,3 +508,6 @@
 
 # 2026-11-09 · 006/T011 ordenação e paginação
 - showcase: 6 ordens com cursor por valor + id (sem repetir nos empates; cursor adulterado volta ao início); listVehicles [1c] de 20 em 20 pela ordem do id.
+
+# 2026-11-09 · 006/T012 página do veículo no serviço
+- showcase.vehiclePage: publicado (divulgado ou não) com galeria, ficha em português, condições na ordem do PRD, itens, selos, loja e wa.me com veículo e link; vendido/excluído com parecidos; loja suspensa com aviso; rascunho, fora do ar ou inexistente: null. Só colunas públicas.

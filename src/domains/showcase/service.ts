@@ -10,6 +10,7 @@ import {
   inArray,
   lt,
   lte,
+  ne,
   or,
   sql,
   type SQL,
@@ -20,6 +21,16 @@ import {
   LIVE_STATUSES,
   resolveSlug,
 } from "@/domains/stores/service";
+import {
+  BODIES,
+  CONDITIONS,
+  FEATURES,
+  FUELS,
+  TRANSMISSIONS,
+} from "@/domains/vehicles/service";
+import { brl } from "@/platform/br/money";
+import { appUrl } from "@/platform/http/urls";
+import { whatsappLink } from "@/platform/whatsapp/link";
 import { estimatedInstallment } from "@/platform/br/installment";
 import { plainText } from "@/platform/br/slug";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
@@ -425,5 +436,181 @@ export async function facets(
     makes: rows.flatMap((r) =>
       r.slug && r.name ? [{ slug: r.slug, name: r.name, count: r.count }] : [],
     ),
+  };
+}
+
+export type VehiclePage =
+  | {
+      kind: "vehicle";
+      vehicleId: string;
+      path: string;
+      shared: boolean;
+      make: string | null;
+      model: string | null;
+      version: string | null;
+      yearManufacture: number | null;
+      yearModel: number | null;
+      mileageKm: number | null;
+      priceCents: number | null;
+      installmentCents: number | null;
+      transmission: string | null;
+      fuel: string | null;
+      body: string | null;
+      color: string | null;
+      doors: number | null;
+      engine: string | null;
+      plateEnd: string | null;
+      description: string | null;
+      photos: string[];
+      badges: string[];
+      conditions: string[];
+      features: string[];
+      whatsappUrl: string;
+      store: {
+        name: string;
+        slug: string;
+        city: string;
+        state: string;
+        initials: string;
+        logoPublicId: string | null;
+      };
+    }
+  | { kind: "unavailable"; similar: PublicCard[] }
+  | { kind: "suspended" };
+
+const labels = (keys: string[], map: Record<string, string>) =>
+  keys.flatMap((k) => (map[k] ? [map[k]] : []));
+
+/** Veículos parecidos para [12d]: da mesma marca, senão da mesma cidade. */
+async function similarTo(
+  db: Db,
+  v: { id: string; makeSlug: string | null; city: string },
+): Promise<PublicCard[]> {
+  const others = ne(vehicles.id, v.id);
+  const find = (extra: SQL | undefined) =>
+    baseQuery(db)
+      .where(and(publicVisible("showcase"), others, extra))
+      .orderBy(desc(vehicles.rankScore), desc(vehicles.id))
+      .limit(4);
+  let rows = v.makeSlug ? await find(eq(vehicles.makeSlug, v.makeSlug)) : [];
+  if (!rows.length) rows = await find(eq(stores.city, v.city));
+  return toCards(db, rows);
+}
+
+/**
+ * Página do veículo [1b] (SHW-FR-008, 010, 011). Colunas escolhidas à mão: placa
+ * inteira, chassi e documento nem são lidos (SHW-SEC-001).
+ */
+export async function vehiclePage(
+  db: Db,
+  vehicleId: string,
+): Promise<VehiclePage | null> {
+  const [v] = await db
+    .select({
+      id: vehicles.id,
+      status: vehicles.status,
+      shared: vehicles.shareOnCajugo,
+      make: vehicles.make,
+      makeSlug: vehicles.makeSlug,
+      model: vehicles.model,
+      version: vehicles.version,
+      yearManufacture: vehicles.yearManufacture,
+      yearModel: vehicles.yearModel,
+      mileageKm: vehicles.mileageKm,
+      priceCents: vehicles.priceCents,
+      fipePriceCents: vehicles.fipePriceCents,
+      showInstallment: vehicles.showInstallment,
+      transmission: vehicles.transmission,
+      fuel: vehicles.fuel,
+      body: vehicles.body,
+      color: vehicles.color,
+      doors: vehicles.doors,
+      engine: vehicles.engine,
+      plateEnd: vehicles.plateEnd,
+      description: vehicles.description,
+      conditions: vehicles.conditions,
+      features: vehicles.features,
+      contactWhatsapp: vehicles.contactWhatsapp,
+      storeStatus: stores.status,
+      storeName: stores.name,
+      storeSlug: stores.slug,
+      city: stores.city,
+      state: stores.state,
+      storeWhatsapp: stores.whatsapp,
+      logoPublicId: stores.logoPublicId,
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(eq(vehicles.id, vehicleId));
+  if (!v) return null;
+  if (v.storeStatus === "suspended") return { kind: "suspended" };
+  if (!isStoreLive(v.storeStatus)) return null;
+  if (v.status === "sold" || v.status === "deleted")
+    return { kind: "unavailable", similar: await similarTo(db, v) };
+  if (v.status !== "published") return null;
+
+  const photos = await db
+    .select({ publicId: vehiclePhotos.publicId })
+    .from(vehiclePhotos)
+    .where(eq(vehiclePhotos.vehicleId, v.id))
+    .orderBy(asc(vehiclePhotos.position));
+  const s = await getSettings(db);
+  const path = vehiclePath({ ...v, id: v.id });
+  const name = [v.make, v.version ?? v.model, v.yearModel]
+    .filter(Boolean)
+    .join(" ");
+  const price = v.priceCents !== null ? ` por ${brl(v.priceCents)}` : "";
+  const conditions = (v.conditions ?? {}) as Record<string, boolean>;
+
+  return {
+    kind: "vehicle",
+    vehicleId: v.id,
+    path,
+    shared: v.shared,
+    make: v.make,
+    model: v.model,
+    version: v.version,
+    yearManufacture: v.yearManufacture,
+    yearModel: v.yearModel,
+    mileageKm: v.mileageKm,
+    priceCents: v.priceCents,
+    installmentCents:
+      v.showInstallment && v.priceCents !== null
+        ? estimatedInstallment({
+            priceCents: v.priceCents,
+            downBps: s.installment_down_bps,
+            months: s.installment_months,
+            rateBps: s.installment_rate_bps,
+          })
+        : null,
+    transmission: v.transmission
+      ? ((TRANSMISSIONS as Record<string, string>)[v.transmission] ?? null)
+      : null,
+    fuel: v.fuel ? ((FUELS as Record<string, string>)[v.fuel] ?? null) : null,
+    body: v.body ? ((BODIES as Record<string, string>)[v.body] ?? null) : null,
+    color: v.color,
+    doors: v.doors,
+    engine: v.engine,
+    plateEnd: v.plateEnd,
+    description: v.description,
+    photos: photos.map((p) => p.publicId),
+    badges: pickBadges(v),
+    // Na ordem do PRD: o banco reordena as chaves do JSON.
+    conditions: Object.entries(CONDITIONS)
+      .filter(([key]) => conditions[key])
+      .map(([, label]) => label),
+    features: labels(v.features, FEATURES),
+    whatsappUrl: whatsappLink(
+      v.contactWhatsapp ?? v.storeWhatsapp,
+      `Olá! Tenho interesse no ${name}${price}, anunciado na CajuGo: ${appUrl()}${path}`,
+    ),
+    store: {
+      name: v.storeName,
+      slug: v.storeSlug,
+      city: v.city,
+      state: v.state,
+      initials: initialsOf(v.storeName),
+      logoPublicId: v.logoPublicId,
+    },
   };
 }

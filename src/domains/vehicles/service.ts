@@ -1130,3 +1130,5 @@ async function syncSearchFields(tx: Db, vehicleId: string) {
     })
     .where(eq(vehicles.id, vehicleId));
 }
+
+export { BODIES, CONDITIONS, FEATURES, FUELS, TRANSMISSIONS } from "./lists";
