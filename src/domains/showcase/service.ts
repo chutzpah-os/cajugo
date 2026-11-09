@@ -4,7 +4,9 @@ import {
   countDistinct,
   desc,
   eq,
+  gte,
   inArray,
+  lte,
   sql,
   type SQL,
 } from "drizzle-orm";
@@ -15,6 +17,7 @@ import {
   resolveSlug,
 } from "@/domains/stores/service";
 import { estimatedInstallment } from "@/platform/br/installment";
+import { plainText } from "@/platform/br/slug";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import type { Filters } from "./filters";
@@ -58,6 +61,40 @@ export function publicVisible(scope: Scope): SQL {
       : eq(vehicles.storeId, scope.storeId),
   )!;
 }
+
+/** Texto digitado → consulta por prefixo de cada palavra; sem símbolos de busca. */
+function searchQuery(q: string): string | null {
+  const words = plainText(q)
+    .split(/[^a-z0-9.]+/)
+    .filter(Boolean)
+    .slice(0, 8);
+  return words.length ? words.map((w) => `${w}:*`).join(" & ") : null;
+}
+
+/** Filtros da URL como condições da consulta (SHW-FR-004, 005). */
+function filterConditions(f: Filters): (SQL | undefined)[] {
+  const query = f.q ? searchQuery(f.q) : null;
+  return [
+    query
+      ? sql`${vehicles.search} @@ to_tsquery('simple', ${query})`
+      : undefined,
+    f.makes.length ? inArray(vehicles.makeSlug, f.makes) : undefined,
+    f.priceFrom !== undefined
+      ? gte(vehicles.priceCents, f.priceFrom)
+      : undefined,
+    f.priceTo !== undefined ? lte(vehicles.priceCents, f.priceTo) : undefined,
+    f.yearFrom !== undefined ? gte(vehicles.yearModel, f.yearFrom) : undefined,
+    f.yearTo !== undefined ? lte(vehicles.yearModel, f.yearTo) : undefined,
+    f.kmTo !== undefined ? lte(vehicles.mileageKm, f.kmTo) : undefined,
+    f.transmissions.length
+      ? inArray(vehicles.transmission, f.transmissions)
+      : undefined,
+    f.fuels.length ? inArray(vehicles.fuel, f.fuels) : undefined,
+  ];
+}
+
+const whereOf = (scope: Scope, f: Filters) =>
+  and(publicVisible(scope), ...filterConditions(f));
 
 /** Selos que se aplicam, na ordem de prioridade; o card mostra o primeiro. */
 export function pickBadges(v: {
@@ -181,7 +218,7 @@ export async function searchShowcase(
   db: Db,
   input: { scope: Scope; filters: Filters; cursor?: string | null },
 ): Promise<SearchResult> {
-  const where = publicVisible(input.scope);
+  const where = whereOf(input.scope, input.filters);
   const [totals] = await db
     .select({ total: count(), stores: countDistinct(vehicles.storeId) })
     .from(vehicles)
@@ -266,5 +303,38 @@ export async function storePage(
     logoPublicId: s.logoPublicId,
     coverPublicId: s.coverPublicId,
     initials: initialsOf(s.name),
+  };
+}
+
+/** "Ver N veículos" com a contagem ao vivo (SHW-FR-005). */
+export async function countMatches(
+  db: Db,
+  scope: Scope,
+  filters: Filters,
+): Promise<number> {
+  const [{ n }] = await db
+    .select({ n: count() })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(whereOf(scope, filters));
+  return n;
+}
+
+/** Marcas com veículo visível no escopo, para o filtro [6d]. */
+export async function facets(
+  db: Db,
+  scope: Scope,
+): Promise<{ makes: { slug: string; name: string; count: number }[] }> {
+  const rows = await db
+    .select({ slug: vehicles.makeSlug, name: vehicles.make, count: count() })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(publicVisible(scope))
+    .groupBy(vehicles.makeSlug, vehicles.make)
+    .orderBy(vehicles.make);
+  return {
+    makes: rows.flatMap((r) =>
+      r.slug && r.name ? [{ slug: r.slug, name: r.name, count: r.count }] : [],
+    ),
   };
 }

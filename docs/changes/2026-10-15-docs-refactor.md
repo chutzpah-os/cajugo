@@ -502,3 +502,6 @@
 
 # 2026-11-09 · 006/T009 catálogo da loja no serviço
 - showcase.storePage: loja no ar (dados públicos e iniciais), suspensa (aviso sem motivo), endereço antigo (redireciona), fora do ar ou inexistente (null); catálogo por escopo de loja, divulgados ou não.
+
+# 2026-11-09 · 006/T010 busca e filtros
+- showcase: busca por prefixo de cada palavra no texto sem acento, filtros de marca, preço, ano, km, câmbio e combustível, countMatches e facets; símbolos digitados não chegam ao to_tsquery.
