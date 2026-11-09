@@ -22,7 +22,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T011** Ordenações e paginação por cursor, sem repetição em cada ordem; `listVehicles` [1c] paginada · _SHW-FR-006, SHW-FR-007_
 - [x] **T012** `vehiclePage`: publicado (divulgado ou não), vendido e excluído com parecidos, loja suspensa; sem placa nem chassi · _SHW-FR-008, SHW-FR-010, SHW-FR-011, SHW-SEC-001, SHW-SEC-003_
 - [x] **T013** `gateDecision` com memória de 60 s e `proxy.ts`: 308/404 reais, `/loja/{slug}/v/{id}`, cookie `?ref=` e reescrita de `/?filtros` · _SHW-FR-009, SHW-FR-014, SHW-SEC-005, SHW-NFR-005_
-- [ ] **T014** `sitemapEntries` e sitemap em índice (estáticas, lojas, veículos) · _SHW-FR-015, SHW-SEC-001, SHW-SEC-003_
+- [x] **T014** `sitemapEntries` e sitemap em índice (estáticas, lojas, veículos) · _SHW-FR-015, SHW-SEC-001, SHW-SEC-003_
 
 ## Fase 3 — Telas
 - [ ] **T015** `VehicleCard` público, `CatalogView`, `/` com mensagem de vitrine vazia e SEO · _SHW-FR-001, SHW-FR-003, SHW-FR-013, SHW-NFR-002_

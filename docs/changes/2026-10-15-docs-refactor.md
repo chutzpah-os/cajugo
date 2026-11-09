@@ -514,3 +514,6 @@
 
 # 2026-11-09 · 006/T013 status real no proxy
 - proxy.ts: /loja/* e /v/* decididos por gateDecision (308 para endereço antigo, texto desatualizado e /loja/{slug}/v/{id}; 404 de verdade) com memória de 60 s (platform/http/public-gate); /?filtros reescrito para /vitrine; cookie cajugo_ref de 30 dias (vale o último). Seed cria um endereço antigo; provado no build de produção.
+
+# 2026-11-09 · 006/T014 sitemaps
+- Um sitemap por tipo (pages, stores, vehicles), listados no robots.txt; showcase.sitemapEntries com cache renovado por veículo e loja; showcase/current.ts com as leituras públicas em cache.

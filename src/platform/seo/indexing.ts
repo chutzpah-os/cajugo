@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { appUrl } from "../http/urls";
 
+/** Um sitemap por tipo de página (SEO.md §2), listados no robots.txt. */
+export const SITEMAP_IDS = ["pages", "stores", "vehicles"] as const;
+
 /** Áreas logadas e telas de conta: fora da busca (SEO.md §2). */
 const PRIVATE = [
   "/painel",
@@ -24,7 +27,7 @@ export function robotsRules(): MetadataRoute.Robots {
       allow: ["/", ...PUBLIC_EXCEPTIONS],
       disallow: PRIVATE,
     },
-    sitemap: `${appUrl()}/sitemap.xml`,
+    sitemap: SITEMAP_IDS.map((id) => `${appUrl()}/sitemap/${id}.xml`),
   };
 }
 

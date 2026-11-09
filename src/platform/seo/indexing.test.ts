@@ -9,7 +9,11 @@ describe("indexação", () => {
 
     const robots = robotsRules();
 
-    expect(robots.sitemap).toBe("https://cajugo.vercel.app/sitemap.xml");
+    expect(robots.sitemap).toEqual([
+      "https://cajugo.vercel.app/sitemap/pages.xml",
+      "https://cajugo.vercel.app/sitemap/stores.xml",
+      "https://cajugo.vercel.app/sitemap/vehicles.xml",
+    ]);
     expect(robots.rules).toMatchObject({
       userAgent: "*",
       allow: expect.arrayContaining([

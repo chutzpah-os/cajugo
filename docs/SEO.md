@@ -26,7 +26,7 @@
 - **Prévia de link (Open Graph):** título, descrição e foto de capa do veículo/loja em `og:*` e `twitter:*`. Links compartilhados no WhatsApp e no Instagram são o canal nº 1 do lojista e do vendedor.
 - **Imagens:** `alt` gerado a partir de marca, modelo, ano e cor; tamanhos responsivos pelo Cloudinary (`f_auto,q_auto`); capa com prioridade de carregamento; o resto com lazy-load.
 - **Indexação:**
-  - `sitemap.xml` índice com sitemaps de veículos, lojas e páginas de descoberta, atualizado a cada publicação/venda;
+  - um sitemap por tipo (`/sitemap/pages.xml`, `stores.xml`, `vehicles.xml`; descoberta entra na 006b), todos listados no `robots.txt` e atualizados a cada publicação/venda;
   - `robots.txt` bloqueia `/painel`, `/rede` e `/indica` (áreas logadas; liberando `/rede/cadastro` e `/indica/cadastro`), `/lojistas/pagamento`, `/admin`, `/entrar`, `/nova-senha`, `/api`;
   - páginas logadas, de filtro sem resultado e de prévia da Vercel com `noindex`;
   - veículo **vendido**: continua respondendo (tela [12d] com parecidos), com `noindex` e `Offer` como `SoldOut`; sai do sitemap.

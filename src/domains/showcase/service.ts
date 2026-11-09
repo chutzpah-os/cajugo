@@ -668,3 +668,39 @@ export async function gateDecision(
   }
   return "ok";
 }
+
+/** Endereços públicos para o sitemap (SHW-FR-015): só o que tem página indexável. */
+export async function sitemapEntries(
+  db: Db,
+  kind: "stores" | "vehicles",
+): Promise<{ path: string; lastModified: Date }[]> {
+  if (kind === "stores") {
+    const rows = await db
+      .select({ slug: stores.slug, updatedAt: stores.updatedAt })
+      .from(stores)
+      .where(inArray(stores.status, [...LIVE_STATUSES]));
+    return rows.map((r) => ({
+      path: `/loja/${r.slug}`,
+      lastModified: r.updatedAt,
+    }));
+  }
+  const rows = await db
+    .select({
+      id: vehicles.id,
+      make: vehicles.make,
+      model: vehicles.model,
+      yearModel: vehicles.yearModel,
+      city: stores.city,
+      state: stores.state,
+      updatedAt: vehicles.updatedAt,
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(
+      and(
+        eq(vehicles.status, "published"),
+        inArray(stores.status, [...LIVE_STATUSES]),
+      ),
+    );
+  return rows.map((r) => ({ path: vehiclePath(r), lastModified: r.updatedAt }));
+}
