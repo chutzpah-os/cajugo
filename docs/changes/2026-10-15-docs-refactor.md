@@ -496,3 +496,6 @@
 
 # 2026-11-09 · 006/T007 campos de busca do veículo
 - vehicles.syncSearchFields grava make_slug, model_slug, search_text e rank_score (dia da publicação + até 7 pontos de completude) na mesma transação de salvar, publicar e mudar fotos.
+
+# 2026-11-09 · 006/T008 consulta da vitrine
+- showcase: publicVisible (regra única), searchShowcase com total e lojas, PublicCard montado à mão (sem placa, chassi nem cobrança), pickBadges na ordem combinada e parcela pelas regras.
