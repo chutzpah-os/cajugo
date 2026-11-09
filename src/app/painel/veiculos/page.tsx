@@ -6,7 +6,7 @@ import { requireStorePage } from "@/domains/auth/guards";
 import { subscriptionCard } from "@/domains/billing/service";
 import { Onboarding } from "@/domains/stores/components/onboarding";
 import { onboardingStatus } from "@/domains/stores/service";
-import { VehicleCard } from "@/domains/vehicles/components/vehicle-card";
+import { VehicleList } from "@/domains/vehicles/components/vehicle-list";
 import { hasPublishedVehicle, listVehicles } from "@/domains/vehicles/service";
 import { brl } from "@/platform/br/money";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
@@ -139,15 +139,14 @@ async function Content({ searchParams }: PageProps<"/painel/veiculos">) {
       </nav>
 
       {list.items.length ? (
-        <ul className="flex flex-col gap-3">
-          {list.items.map((v) => (
-            <VehicleCard
-              key={`${v.vehicleId}-${v.status}-${v.shareOnCajugo}`}
-              v={v}
-              cloudName={cloud}
-            />
-          ))}
-        </ul>
+        <VehicleList
+          key={`${status}-${q}`}
+          initial={list.items}
+          nextCursor={list.nextCursor}
+          status={status}
+          q={q}
+          cloudName={cloud}
+        />
       ) : q || status !== "all" ? (
         <p className="rounded-card border border-line bg-surface p-4 text-sm text-text-2">
           Nenhum veículo encontrado.

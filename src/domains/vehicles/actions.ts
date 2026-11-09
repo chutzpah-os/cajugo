@@ -1,6 +1,7 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { z } from "zod";
 import { authorizeTo, currentSession } from "@/domains/auth/service";
 import { brands, models, years } from "@/domains/fipe/service";
 import { getCloudinary } from "@/platform/cloudinary/cloudinary";
@@ -10,6 +11,7 @@ import { errorMessage, logger } from "@/platform/http/logger";
 import {
   addPhoto,
   isPublished,
+  listVehicles,
   markSold,
   photoUpload,
   publish,
@@ -22,6 +24,7 @@ import {
   unpublish,
   vehicleForm,
   type PhotoView,
+  type VehicleCard,
   type VehicleFormView,
 } from "./service";
 import { VEHICLES_TAG } from "./tags";
@@ -50,6 +53,29 @@ function fail(error: unknown): ActionError {
 }
 
 const deps = () => ({ db: getDb() });
+
+const loadMoreInput = z
+  .object({
+    status: z.string().max(20),
+    q: z.string().max(200),
+    cursor: z.string().max(300),
+  })
+  .strict();
+
+/** Próxima página de Meus veículos [1c] (SHW-FR-007), sempre da loja da sessão. */
+export async function loadMoreVehiclesAction(
+  input: unknown,
+): Promise<
+  { ok: true; items: VehicleCard[]; nextCursor: string | null } | ActionError
+> {
+  try {
+    const parsed = loadMoreInput.parse(input);
+    const list = await listVehicles(deps(), await currentSession(), parsed);
+    return { ok: true, items: list.items, nextCursor: list.nextCursor };
+  } catch (error) {
+    return fail(error);
+  }
+}
 const photoDeps = () => ({ db: getDb(), cloudinary: getCloudinary() });
 
 /** Autosave [2a] (VEH-FR-003): grava e devolve o formulário atualizado. */

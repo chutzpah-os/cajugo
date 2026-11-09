@@ -1,14 +1,21 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { parseFilters } from "../filters";
+import type { PublicCard, SearchResult } from "../service";
+import ErrorPage from "@/app/error";
 import { CatalogToolbar } from "./catalog-toolbar";
+import { CatalogList } from "./catalog-list";
+import { CatalogSkeleton } from "./catalog-skeleton";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
-vi.mock("../actions", () => ({ countMatchesAction: vi.fn() }));
+vi.mock("../actions", () => ({
+  countMatchesAction: vi.fn(),
+  loadMoreAction: vi.fn(),
+}));
 
 const MAKES = [
   { slug: "bmw", name: "BMW", count: 2 },
@@ -102,5 +109,75 @@ describe("busca sem resultado [12a]", () => {
 
     // Assert
     expect(html).toContain('href="/loja/x?q=corolla"');
+  });
+});
+
+const CARD: PublicCard = {
+  vehicleId: "v1",
+  path: "/v/v1-fiat-argo-2022-aracaju-se",
+  make: "Fiat",
+  model: "Argo",
+  version: "Drive",
+  yearManufacture: 2021,
+  yearModel: 2022,
+  mileageKm: 1000,
+  city: "Aracaju",
+  state: "SE",
+  priceCents: 5000000,
+  installmentCents: null,
+  coverPublicId: null,
+  photoCount: 1,
+  badge: null,
+  storeName: "Loja",
+};
+
+function list(result: Partial<SearchResult>) {
+  return renderToStaticMarkup(
+    <CatalogList
+      result={{
+        items: [CARD],
+        total: 1,
+        stores: 1,
+        nextCursor: null,
+        ...result,
+      }}
+      cloudName="demo"
+      showStore
+      store={null}
+      query=""
+      empty={<p>vazio</p>}
+    />,
+  );
+}
+
+describe("lista do catálogo", () => {
+  it("[SHW-NFR-002] os cards saem no HTML do servidor", () => {
+    expect(list({})).toContain(CARD.path);
+  });
+
+  it("[SHW-FR-007] botão só aparece quando há mais página", () => {
+    expect(list({})).not.toContain("Carregar mais veículos");
+    expect(list({ nextCursor: "abc" })).toContain("Carregar mais veículos");
+  });
+
+  it("[SHW-FR-012] lista vazia mostra o estado recebido", () => {
+    expect(list({ items: [], total: 0 })).toContain("vazio");
+  });
+
+  it("[SHW-FR-012] esqueleto tem o formato do card", () => {
+    expect(renderToStaticMarkup(<CatalogSkeleton />)).toContain(
+      'data-testid="catalog-skeleton"',
+    );
+  });
+
+  it("[SHW-FR-012] erro de carregamento mostra Tentar de novo", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <ErrorPage error={new Error("x")} retry={() => {}} />,
+    );
+
+    // Assert
+    expect(html).toContain("Tentar de novo");
+    expect(html).not.toContain("Error: x");
   });
 });

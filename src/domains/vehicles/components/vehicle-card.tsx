@@ -16,8 +16,20 @@ import type { VehicleCard as Card } from "../service";
 const km = new Intl.NumberFormat("pt-BR");
 
 /** Card de Meus veículos [1c] (VEH-FR-002, VEH-FR-010, VEH-FR-013). */
-export function VehicleCard({ v, cloudName }: { v: Card; cloudName: string }) {
+export function VehicleCard({
+  v,
+  cloudName,
+  onChanged,
+}: {
+  v: Card;
+  cloudName: string;
+  onChanged?: () => void;
+}) {
   const router = useRouter();
+  const refresh = () => {
+    router.refresh();
+    onChanged?.();
+  };
   const [share, setShare] = useState(v.shareOnCajugo);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -64,7 +76,7 @@ export function VehicleCard({ v, cloudName }: { v: Card; cloudName: string }) {
           if (!r.ok) {
             setShare(!on);
             setError(r.message);
-          } else router.refresh();
+          } else refresh();
         }}
       />
       <div className="grid grid-cols-2 gap-2">
@@ -100,7 +112,7 @@ export function VehicleCard({ v, cloudName }: { v: Card; cloudName: string }) {
           setBusy(false);
           setConfirm(false);
           if (!r.ok) return setError(r.message);
-          router.refresh();
+          refresh();
         }}
       >
         Sai do seu catálogo, da vitrine CajuGo e dos links de vendedor na hora.

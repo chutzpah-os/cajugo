@@ -139,6 +139,8 @@ export default async function StorePage({
           title={`Estoque ${page.name}`}
           count={`${result.total} ${result.total === 1 ? "veículo disponível" : "veículos disponíveis"}`}
           result={result}
+          filters={filters}
+          store={page.slug}
           cloudName={cloud}
           showStore={false}
           toolbar={

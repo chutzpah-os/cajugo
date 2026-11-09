@@ -69,6 +69,8 @@ export async function ShowcaseView({
               : ""
           }
           result={result}
+          filters={filters}
+          store={null}
           cloudName={cloudName()}
           showStore
           toolbar={

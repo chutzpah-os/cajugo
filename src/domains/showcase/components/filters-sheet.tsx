@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useRef, useState, type ReactNode } from "react";
 import { Button } from "@/ui/button";
 import { Chip } from "@/ui/chip";
@@ -17,6 +16,7 @@ import {
   TRANSMISSION_OPTIONS,
   type Filters,
 } from "../filters";
+import { useCatalogNavigation } from "./catalog-navigation";
 
 export type MakeOption = { slug: string; name: string; count: number };
 
@@ -90,7 +90,7 @@ export function FiltersSheet({
   basePath: string;
   store: string | null;
 }) {
-  const router = useRouter();
+  const { navigate } = useCatalogNavigation();
   const dialog = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState(filters);
   const [count, setCount] = useState<number | null>(total);
@@ -133,7 +133,7 @@ export function FiltersSheet({
     clearTimeout(timer.current);
     latest.current += 1;
     dialog.current?.close();
-    router.push(filterHref(basePath, normalizeFilters(draft)));
+    navigate(filterHref(basePath, normalizeFilters(draft)));
   }
 
   const active = activeFilters(filters);

@@ -526,3 +526,6 @@
 
 # 2026-11-09 · 006/T017 filtros, busca e ordenação
 - Folha [6d] com contagem ao vivo (countMatchesAction, em cache), busca, ordenação e [12a] na vitrine e no catálogo; /vitrine recebe os filtros reescritos pelo proxy e quem chega nela direto vai para / com 308; filtro sem resultado fica fora do Google.
+
+# 2026-11-09 · 006/T018 carregar mais e estados
+- useLoadMore (cursor, sem repetir) e LoadMoreButton em src/ui, usados na vitrine, no catálogo e em [1c]; [12b] em error.tsx e no próprio botão; [12c] com esqueleto só em transição do cliente, sem Suspense no conteúdo indexável.

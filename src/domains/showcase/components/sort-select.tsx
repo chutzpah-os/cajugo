@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { filterHref, SORT_OPTIONS, type Filters, type Sort } from "../filters";
+import { useCatalogNavigation } from "./catalog-navigation";
 
 /** Ordenação ao lado do contador [1a] (SHW-FR-006); fica no endereço. */
 export function SortSelect({
@@ -11,7 +11,7 @@ export function SortSelect({
   filters: Filters;
   basePath: string;
 }) {
-  const router = useRouter();
+  const { navigate } = useCatalogNavigation();
   return (
     <label className="shrink-0">
       <span className="sr-only">Ordenar por</span>
@@ -20,7 +20,7 @@ export function SortSelect({
         defaultValue={filters.sort}
         data-testid="sort-select"
         onChange={(e) =>
-          router.push(
+          navigate(
             filterHref(basePath, {
               ...filters,
               sort: e.target.value as Sort,
