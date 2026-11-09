@@ -132,3 +132,42 @@ export function activeFilters(f: Filters): number {
     (f.fuels.length ? 1 : 0)
   );
 }
+
+/** Endereço com os filtros; sem filtro, o caminho puro (canônica limpa). */
+export function filterHref(basePath: string, f: Filters): string {
+  const query = filtersToQuery(f);
+  return query ? `${basePath}?${query}` : basePath;
+}
+
+export function filtersFromQuery(query: string): Filters {
+  return parseFilters(Object.fromEntries(new URLSearchParams(query)));
+}
+
+/** Passa pela mesma validação da URL: descarta o que foi digitado pela metade. */
+export function normalizeFilters(f: Filters): Filters {
+  return filtersFromQuery(filtersToQuery(f));
+}
+
+export const SORT_OPTIONS: { value: Sort; label: string }[] = [
+  { value: "relevance", label: "Mais relevantes" },
+  { value: "price_asc", label: "Menor preço" },
+  { value: "price_desc", label: "Maior preço" },
+  { value: "newest", label: "Mais recentes" },
+  { value: "km_asc", label: "Menor km" },
+  { value: "year_desc", label: "Ano mais novo" },
+];
+
+/** Opções de [6d] (PRD): os demais valores da URL continuam válidos em links. */
+export const TRANSMISSION_OPTIONS = [
+  { value: "automatic", label: "Automático" },
+  { value: "manual", label: "Manual" },
+  { value: "cvt", label: "CVT" },
+];
+
+export const FUEL_OPTIONS = [
+  { value: "flex", label: "Flex" },
+  { value: "gasoline", label: "Gasolina" },
+  { value: "diesel", label: "Diesel" },
+  { value: "hybrid", label: "Híbrido" },
+  { value: "electric", label: "Elétrico" },
+];

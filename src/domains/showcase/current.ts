@@ -4,6 +4,7 @@ import { VEHICLES_TAG } from "@/domains/vehicles/tags";
 import { getDb } from "@/platform/db/client";
 import type { Filters } from "./filters";
 import {
+  countMatches,
   facets,
   searchShowcase,
   sitemapEntries,
@@ -30,6 +31,12 @@ export async function cachedSearch(
   "use cache";
   tagged();
   return searchShowcase(getDb(), { scope, filters, cursor });
+}
+
+export async function cachedCount(scope: Scope, filters: Filters) {
+  "use cache";
+  tagged();
+  return countMatches(getDb(), scope, filters);
 }
 
 export async function cachedFacets(scope: Scope) {

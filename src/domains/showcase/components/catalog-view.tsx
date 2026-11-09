@@ -10,6 +10,7 @@ export function CatalogView({
   cloudName,
   showStore,
   toolbar,
+  sort,
   empty,
   footer,
 }: {
@@ -19,21 +20,25 @@ export function CatalogView({
   cloudName: string;
   showStore: boolean;
   toolbar?: ReactNode;
+  sort?: ReactNode;
   empty: ReactNode;
   footer?: ReactNode;
 }) {
   const hasInstallment = result.items.some((c) => c.installmentCents !== null);
   return (
     <>
+      {toolbar}
       <div className="flex flex-col gap-1">
         <h1 className="text-[26px] leading-tight font-extrabold tracking-[-0.02em]">
           {title}
         </h1>
-        <p className="text-sm text-text-3" data-testid="catalog-count">
-          {count}
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-text-3" data-testid="catalog-count">
+            {count}
+          </p>
+          {sort}
+        </div>
       </div>
-      {toolbar}
       {result.items.length ? (
         <ul
           data-testid="catalog-list"

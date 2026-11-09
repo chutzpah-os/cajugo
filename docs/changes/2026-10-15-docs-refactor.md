@@ -523,3 +523,6 @@
 
 # 2026-11-09 · 006/T016 catálogo da loja
 - /loja/[slug] no layout novo com CatalogView, JSON-LD (AutoDealer, BreadcrumbList, ItemList) e [12g] sem motivo; saem publicStore, publicVehicles e os dois current.ts antigos, com os testes levados para storePage e searchShowcase.
+
+# 2026-11-09 · 006/T017 filtros, busca e ordenação
+- Folha [6d] com contagem ao vivo (countMatchesAction, em cache), busca, ordenação e [12a] na vitrine e no catálogo; /vitrine recebe os filtros reescritos pelo proxy e quem chega nela direto vai para / com 308; filtro sem resultado fica fora do Google.

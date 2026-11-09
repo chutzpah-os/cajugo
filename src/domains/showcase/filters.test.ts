@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { activeFilters, filtersToQuery, parseFilters } from "./filters";
+import {
+  activeFilters,
+  filterHref,
+  filtersFromQuery,
+  filtersToQuery,
+  normalizeFilters,
+  parseFilters,
+} from "./filters";
 
 describe("filtros na URL", () => {
   it("[SHW-FR-005] lê da URL, com marcas múltiplas e valores em português", () => {
@@ -62,5 +69,29 @@ describe("filtros na URL", () => {
     expect(f.yearFrom).toBeUndefined();
     expect(f.kmTo).toBeUndefined();
     expect(f.q?.length).toBe(60);
+  });
+});
+
+describe("endereço dos filtros", () => {
+  it("[SHW-FR-005] filterHref não deixa interrogação sem filtro", () => {
+    expect(filterHref("/", parseFilters({}))).toBe("/");
+    expect(filterHref("/loja/x", parseFilters({ marca: "bmw" }))).toBe(
+      "/loja/x?marca=bmw",
+    );
+  });
+
+  it("[SHW-FR-005] filtersFromQuery lê o texto do endereço", () => {
+    expect(
+      filtersFromQuery("marca=bmw&cambio=automatico").transmissions,
+    ).toEqual(["automatic"]);
+  });
+
+  it("[SHW-SEC-004] normalizeFilters descarta o que foi digitado pela metade", () => {
+    // Act
+    const f = normalizeFilters({ ...parseFilters({}), yearFrom: 20 });
+
+    // Assert
+    expect(f.yearFrom).toBeUndefined();
+    expect(filterHref("/", f)).toBe("/");
   });
 });

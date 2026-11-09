@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { SiteHeader } from "@/domains/auth/components/site-header";
+import { CatalogToolbar } from "@/domains/showcase/components/catalog-toolbar";
 import { CatalogView } from "@/domains/showcase/components/catalog-view";
+import { NoResults } from "@/domains/showcase/components/no-results";
+import { SortSelect } from "@/domains/showcase/components/sort-select";
 import { Unavailable } from "@/domains/showcase/components/unavailable";
-import { cachedSearch, cachedStorePage } from "@/domains/showcase/current";
-import { parseFilters } from "@/domains/showcase/filters";
+import {
+  cachedFacets,
+  cachedSearch,
+  cachedStorePage,
+} from "@/domains/showcase/current";
+import { filtersToQuery, parseFilters } from "@/domains/showcase/filters";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import {
@@ -28,13 +35,14 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: PageProps<"/loja/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const page = slug === BUILD_PLACEHOLDER ? null : await cachedStorePage(slug);
   if (page?.kind !== "store")
     return { title: "Loja | CajuGo", robots: { index: false, follow: true } };
   const image = page.coverPublicId ?? page.logoPublicId;
-  return pageMetadata({
+  const meta = pageMetadata({
     title: storeTitle(page),
     description:
       page.about?.slice(0, 155) ??
@@ -44,6 +52,11 @@ export async function generateMetadata({
       ? imageUrlFor(cloudName(), image, IMAGE_WIDTHS.full)
       : undefined,
   });
+  const filters = parseFilters(await searchParams);
+  if (filtersToQuery(filters) === "") return meta;
+  // Filtro sem resultado fica fora do Google (SEO.md, SHW-FR-012).
+  const { total } = await cachedSearch({ storeId: page.storeId }, filters);
+  return total ? meta : { ...meta, robots: { index: false, follow: true } };
 }
 
 /**
@@ -67,10 +80,13 @@ export default async function StorePage({
       </>
     );
 
-  const result = await cachedSearch(
-    { storeId: page.storeId },
-    parseFilters(await searchParams),
-  );
+  const scope = { storeId: page.storeId };
+  const filters = parseFilters(await searchParams);
+  const [result, { makes }] = await Promise.all([
+    cachedSearch(scope, filters),
+    cachedFacets(scope),
+  ]);
+  const filtered = filtersToQuery(filters) !== "";
   const cloud = cloudName();
   const path = `/loja/${page.slug}`;
 
@@ -125,10 +141,30 @@ export default async function StorePage({
           result={result}
           cloudName={cloud}
           showStore={false}
+          toolbar={
+            makes.length > 0 || filtered ? (
+              <CatalogToolbar
+                filters={filters}
+                makes={makes}
+                total={result.total}
+                basePath={path}
+                store={page.slug}
+              />
+            ) : undefined
+          }
+          sort={
+            result.total > 1 ? (
+              <SortSelect filters={filters} basePath={path} />
+            ) : undefined
+          }
           empty={
-            <p className="rounded-card bg-neutral-soft p-4 text-sm text-text-2">
-              Esta loja ainda não tem veículos publicados.
-            </p>
+            filtered ? (
+              <NoResults filters={filters} basePath={path} />
+            ) : (
+              <p className="rounded-card bg-neutral-soft p-4 text-sm text-text-2">
+                Esta loja ainda não tem veículos publicados.
+              </p>
+            )
           }
         />
       </main>
