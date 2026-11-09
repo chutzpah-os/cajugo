@@ -21,3 +21,10 @@ export function vehiclePath(v: {
 export function idFromVehicleParam(param: string): string | null {
   return UUID.exec(param)?.[0] ?? null;
 }
+
+/** Código de vendedor do `?ref=`: só o formato esperado (SHW-SEC-005). */
+export function parseRefCode(value: string | null | undefined): string | null {
+  return value && /^[A-Za-z0-9]{3,20}$/.test(value)
+    ? value.toUpperCase()
+    : null;
+}

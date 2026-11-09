@@ -1,6 +1,11 @@
 import { eq, inArray } from "drizzle-orm";
 import type { Cloudinary } from "@/platform/cloudinary/cloudinary";
-import { profiles, rateLimits, stores } from "@/platform/db/schema";
+import {
+  profiles,
+  rateLimits,
+  storeSlugRedirects,
+  stores,
+} from "@/platform/db/schema";
 import { hashIp } from "@/platform/http/client-ip";
 import type { Role } from "@/platform/http/session";
 import { getOrCreateCode } from "@/domains/referrals/service";
@@ -30,6 +35,7 @@ export const E2E_ACCOUNTS = {
 } as const satisfies Record<string, { email: string; roles: Role[] }>;
 
 const E2E_STORE_SLUG = "e2e-loja";
+const E2E_OLD_SLUG = "e2e-loja-antiga";
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
@@ -151,6 +157,12 @@ export async function seedE2E(
   await removeE2ESignups(deps);
   // Loja de teste no estado inicial (Minha loja e troca de endereço, spec 003).
   await resetStoreForTests(deps.db, store.id, E2E_STORE_SLUG);
+  // Endereço antigo fixo, para o teste de status real no build de produção (spec 006).
+  await deps.db.insert(storeSlugRedirects).values({
+    oldSlug: E2E_OLD_SLUG,
+    storeId: store.id,
+    expiresAt: new Date(now.getTime() + 365 * DAY_MS),
+  });
   // Código pessoal do lojista de teste, para o e2e do link /i/{codigo} (spec 003).
   await getOrCreateCode(deps.db, ids.owner, "Lojista E2E");
 

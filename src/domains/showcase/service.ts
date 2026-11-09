@@ -35,8 +35,9 @@ import { estimatedInstallment } from "@/platform/br/installment";
 import { plainText } from "@/platform/br/slug";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
+import type { GateDecision } from "@/platform/http/public-gate";
 import type { Filters, Sort } from "./filters";
-import { vehiclePath } from "./urls";
+import { idFromVehicleParam, vehiclePath } from "./urls";
 
 /**
  * Leitura pública dos veículos (spec 006): vitrine, catálogo da loja e página do
@@ -613,4 +614,57 @@ export async function vehiclePage(
       logoPublicId: v.logoPublicId,
     },
   };
+}
+
+/** Endereço atual de um veículo público; `null` se não tem página. */
+async function vehicleGate(
+  db: Db,
+  id: string,
+  requested: string | null,
+): Promise<GateDecision> {
+  const [v] = await db
+    .select({
+      status: vehicles.status,
+      make: vehicles.make,
+      model: vehicles.model,
+      yearModel: vehicles.yearModel,
+      city: stores.city,
+      state: stores.state,
+      storeStatus: stores.status,
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(eq(vehicles.id, id));
+  if (!v) return "not-found";
+  const storeShows =
+    v.storeStatus === "suspended" || isStoreLive(v.storeStatus);
+  const hasPage = ["published", "sold", "deleted"].includes(v.status);
+  if (!storeShows || !hasPage) return "not-found";
+  const current = vehiclePath({ ...v, id });
+  return requested === current ? "ok" : { redirect: current };
+}
+
+/**
+ * Status real de `/loja/*` e `/v/*` (SHW-FR-014, ADR 0013), decidido no proxy antes de
+ * a página responder: atual, redirecionamento permanente ou 404.
+ */
+export async function gateDecision(
+  db: Db,
+  path: string,
+): Promise<GateDecision> {
+  const parts = path.split("/").filter(Boolean);
+  if (parts[0] === "v" && parts.length === 2) {
+    const id = idFromVehicleParam(parts[1]);
+    return id ? vehicleGate(db, id, path) : "not-found";
+  }
+  if (parts[0] === "loja" && parts[2] === "v" && parts.length === 4) {
+    const id = idFromVehicleParam(parts[3]);
+    return id ? vehicleGate(db, id, null) : "not-found";
+  }
+  if (parts[0] === "loja" && parts.length === 2) {
+    const page = await storePage(db, parts[1]);
+    if (!page) return "not-found";
+    return page.kind === "redirect" ? { redirect: page.to } : "ok";
+  }
+  return "ok";
 }

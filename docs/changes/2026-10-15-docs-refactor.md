@@ -511,3 +511,6 @@
 
 # 2026-11-09 · 006/T012 página do veículo no serviço
 - showcase.vehiclePage: publicado (divulgado ou não) com galeria, ficha em português, condições na ordem do PRD, itens, selos, loja e wa.me com veículo e link; vendido/excluído com parecidos; loja suspensa com aviso; rascunho, fora do ar ou inexistente: null. Só colunas públicas.
+
+# 2026-11-09 · 006/T013 status real no proxy
+- proxy.ts: /loja/* e /v/* decididos por gateDecision (308 para endereço antigo, texto desatualizado e /loja/{slug}/v/{id}; 404 de verdade) com memória de 60 s (platform/http/public-gate); /?filtros reescrito para /vitrine; cookie cajugo_ref de 30 dias (vale o último). Seed cria um endereço antigo; provado no build de produção.
