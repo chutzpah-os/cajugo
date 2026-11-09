@@ -20,6 +20,7 @@ import {
   vehicleDefaults,
 } from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
+import { plainText, slugify } from "@/platform/br/slug";
 import type { FipeClient } from "@/platform/fipe/client";
 import {
   stores,
@@ -89,10 +90,14 @@ export async function saveDraft(
   if (!vehicleId) {
     const fields = await resolveFields(deps, parsed);
     const defaults = await vehicleDefaults(deps.db, storeId);
-    const [created] = await deps.db
-      .insert(vehicles)
-      .values({ storeId, ...defaults, ...fields, updatedAt: now })
-      .returning({ id: vehicles.id });
+    const created = await deps.db.transaction(async (tx) => {
+      const [row] = await tx
+        .insert(vehicles)
+        .values({ storeId, ...defaults, ...fields, updatedAt: now })
+        .returning({ id: vehicles.id });
+      await syncSearchFields(tx, row.id);
+      return row;
+    });
     return { vehicleId: created.id, savedAt: now };
   }
 
@@ -121,6 +126,7 @@ export async function saveDraft(
       .update(vehicles)
       .set({ ...fields, updatedAt: now })
       .where(mine);
+    await syncSearchFields(tx, vehicleId);
     const newPrice = fields.priceCents as number | null | undefined;
     if (row.status !== "published" || typeof newPrice !== "number") return;
     if (newPrice === row.priceCents) return;
@@ -462,6 +468,7 @@ export async function addPhoto(
         height: file.height ?? null,
       })
       .returning();
+    await syncSearchFields(tx, vehicle.id);
     return {
       id: row.id,
       publicId: row.publicId,
@@ -521,6 +528,7 @@ export async function removePhoto(
       vehicle.id,
       rest.map((p) => p.id),
     );
+    await syncSearchFields(tx, vehicle.id);
     return row.publicId;
   });
   await deps.cloudinary.destroy(removed);
@@ -592,6 +600,7 @@ export async function publish(
       .update(vehicles)
       .set({ status: "published", publishedAt: now, updatedAt: now })
       .where(eq(vehicles.id, v.id));
+    await syncSearchFields(tx, v.id);
     await logActivity(tx, {
       userId,
       action: "vehicle.published",
@@ -1079,4 +1088,36 @@ export async function refreshFipeReference(
       fipeMonth: ref.month,
     })
     .where(mine);
+}
+
+const COMPLETE_PHOTOS = 6;
+
+/**
+ * Campos que a vitrine usa para filtrar, buscar e ordenar (spec 006), recalculados na
+ * transação de quem mudou o veículo. Relevância: dia da publicação + até 7 pontos de
+ * anúncio completo (6 fotos ou mais, descrição, itens); rascunho fica com 0.
+ */
+async function syncSearchFields(tx: Db, vehicleId: string) {
+  const [v] = await tx
+    .select()
+    .from(vehicles)
+    .where(eq(vehicles.id, vehicleId));
+  const photos = await photoCount(tx, vehicleId);
+  const points =
+    (photos >= COMPLETE_PHOTOS ? 3 : 0) +
+    (v.description?.trim() ? 2 : 0) +
+    (v.features.length ? 2 : 0);
+  await tx
+    .update(vehicles)
+    .set({
+      makeSlug: v.make ? slugify(v.make) : null,
+      modelSlug: v.model ? slugify(v.model) : null,
+      searchText: plainText(
+        [v.make, v.model, v.version].filter(Boolean).join(" "),
+      ),
+      rankScore: v.publishedAt
+        ? Math.floor(v.publishedAt.getTime() / DAY_MS) + points
+        : 0,
+    })
+    .where(eq(vehicles.id, vehicleId));
 }

@@ -493,3 +493,6 @@
 
 # 2026-11-09 · 006/T006 SEO do catálogo
 - platform/seo/catalog.ts: títulos e descrições de veículo e loja, alt da imagem, JSON-LD Car+Offer (InStock/SoldOut), AutoDealer, ItemList, BreadcrumbList, Organization+WebSite.
+
+# 2026-11-09 · 006/T007 campos de busca do veículo
+- vehicles.syncSearchFields grava make_slug, model_slug, search_text e rank_score (dia da publicação + até 7 pontos de completude) na mesma transação de salvar, publicar e mudar fotos.

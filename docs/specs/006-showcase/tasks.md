@@ -13,7 +13,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T004** [P] `src/platform/br/installment.ts` (Price) e `br/slug.ts` (texto sem acento) · _SHW-FR-003, SHW-FR-004_
 - [x] **T005** [P] `showcase/filters.ts` (`parseFilters` ignora inválidos, `filtersToQuery`) e `showcase/urls.ts` (`vehiclePath`, `idFromVehicleParam`) · _SHW-FR-005, SHW-FR-008, SHW-SEC-004_
 - [x] **T006** [P] `src/platform/seo/`: títulos e descrições, canônica, `Car`/`Offer`, `AutoDealer`, `ItemList`, `BreadcrumbList`, `WebSite` · _SHW-FR-013_
-- [ ] **T007** `vehicles` grava `make_slug`, `model_slug`, `search_text` e `rank_score` ao salvar, publicar e mudar fotos; script único para veículos já existentes · _SHW-FR-004, SHW-FR-006_
+- [x] **T007** `vehicles` grava `make_slug`, `model_slug`, `search_text` e `rank_score` ao salvar, publicar e mudar fotos (staging e prod sem veículos: não precisa de script) · _SHW-FR-004, SHW-FR-006_
 
 ## Fase 2 — Fatias verticais (domínio `showcase`)
 - [ ] **T008** `searchShowcase` vitrine: só publicado, divulgado e de loja no ar; total e número de lojas; card com selo e parcela · _SHW-FR-001, SHW-FR-003, SHW-SEC-001, SHW-SEC-002, SHW-SEC-003_

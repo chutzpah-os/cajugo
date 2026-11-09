@@ -79,7 +79,7 @@ rankScore: integer("rank_score").notNull().default(0),
 //          (status, published_at desc, id); (store_id, status, rank_score desc, id)
 // setting_values: installment_down_bps = 2000; installment_months = 48
 ```
-Veículos que já existirem recebem os campos novos na migração por um script único da aplicação (a normalização sem acento é feita no código). Staging e prod são conferidos antes.
+Staging e prod não têm veículos (conferido em 2026-11-09), então não há o que preencher.
 
 ## Testes
 - **Unitários:** `parseFilters`, `vehiclePath`/`idFromVehicleParam`, `installment` (Price), `pickBadge`, funções de SEO, `gateDecision` com memória.
