@@ -457,3 +457,6 @@
 
 # 2026-11-08 · 005/T018 fotos e Publicar no formulário
 - PhotosSection (redução no navegador, progresso, capa, arrastar ou setas, remover, limite de 20) e PublishBar (salva o pendente, publica, mostra erro em cada campo e rola até a seção; publicado → resumo); contexto do formulário por React Context; uploadSigned com progresso e shrinkImage na plataforma; imageUrlFor e cloudName para a tela. Ações só renovam as páginas públicas quando o veículo é ou era público (renovar recarrega a rota e remontava o rascunho). Testado no navegador: erros, foto real, FIPE real e publicação.
+
+# 2026-11-09 · 005/T019 tela Meus veículos [1c]
+- /painel/veiculos: indicadores, card da assinatura (só lojista), busca, filtros com contagem, VehicleCard (selo, legenda, toggle, Vendido com diálogo [6f], Editar), estado vazio e botão Novo veículo; primeiros passos com o 1º veículo; texto de [10a] alinhado ao PRD. Corrigido: data crua em SQL manual quebrava no Postgres real (o PGlite aceita); agora vai ISO com cast. Testado no navegador contra o staging.

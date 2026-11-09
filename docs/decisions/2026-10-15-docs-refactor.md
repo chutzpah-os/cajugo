@@ -260,3 +260,6 @@
 
 # 2026-11-08 · Renovar cache só para veículo público (005/T018)
 - updateTag recarrega a rota atual; num rascunho em edição isso remontava o formulário e apagava listas e estado. Como rascunho não aparece em página pública, a renovação só acontece quando o veículo é ou passa a ser publicado. Arquivos do campo de foto são copiados antes de esperar o rascunho ser criado.
+
+# 2026-11-09 · Data em SQL manual vai como texto ISO (005/T019)
+- O driver do Postgres recusa Date dentro de sql`...` e o PGlite aceita, então os testes de unidade não pegam; o teste no navegador contra o staging pegou. Regra: em SQL manual, data vai com toISOString() e ::timestamptz.

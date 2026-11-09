@@ -19,3 +19,16 @@ export function shareCaption(v: {
   if (!v.storeLive) return "Aparece quando a loja for ativada";
   return v.share ? "Visível na vitrine CajuGo" : "Só no seu catálogo";
 }
+
+/** Cor do selo de status (DESIGN.md §3). */
+export const STATUS_TONE: Record<
+  string,
+  "dark" | "ok" | "warn" | "info" | "neutral" | "caju"
+> = {
+  draft: "neutral",
+  pending_approval: "info",
+  published: "ok",
+  hidden: "warn",
+  sold: "dark",
+  deleted: "neutral",
+};

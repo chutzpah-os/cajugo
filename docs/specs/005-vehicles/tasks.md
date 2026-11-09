@@ -29,7 +29,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T016** `src/ui`: `ConfirmSheet` (diálogo [6f]), seletor dependente e campo de contagem de caracteres · _VEH-NFR-001_
 - [x] **T017** [2a] parte 1 em `/painel/veiculos/novo` e `/[id]/editar`: Identificação (FIPE dependente), Ficha técnica, Preço com referência, Condições, Itens, Descrição, Divulgação; autosave com "Rascunho salvo" · _VEH-FR-003, VEH-FR-005, VEH-FR-006, VEH-FR-007, VEH-FR-008_
 - [x] **T018** [2a] parte 2: Fotos (redução no navegador, progresso, arrastar, remover, limite) e "Publicar" com erros por seção · _VEH-FR-004, VEH-FR-009, VEH-NFR-002_
-- [ ] **T019** [1c] em `/painel/veiculos`: KPIs, card da assinatura, busca, filtros, cards com toggle, Vendido e Editar; onboarding com o 1º veículo; texto de [10a] ajustado · _VEH-FR-001, VEH-FR-002, VEH-FR-010, VEH-FR-015_
+- [x] **T019** [1c] em `/painel/veiculos`: KPIs, card da assinatura, busca, filtros, cards com toggle, Vendido e Editar; onboarding com o 1º veículo; texto de [10a] ajustado · _VEH-FR-001, VEH-FR-002, VEH-FR-010, VEH-FR-015_
 - [ ] **T020** [6e] em `/painel/veiculos/[id]`: resumo, Dias no ar, seções com Editar, toggle, Vendido / Desfazer, Despublicar e Excluir com [6f] · _VEH-FR-011, VEH-FR-013, VEH-FR-014_
 - [ ] **T021** Catálogo `/loja/[slug]` lista os veículos publicados (foto, nome, ano · km, preço) com cache `vehicles` renovado nas ações · _VEH-FR-010, VEH-NFR-003, VEH-SEC-002, VEH-SEC-004_
 

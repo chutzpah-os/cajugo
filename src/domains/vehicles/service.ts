@@ -799,7 +799,7 @@ export async function listVehicles(
           Number,
         ),
       soldThisMonth:
-        sql<number>`count(*) filter (where ${vehicles.status} = 'sold' and ${vehicles.soldAt} >= ${saoPauloMonthStart(now)})`.mapWith(
+        sql<number>`count(*) filter (where ${vehicles.status} = 'sold' and ${vehicles.soldAt} >= ${saoPauloMonthStart(now).toISOString()}::timestamptz)`.mapWith(
           Number,
         ),
     })

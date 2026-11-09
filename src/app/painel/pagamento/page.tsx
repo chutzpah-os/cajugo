@@ -43,8 +43,9 @@ async function Content() {
         </p>
       </div>
       <p className="text-sm text-text-2">
-        Enquanto isso, você já pode cadastrar os seus veículos como rascunho.
-        Quando o pagamento for confirmado, a sua loja vai ao ar.
+        Enquanto isso, você já pode cadastrar e publicar os seus veículos: eles
+        aparecem no catálogo quando o pagamento for confirmado e a sua loja for
+        ao ar.
       </p>
     </section>
   );
