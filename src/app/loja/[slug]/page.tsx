@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { cachedPublicStore } from "@/domains/stores/current";
+import { cachedPublicVehicles } from "@/domains/vehicles/current";
+import { brl } from "@/platform/br/money";
+import { cloudName } from "@/platform/cloudinary/cloudinary";
+import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 
 export const metadata: Metadata = {
-  // Página mínima até o catálogo da spec 005: fora da busca por enquanto (D4).
+  // Catálogo simples; a página completa, com SEO, é da spec 006: fora da busca até lá.
   robots: { index: false, follow: true },
 };
+
+const km = new Intl.NumberFormat("pt-BR");
 
 /** Valor de validação do build (guia do Next com Cache Components): nunca é uma loja. */
 const BUILD_PLACEHOLDER = "__build__";
@@ -21,7 +27,7 @@ export function generateStaticParams() {
 
 /**
  * `/loja/{slug}` (D4 do plano 003): endereço antigo → 308 para o novo (STO-FR-013);
- * inexistente → 404 de verdade. Por enquanto, nome e cidade; o catálogo é da 005.
+ * inexistente → 404 de verdade. Lista os veículos publicados (VEH-FR-010).
  * Resolvido antes do streaming, com cache, para o status HTTP valer (SEO).
  */
 export default async function StorePage({ params }: PageProps<"/loja/[slug]">) {
@@ -30,6 +36,8 @@ export default async function StorePage({ params }: PageProps<"/loja/[slug]">) {
   const store = await cachedPublicStore(slug);
   if (!store) notFound();
   if (store.redirected) permanentRedirect(`/loja/${store.slug}`);
+  const vehicles = await cachedPublicVehicles(store.storeId);
+  const cloud = cloudName();
 
   return (
     <>
@@ -41,10 +49,52 @@ export default async function StorePage({ params }: PageProps<"/loja/[slug]">) {
         <p className="text-[15px] text-text-2">
           {store.city}/{store.state}
         </p>
-        <p className="mt-4 rounded-card bg-neutral-soft p-4 text-sm text-text-2">
-          Catálogo em construção. Em breve, os veículos desta loja aparecem
-          aqui.
-        </p>
+        {vehicles.length ? (
+          <ul className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+            {vehicles.map((v) => (
+              <li
+                key={v.vehicleId}
+                className="overflow-hidden rounded-card border border-line bg-surface"
+              >
+                <div className="aspect-[4/3] bg-line-2">
+                  {v.coverPublicId && (
+                    // eslint-disable-next-line @next/next/no-img-element -- URL do Cloudinary já otimizada
+                    <img
+                      src={imageUrlFor(
+                        cloud,
+                        v.coverPublicId,
+                        IMAGE_WIDTHS.card,
+                      )}
+                      alt={v.name}
+                      loading="lazy"
+                      className="size-full object-cover"
+                    />
+                  )}
+                </div>
+                <div className="flex flex-col gap-1 p-3">
+                  <h2 className="font-bold">{v.name}</h2>
+                  <p className="text-sm text-text-3">
+                    {[
+                      v.yearModel,
+                      v.mileageKm !== null && `${km.format(v.mileageKm)} km`,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                  {v.priceCents !== null && (
+                    <p className="text-[17px] font-extrabold">
+                      {brl(v.priceCents)}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 rounded-card bg-neutral-soft p-4 text-sm text-text-2">
+            Esta loja ainda não tem veículos publicados.
+          </p>
+        )}
       </main>
     </>
   );

@@ -463,3 +463,6 @@
 
 # 2026-11-09 · 005/T020 resumo do veículo [6e]
 - /painel/veiculos/[id]: resumo com capa, nome, ano, km, preço, selo e Dias no ar; seções com Editar (âncoras do [2a]); VehicleActions com toggle de divulgação, vendido, desfazer venda, despublicar e excluir com o diálogo [6f]. Testado no navegador contra o staging.
+
+# 2026-11-09 · 005/T021 catálogo com veículos
+- /loja/{slug} lista os veículos publicados (capa, nome, ano, km, preço) ou o aviso de catálogo vazio; vehicles/current.cachedPublicVehicles com tag vehicles + stores e validade de 60 s; publicStore devolve storeId. A página segue fora da busca até a 006.

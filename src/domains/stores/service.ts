@@ -791,6 +791,7 @@ export async function publicStore(
   db: Db,
   slug: string,
 ): Promise<{
+  storeId: string;
   slug: string;
   redirected: boolean;
   name: string;
@@ -811,7 +812,12 @@ export async function publicStore(
       ),
     );
   return s
-    ? { slug: resolved.slug, redirected: resolved.redirected, ...s }
+    ? {
+        storeId: resolved.storeId,
+        slug: resolved.slug,
+        redirected: resolved.redirected,
+        ...s,
+      }
     : null;
 }
 
