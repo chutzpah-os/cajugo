@@ -78,6 +78,13 @@
       "when": 1794175411577,
       "tag": "0010_vehicles_and_fipe",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794212808469,
+      "tag": "0011_showcase_search",
+      "breakpoints": true
     }
   ]
 }

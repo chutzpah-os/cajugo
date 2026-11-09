@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { profiles, stores, vehiclePhotos, vehicles } from "./schema";
 import { createTestDb } from "./testing/test-db";
@@ -53,5 +54,19 @@ describe("veículos no banco", () => {
     await photo(1);
 
     await expect(photo(1)).rejects.toThrow();
+  });
+
+  it("[SHW-FR-004] o texto de busca gera a coluna indexável, sem precisar de extensão", async () => {
+    await t.db
+      .insert(vehicles)
+      .values({ storeId, searchText: "citroen c3 tendance" });
+
+    const rows = await t.db.execute<{ n: number }>(
+      sql`select count(*)::int n from vehicles where search @@ to_tsquery('simple', 'citro:*')`,
+    );
+
+    expect(
+      rows.rows?.[0] ?? (rows as unknown as { n: number }[])[0],
+    ).toMatchObject({ n: 1 });
   });
 });

@@ -481,3 +481,6 @@
 
 # 2026-11-09 · 006/T002 documentos da vitrine
 - ARCHITECTURE §4 (slugs, search_text, search sem unaccent, rank_score, regras da parcela), SEO.md (status real no proxy), GLOSSARY (Relevância), ADR 0013.
+
+# 2026-11-09 · 006/T003 migration 0011
+- vehicles: make_slug, model_slug, search_text, search (tsvector gerado, config simple), rank_score e 5 índices; regras installment_down_bps (20%) e installment_months (48) em [4c]. Aplicada no staging.

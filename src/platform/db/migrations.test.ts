@@ -122,6 +122,8 @@ describe("migrations", () => {
       // Assert
       expect(Object.fromEntries(rows.map((r) => [r.key, r.value]))).toEqual({
         cajugo_fee_bps: 100,
+        installment_down_bps: 2000,
+        installment_months: 48,
         installment_rate_bps: 179,
         min_photos: 6,
         membership_cents: 10000,

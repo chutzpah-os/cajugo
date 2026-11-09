@@ -12,9 +12,10 @@ import {
   timestamp,
   uniqueIndex,
   uuid,
+  customType,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
+import { sql, type SQL } from "drizzle-orm";
 import { uuidv7 } from "./uuid";
 
 // Modelo completo em docs/ARCHITECTURE.md §4. Cada tabela entra com a spec do seu domínio.
@@ -346,6 +347,11 @@ export const notices = pgTable(
   (t) => [index("notices_profile_created").on(t.profileId, t.createdAt)],
 ).enableRLS();
 
+/** Texto de busca do Postgres (coluna gerada, spec 006). */
+const tsvector = customType<{ data: string }>({
+  dataType: () => "tsvector",
+});
+
 /** Status do veículo (GLOSSARY, PRD §5.3). */
 export const vehicleStatus = pgEnum("vehicle_status", [
   "draft",
@@ -405,6 +411,16 @@ export const vehicles = pgTable(
     soldAt: timestamp("sold_at", { withTimezone: true }),
     /** Excluído: guardado 90 dias para o admin (VEH-FR-014). */
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    /** Filtro por marca e descoberta (spec 006). */
+    makeSlug: text("make_slug"),
+    modelSlug: text("model_slug"),
+    /** Marca, modelo e versão sem acento, feito pela aplicação (ADR 0013 e D3). */
+    searchText: text("search_text").notNull().default(""),
+    search: tsvector("search").generatedAlwaysAs(
+      (): SQL => sql`to_tsvector('simple', search_text)`,
+    ),
+    /** Relevância (GLOSSARY): dia da publicação + completude do anúncio. */
+    rankScore: integer("rank_score").notNull().default(0),
     ...timestamps,
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
@@ -414,6 +430,16 @@ export const vehicles = pgTable(
   (t) => [
     index("vehicles_store_status").on(t.storeId, t.status),
     index("vehicles_status_share").on(t.status, t.shareOnCajugo),
+    index("vehicles_search").using("gin", t.search),
+    index("vehicles_status_rank").on(t.status, t.rankScore.desc(), t.id),
+    index("vehicles_status_price").on(t.status, t.priceCents, t.id),
+    index("vehicles_status_published").on(t.status, t.publishedAt.desc(), t.id),
+    index("vehicles_store_status_rank").on(
+      t.storeId,
+      t.status,
+      t.rankScore.desc(),
+      t.id,
+    ),
   ],
 ).enableRLS();
 
