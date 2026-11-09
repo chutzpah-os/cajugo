@@ -469,3 +469,6 @@
 
 # 2026-11-09 · 005/T022 e2e de veículos
 - tests/e2e/vehicles.spec.ts: publicar vazio com erros, 2 fotos reais e troca de capa, FIPE real, autosave ao fechar e voltar, publicar, catálogo sem placa, [1c] com indicadores e busca por placa, vendido some do catálogo e desfazer volta, despublicar, excluir (404), usuário da loja cadastra e loja recém-cadastrada não abre. Seed apaga veículos, fotos e histórico (Cloudinary também). Página 404 em português. 40 e2e verdes; staging limpo depois.
+
+# 2026-11-09 · 005/T023 migration no prod
+- 0010 aplicada no cajugo-prod e conferida: 11 migrations, tabelas vehicles, vehicle_photos, vehicle_history e fipe_*, índices e os 6 status do veículo. Falta o /verify.
