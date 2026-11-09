@@ -3,7 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stores } from "@/platform/db/schema";
 import { FakeCloudinary } from "@/platform/cloudinary/fake-cloudinary";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { onboardingStatus, publicStore } from "@/domains/stores/service";
+import { storePage } from "@/domains/showcase/service";
+import { onboardingStatus } from "@/domains/stores/service";
 import { confirmPayment } from "./service";
 import { configurePix, personWith } from "./testing/fixtures";
 import { storeInReview } from "./testing/flow";
@@ -27,13 +28,13 @@ describe("loja no ar depois do 1º pagamento", () => {
 
   it("[PIX-FR-014] o endereço público só abre depois da confirmação", async () => {
     const { paymentId } = await storeInReview(deps(), "silva-autocar");
-    expect(await publicStore(t.db, "silva-autocar")).toBeNull();
+    expect(await storePage(t.db, "silva-autocar")).toBeNull();
 
     await confirmPayment(deps(), await personWith(t.db, "admin"), {
       paymentId,
     });
 
-    expect(await publicStore(t.db, "silva-autocar")).toMatchObject({
+    expect(await storePage(t.db, "silva-autocar")).toMatchObject({
       name: "Loja silva-autocar",
     });
   });

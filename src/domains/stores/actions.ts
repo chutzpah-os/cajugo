@@ -16,7 +16,7 @@ import {
   type SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
 import { requestAuthProvider } from "@/platform/supabase/next";
-import { STORES_TAG } from "./current";
+import { STORES_TAG } from "./tags";
 import { hoursFromForm } from "./hours-form";
 import {
   checkReferralCode,

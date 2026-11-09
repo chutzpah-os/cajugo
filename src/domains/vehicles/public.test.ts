@@ -3,12 +3,21 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stores, vehicles } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { onboardingStatus } from "@/domains/stores/service";
-import { hasPublishedVehicle, publicVehicles, saveDraft } from "./service";
+import { parseFilters } from "@/domains/showcase/filters";
+import { searchShowcase } from "@/domains/showcase/service";
+import { hasPublishedVehicle, saveDraft } from "./service";
 import { goLive, storeOwner } from "./testing/fixtures";
 
 describe("veículos no catálogo público", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
   const deps = () => ({ db: t.db });
+  const catalogOf = async (storeId: string) =>
+    (
+      await searchShowcase(t.db, {
+        scope: { storeId },
+        filters: parseFilters({}),
+      })
+    ).items;
 
   beforeEach(async () => {
     vi.stubEnv("HASH_SECRET", "segredo-de-teste");
@@ -46,10 +55,10 @@ describe("veículos no catálogo público", () => {
 
   it("[VEH-SEC-004] [VEH-FR-010] só o publicado de loja no ar; loja cadastrada ou suspensa não mostra nada", async () => {
     const a = await storeWithEachStatus();
-    expect(await publicVehicles(t.db, a.storeId)).toEqual([]);
+    expect(await catalogOf(a.storeId)).toEqual([]);
 
     await goLive(t.db, a.storeId);
-    expect((await publicVehicles(t.db, a.storeId)).map((v) => v.name)).toEqual([
+    expect((await catalogOf(a.storeId)).map((v) => v.version)).toEqual([
       "V published",
     ]);
 
@@ -57,14 +66,14 @@ describe("veículos no catálogo público", () => {
       .update(stores)
       .set({ status: "suspended" })
       .where(eq(stores.id, a.storeId));
-    expect(await publicVehicles(t.db, a.storeId)).toEqual([]);
+    expect(await catalogOf(a.storeId)).toEqual([]);
   });
 
   it("[VEH-SEC-002] o cartão público não tem placa nem chassi", async () => {
     const a = await storeWithEachStatus();
     await goLive(t.db, a.storeId);
 
-    const json = JSON.stringify(await publicVehicles(t.db, a.storeId));
+    const json = JSON.stringify(await catalogOf(a.storeId));
 
     expect(json).not.toContain("ABC1D23");
     expect(json).not.toContain("9BWZZZ");

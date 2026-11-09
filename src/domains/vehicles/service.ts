@@ -15,20 +15,11 @@ import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { saoPauloMonthStart } from "@/domains/billing/service";
 import { identify, reference } from "@/domains/fipe/service";
-import {
-  LIVE_STATUSES,
-  storeIsLive,
-  vehicleDefaults,
-} from "@/domains/stores/service";
+import { storeIsLive, vehicleDefaults } from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
 import { plainText, slugify } from "@/platform/br/slug";
 import type { FipeClient } from "@/platform/fipe/client";
-import {
-  stores,
-  vehicleHistory,
-  vehiclePhotos,
-  vehicles,
-} from "@/platform/db/schema";
+import { vehicleHistory, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type {
   Cloudinary,
   SignedUpload,
@@ -957,60 +948,6 @@ export async function listVehicles(
       canSell: v.status === "published",
     })),
   };
-}
-
-export type PublicVehicleCard = {
-  vehicleId: string;
-  name: string;
-  yearModel: number | null;
-  mileageKm: number | null;
-  priceCents: number | null;
-  coverPublicId: string | null;
-};
-
-/**
- * Veículos do catálogo público da loja (VEH-FR-010, VEH-SEC-004): só publicados de
- * loja no ar. Saída montada à mão, sem placa nem chassi (VEH-SEC-002).
- */
-export async function publicVehicles(
-  db: Db,
-  storeId: string,
-): Promise<PublicVehicleCard[]> {
-  const rows = await db
-    .select({
-      vehicleId: vehicles.id,
-      version: vehicles.version,
-      model: vehicles.model,
-      yearModel: vehicles.yearModel,
-      mileageKm: vehicles.mileageKm,
-      priceCents: vehicles.priceCents,
-      coverPublicId: vehiclePhotos.publicId,
-    })
-    .from(vehicles)
-    .innerJoin(stores, eq(stores.id, vehicles.storeId))
-    .leftJoin(
-      vehiclePhotos,
-      and(
-        eq(vehiclePhotos.vehicleId, vehicles.id),
-        eq(vehiclePhotos.position, 0),
-      ),
-    )
-    .where(
-      and(
-        eq(vehicles.storeId, storeId),
-        eq(vehicles.status, "published"),
-        inArray(stores.status, [...LIVE_STATUSES]),
-      ),
-    )
-    .orderBy(desc(vehicles.publishedAt));
-  return rows.map((r) => ({
-    vehicleId: r.vehicleId,
-    name: vehicleName(r),
-    yearModel: r.yearModel,
-    mileageKm: r.mileageKm,
-    priceCents: r.priceCents,
-    coverPublicId: r.coverPublicId,
-  }));
 }
 
 /** A loja já tem veículo publicado? (primeiros passos, VEH-FR-015) */

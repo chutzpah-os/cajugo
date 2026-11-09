@@ -783,45 +783,6 @@ export async function checkReferralCode(
 }
 
 /**
- * Loja do endereço público `/loja/{slug}` (só dados públicos). `redirected`: o
- * endereço é antigo e leva ao atual (STO-FR-013). `null`: endereço inexistente ou
- * loja fora do ar.
- */
-export async function publicStore(
-  db: Db,
-  slug: string,
-): Promise<{
-  storeId: string;
-  slug: string;
-  redirected: boolean;
-  name: string;
-  city: string;
-  state: string;
-} | null> {
-  const resolved = await resolveSlug(db, slug);
-  if (!resolved) return null;
-  const [s] = await db
-    .select({ name: stores.name, city: stores.city, state: stores.state })
-    .from(stores)
-    // Só loja no ar (PRD §5.5): cadastrada, em análise, suspensa ou cancelada não é
-    // pública (STO-FR-006, PIX-FR-014, SECURITY.md §4).
-    .where(
-      and(
-        eq(stores.id, resolved.storeId),
-        inArray(stores.status, LIVE_STATUSES),
-      ),
-    );
-  return s
-    ? {
-        storeId: resolved.storeId,
-        slug: resolved.slug,
-        redirected: resolved.redirected,
-        ...s,
-      }
-    : null;
-}
-
-/**
  * Só testes (`pnpm e2e:seed`): volta a loja de teste ao estado inicial (endereço,
  * sem troca recente, sem redirecionamentos, sem imagens, sem horário, fora da vitrine).
  */

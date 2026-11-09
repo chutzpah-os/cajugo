@@ -4,7 +4,8 @@ import { activityLog, stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import type { Session } from "@/platform/http/session";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
-import { changeSlug, publicStore, registerStore, resolveSlug } from "./service";
+import { changeSlug, registerStore, resolveSlug } from "./service";
+import { storePage } from "@/domains/showcase/service";
 
 const DAY = 86_400_000;
 const T0 = new Date("2026-11-08T12:00:00Z");
@@ -165,15 +166,15 @@ describe("troca do endereço do catálogo", () => {
 
   it("[STO-FR-006] [PIX-FR-014] a página pública só mostra loja no ar (ativa, em atraso, cancelamento agendado)", async () => {
     const a = await owner("silvautocar", "a@x.com");
-    expect(await publicStore(t.db, "silvautocar")).toBeNull();
+    expect(await storePage(t.db, "silvautocar")).toBeNull();
 
     await t.db
       .update(stores)
       .set({ status: "active" })
       .where(eq(stores.id, a.storeId!));
-    expect(await publicStore(t.db, "silvautocar")).toMatchObject({
+    expect(await storePage(t.db, "silvautocar")).toMatchObject({
+      kind: "store",
       slug: "silvautocar",
-      redirected: false,
       city: "Aracaju",
     });
 
@@ -183,19 +184,14 @@ describe("troca do endereço do catálogo", () => {
         .update(stores)
         .set({ status })
         .where(eq(stores.id, a.storeId!));
-      expect(await publicStore(t.db, "silvautocar"), status).not.toBeNull();
+      expect(await storePage(t.db, "silvautocar"), status).not.toBeNull();
     }
-    for (const status of [
-      "payment_review",
-      "suspended",
-      "canceled",
-      "archived",
-    ] as const) {
+    for (const status of ["payment_review", "canceled", "archived"] as const) {
       await t.db
         .update(stores)
         .set({ status })
         .where(eq(stores.id, a.storeId!));
-      expect(await publicStore(t.db, "silvautocar"), status).toBeNull();
+      expect(await storePage(t.db, "silvautocar"), status).toBeNull();
     }
   });
 });

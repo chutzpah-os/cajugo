@@ -520,3 +520,6 @@
 
 # 2026-11-09 · 006/T015 vitrine [1a]
 - PublicCard, CatalogView e a página / pré-renderizada com contador, cards, JSON-LD (Organization, WebSite, ItemList, BreadcrumbList) e vitrine vazia com convite, fora do Google até ter veículo; cache das leituras públicas renova a cada 30 s e por etiqueta.
+
+# 2026-11-09 · 006/T016 catálogo da loja
+- /loja/[slug] no layout novo com CatalogView, JSON-LD (AutoDealer, BreadcrumbList, ItemList) e [12g] sem motivo; saem publicStore, publicVehicles e os dois current.ts antigos, com os testes levados para storePage e searchShowcase.

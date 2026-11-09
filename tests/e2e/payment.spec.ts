@@ -197,7 +197,7 @@ test.describe("Pix manual e ativação", () => {
       page.getByText("Pagamento confirmado. Sua loja está no ar."),
     ).toHaveCount(0);
     await page.goto(`/loja/${store.slug}`);
-    await expect(heading(page)).toHaveText(store.name);
+    await expect(heading(page)).toHaveText(`Estoque ${store.name}`);
     await admin.context().close();
   });
 
