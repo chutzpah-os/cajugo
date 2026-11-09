@@ -14,11 +14,12 @@ import {
 
 /**
  * Dados públicos com cache (cota gratuita): renovados por toda mudança visível de
- * veículo ou loja e válidos por no máximo 60 s (SHW-NFR-004, SHW-NFR-005).
+ * veículo ou loja e por tempo, a cada 30 s (SHW-NFR-004, SHW-NFR-005).
  */
 function tagged() {
   cacheTag(VEHICLES_TAG, STORES_TAG);
-  cacheLife({ stale: 30, revalidate: 30, expire: 60 });
+  // Renova a cada 30 s; validade longa para a página poder ser pré-renderizada.
+  cacheLife({ stale: 30, revalidate: 30, expire: 3600 });
 }
 
 export async function cachedSearch(

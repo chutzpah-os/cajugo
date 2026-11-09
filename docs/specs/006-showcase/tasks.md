@@ -25,7 +25,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T014** `sitemapEntries` e sitemap em índice (estáticas, lojas, veículos) · _SHW-FR-015, SHW-SEC-001, SHW-SEC-003_
 
 ## Fase 3 — Telas
-- [ ] **T015** `VehicleCard` público, `CatalogView`, `/` com mensagem de vitrine vazia e SEO · _SHW-FR-001, SHW-FR-003, SHW-FR-013, SHW-NFR-002_
+- [x] **T015** `VehicleCard` público, `CatalogView`, `/` com mensagem de vitrine vazia e SEO · _SHW-FR-001, SHW-FR-003, SHW-FR-013, SHW-NFR-002_
 - [ ] **T016** `/loja/[slug]` no novo layout, com `AutoDealer` e [12g] · _SHW-FR-002, SHW-FR-011, SHW-FR-013_
 - [ ] **T017** Filtros [6d], busca, ordenação e `/vitrine` · _SHW-FR-004, SHW-FR-005, SHW-FR-006_
 - [ ] **T018** "Carregar mais" na vitrine, no catálogo e em [1c]; estados [12a], [12b] e [12c] · _SHW-FR-007, SHW-FR-012_

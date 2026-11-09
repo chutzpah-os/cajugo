@@ -517,3 +517,6 @@
 
 # 2026-11-09 · 006/T014 sitemaps
 - Um sitemap por tipo (pages, stores, vehicles), listados no robots.txt; showcase.sitemapEntries com cache renovado por veículo e loja; showcase/current.ts com as leituras públicas em cache.
+
+# 2026-11-09 · 006/T015 vitrine [1a]
+- PublicCard, CatalogView e a página / pré-renderizada com contador, cards, JSON-LD (Organization, WebSite, ItemList, BreadcrumbList) e vitrine vazia com convite, fora do Google até ter veículo; cache das leituras públicas renova a cada 30 s e por etiqueta.
