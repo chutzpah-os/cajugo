@@ -6,6 +6,7 @@ import {
   eq,
   ilike,
   inArray,
+  lt,
   ne,
   or,
   sql,
@@ -826,9 +827,11 @@ export type VehicleList = {
   items: VehicleCard[];
   counts: { all: number; published: number; draft: number; sold: number };
   kpis: { published: number; onCajugo: number; soldThisMonth: number };
+  nextCursor: string | null;
 };
 
 const FILTERS = ["all", "published", "draft", "sold"] as const;
+const LIST_PAGE = 20;
 
 /**
  * Meus veículos [1c] (VEH-FR-001, 002): indicadores, contagem por filtro, busca por
@@ -837,7 +840,7 @@ const FILTERS = ["all", "published", "draft", "sold"] as const;
 export async function listVehicles(
   deps: VehicleDeps,
   session: Session | null,
-  input: { status?: string; q?: string },
+  input: { status?: string; q?: string; cursor?: string | null },
 ): Promise<VehicleList> {
   const { storeId } = storeOf(session);
   const status = (FILTERS as readonly string[]).includes(input.status ?? "")
@@ -878,13 +881,16 @@ export async function listVehicles(
   const q = input.q?.trim().slice(0, 40) ?? "";
   const like = `%${q.replace(/[\\%_]/g, (ch) => `\\${ch}`)}%`;
   const plate = q.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  const rows = await deps.db
+  const found = await deps.db
     .select()
     .from(vehicles)
     .where(
       and(
         mine,
         status === "all" ? undefined : eq(vehicles.status, status),
+        input.cursor && UUID.test(input.cursor)
+          ? lt(vehicles.id, input.cursor)
+          : undefined,
         q
           ? or(
               ilike(vehicles.make, like),
@@ -895,7 +901,9 @@ export async function listVehicles(
           : undefined,
       ),
     )
-    .orderBy(desc(vehicles.updatedAt));
+    .orderBy(desc(vehicles.id))
+    .limit(LIST_PAGE + 1);
+  const rows = found.slice(0, LIST_PAGE);
 
   const live = await storeIsLive(deps.db, storeId);
   const covers = rows.length
@@ -918,6 +926,7 @@ export async function listVehicles(
   const coverOf = new Map(covers.map((p) => [p.vehicleId, p.publicId]));
 
   return {
+    nextCursor: found.length > LIST_PAGE ? (rows.at(-1)?.id ?? null) : null,
     counts: {
       all: c.all,
       published: c.published,

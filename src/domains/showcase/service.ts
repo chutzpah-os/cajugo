@@ -4,9 +4,13 @@ import {
   countDistinct,
   desc,
   eq,
+  asc,
+  gt,
   gte,
   inArray,
+  lt,
   lte,
+  or,
   sql,
   type SQL,
 } from "drizzle-orm";
@@ -20,7 +24,7 @@ import { estimatedInstallment } from "@/platform/br/installment";
 import { plainText } from "@/platform/br/slug";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
-import type { Filters } from "./filters";
+import type { Filters, Sort } from "./filters";
 import { vehiclePath } from "./urls";
 
 /**
@@ -116,6 +120,8 @@ export function pickBadges(v: {
 
 const cardColumns = {
   vehicleId: vehicles.id,
+  rankScore: vehicles.rankScore,
+  publishedAt: vehicles.publishedAt,
   make: vehicles.make,
   model: vehicles.model,
   version: vehicles.version,
@@ -138,6 +144,8 @@ const cardColumns = {
 
 type CardRow = {
   vehicleId: string;
+  rankScore: number;
+  publishedAt: Date | null;
   make: string | null;
   model: string | null;
   version: string | null;
@@ -213,6 +221,79 @@ export type SearchResult = {
   nextCursor: string | null;
 };
 
+type SortColumn =
+  | typeof vehicles.rankScore
+  | typeof vehicles.priceCents
+  | typeof vehicles.publishedAt
+  | typeof vehicles.mileageKm
+  | typeof vehicles.yearModel;
+
+const SORT_SPEC: Record<Sort, { column: SortColumn; dir: "asc" | "desc" }> = {
+  relevance: { column: vehicles.rankScore, dir: "desc" },
+  price_asc: { column: vehicles.priceCents, dir: "asc" },
+  price_desc: { column: vehicles.priceCents, dir: "desc" },
+  newest: { column: vehicles.publishedAt, dir: "desc" },
+  km_asc: { column: vehicles.mileageKm, dir: "asc" },
+  year_desc: { column: vehicles.yearModel, dir: "desc" },
+};
+
+type CursorValue = string | number | null;
+
+const encodeCursor = (value: CursorValue, id: string) =>
+  Buffer.from(JSON.stringify([value, id])).toString("base64url");
+
+/** Cursor adulterado ou de outra ordem vira `null` (volta ao início, SHW-SEC-004). */
+function decodeCursor(cursor: string): [string | number, string] | null {
+  try {
+    const parsed: unknown = JSON.parse(
+      Buffer.from(cursor, "base64url").toString(),
+    );
+    if (
+      Array.isArray(parsed) &&
+      parsed.length === 2 &&
+      (typeof parsed[0] === "string" || typeof parsed[0] === "number") &&
+      typeof parsed[1] === "string" &&
+      /^[0-9a-f-]{36}$/.test(parsed[1])
+    )
+      return [parsed[0], parsed[1]];
+  } catch {
+    // cai no null abaixo
+  }
+  return null;
+}
+
+function cursorValue(sort: Sort, r: CardRow): CursorValue {
+  switch (sort) {
+    case "relevance":
+      return r.rankScore;
+    case "price_asc":
+    case "price_desc":
+      return r.priceCents;
+    case "newest":
+      return r.publishedAt?.toISOString() ?? null;
+    case "km_asc":
+      return r.mileageKm;
+    case "year_desc":
+      return r.yearModel;
+  }
+}
+
+/** Depois do último item da página: por valor e, no empate, por id (SHW-FR-007). */
+function afterCursor(sort: Sort, cursor?: string | null): SQL | undefined {
+  const decoded = cursor ? decodeCursor(cursor) : null;
+  if (!decoded) return undefined;
+  const [rawValue, id] = decoded;
+  const { column, dir } = SORT_SPEC[sort];
+  const isDate = column === vehicles.publishedAt;
+  if (isDate !== (typeof rawValue === "string")) return undefined;
+  const value = (isDate ? new Date(rawValue) : rawValue) as never;
+  const beyond = dir === "asc" ? gt : lt;
+  return or(
+    beyond(column, value),
+    and(eq(column, value), beyond(vehicles.id, id)),
+  );
+}
+
 /** Lista da vitrine ou do catálogo da loja (SHW-FR-001, 002). */
 export async function searchShowcase(
   db: Db,
@@ -224,15 +305,23 @@ export async function searchShowcase(
     .from(vehicles)
     .innerJoin(stores, eq(stores.id, vehicles.storeId))
     .where(where);
+  const { sort } = input.filters;
+  const { column, dir } = SORT_SPEC[sort];
+  const order = dir === "asc" ? asc : desc;
   const rows = await baseQuery(db)
-    .where(where)
-    .orderBy(desc(vehicles.rankScore), desc(vehicles.id))
-    .limit(PAGE);
+    .where(and(where, afterCursor(sort, input.cursor)))
+    .orderBy(order(column), order(vehicles.id))
+    .limit(PAGE + 1);
+  const page = rows.slice(0, PAGE);
+  const last = page.at(-1);
   return {
-    items: await toCards(db, rows),
+    items: await toCards(db, page),
     total: totals.total,
     stores: totals.stores,
-    nextCursor: null,
+    nextCursor:
+      rows.length > PAGE && last
+        ? encodeCursor(cursorValue(sort, last), last.vehicleId)
+        : null,
   };
 }
 

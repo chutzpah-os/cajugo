@@ -505,3 +505,6 @@
 
 # 2026-11-09 · 006/T010 busca e filtros
 - showcase: busca por prefixo de cada palavra no texto sem acento, filtros de marca, preço, ano, km, câmbio e combustível, countMatches e facets; símbolos digitados não chegam ao to_tsquery.
+
+# 2026-11-09 · 006/T011 ordenação e paginação
+- showcase: 6 ordens com cursor por valor + id (sem repetir nos empates; cursor adulterado volta ao início); listVehicles [1c] de 20 em 20 pela ordem do id.

@@ -19,7 +19,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T008** `searchShowcase` vitrine: só publicado, divulgado e de loja no ar; total e número de lojas; card com selo e parcela · _SHW-FR-001, SHW-FR-003, SHW-SEC-001, SHW-SEC-002, SHW-SEC-003_
 - [x] **T009** `searchShowcase` catálogo da loja e `storePage` (loja no ar, suspensa, endereço antigo) · _SHW-FR-002, SHW-FR-011, SHW-SEC-002_
 - [x] **T010** Busca sem acento, filtros, `countMatches` e `facets` · _SHW-FR-004, SHW-FR-005_
-- [ ] **T011** Ordenações e paginação por cursor, sem repetição em cada ordem; `listVehicles` [1c] paginada · _SHW-FR-006, SHW-FR-007_
+- [x] **T011** Ordenações e paginação por cursor, sem repetição em cada ordem; `listVehicles` [1c] paginada · _SHW-FR-006, SHW-FR-007_
 - [ ] **T012** `vehiclePage`: publicado (divulgado ou não), vendido e excluído com parecidos, loja suspensa; sem placa nem chassi · _SHW-FR-008, SHW-FR-010, SHW-FR-011, SHW-SEC-001, SHW-SEC-003_
 - [ ] **T013** `gateDecision` com memória de 60 s e `proxy.ts`: 308/404 reais, `/loja/{slug}/v/{id}`, cookie `?ref=` e reescrita de `/?filtros` · _SHW-FR-009, SHW-FR-014, SHW-SEC-005, SHW-NFR-005_
 - [ ] **T014** `sitemapEntries` e sitemap em índice (estáticas, lojas, veículos) · _SHW-FR-015, SHW-SEC-001, SHW-SEC-003_
