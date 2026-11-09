@@ -499,3 +499,6 @@
 
 # 2026-11-09 · 006/T008 consulta da vitrine
 - showcase: publicVisible (regra única), searchShowcase com total e lojas, PublicCard montado à mão (sem placa, chassi nem cobrança), pickBadges na ordem combinada e parcela pelas regras.
+
+# 2026-11-09 · 006/T009 catálogo da loja no serviço
+- showcase.storePage: loja no ar (dados públicos e iniciais), suspensa (aviso sem motivo), endereço antigo (redireciona), fora do ar ou inexistente (null); catálogo por escopo de loja, divulgados ou não.

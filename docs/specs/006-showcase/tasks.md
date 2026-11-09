@@ -17,7 +17,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 2 — Fatias verticais (domínio `showcase`)
 - [x] **T008** `searchShowcase` vitrine: só publicado, divulgado e de loja no ar; total e número de lojas; card com selo e parcela · _SHW-FR-001, SHW-FR-003, SHW-SEC-001, SHW-SEC-002, SHW-SEC-003_
-- [ ] **T009** `searchShowcase` catálogo da loja e `storePage` (loja no ar, suspensa, endereço antigo) · _SHW-FR-002, SHW-FR-011, SHW-SEC-002_
+- [x] **T009** `searchShowcase` catálogo da loja e `storePage` (loja no ar, suspensa, endereço antigo) · _SHW-FR-002, SHW-FR-011, SHW-SEC-002_
 - [ ] **T010** Busca sem acento, filtros, `countMatches` e `facets` · _SHW-FR-004, SHW-FR-005_
 - [ ] **T011** Ordenações e paginação por cursor, sem repetição em cada ordem; `listVehicles` [1c] paginada · _SHW-FR-006, SHW-FR-007_
 - [ ] **T012** `vehiclePage`: publicado (divulgado ou não), vendido e excluído com parecidos, loja suspensa; sem placa nem chassi · _SHW-FR-008, SHW-FR-010, SHW-FR-011, SHW-SEC-001, SHW-SEC-003_

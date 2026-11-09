@@ -9,7 +9,11 @@ import {
   type SQL,
 } from "drizzle-orm";
 import { getSettings } from "@/domains/settings/service";
-import { LIVE_STATUSES } from "@/domains/stores/service";
+import {
+  isStoreLive,
+  LIVE_STATUSES,
+  resolveSlug,
+} from "@/domains/stores/service";
 import { estimatedInstallment } from "@/platform/br/installment";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
@@ -192,5 +196,75 @@ export async function searchShowcase(
     total: totals.total,
     stores: totals.stores,
     nextCursor: null,
+  };
+}
+
+export type StorePage =
+  | {
+      kind: "store";
+      storeId: string;
+      name: string;
+      slug: string;
+      city: string;
+      state: string;
+      about: string | null;
+      whatsapp: string;
+      logoPublicId: string | null;
+      coverPublicId: string | null;
+      initials: string;
+    }
+  | { kind: "suspended" }
+  | { kind: "redirect"; to: string };
+
+const initialsOf = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase() ?? "")
+    .join("");
+
+/**
+ * Loja do endereço `/loja/{slug}` (SHW-FR-002, 011, 014). Suspensa: aviso sem motivo.
+ * Cadastrada, em análise, cancelada, arquivada ou inexistente: `null`.
+ */
+export async function storePage(
+  db: Db,
+  slug: string,
+): Promise<StorePage | null> {
+  const resolved = await resolveSlug(db, slug);
+  if (!resolved) return null;
+  const [s] = await db
+    .select({
+      storeId: stores.id,
+      status: stores.status,
+      name: stores.name,
+      slug: stores.slug,
+      city: stores.city,
+      state: stores.state,
+      about: stores.about,
+      whatsapp: stores.whatsapp,
+      logoPublicId: stores.logoPublicId,
+      coverPublicId: stores.coverPublicId,
+    })
+    .from(stores)
+    .where(eq(stores.id, resolved.storeId));
+  if (!s) return null;
+  if (s.status === "suspended") return { kind: "suspended" };
+  if (!isStoreLive(s.status)) return null;
+  if (resolved.redirected)
+    return { kind: "redirect", to: `/loja/${resolved.slug}` };
+  return {
+    kind: "store",
+    storeId: s.storeId,
+    name: s.name,
+    slug: s.slug,
+    city: s.city,
+    state: s.state,
+    about: s.about,
+    whatsapp: s.whatsapp,
+    logoPublicId: s.logoPublicId,
+    coverPublicId: s.coverPublicId,
+    initials: initialsOf(s.name),
   };
 }
