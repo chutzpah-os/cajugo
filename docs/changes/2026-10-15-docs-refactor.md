@@ -484,3 +484,6 @@
 
 # 2026-11-09 · 006/T003 migration 0011
 - vehicles: make_slug, model_slug, search_text, search (tsvector gerado, config simple), rank_score e 5 índices; regras installment_down_bps (20%) e installment_months (48) em [4c]. Aplicada no staging.
+
+# 2026-11-09 · 006/T004 parcela e texto sem acento
+- platform/br/installment.ts (tabela Price) e slug.ts (plainText, slugify).
