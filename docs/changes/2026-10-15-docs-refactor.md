@@ -460,3 +460,6 @@
 
 # 2026-11-09 · 005/T019 tela Meus veículos [1c]
 - /painel/veiculos: indicadores, card da assinatura (só lojista), busca, filtros com contagem, VehicleCard (selo, legenda, toggle, Vendido com diálogo [6f], Editar), estado vazio e botão Novo veículo; primeiros passos com o 1º veículo; texto de [10a] alinhado ao PRD. Corrigido: data crua em SQL manual quebrava no Postgres real (o PGlite aceita); agora vai ISO com cast. Testado no navegador contra o staging.
+
+# 2026-11-09 · 005/T020 resumo do veículo [6e]
+- /painel/veiculos/[id]: resumo com capa, nome, ano, km, preço, selo e Dias no ar; seções com Editar (âncoras do [2a]); VehicleActions com toggle de divulgação, vendido, desfazer venda, despublicar e excluir com o diálogo [6f]. Testado no navegador contra o staging.
