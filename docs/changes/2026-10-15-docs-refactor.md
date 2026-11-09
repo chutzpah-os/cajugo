@@ -490,3 +490,6 @@
 
 # 2026-11-09 · 006/T005 filtros e endereço do veículo
 - showcase/filters.ts (URL em português ↔ filtros; inválido ignorado; contador) e urls.ts (vehiclePath, idFromVehicleParam).
+
+# 2026-11-09 · 006/T006 SEO do catálogo
+- platform/seo/catalog.ts: títulos e descrições de veículo e loja, alt da imagem, JSON-LD Car+Offer (InStock/SoldOut), AutoDealer, ItemList, BreadcrumbList, Organization+WebSite.
