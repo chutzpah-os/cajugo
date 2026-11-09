@@ -136,7 +136,8 @@ vehicles
   conditions (jsonb: accepts_trade, single_owner, ipva_paid, licensed, dealer_serviced, factory_warranty, armored),
   features (text[]), description, contact_whatsapp, share_on_cajugo, share_before_sale, hidden_reason,
   commission_override_type, commission_override_value,
-  search (tsvector de make/model/version com unaccent),
+  make_slug, model_slug (filtros e descoberta), search_text (marca, modelo e versão, sem acento, feito pela aplicação),
+  search (tsvector gerado de search_text, config `simple`; sem a extensão unaccent), rank_score (relevância: dia da publicação + completude),
   published_at, sold_at, deleted_at (excluído: guardado 90 dias), created_at, updated_at   # spec 005
 vehicle_photos           id, vehicle_id, public_id, position, width, height     # position 0 = capa
 vehicle_history          id, vehicle_id, field, old_value, new_value, user_id, created_at   # spec 005: field = price
@@ -184,7 +185,7 @@ search_alerts            id, contact, filters (jsonb), active, notified_at, crea
 # Plataforma
 setting_values           id, key, value (jsonb), valid_from, changed_by    # só INSERT; ADR 0010
                          uma linha por alteração; valor atual = mais recente por key; chaves e limites
-                         em src/domains/settings/definitions.ts (support_whatsapp, pix [chave, favorecido, cidade], membership_cents, review_business_days,
+                         em src/domains/settings/definitions.ts (support_whatsapp, pix [chave, favorecido, cidade], membership_cents, installment_down_bps, installment_months, review_business_days,
                          past_due_tolerance_days, cajugo_fee_bps, installment_rate_bps, require_approval,
                          min_photos, retention_days, referral_enabled, referral_who, referral_pct_bps,
                          referral_months, payout_min_cents)

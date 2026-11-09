@@ -20,6 +20,7 @@
   - loja: `{Loja} – Carros usados e seminovos em {Cidade}/{UF} | CajuGo`;
   - descoberta: `{Marca} {Modelo} usados à venda {em Cidade} | CajuGo`.
 - **URL amigável e estável:** minúsculas, sem acento, com hífen; o id garante unicidade e o texto ajuda a busca. Se o texto mudar (ex.: o lojista corrige o modelo), a URL antiga faz 301 para a nova.
+- **Status HTTP real:** redirecionamento (308) e 404 de `/loja/*` e `/v/*` são decididos no `proxy.ts`, antes da página, com memória de 60 s (ADR 0013): a página do Next envia o cabeçalho antes de decidir e responderia 200.
 - **Canônica:** um veículo aparece na vitrine e no catálogo da loja; a `canonical` aponta para **uma** URL (a da vitrine, se o veículo é divulgado na CajuGo; senão, a da loja). Parâmetros de filtro, ordenação, paginação e `?ref=` do vendedor nunca entram na canônica.
 - **Dados estruturados (schema.org, JSON-LD):** `Car` + `Offer` (preço, moeda, disponibilidade) no veículo; `AutoDealer` (nome, cidade, telefone, horário) na loja; `BreadcrumbList` em todas; `ItemList` nas listagens; `Organization` + `WebSite` com `SearchAction` na home.
 - **Prévia de link (Open Graph):** título, descrição e foto de capa do veículo/loja em `og:*` e `twitter:*`. Links compartilhados no WhatsApp e no Instagram são o canal nº 1 do lojista e do vendedor.

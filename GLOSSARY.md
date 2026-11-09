@@ -123,6 +123,9 @@ Registro de mudanças de um campo do veículo publicado (antes, depois, quem, qu
 **Referência FIPE** (`fipe_price_cents`):
 Preço da tabela FIPE para a versão e o ano do veículo, no mês de referência; mostrado ao lojista como "N% abaixo/acima". Vem de uma cópia guardada pela CajuGo (ADR 0012).
 
+**Relevância** (`rank_score`):
+Ordem padrão da vitrine: dia da publicação somado a até 7 pontos de anúncio completo (6 fotos ou mais, descrição, itens).
+
 **Final de placa** (`plate_end`):
 Último dígito da placa, o único dado da placa que aparece em público.
 

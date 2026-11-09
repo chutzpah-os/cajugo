@@ -478,3 +478,6 @@
 
 # 2026-11-09 · 006/T001 /loja/{slug} no build de produção
 - `instant = false` em /loja/[slug] (a cada revalidação o build registrava erro de pré-renderização); `pnpm test:e2e:prod` (playwright.prod.config.ts, scripts/start-production.sh, tests/e2e-prod): build, servidor standalone e teste que confere conteúdo e ausência desse erro no log.
+
+# 2026-11-09 · 006/T002 documentos da vitrine
+- ARCHITECTURE §4 (slugs, search_text, search sem unaccent, rank_score, regras da parcela), SEO.md (status real no proxy), GLOSSARY (Relevância), ADR 0013.
