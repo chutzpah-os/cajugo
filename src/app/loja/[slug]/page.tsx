@@ -14,6 +14,9 @@ export const metadata: Metadata = {
 
 const km = new Intl.NumberFormat("pt-BR");
 
+/** Rota bloqueante: o `params` de loja não gerada no build é lido sem `<Suspense>`. */
+export const instant = false;
+
 /** Valor de validação do build (guia do Next com Cache Components): nunca é uma loja. */
 const BUILD_PLACEHOLDER = "__build__";
 

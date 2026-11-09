@@ -266,3 +266,6 @@
 
 # 2026-11-09 · Log sem parâmetros e veículo publicado sempre completo (005 verificação)
 - O erro do Drizzle traz os valores da consulta no texto (placa, CPF), então só a causa vai para o log, em todos os domínios. Publicar é uma garantia contínua, não só um clique: o salvamento automático e remover foto respeitam os mesmos obrigatórios. FR-004 e FR-005 da spec ajustados: setas além do arrastar (celular) e a ordem real da FIPE.
+
+# 2026-11-09 · Testar contra o build de produção (006/T001)
+- Erros de pré-renderização do Next 16 não aparecem no modo de desenvolvimento e o conteúdo pode sair certo na 1ª resposta; só o log do servidor do build mostra. Por isso a etapa própria, que lê esse log.

@@ -91,3 +91,6 @@ Ao criar ou alterar qualquer arquivo de código:
 - [ ] `pnpm check` passa localmente: 100% dos testes, novos e existentes, verdes.
 - [ ] O hook do Husky consegue rodar a suíte sem erro (nunca usei `--no-verify`).
 - [ ] Bug corrigido tem teste que falhava antes da correção.
+
+## Build de produção
+`pnpm test:e2e:prod` faz o build, sobe o servidor standalone na porta 3100 e roda `tests/e2e-prod/`: o que o modo de desenvolvimento não revela (erros de pré-renderização no log do servidor e status HTTP reais). Rode antes de fechar spec com página pública.

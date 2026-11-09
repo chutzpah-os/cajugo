@@ -475,3 +475,6 @@
 
 # 2026-11-09 · 005 verificação
 - Correções da revisão: publicado não perde identificação, preço, km nem a última foto; fotos travadas em vendido; corridas resolvidas com trava do veículo (fotos, publicar, histórico de preço); log sem parâmetros de consulta em todas as actions (errorMessage); id inválido → 404; busca sem curinga; referência FIPE renovada ao abrir a edição; autosave em fila, sem perder o lote nem duplicar rascunho; /novo mostra os padrões da loja; 15 MB conferidos antes de reduzir; selo Na CajuGo. 408 testes e 40 e2e verdes. Spec implemented.
+
+# 2026-11-09 · 006/T001 /loja/{slug} no build de produção
+- `instant = false` em /loja/[slug] (a cada revalidação o build registrava erro de pré-renderização); `pnpm test:e2e:prod` (playwright.prod.config.ts, scripts/start-production.sh, tests/e2e-prod): build, servidor standalone e teste que confere conteúdo e ausência desse erro no log.
