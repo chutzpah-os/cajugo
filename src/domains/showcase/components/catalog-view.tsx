@@ -14,6 +14,7 @@ export function CatalogView({
   cloudName,
   showStore,
   toolbar,
+  sidebar,
   sort,
   empty,
 }: {
@@ -25,6 +26,7 @@ export function CatalogView({
   cloudName: string;
   showStore: boolean;
   toolbar?: ReactNode;
+  sidebar?: ReactNode;
   sort?: ReactNode;
   empty: ReactNode;
 }) {
@@ -32,26 +34,37 @@ export function CatalogView({
   return (
     <CatalogNavigation>
       {toolbar}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-[26px] leading-tight font-extrabold tracking-[-0.02em]">
-          {title}
-        </h1>
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-sm text-text-3" data-testid="catalog-count">
-            {count}
-          </p>
-          {sort}
+      <div className="lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:items-start lg:gap-6">
+        {sidebar && (
+          <aside data-testid="filters-side" className="hidden lg:block">
+            {sidebar}
+          </aside>
+        )}
+        <div
+          className={`flex flex-col gap-4 ${sidebar ? "" : "lg:col-span-2"}`}
+        >
+          <div className="flex flex-col gap-1">
+            <h1 className="text-[26px] leading-tight font-extrabold tracking-[-0.02em]">
+              {title}
+            </h1>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm text-text-3" data-testid="catalog-count">
+                {count}
+              </p>
+              {sort}
+            </div>
+          </div>
+          <CatalogList
+            key={query}
+            result={result}
+            cloudName={cloudName}
+            showStore={showStore}
+            store={store}
+            query={query}
+            empty={empty}
+          />
         </div>
       </div>
-      <CatalogList
-        key={query}
-        result={result}
-        cloudName={cloudName}
-        showStore={showStore}
-        store={store}
-        query={query}
-        empty={empty}
-      />
     </CatalogNavigation>
   );
 }

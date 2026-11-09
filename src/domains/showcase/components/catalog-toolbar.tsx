@@ -1,5 +1,6 @@
 import { filtersToQuery, type Filters } from "../filters";
-import { FiltersSheet, type MakeOption } from "./filters-sheet";
+import type { MakeOption } from "./filters-form";
+import { FiltersSheet } from "./filters-sheet";
 import { SearchBox } from "./search-box";
 
 /** Busca e chips de filtro [1a]; a busca mantém os filtros já escolhidos. */

@@ -14,6 +14,7 @@ import { filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
 import { CatalogToolbar } from "./catalog-toolbar";
 import { CatalogView, showcaseCount } from "./catalog-view";
+import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
@@ -76,6 +77,17 @@ export async function ShowcaseView({
           toolbar={
             makes.length > 0 || filtered ? (
               <CatalogToolbar
+                filters={filters}
+                makes={makes}
+                total={result.total}
+                basePath={BASE_PATH}
+                store={null}
+              />
+            ) : undefined
+          }
+          sidebar={
+            makes.length > 0 || filtered ? (
+              <FiltersSide
                 filters={filters}
                 makes={makes}
                 total={result.total}

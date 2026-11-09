@@ -532,3 +532,6 @@
 
 # 2026-11-09 · 006/T019 página do veículo
 - /v/[slug] com galeria de rolagem nativa, selos, ficha com final de placa, card da loja, barra WhatsApp e compartilhar sem ?ref=; Car + Offer e BreadcrumbList; vendido [12d] com SoldOut e noindex; suspensa [12g]; não divulgado leva a loja no cabeçalho.
+
+# 2026-11-09 · 006/T020 desktop [15a]
+- FiltersForm único, usado na folha do celular e na coluna lateral do desktop (a partir de 1024 px), com cards em 3 colunas na vitrine e no catálogo.

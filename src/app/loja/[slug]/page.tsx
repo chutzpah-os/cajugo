@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { CatalogToolbar } from "@/domains/showcase/components/catalog-toolbar";
 import { CatalogView } from "@/domains/showcase/components/catalog-view";
+import { FiltersSide } from "@/domains/showcase/components/filters-side";
 import { NoResults } from "@/domains/showcase/components/no-results";
 import { SortSelect } from "@/domains/showcase/components/sort-select";
 import { StoreIdentity } from "@/domains/showcase/components/store-identity";
@@ -136,6 +137,17 @@ export default async function StorePage({
           toolbar={
             makes.length > 0 || filtered ? (
               <CatalogToolbar
+                filters={filters}
+                makes={makes}
+                total={result.total}
+                basePath={path}
+                store={page.slug}
+              />
+            ) : undefined
+          }
+          sidebar={
+            makes.length > 0 || filtered ? (
+              <FiltersSide
                 filters={filters}
                 makes={makes}
                 total={result.total}

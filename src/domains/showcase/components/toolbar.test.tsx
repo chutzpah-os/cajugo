@@ -6,6 +6,7 @@ import ErrorPage from "@/app/error";
 import { CatalogToolbar } from "./catalog-toolbar";
 import { CatalogList } from "./catalog-list";
 import { CatalogSkeleton } from "./catalog-skeleton";
+import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
@@ -179,5 +180,26 @@ describe("lista do catálogo", () => {
     // Assert
     expect(html).toContain("Tentar de novo");
     expect(html).not.toContain("Error: x");
+  });
+});
+
+describe("desktop [15a]", () => {
+  it("[SHW-NFR-001] filtros laterais sem repetir a ordenação e sem id igual ao da folha", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <FiltersSide
+        filters={parseFilters({})}
+        makes={MAKES}
+        total={3}
+        basePath="/"
+        store={null}
+      />,
+    );
+
+    // Assert
+    expect(html).toContain("Câmbio");
+    expect(html).not.toContain("Ordenar por");
+    expect(html).toContain('id="lateral-marca"');
+    expect(html).not.toContain('id="filtro-marca"');
   });
 });
