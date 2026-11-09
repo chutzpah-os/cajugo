@@ -5,6 +5,7 @@ import { CatalogToolbar } from "@/domains/showcase/components/catalog-toolbar";
 import { CatalogView } from "@/domains/showcase/components/catalog-view";
 import { NoResults } from "@/domains/showcase/components/no-results";
 import { SortSelect } from "@/domains/showcase/components/sort-select";
+import { StoreIdentity } from "@/domains/showcase/components/store-identity";
 import { Unavailable } from "@/domains/showcase/components/unavailable";
 import {
   cachedFacets,
@@ -115,26 +116,15 @@ export default async function StorePage({
         {result.total > 0 && (
           <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
         )}
-        <header className="flex items-center gap-3">
-          <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-card bg-caju-soft font-extrabold text-caju-deep">
-            {page.logoPublicId ? (
-              // eslint-disable-next-line @next/next/no-img-element -- URL do Cloudinary já otimizada
-              <img
-                src={imageUrlFor(cloud, page.logoPublicId, IMAGE_WIDTHS.thumb)}
-                alt={`Logo de ${page.name}`}
-                className="size-full object-cover"
-              />
-            ) : (
-              page.initials
-            )}
-          </div>
-          <div>
-            <p className="font-bold">{page.name}</p>
-            <p className="text-sm text-text-3">
-              {page.city}/{page.state} · catálogo CajuGo
-            </p>
-          </div>
-        </header>
+        <StoreIdentity
+          name={page.name}
+          city={page.city}
+          state={page.state}
+          initials={page.initials}
+          logoPublicId={page.logoPublicId}
+          cloudName={cloud}
+          caption="catálogo CajuGo"
+        />
         <CatalogView
           title={`Estoque ${page.name}`}
           count={`${result.total} ${result.total === 1 ? "veículo disponível" : "veículos disponíveis"}`}

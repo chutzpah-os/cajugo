@@ -29,7 +29,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T016** `/loja/[slug]` no novo layout, com `AutoDealer` e [12g] · _SHW-FR-002, SHW-FR-011, SHW-FR-013_
 - [x] **T017** Filtros [6d], busca, ordenação e `/vitrine` · _SHW-FR-004, SHW-FR-005, SHW-FR-006_
 - [x] **T018** "Carregar mais" na vitrine, no catálogo e em [1c]; estados [12a], [12b] e [12c] · _SHW-FR-007, SHW-FR-012_
-- [ ] **T019** `/v/[slug]`: galeria, ficha, selos, card da loja, barra WhatsApp, compartilhar, `Car` + `Offer`, [12d] · _SHW-FR-008, SHW-FR-009, SHW-FR-010, SHW-FR-013_
+- [x] **T019** `/v/[slug]`: galeria, ficha, selos, card da loja, barra WhatsApp, compartilhar, `Car` + `Offer`, [12d] · _SHW-FR-008, SHW-FR-009, SHW-FR-010, SHW-FR-013_
 - [ ] **T020** Desktop [15a] (filtros laterais e 3 colunas) · _SHW-NFR-001_
 
 ## Fase 4 — Fechamento

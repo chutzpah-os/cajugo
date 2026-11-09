@@ -108,8 +108,10 @@ describe("página do veículo [1b]", () => {
     expect(page).toMatchObject({ kind: "unavailable" });
     if (page?.kind !== "unavailable") throw new Error("esperava indisponível");
     expect(page.similar.map((c) => c.vehicleId)).toEqual([same.id]);
+    expect(page.soldCar).toMatchObject({ storeName: expect.any(String) });
     expect(await vehiclePage(t.db, gone.id)).toMatchObject({
       kind: "unavailable",
+      soldCar: null,
     });
   });
 

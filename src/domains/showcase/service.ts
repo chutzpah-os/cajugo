@@ -476,7 +476,21 @@ export type VehiclePage =
         logoPublicId: string | null;
       };
     }
-  | { kind: "unavailable"; similar: PublicCard[] }
+  | {
+      kind: "unavailable";
+      similar: PublicCard[];
+      /** Só de vendido, para o `Offer` como `SoldOut` (SEO.md); excluído não expõe nada. */
+      soldCar: {
+        path: string;
+        make: string | null;
+        model: string | null;
+        version: string | null;
+        yearModel: number | null;
+        mileageKm: number | null;
+        priceCents: number | null;
+        storeName: string;
+      } | null;
+    }
   | { kind: "suspended" };
 
 const labels = (keys: string[], map: Record<string, string>) =>
@@ -547,7 +561,23 @@ export async function vehiclePage(
   if (v.storeStatus === "suspended") return { kind: "suspended" };
   if (!isStoreLive(v.storeStatus)) return null;
   if (v.status === "sold" || v.status === "deleted")
-    return { kind: "unavailable", similar: await similarTo(db, v) };
+    return {
+      kind: "unavailable",
+      similar: await similarTo(db, v),
+      soldCar:
+        v.status === "sold"
+          ? {
+              path: vehiclePath({ ...v, id: v.id }),
+              make: v.make,
+              model: v.model,
+              version: v.version,
+              yearModel: v.yearModel,
+              mileageKm: v.mileageKm,
+              priceCents: v.priceCents,
+              storeName: v.storeName,
+            }
+          : null,
+    };
   if (v.status !== "published") return null;
 
   const photos = await db

@@ -529,3 +529,6 @@
 
 # 2026-11-09 · 006/T018 carregar mais e estados
 - useLoadMore (cursor, sem repetir) e LoadMoreButton em src/ui, usados na vitrine, no catálogo e em [1c]; [12b] em error.tsx e no próprio botão; [12c] com esqueleto só em transição do cliente, sem Suspense no conteúdo indexável.
+
+# 2026-11-09 · 006/T019 página do veículo
+- /v/[slug] com galeria de rolagem nativa, selos, ficha com final de placa, card da loja, barra WhatsApp e compartilhar sem ?ref=; Car + Offer e BreadcrumbList; vendido [12d] com SoldOut e noindex; suspensa [12g]; não divulgado leva a loja no cabeçalho.
