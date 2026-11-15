@@ -559,3 +559,6 @@
 
 # 2026-11-15 · 006b/T005 SEO da descoberta
 - `platform/seo/discovery.ts`: título, descrição e parágrafo gerado (veículos, cidades ou lojas, faixa de preço em reais inteiros). `SITEMAP_IDS` com `discovery` passa para a T009, junto do conteúdo.
+
+# 2026-11-15 · 006b/T006 escopo de descoberta
+- `Scope` ganha `{ discovery }` (marca, modelo, cidade, marca na cidade): só acrescenta condições à regra da vitrine, valendo para busca, contagem ao vivo e marcas disponíveis.

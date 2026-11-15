@@ -14,7 +14,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T005** [P] `platform/seo`: `discoveryTitle`, `discoveryDescription`, `discoveryIntro` · _DSC-FR-006_
 
 ## Fase 2 — Fatias verticais (domínio `showcase`)
-- [ ] **T006** Escopo `{ discovery }` em `searchShowcase`, `countMatches` e `facets`: marca, modelo, cidade e marca na cidade, sempre dentro da regra da vitrine; loja suspensa, rascunho e não divulgado de fora · _DSC-FR-001, DSC-FR-002, DSC-FR-003, DSC-SEC-001, DSC-SEC-002_
+- [x] **T006** Escopo `{ discovery }` em `searchShowcase`, `countMatches` e `facets`: marca, modelo, cidade e marca na cidade, sempre dentro da regra da vitrine; loja suspensa, rascunho e não divulgado de fora · _DSC-FR-001, DSC-FR-002, DSC-FR-003, DSC-SEC-001, DSC-SEC-002_
 - [ ] **T007** `discoveryPage`: nomes, caminho, `stats` (total, lojas, cidades, faixa de preço); `kind: "empty"` com a página acima quando já existiu (D2); `null` quando nunca existiu · _DSC-FR-005, DSC-FR-006, DSC-FR-007, DSC-SEC-002, DSC-SEC-004_
 - [ ] **T008** `discoveryIndex` e `discoveryLinks` (só páginas com veículos) · _DSC-FR-008, DSC-FR-009, DSC-FR-013, DSC-SEC-001_
 - [ ] **T009** `gateDecision` para `/carros/*` e `proxy.ts` (404 real para o que nunca existiu); `sitemapEntries(db, "discovery")` entra e sai com o estoque; `SITEMAP_IDS` com `discovery` e `robots.txt` (junto com o conteúdo, para o arquivo nunca sair errado) · _DSC-FR-010, DSC-SEC-003, DSC-SEC-004_

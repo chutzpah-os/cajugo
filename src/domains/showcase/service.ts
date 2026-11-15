@@ -1,3 +1,4 @@
+import type { DiscoveryKey } from "./discovery-urls";
 import { brandName } from "@/domains/fipe/service";
 import {
   and,
@@ -45,7 +46,12 @@ import { idFromVehicleParam, vehiclePath } from "./urls";
  * veículo. Sem sessão. Saída montada à mão: a consulta nem seleciona placa, chassi ou
  * dados de cobrança (SHW-SEC-001).
  */
-export type Scope = "showcase" | { storeId: string };
+/**
+ * Onde a lista vale: a vitrine, o catálogo de uma loja ou uma página de descoberta
+ * (vitrine recortada por marca, modelo ou cidade, ADR 0014).
+ */
+export type Scope =
+  "showcase" | { storeId: string } | { discovery: DiscoveryKey };
 
 export type PublicCard = {
   vehicleId: string;
@@ -73,10 +79,22 @@ export function publicVisible(scope: Scope): SQL {
   return and(
     eq(vehicles.status, "published"),
     inArray(stores.status, [...LIVE_STATUSES]),
-    scope === "showcase"
-      ? eq(vehicles.shareOnCajugo, true)
-      : eq(vehicles.storeId, scope.storeId),
+    scope !== "showcase" && "storeId" in scope
+      ? eq(vehicles.storeId, scope.storeId)
+      : eq(vehicles.shareOnCajugo, true),
+    scope !== "showcase" && "discovery" in scope
+      ? discoveryWhere(scope.discovery)
+      : undefined,
   )!;
+}
+
+/** Recorte de descoberta: só acrescenta condições à regra da vitrine (DSC-SEC-001). */
+function discoveryWhere(key: DiscoveryKey): SQL | undefined {
+  return and(
+    key.makeSlug ? eq(vehicles.makeSlug, key.makeSlug) : undefined,
+    key.modelSlug ? eq(vehicles.modelSlug, key.modelSlug) : undefined,
+    key.citySlug ? eq(stores.citySlug, key.citySlug) : undefined,
+  );
 }
 
 /** Texto digitado → consulta por prefixo de cada palavra; sem símbolos de busca. */

@@ -1,3 +1,4 @@
+import { brandName } from "@/domains/fipe/service";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { plainText, slugify } from "@/platform/br/slug";
@@ -41,7 +42,7 @@ export async function car(
       make,
       model,
       version,
-      makeSlug: slugify(make),
+      makeSlug: slugify(brandName(make)),
       modelSlug: slugify(model),
       searchText: plainText(`${make} ${model} ${version}`),
       yearManufacture: 2020,
