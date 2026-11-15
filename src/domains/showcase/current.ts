@@ -3,6 +3,7 @@ import { SETTINGS_TAG } from "@/domains/settings/service";
 import { STORES_TAG } from "@/domains/stores/service";
 import { VEHICLES_TAG } from "@/domains/vehicles/service";
 import { getDb } from "@/platform/db/client";
+import type { SitemapId } from "@/platform/seo/indexing";
 import type { Filters } from "./filters";
 import {
   countMatches,
@@ -59,7 +60,7 @@ export async function cachedVehiclePage(id: string) {
   return vehiclePage(getDb(), id);
 }
 
-export async function cachedSitemap(kind: "stores" | "vehicles") {
+export async function cachedSitemap(kind: Exclude<SitemapId, "pages">) {
   "use cache";
   tagged();
   return sitemapEntries(getDb(), kind);

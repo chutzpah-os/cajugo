@@ -34,7 +34,11 @@ const FILTER_PARAMS = [
 export async function proxy(request: NextRequest) {
   const { pathname: path, searchParams } = request.nextUrl;
   // Status real de loja e veículo, antes de a página responder (ADR 0013).
-  if (path.startsWith("/loja/") || path.startsWith("/v/")) {
+  if (
+    path.startsWith("/loja/") ||
+    path.startsWith("/v/") ||
+    path.startsWith("/carros/")
+  ) {
     const decision = await gate(path);
     if (decision === "not-found")
       return NextResponse.rewrite(new URL("/_nao-encontrado", request.url));

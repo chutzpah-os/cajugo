@@ -2,7 +2,14 @@ import type { MetadataRoute } from "next";
 import { appUrl } from "../http/urls";
 
 /** Um sitemap por tipo de página (SEO.md §2), listados no robots.txt. */
-export const SITEMAP_IDS = ["pages", "stores", "vehicles"] as const;
+export const SITEMAP_IDS = [
+  "pages",
+  "stores",
+  "vehicles",
+  "discovery",
+] as const;
+
+export type SitemapId = (typeof SITEMAP_IDS)[number];
 
 /** Áreas logadas e telas de conta: fora da busca (SEO.md §2). */
 const PRIVATE = [

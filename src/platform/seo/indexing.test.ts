@@ -4,7 +4,7 @@ import { robotsRules, staticSitemap } from "./indexing";
 describe("indexação", () => {
   afterEach(() => vi.unstubAllEnvs());
 
-  it("[STO-NFR-001] robots bloqueia as áreas logadas e libera os cadastros públicos", () => {
+  it("[STO-NFR-001] [DSC-FR-010] robots bloqueia as áreas logadas, libera os cadastros públicos e lista os sitemaps", () => {
     vi.stubEnv("APP_URL", "https://cajugo.vercel.app");
 
     const robots = robotsRules();
@@ -13,6 +13,7 @@ describe("indexação", () => {
       "https://cajugo.vercel.app/sitemap/pages.xml",
       "https://cajugo.vercel.app/sitemap/stores.xml",
       "https://cajugo.vercel.app/sitemap/vehicles.xml",
+      "https://cajugo.vercel.app/sitemap/discovery.xml",
     ]);
     expect(robots.rules).toMatchObject({
       userAgent: "*",

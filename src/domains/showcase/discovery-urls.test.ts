@@ -39,6 +39,10 @@ describe("endereços de descoberta", () => {
       );
   });
 
+  it("[DSC-FR-013] sem recorte é o índice, sem barra no fim", () => {
+    expect(discoveryPath({})).toBe("/carros");
+  });
+
   it("[DSC-SEC-004] segmento inválido, vazio ou a mais não vira consulta", () => {
     for (const segments of [
       [],

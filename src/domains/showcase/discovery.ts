@@ -282,3 +282,56 @@ export async function discoveryLinks(
     });
   return links;
 }
+
+/** A página existe (com ou sem veículos agora)? Para o 404 real do proxy (DSC-SEC-004). */
+export async function discoveryExists(
+  db: Db,
+  key: DiscoveryKey,
+): Promise<boolean> {
+  return (await namesOf(db, key)) !== null;
+}
+
+type SitemapEntry = { path: string; lastModified: Date };
+
+/**
+ * Sitemap de descoberta (DSC-FR-010): o índice e cada página com veículos na vitrine;
+ * a página sai quando o último veículo sai.
+ */
+export async function discoverySitemap(db: Db): Promise<SitemapEntry[]> {
+  // Uma consulta: cada combinação marca × modelo × cidade com veículo visível.
+  const rows = await db
+    .select({
+      makeSlug: vehicles.makeSlug,
+      modelSlug: vehicles.modelSlug,
+      citySlug: stores.citySlug,
+      lastModified: max(vehicles.updatedAt),
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(publicVisible("showcase"))
+    .groupBy(vehicles.makeSlug, vehicles.modelSlug, stores.citySlug);
+
+  const pages = new Map<string, Date>();
+  const touch = (key: DiscoveryKey, at: Date) => {
+    const path = discoveryPath(key);
+    const seen = pages.get(path);
+    if (!seen || at > seen) pages.set(path, at);
+  };
+  for (const r of rows) {
+    if (!r.lastModified) continue;
+    touch({}, r.lastModified);
+    if (r.makeSlug) {
+      touch({ makeSlug: r.makeSlug }, r.lastModified);
+      if (r.modelSlug)
+        touch({ makeSlug: r.makeSlug, modelSlug: r.modelSlug }, r.lastModified);
+    }
+    if (r.citySlug) {
+      touch({ citySlug: r.citySlug }, r.lastModified);
+      if (r.makeSlug)
+        touch({ citySlug: r.citySlug, makeSlug: r.makeSlug }, r.lastModified);
+    }
+  }
+  // O índice `/carros` fica sempre, mesmo sem veículos.
+  if (!pages.has("/carros")) pages.set("/carros", new Date(0));
+  return [...pages].map(([path, lastModified]) => ({ path, lastModified }));
+}

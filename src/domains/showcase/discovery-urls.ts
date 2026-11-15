@@ -41,5 +41,7 @@ export function discoveryPath(key: DiscoveryKey): string {
   const parts = key.citySlug
     ? [key.citySlug, key.makeSlug]
     : [key.makeSlug, key.modelSlug];
-  return `/carros/${parts.filter(Boolean).join("/")}`;
+  const path = parts.filter(Boolean).join("/");
+  // Sem recorte é o índice.
+  return path ? `/carros/${path}` : "/carros";
 }

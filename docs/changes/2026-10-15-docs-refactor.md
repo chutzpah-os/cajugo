@@ -568,3 +568,6 @@
 
 # 2026-11-15 · 006b/T008 índice e links
 - `discoveryIndex` (marcas e cidades da vitrine com contagem) e `discoveryLinks` (marca, modelo e cidade com veículos, numa consulta); `knownMakes` único para o índice e para as marcas dos filtros.
+
+# 2026-11-15 · 006b/T009 status real e sitemap
+- `/carros/*` passa pelo gate do proxy: 404 real para o que nunca existiu, página esvaziada continua respondendo; sitemap `discovery.xml` (índice + páginas com veículos, numa consulta) listado no robots.txt.

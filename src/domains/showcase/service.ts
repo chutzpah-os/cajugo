@@ -37,7 +37,8 @@ import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import type { GateDecision } from "@/platform/http/public-gate";
 import type { Filters, Sort } from "./filters";
-import { knownMakes } from "./discovery";
+import { discoveryExists, discoverySitemap, knownMakes } from "./discovery";
+import { parseDiscoveryPath } from "./discovery-urls";
 import { publicVisible, type Scope } from "./visibility";
 import { idFromVehicleParam, vehiclePath } from "./urls";
 
@@ -684,6 +685,11 @@ export async function gateDecision(
     const id = idFromVehicleParam(parts[3]);
     return id ? vehicleGate(db, id, null) : "not-found";
   }
+  // Descoberta: o índice sempre existe; o resto, se a marca/modelo/cidade já existiu.
+  if (parts[0] === "carros" && parts.length > 1) {
+    const key = parseDiscoveryPath(parts.slice(1));
+    return key && (await discoveryExists(db, key)) ? "ok" : "not-found";
+  }
   if (parts[0] === "loja" && parts.length === 2) {
     const page = await storePage(db, parts[1]);
     if (!page) return "not-found";
@@ -695,8 +701,9 @@ export async function gateDecision(
 /** Endereços públicos para o sitemap (SHW-FR-015): só o que tem página indexável. */
 export async function sitemapEntries(
   db: Db,
-  kind: "stores" | "vehicles",
+  kind: "stores" | "vehicles" | "discovery",
 ): Promise<{ path: string; lastModified: Date }[]> {
+  if (kind === "discovery") return discoverySitemap(db);
   if (kind === "stores") {
     const rows = await db
       .select({ slug: stores.slug, updatedAt: stores.updatedAt })
