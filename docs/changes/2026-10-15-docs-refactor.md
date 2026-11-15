@@ -541,3 +541,6 @@
 
 # 2026-11-15 · 006 /verify
 - Revisão: cache da vitrine renova com as regras ([4c] → parcela), AutoDealer com horário, SiteHeader fora do domínio, VEHICLES_TAG e parseFilters pelo service, cookie cajugo_ref nos termos [12i], teste da vitrine vazia; spec 006 implemented.
+
+# 2026-11-15 · 006/T022 migration no prod
+- `0011` aplicada no prod e conferida: 12 migrations, colunas de busca em `vehicles` e as regras `installment_down_bps`/`installment_months`.
