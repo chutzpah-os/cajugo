@@ -79,6 +79,7 @@ test.describe("build de produção · vitrine", () => {
     ["vitrine", "/"],
     ["catálogo", `/loja/${S.slug}`],
     ["veículo", `/v/${S.fullId}`],
+    ["descoberta", "/carros/fiat"],
   ])
     test(`[SHW-NFR-003] ${name}: LCP e CLS em 4G dentro do limite`, async ({
       page,
@@ -93,6 +94,16 @@ test.describe("build de produção · vitrine", () => {
       expect(lcp).toBeLessThan(LCP_LIMIT_MS);
       expect(cls).toBeLessThan(CLS_LIMIT);
     });
+
+  test("[DSC-SEC-004] descoberta: 404 real para o que nunca existiu; página vazia responde", async ({
+    request,
+  }) => {
+    expect((await request.get("/carros/marca-que-nao-existe")).status()).toBe(
+      404,
+    );
+    expect((await request.get("/carros/fiat/uno")).status()).toBe(200);
+    expect((await request.get("/carros")).status()).toBe(200);
+  });
 
   test("[SHW-NFR-002] nenhuma rota pública gera erro de pré-renderização", () => {
     expect(readFileSync(".next/production-server.log", "utf8")).not.toContain(

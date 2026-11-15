@@ -14,6 +14,9 @@ export const E2E_SHOWCASE = {
   slug: "e2e-vitrine",
   storeName: "Vitrine E2E",
   suspendedSlug: "e2e-suspensa",
+  /** Segunda cidade da descoberta (006b): 2 Fiat Argo manuais e 1 Fiat Uno vendido. */
+  recifeSlug: "e2e-vitrine-recife",
+  recifeName: "Recife E2E",
   total: 45,
   bmwAutomatic: 7,
   citroen: 15,
@@ -95,7 +98,7 @@ async function ownStore(
 /** 45 veículos numa loja no ar, 1 vendido e 1 loja suspensa, sempre iguais. */
 export async function seedShowcase(
   db: Db,
-  owners: { active: string; suspended: string },
+  owners: { active: string; suspended: string; recife: string },
   now: Date,
 ) {
   const S = E2E_SHOWCASE;
@@ -109,8 +112,17 @@ export async function seedShowcase(
     slug: S.suspendedSlug,
     status: "active",
   });
+  const recifeId = await ownStore(db, owners.recife, {
+    name: S.recifeName,
+    slug: S.recifeSlug,
+    status: "active",
+  });
+  await db
+    .update(stores)
+    .set({ city: "Recife", state: "PE" })
+    .where(eq(stores.id, recifeId));
   // A lista devolvida fica sem uso de propósito: a foto é a `sample`, não é dos testes.
-  await removeVehiclesForTests(db, [storeId, suspendedId]);
+  await removeVehiclesForTests(db, [storeId, suspendedId, recifeId]);
 
   const list = Array.from({ length: S.total }, (_, i) => row(storeId, i, now));
   const rows = [
@@ -136,6 +148,32 @@ export async function seedShowcase(
     {
       ...row(suspendedId, 1, now),
       id: S.suspendedId,
+    },
+    // Recife: múltiplos de 3 dão Fiat Argo; ímpares, câmbio manual.
+    {
+      ...row(recifeId, 201, now),
+      make: "Fiat",
+      model: "Argo",
+      makeSlug: "fiat",
+      modelSlug: "argo",
+      searchText: plainText("Fiat Argo Argo Recife"),
+    },
+    {
+      ...row(recifeId, 203, now),
+      make: "Fiat",
+      model: "Argo",
+      makeSlug: "fiat",
+      modelSlug: "argo",
+      searchText: plainText("Fiat Argo Argo Recife 2"),
+    },
+    {
+      ...row(recifeId, 205, now),
+      make: "Fiat",
+      model: "Uno",
+      makeSlug: "fiat",
+      modelSlug: "uno",
+      searchText: plainText("Fiat Uno"),
+      status: "sold" as const,
     },
   ];
   const created = await db

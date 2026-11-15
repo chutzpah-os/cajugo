@@ -14,6 +14,8 @@ import {
 const PHOTO = path.join(__dirname, "files", "logo.png");
 const CLEAN = { horizontalScroll: false, small: [], unlabeled: [] };
 const PLATE = "ABC1D23";
+const catalogCards = (page: Page) =>
+  page.locator('[data-testid="catalog-list"] > li');
 
 async function enterAsOwner(page: Page, next: string) {
   await page.goto(`/entrar?next=${encodeURIComponent(next)}`);
@@ -124,8 +126,8 @@ test.describe("veículos do lojista", () => {
 
     // Catálogo mostra sem a placa
     await page.goto("/loja/e2e-loja");
-    await expect(page.locator("main ul li")).toHaveCount(1);
-    await expect(page.locator("main ul li")).toContainText("R$ 50.000,00");
+    await expect(catalogCards(page)).toHaveCount(1);
+    await expect(catalogCards(page)).toContainText("R$ 50.000,00");
     expect(await page.content()).not.toContain(PLATE);
 
     // Lista: indicadores, filtro, busca por placa e primeiros passos
@@ -163,7 +165,7 @@ test.describe("veículos do lojista", () => {
       { timeout: 20_000 },
     );
     await page.goto("/loja/e2e-loja");
-    await expect(page.locator("main ul li")).toHaveCount(1);
+    await expect(catalogCards(page)).toHaveCount(1);
 
     // Despublicar e excluir
     await page.goto(summaryUrl);

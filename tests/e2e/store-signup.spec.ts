@@ -18,9 +18,15 @@ async function enterAs(page: Page, email: string, next: string) {
   await page.waitForURL((u) => u.pathname === next);
 }
 
+// Um clique antes da hidratação se perde; tenta de novo só enquanto o menu está fechado.
 async function openMenu(page: Page) {
-  await page.getByRole("button", { name: "Menu" }).click();
-  return page.getByRole("navigation", { name: "Menu principal" });
+  const menu = page.getByRole("navigation", { name: "Menu principal" });
+  await expect(async () => {
+    if (!(await menu.isVisible()))
+      await page.getByRole("button", { name: "Abrir menu" }).click();
+    await expect(menu).toBeVisible({ timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
+  return menu;
 }
 
 async function pickCity(page: Page, text: string, option: RegExp) {

@@ -227,9 +227,9 @@ describe("seedE2E", () => {
     // Act
     await seedE2E(withCloud(), "senha-e2e-1");
 
-    // Assert: 45 no ar, 1 vendido e 1 da loja suspensa
+    // Assert: 45 no ar, 1 vendido, 1 da loja suspensa e 3 de Recife
     expect(await t.db.select().from(vehicles)).toHaveLength(
-      E2E_SHOWCASE.total + 2,
+      E2E_SHOWCASE.total + 5,
     );
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });

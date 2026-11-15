@@ -279,3 +279,6 @@
 
 # 2026-11-15 · 006b/T007
 - A 006 não tinha índice de marca (o plano dizia que sim). A `0013` cria `(make_slug, model_slug)`, que serve o filtro por marca, por modelo e a regra "a página já existiu" em qualquer status, e tira o `(status, model_slug)` da `0012`, que ficou redundante. A `0012` já estava no staging, então não foi reescrita.
+
+# 2026-11-15 · 006b/T014
+- O menu da home perdia o clique feito antes da hidratação quando a máquina estava carregada; o teste repete o clique só com o menu fechado, sem esconder falha real (se nunca abrir, falha em 20 s).

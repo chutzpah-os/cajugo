@@ -583,3 +583,7 @@
 
 # 2026-11-15 · 006b/T013 links internos
 - Página do veículo com "Veja também" (marca, modelo, cidade com veículos) e catálogo da loja com o link da cidade; `vehiclePage` e `storePage` devolvem os identificadores de descoberta.
+
+# 2026-11-15 · 006b/T014 e2e da descoberta
+- `tests/e2e/discovery.spec.ts` (390 e 1280 px): as quatro páginas, filtro na URL, carregar mais, página vazia, `/carros`, links no veículo e na loja, HTML cru, sitemap e `robots.txt`; seed com loja em Recife/PE. Build de produção: 404/200 de `/carros/*` e LCP da descoberta (1,2 s, CLS 0,002).
+- Testes de veículos e do menu ajustados à página nova: contam só a lista do catálogo e repetem o clique do menu até ele abrir.

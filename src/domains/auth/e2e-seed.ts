@@ -35,6 +35,7 @@ export const E2E_ACCOUNTS = {
   temporary: { email: "e2e-temporaria@cajugo.test", roles: ["seller"] },
   showcaseOwner: { email: "e2e-vitrine@cajugo.test", roles: ["store_owner"] },
   suspendedOwner: { email: "e2e-suspensa@cajugo.test", roles: ["store_owner"] },
+  recifeOwner: { email: "e2e-recife@cajugo.test", roles: ["store_owner"] },
 } as const satisfies Record<string, { email: string; roles: Role[] }>;
 
 const E2E_STORE_SLUG = "e2e-loja";
@@ -171,7 +172,11 @@ export async function seedE2E(
   // Veículos da vitrine, numa loja separada (spec 006).
   await seedShowcase(
     deps.db,
-    { active: ids.showcaseOwner, suspended: ids.suspendedOwner },
+    {
+      active: ids.showcaseOwner,
+      suspended: ids.suspendedOwner,
+      recife: ids.recifeOwner,
+    },
     now,
   );
 

@@ -26,5 +26,5 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T013** `RelatedLinks` na página do veículo (marca, modelo, cidade) e link da cidade no catálogo da loja · _DSC-FR-008, DSC-FR-009_
 
 ## Fase 4 — Fechamento
-- [ ] **T014** Playwright (390 e 1280 px, staging): seed com marca, modelo e duas cidades; as quatro páginas, filtro na URL, carregar mais, página vazia após venda, `/carros`, links no veículo e na loja, HTML cru com SEO, sitemap sem placa, `audit()`; contra o build de produção: 404 real, pré-renderização e LCP/CLS · _DSC-FR-001 a DSC-FR-013, DSC-NFR-001 a DSC-NFR-003, DSC-SEC-001 a DSC-SEC-004_
+- [x] **T014** Playwright (390 e 1280 px, staging): seed com marca, modelo e duas cidades; as quatro páginas, filtro na URL, carregar mais, página vazia após venda, `/carros`, links no veículo e na loja, HTML cru com SEO, sitemap sem placa, `audit()`; contra o build de produção: 404 real, pré-renderização e LCP/CLS · _DSC-FR-001 a DSC-FR-013, DSC-NFR-001 a DSC-NFR-003, DSC-SEC-001 a DSC-SEC-004_
 - [ ] **T015** Migration `0012` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_
