@@ -525,7 +525,7 @@
 - /loja/[slug] no layout novo com CatalogView, JSON-LD (AutoDealer, BreadcrumbList, ItemList) e [12g] sem motivo; saem publicStore, publicVehicles e os dois current.ts antigos, com os testes levados para storePage e searchShowcase.
 
 # 2026-11-09 · 006/T017 filtros, busca e ordenação
-- Folha [6d] com contagem ao vivo (countMatchesAction, em cache), busca, ordenação e [12a] na vitrine e no catálogo; /vitrine recebe os filtros reescritos pelo proxy e quem chega nela direto vai para / com 308; filtro sem resultado fica fora do Google.
+- Folha [6d] com contagem ao vivo (countMatchesAction, em cache), busca, ordenação e [12a] na vitrine e no catálogo; /vitrine recebe os filtros reescritos pelo proxy (o acesso direto não é redirecionado: a canônica já é /); filtro sem resultado fica fora do Google.
 
 # 2026-11-09 · 006/T018 carregar mais e estados
 - useLoadMore (cursor, sem repetir) e LoadMoreButton em src/ui, usados na vitrine, no catálogo e em [1c]; [12b] em error.tsx e no próprio botão; [12c] com esqueleto só em transição do cliente, sem Suspense no conteúdo indexável.
@@ -535,3 +535,6 @@
 
 # 2026-11-09 · 006/T020 desktop [15a]
 - FiltersForm único, usado na folha do celular e na coluna lateral do desktop (a partir de 1024 px), com cards em 3 colunas na vitrine e no catálogo.
+
+# 2026-11-15 · 006/T021 e2e da vitrine
+- Seed com loja de vitrine (45 veículos, 1 vendido, 1 loja suspensa; fotos `sample`, nunca apagadas); e2e em 390 e 1280 px e contra o build de produção (308, LCP/CLS em 4G, pré-renderização); chips com 44 px; sai o 308 de /vitrine direta.

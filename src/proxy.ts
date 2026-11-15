@@ -45,13 +45,6 @@ export async function proxy(request: NextRequest) {
       );
   }
 
-  // `/vitrine` é interna: quem chega nela direto vai para o endereço público.
-  if (path === "/vitrine")
-    return NextResponse.redirect(
-      new URL(`/${request.nextUrl.search}`, request.url),
-      308,
-    );
-
   let response = NextResponse.next({ request });
 
   const supabase = createSupabaseServerClient({

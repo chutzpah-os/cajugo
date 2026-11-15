@@ -33,5 +33,5 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T020** Desktop [15a] (filtros laterais e 3 colunas) · _SHW-NFR-001_
 
 ## Fase 4 — Fechamento
-- [ ] **T021** Playwright (390 e 1280 px, staging): vitrine, filtros na URL, carregar mais, veículo, compartilhar, `?ref=`, vendido, suspensa, HTML cru com SEO, `audit()`; contra o build de produção: status 308/404 e medição de LCP e CLS da vitrine, do catálogo e do veículo · _SHW-FR-001 a SHW-FR-015, SHW-NFR-001, SHW-NFR-002, SHW-NFR-003, SHW-NFR-004, SHW-SEC-001 a SHW-SEC-005_
+- [x] **T021** Playwright (390 e 1280 px, staging): vitrine, filtros na URL, carregar mais, veículo, compartilhar, `?ref=`, vendido, suspensa, HTML cru com SEO, `audit()`; contra o build de produção: status 308/404 e medição de LCP e CLS da vitrine, do catálogo e do veículo · _SHW-FR-001 a SHW-FR-015, SHW-NFR-001, SHW-NFR-002, SHW-NFR-003, SHW-NFR-004, SHW-SEC-001 a SHW-SEC-005_
 - [ ] **T022** Migration `0011` no staging e no prod e conferir; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_

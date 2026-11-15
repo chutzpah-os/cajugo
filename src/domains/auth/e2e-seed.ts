@@ -11,6 +11,7 @@ import type { Role } from "@/platform/http/session";
 import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
 import { removeBillingForTests } from "@/domains/billing/service";
+import { seedShowcase } from "@/domains/showcase/testing/e2e-seed";
 import { removeVehiclesForTests } from "@/domains/vehicles/service";
 import {
   e2eSignups,
@@ -32,6 +33,8 @@ export const E2E_ACCOUNTS = {
   support: { email: "e2e-suporte@cajugo.test", roles: ["support"] },
   admin: { email: "e2e-admin@cajugo.test", roles: ["admin"] },
   temporary: { email: "e2e-temporaria@cajugo.test", roles: ["seller"] },
+  showcaseOwner: { email: "e2e-vitrine@cajugo.test", roles: ["store_owner"] },
+  suspendedOwner: { email: "e2e-suspensa@cajugo.test", roles: ["store_owner"] },
 } as const satisfies Record<string, { email: string; roles: Role[] }>;
 
 const E2E_STORE_SLUG = "e2e-loja";
@@ -165,6 +168,12 @@ export async function seedE2E(
   });
   // Código pessoal do lojista de teste, para o e2e do link /i/{codigo} (spec 003).
   await getOrCreateCode(deps.db, ids.owner, "Lojista E2E");
+  // Veículos da vitrine, numa loja separada (spec 006).
+  await seedShowcase(
+    deps.db,
+    { active: ids.showcaseOwner, suspended: ids.suspendedOwner },
+    now,
+  );
 
   return { ids, storeId: store.id };
 }

@@ -269,3 +269,7 @@
 
 # 2026-11-09 · Testar contra o build de produção (006/T001)
 - Erros de pré-renderização do Next 16 não aparecem no modo de desenvolvimento e o conteúdo pode sair certo na 1ª resposta; só o log do servidor do build mostra. Por isso a etapa própria, que lê esse log.
+
+# 2026-11-15 · 006/T021
+- O 308 de `/vitrine` direta criava laço no build de produção: a reescrita interna de `/?filtros` passa de novo pelo proxy. Sem a regra, o acesso direto só mostra a vitrine com canônica `/`.
+- Medido no build de produção em 4G (Lighthouse móvel): LCP 1,3–2,0 s e CLS ≤ 0,002 na vitrine, no catálogo e no veículo; a prova final no Lighthouse segue na 013.

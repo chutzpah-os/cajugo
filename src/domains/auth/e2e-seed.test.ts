@@ -10,6 +10,7 @@ import {
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { E2E_ACCOUNTS, E2E_PIX, seedE2E } from "./e2e-seed";
+import { E2E_SHOWCASE } from "@/domains/showcase/testing/e2e-seed";
 import { getSettings } from "@/domains/settings/service";
 import { registerStore } from "@/domains/stores/service";
 import { signIn } from "./service";
@@ -206,7 +207,30 @@ describe("seedE2E", () => {
     await seedE2E(deps(), "senha-e2e-1");
 
     // Assert
-    expect(await t.db.select().from(vehicles)).toEqual([]);
-    expect(await t.db.select().from(vehiclePhotos)).toEqual([]);
+    expect(
+      await t.db.select().from(vehicles).where(eq(vehicles.storeId, storeId)),
+    ).toEqual([]);
+    expect(
+      await t.db
+        .select()
+        .from(vehiclePhotos)
+        .where(eq(vehiclePhotos.vehicleId, v.id)),
+    ).toEqual([]);
+  });
+
+  it("recria a vitrine sempre igual e nunca apaga a foto de exemplo da Cloudinary", async () => {
+    // Arrange
+    const destroy = vi.fn();
+    const withCloud = () => ({ ...deps(), cloudinary: { destroy } as never });
+    await seedE2E(withCloud(), "senha-e2e-1");
+
+    // Act
+    await seedE2E(withCloud(), "senha-e2e-1");
+
+    // Assert: 45 no ar, 1 vendido e 1 da loja suspensa
+    expect(await t.db.select().from(vehicles)).toHaveLength(
+      E2E_SHOWCASE.total + 2,
+    );
+    expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 });

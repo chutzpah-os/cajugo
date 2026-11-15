@@ -14,7 +14,7 @@ export function Chip({
       type="button"
       aria-pressed={active}
       className={cn(
-        "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold",
+        "inline-flex h-11 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold",
         active
           ? "border-ink bg-ink text-white"
           : "border-field bg-surface text-ink",
