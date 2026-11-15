@@ -571,3 +571,6 @@
 
 # 2026-11-15 · 006b/T009 status real e sitemap
 - `/carros/*` passa pelo gate do proxy: 404 real para o que nunca existiu, página esvaziada continua respondendo; sitemap `discovery.xml` (índice + páginas com veículos, numa consulta) listado no robots.txt.
+
+# 2026-11-15 · 006b/T010 origem da lista
+- Actions de contagem e "Carregar mais" recebem `source` (vitrine, loja ou endereço de descoberta) validado por schema e resolvido no servidor; componentes passam `source` no lugar de `store`; leituras de descoberta em cache em `current.ts`.

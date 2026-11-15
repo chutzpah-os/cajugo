@@ -8,6 +8,7 @@ import {
   type FilterSection,
   type MakeOption,
 } from "./filters-form";
+import type { ListSource } from "../list-source";
 
 const CLOSE_DRAG_PX = 60;
 
@@ -37,13 +38,13 @@ export function FiltersSheet({
   makes,
   total,
   basePath,
-  store,
+  source,
 }: {
   filters: Filters;
   makes: MakeOption[];
   total: number;
   basePath: string;
-  store: string | null;
+  source: ListSource;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const dragStart = useRef<number | null>(null);
@@ -126,7 +127,7 @@ export function FiltersSheet({
           makes={makes}
           total={total}
           basePath={basePath}
-          store={store}
+          source={source}
           idPrefix="filtro"
           layout="sheet"
           section={opening.section}

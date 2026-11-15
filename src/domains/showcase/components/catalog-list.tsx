@@ -7,6 +7,7 @@ import type { PublicCard as Card, SearchResult } from "../service";
 import { useCatalogNavigation } from "./catalog-navigation";
 import { CatalogSkeleton } from "./catalog-skeleton";
 import { PublicCard } from "./public-card";
+import type { ListSource } from "../list-source";
 
 const idOf = (card: Card) => card.vehicleId;
 
@@ -15,14 +16,14 @@ export function CatalogList({
   result,
   cloudName,
   showStore,
-  store,
+  source,
   query,
   empty,
 }: {
   result: SearchResult;
   cloudName: string;
   showStore: boolean;
-  store: string | null;
+  source: ListSource;
   query: string;
   empty: ReactNode;
 }) {
@@ -31,7 +32,7 @@ export function CatalogList({
     initial: result.items,
     nextCursor: result.nextCursor,
     idOf,
-    fetchPage: (cursor) => loadMoreAction({ store, query, cursor }),
+    fetchPage: (cursor) => loadMoreAction({ source, query, cursor }),
   });
 
   if (pending) return <CatalogSkeleton />;

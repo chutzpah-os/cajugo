@@ -66,7 +66,7 @@ export async function ShowcaseView({
         }
         result={result}
         filters={filters}
-        store={null}
+        source={null}
         cloudName={cloudName()}
         showStore
         toolbar={
@@ -76,7 +76,7 @@ export async function ShowcaseView({
               makes={makes}
               total={result.total}
               basePath={BASE_PATH}
-              store={null}
+              source={null}
             />
           ) : undefined
         }
@@ -87,7 +87,7 @@ export async function ShowcaseView({
               makes={makes}
               total={result.total}
               basePath={BASE_PATH}
-              store={null}
+              source={null}
             />
           ) : undefined
         }

@@ -3,6 +3,7 @@ import { filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
 import { CatalogList } from "./catalog-list";
 import { CatalogNavigation } from "./catalog-navigation";
+import type { ListSource } from "../list-source";
 
 /** Lista de veículos da vitrine e do catálogo da loja: mesmo layout (SHW-FR-001, 002). */
 export function CatalogView({
@@ -10,7 +11,7 @@ export function CatalogView({
   count,
   result,
   filters,
-  store,
+  source,
   cloudName,
   showStore,
   toolbar,
@@ -22,7 +23,7 @@ export function CatalogView({
   count: string;
   result: SearchResult;
   filters: Filters;
-  store: string | null;
+  source: ListSource;
   cloudName: string;
   showStore: boolean;
   toolbar?: ReactNode;
@@ -59,7 +60,7 @@ export function CatalogView({
             result={result}
             cloudName={cloudName}
             showStore={showStore}
-            store={store}
+            source={source}
             query={query}
             empty={empty}
           />

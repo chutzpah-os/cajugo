@@ -4,18 +4,27 @@ import { z } from "zod";
 import { errorMessage, logger } from "@/platform/http/logger";
 import { cachedCount, cachedSearch, cachedStorePage } from "./current";
 import { filtersFromQuery } from "./filters";
+import {
+  discoveryKeyOf,
+  listSourceSchema,
+  type ListSource,
+} from "./list-source";
 import type { PublicCard, Scope } from "./service";
 
 type Page = { items: PublicCard[]; nextCursor: string | null };
 
 const countInput = z
-  .object({ store: z.string().max(60).nullable(), query: z.string().max(1000) })
+  .object({ source: listSourceSchema, query: z.string().max(1000) })
   .strict();
 
-/** Vitrine ou catálogo de loja no ar; o resto não tem o que listar. */
-async function scopeOf(store: string | null): Promise<Scope | null> {
-  if (store === null) return "showcase";
-  const page = await cachedStorePage(store);
+/** Vitrine, loja no ar ou recorte de descoberta válido; o resto não tem o que listar. */
+async function scopeOf(source: ListSource): Promise<Scope | null> {
+  if (source === null) return "showcase";
+  if (source.kind === "discovery") {
+    const key = discoveryKeyOf(source.path);
+    return key ? { discovery: key } : null;
+  }
+  const page = await cachedStorePage(source.slug);
   return page?.kind === "store" ? { storeId: page.storeId } : null;
 }
 
@@ -25,10 +34,10 @@ export async function countMatchesAction(
 ): Promise<number | null> {
   const parsed = countInput.safeParse(input);
   if (!parsed.success) return null;
-  const { store, query } = parsed.data;
+  const { source, query } = parsed.data;
   try {
     const filters = filtersFromQuery(query);
-    const scope = await scopeOf(store);
+    const scope = await scopeOf(source);
     return scope ? await cachedCount(scope, filters) : 0;
   } catch (error) {
     logger.error("showcase.count_failed", { error: errorMessage(error) });
@@ -44,9 +53,9 @@ const loadMoreInput = countInput
 export async function loadMoreAction(input: unknown): Promise<Page | null> {
   const parsed = loadMoreInput.safeParse(input);
   if (!parsed.success) return null;
-  const { store, query, cursor } = parsed.data;
+  const { source, query, cursor } = parsed.data;
   try {
-    const scope = await scopeOf(store);
+    const scope = await scopeOf(source);
     if (!scope) return { items: [], nextCursor: null };
     const { items, nextCursor } = await cachedSearch(
       scope,

@@ -16,6 +16,7 @@ import {
   type Filters,
 } from "../filters";
 import { useCatalogNavigation } from "./catalog-navigation";
+import type { ListSource } from "../list-source";
 
 export type MakeOption = { slug: string; name: string; count: number };
 export type FilterSection = "marca" | "preco" | "ano" | "km" | "cambio";
@@ -66,7 +67,7 @@ export function FiltersForm({
   makes,
   total,
   basePath,
-  store,
+  source,
   idPrefix,
   layout,
   section,
@@ -77,7 +78,7 @@ export function FiltersForm({
   makes: MakeOption[];
   total: number;
   basePath: string;
-  store: string | null;
+  source: ListSource;
   idPrefix: string;
   layout: keyof typeof LAYOUT;
   section?: FilterSection;
@@ -110,7 +111,7 @@ export function FiltersForm({
     const request = ++latest.current;
     timer.current = setTimeout(async () => {
       const n = await countMatchesAction({
-        store,
+        source,
         query: filtersToQuery(normalizeFilters(next)),
       });
       if (request === latest.current) setCount(n);

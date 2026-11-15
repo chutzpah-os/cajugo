@@ -31,7 +31,7 @@ function toolbar(params: Record<string, string>) {
       makes={MAKES}
       total={3}
       basePath="/"
-      store={null}
+      source={null}
     />,
   );
 }
@@ -145,7 +145,7 @@ function list(result: Partial<SearchResult>) {
       }}
       cloudName="demo"
       showStore
-      store={null}
+      source={null}
       query=""
       empty={<p>vazio</p>}
     />,
@@ -193,7 +193,7 @@ describe("desktop [15a]", () => {
         makes={MAKES}
         total={3}
         basePath="/"
-        store={null}
+        source={null}
       />,
     );
 

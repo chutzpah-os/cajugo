@@ -18,7 +18,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T007** `discoveryPage`: nomes, caminho, `stats` (total, lojas, cidades, faixa de preço); `kind: "empty"` com a página acima quando já existiu (D2); `null` quando nunca existiu · _DSC-FR-005, DSC-FR-006, DSC-FR-007, DSC-SEC-002, DSC-SEC-004_
 - [x] **T008** `discoveryIndex` e `discoveryLinks` (só páginas com veículos) · _DSC-FR-008, DSC-FR-009, DSC-FR-013, DSC-SEC-001_
 - [x] **T009** `gateDecision` para `/carros/*` e `proxy.ts` (404 real para o que nunca existiu); `sitemapEntries(db, "discovery")` entra e sai com o estoque; `SITEMAP_IDS` com `discovery` e `robots.txt` (junto com o conteúdo, para o arquivo nunca sair errado) · _DSC-FR-010, DSC-SEC-003, DSC-SEC-004_
-- [ ] **T010** Actions de contagem e "Carregar mais" com `source` (vitrine, loja ou descoberta) em lista fechada, resolvida no servidor; `current.ts` com as leituras de descoberta em cache · _DSC-FR-004, DSC-NFR-004, DSC-NFR-005_
+- [x] **T010** Actions de contagem e "Carregar mais" com `source` (vitrine, loja ou descoberta) em lista fechada, resolvida no servidor; `current.ts` com as leituras de descoberta em cache · _DSC-FR-004, DSC-NFR-004, DSC-NFR-005_
 
 ## Fase 3 — Telas
 - [ ] **T011** `/carros/[first]` e `/carros/[first]/[second]`: `DiscoveryView` com lista, filtros com marca fixa, parágrafo, `Breadcrumbs`, JSON-LD (`ItemList`, `BreadcrumbList`) e o estado "Nenhum … à venda agora" com `noindex` · _DSC-FR-001 a DSC-FR-007, DSC-NFR-002_

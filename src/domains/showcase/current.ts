@@ -4,9 +4,13 @@ import { STORES_TAG } from "@/domains/stores/service";
 import { VEHICLES_TAG } from "@/domains/vehicles/service";
 import { getDb } from "@/platform/db/client";
 import type { SitemapId } from "@/platform/seo/indexing";
+import type { DiscoveryKey } from "./discovery-urls";
 import type { Filters } from "./filters";
 import {
   countMatches,
+  discoveryIndex,
+  discoveryLinks,
+  discoveryPage,
   facets,
   searchShowcase,
   sitemapEntries,
@@ -64,4 +68,24 @@ export async function cachedSitemap(kind: Exclude<SitemapId, "pages">) {
   "use cache";
   tagged();
   return sitemapEntries(getDb(), kind);
+}
+
+export async function cachedDiscoveryPage(key: DiscoveryKey) {
+  "use cache";
+  tagged();
+  return discoveryPage(getDb(), key);
+}
+
+export async function cachedDiscoveryIndex() {
+  "use cache";
+  tagged();
+  return discoveryIndex(getDb());
+}
+
+export async function cachedDiscoveryLinks(
+  v: Parameters<typeof discoveryLinks>[1],
+) {
+  "use cache";
+  tagged();
+  return discoveryLinks(getDb(), v);
 }

@@ -90,6 +90,7 @@ export default async function StorePage({
   ]);
   const filtered = filtersToQuery(filters) !== "";
   const cloud = cloudName();
+  const source = { kind: "store" as const, slug: page.slug };
   const path = `/loja/${page.slug}`;
 
   return (
@@ -132,7 +133,7 @@ export default async function StorePage({
           count={`${result.total} ${result.total === 1 ? "veículo disponível" : "veículos disponíveis"}`}
           result={result}
           filters={filters}
-          store={page.slug}
+          source={source}
           cloudName={cloud}
           showStore={false}
           toolbar={
@@ -142,7 +143,7 @@ export default async function StorePage({
                 makes={makes}
                 total={result.total}
                 basePath={path}
-                store={page.slug}
+                source={source}
               />
             ) : undefined
           }
@@ -153,7 +154,7 @@ export default async function StorePage({
                 makes={makes}
                 total={result.total}
                 basePath={path}
-                store={page.slug}
+                source={source}
               />
             ) : undefined
           }
