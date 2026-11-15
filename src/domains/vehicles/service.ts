@@ -14,7 +14,7 @@ import {
 import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { saoPauloMonthStart } from "@/domains/billing/service";
-import { identify, reference } from "@/domains/fipe/service";
+import { brandName, identify, reference } from "@/domains/fipe/service";
 import { storeIsLive, vehicleDefaults } from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
 import { plainText, slugify } from "@/platform/br/slug";
@@ -1056,7 +1056,7 @@ async function syncSearchFields(tx: Db, vehicleId: string) {
   await tx
     .update(vehicles)
     .set({
-      makeSlug: v.make ? slugify(v.make) : null,
+      makeSlug: v.make ? slugify(brandName(v.make)) : null,
       modelSlug: v.model ? slugify(v.model) : null,
       searchText: plainText(
         [v.make, v.model, v.version].filter(Boolean).join(" "),

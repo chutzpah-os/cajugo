@@ -57,13 +57,13 @@ describe("campos de busca e relevância", () => {
     }
   }
 
-  it("[SHW-FR-004] [SHW-FR-005] salvar grava marca e modelo em slug e o texto de busca sem acento", async () => {
+  it("[SHW-FR-004] [SHW-FR-005] [DSC-FR-011] salvar grava marca (pelo nome conhecido) e modelo em slug e o texto de busca sem acento", async () => {
     const a = await storeOwner(t.db, "loja-a", "a@x.com");
 
     const { vehicleId } = await saveDraft(deps(), a, COMPLETE);
 
     expect(await vehicleRow(t.db, vehicleId)).toMatchObject({
-      makeSlug: "gm-chevrolet",
+      makeSlug: "chevrolet",
       modelSlug: "onix",
       searchText: "gm - chevrolet onix onix hatch lt 1.0 12v flex 5p mec.",
     });

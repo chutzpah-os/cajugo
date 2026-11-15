@@ -1,3 +1,4 @@
+import { brandName } from "@/domains/fipe/service";
 import {
   and,
   count,
@@ -441,9 +442,25 @@ export async function facets(
     .where(publicVisible(scope))
     .groupBy(vehicles.makeSlug, vehicles.make)
     .orderBy(vehicles.make);
+  // Dois nomes da FIPE podem ter o mesmo nome conhecido ("Caoa Chery/Chery"): somam.
+  const bySlug = new Map<
+    string,
+    { slug: string; name: string; count: number }
+  >();
+  for (const r of rows) {
+    if (!r.slug || !r.name) continue;
+    const seen = bySlug.get(r.slug);
+    if (seen) seen.count += r.count;
+    else
+      bySlug.set(r.slug, {
+        slug: r.slug,
+        name: brandName(r.name),
+        count: r.count,
+      });
+  }
   return {
-    makes: rows.flatMap((r) =>
-      r.slug && r.name ? [{ slug: r.slug, name: r.name, count: r.count }] : [],
+    makes: [...bySlug.values()].sort((a, b) =>
+      a.name.localeCompare(b.name, "pt-BR"),
     ),
   };
 }

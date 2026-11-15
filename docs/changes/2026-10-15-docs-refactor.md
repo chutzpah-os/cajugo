@@ -550,3 +550,6 @@
 
 # 2026-11-15 · 006b/T002 migration 0012
 - `stores.city_slug` gerado pelo banco (igual ao slugify em todas as 5.571 cidades do IBGE, provado em teste), índices por cidade e por modelo, `make_slug` de GM e VW corrigido; aplicada no staging.
+
+# 2026-11-15 · 006b/T003 nome da marca
+- `fipe.brandName` com a lista de correções dos 108 nomes guardados (GM/VW sem prefixo, maiúsculas, Kia, Caoa Chery); `make_slug` sai do nome corrigido e as marcas da vitrine mostram esse nome, somando nomes da FIPE iguais.

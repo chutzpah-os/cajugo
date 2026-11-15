@@ -279,3 +279,5 @@ export async function identify(
     reference: await reference(deps, brand.id, version.id, code),
   };
 }
+
+export { brandName } from "./brand-name";
