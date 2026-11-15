@@ -577,3 +577,6 @@
 
 # 2026-11-15 · 006b/T011 páginas de descoberta
 - `/carros/[first]` e `/carros/[first]/[second]` com `DiscoveryView`: lista, filtros com a marca fixa (`lockMake`), parágrafo, caminho visível + JSON-LD, metadados com canônica sem filtros e `noindex` quando vazia; página vazia mostra os veículos da página acima.
+
+# 2026-11-15 · 006b/T012 índice /carros
+- `/carros` pré-renderizada com marcas e cidades da vitrine (contagem e link), JSON-LD e `noindex` enquanto vazia; vitrine com os atalhos "Buscar por marca" e "Buscar por cidade".

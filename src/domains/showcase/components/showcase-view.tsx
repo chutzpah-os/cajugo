@@ -13,6 +13,7 @@ import { filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
 import { CatalogToolbar } from "./catalog-toolbar";
 import { CatalogView, showcaseCount } from "./catalog-view";
+import { DiscoveryShortcuts } from "./discovery-index";
 import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
@@ -91,6 +92,7 @@ export async function ShowcaseView({
             />
           ) : undefined
         }
+        intro={result.total > 0 ? <DiscoveryShortcuts /> : undefined}
         sort={
           result.total > 1 ? (
             <SortSelect filters={filters} basePath={BASE_PATH} />
