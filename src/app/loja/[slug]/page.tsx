@@ -103,6 +103,7 @@ export default async function StorePage({
             city: page.city,
             state: page.state,
             telephone: page.whatsapp,
+            hours: page.hours,
             image: page.logoPublicId
               ? imageUrlFor(cloud, page.logoPublicId, IMAGE_WIDTHS.card)
               : null,

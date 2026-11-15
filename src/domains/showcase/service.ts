@@ -337,6 +337,11 @@ export async function searchShowcase(
   };
 }
 
+type StoreHours = Extract<StorePage, { kind: "store" }>["hours"];
+
+/** Leitura dos filtros da URL, para quem usa o domínio de fora (testes de `vehicles`). */
+export { parseFilters } from "./filters";
+
 export type StorePage =
   | {
       kind: "store";
@@ -346,6 +351,7 @@ export type StorePage =
       city: string;
       state: string;
       about: string | null;
+      hours: Record<string, { ranges?: { from: string; to: string }[] }> | null;
       whatsapp: string;
       logoPublicId: string | null;
       coverPublicId: string | null;
@@ -381,6 +387,7 @@ export async function storePage(
       city: stores.city,
       state: stores.state,
       about: stores.about,
+      hours: stores.hours,
       whatsapp: stores.whatsapp,
       logoPublicId: stores.logoPublicId,
       coverPublicId: stores.coverPublicId,
@@ -400,6 +407,7 @@ export async function storePage(
     city: s.city,
     state: s.state,
     about: s.about,
+    hours: s.hours as StoreHours,
     whatsapp: s.whatsapp,
     logoPublicId: s.logoPublicId,
     coverPublicId: s.coverPublicId,

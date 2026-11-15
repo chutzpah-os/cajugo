@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SiteHeader } from "@/domains/auth/components/site-header";
 import {
   ShowcaseView,
   showcaseMetadata,
@@ -26,9 +27,12 @@ export default async function FilteredShowcase({
 }: PageProps<"/vitrine">) {
   const filters = parseFilters(await searchParams);
   return (
-    <ShowcaseView
-      filters={filters}
-      result={await cachedSearch("showcase", filters)}
-    />
+    <>
+      <SiteHeader />
+      <ShowcaseView
+        filters={filters}
+        result={await cachedSearch("showcase", filters)}
+      />
+    </>
   );
 }

@@ -3,8 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { stores, vehicles } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { onboardingStatus } from "@/domains/stores/service";
-import { parseFilters } from "@/domains/showcase/filters";
-import { searchShowcase } from "@/domains/showcase/service";
+import { parseFilters, searchShowcase } from "@/domains/showcase/service";
 import { hasPublishedVehicle, saveDraft } from "./service";
 import { goLive, storeOwner } from "./testing/fixtures";
 

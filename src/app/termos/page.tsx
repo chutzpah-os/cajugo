@@ -46,6 +46,10 @@ const PRIVACY = [
     "Os dados públicos da loja aparecem no catálogo e na vitrine. Dados de quem envia uma mensagem vão só para a loja procurada. Não vendemos dados.",
   ],
   [
+    "Cookies",
+    "Usamos cookies para manter você conectado. Quem abre um link de vendedor da Rede Caju recebe um cookie com o código desse vendedor, por 30 dias, para a indicação ser reconhecida; ele guarda só o código, não identifica você e não é lido pelas páginas.",
+  ],
+  [
     "Seus direitos (LGPD)",
     "Você pode pedir acesso, correção ou exclusão dos seus dados. Dados de lojas canceladas são apagados 90 dias depois do cancelamento.",
   ],

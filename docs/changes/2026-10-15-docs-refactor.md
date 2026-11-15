@@ -538,3 +538,6 @@
 
 # 2026-11-15 · 006/T021 e2e da vitrine
 - Seed com loja de vitrine (45 veículos, 1 vendido, 1 loja suspensa; fotos `sample`, nunca apagadas); e2e em 390 e 1280 px e contra o build de produção (308, LCP/CLS em 4G, pré-renderização); chips com 44 px; sai o 308 de /vitrine direta.
+
+# 2026-11-15 · 006 /verify
+- Revisão: cache da vitrine renova com as regras ([4c] → parcela), AutoDealer com horário, SiteHeader fora do domínio, VEHICLES_TAG e parseFilters pelo service, cookie cajugo_ref nos termos [12i], teste da vitrine vazia; spec 006 implemented.

@@ -1,6 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
+import { SETTINGS_TAG } from "@/domains/settings/service";
 import { STORES_TAG } from "@/domains/stores/service";
-import { VEHICLES_TAG } from "@/domains/vehicles/tags";
+import { VEHICLES_TAG } from "@/domains/vehicles/service";
 import { getDb } from "@/platform/db/client";
 import type { Filters } from "./filters";
 import {
@@ -18,7 +19,8 @@ import {
  * veículo ou loja e por tempo, a cada 30 s (SHW-NFR-004, SHW-NFR-005).
  */
 function tagged() {
-  cacheTag(VEHICLES_TAG, STORES_TAG);
+  // Regras entram pela parcela estimada (SHW-FR-003): mudar em [4c] renova a vitrine.
+  cacheTag(VEHICLES_TAG, STORES_TAG, SETTINGS_TAG);
   // Renova a cada 30 s; validade longa para a página poder ser pré-renderizada.
   cacheLife({ stale: 30, revalidate: 30, expire: 3600 });
 }

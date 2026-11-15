@@ -86,6 +86,42 @@ describe("SEO do catálogo", () => {
     );
   });
 
+  it("[SHW-FR-013] AutoDealer leva o horário da loja; dia fechado fica de fora", () => {
+    // Act
+    const ld = autoDealerJsonLd({
+      name: "Silva",
+      path: "/loja/silva",
+      city: "Aracaju",
+      state: "SE",
+      telephone: "557932110000",
+      hours: {
+        mon: {
+          ranges: [
+            { from: "08:00", to: "12:00" },
+            { from: "14:00", to: "18:00" },
+          ],
+        },
+        sun: { closed: true },
+      },
+    });
+
+    // Assert
+    expect(ld.openingHoursSpecification).toEqual([
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "https://schema.org/Monday",
+        opens: "08:00",
+        closes: "12:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "https://schema.org/Monday",
+        opens: "14:00",
+        closes: "18:00",
+      },
+    ]);
+  });
+
   it("[SHW-FR-013] AutoDealer, ItemList, BreadcrumbList, Organization e WebSite", () => {
     expect(
       autoDealerJsonLd({

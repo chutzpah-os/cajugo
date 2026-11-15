@@ -100,6 +100,35 @@ export function carJsonLd(
   };
 }
 
+const WEEKDAYS: Record<string, string> = {
+  mon: "Monday",
+  tue: "Tuesday",
+  wed: "Wednesday",
+  thu: "Thursday",
+  fri: "Friday",
+  sat: "Saturday",
+  sun: "Sunday",
+};
+
+/** Horário da loja como gravado ([3c]): dia com intervalos ou fechado. */
+type Hours = Record<
+  string,
+  { closed?: boolean; ranges?: { from: string; to: string }[] }
+>;
+
+function openingHours(hours: Hours) {
+  return Object.entries(hours).flatMap(([day, d]) =>
+    WEEKDAYS[day]
+      ? (d.ranges ?? []).map((r) => ({
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: `${CONTEXT}/${WEEKDAYS[day]}`,
+          opens: r.from,
+          closes: r.to,
+        }))
+      : [],
+  );
+}
+
 export function autoDealerJsonLd(s: {
   name: string;
   path: string;
@@ -107,7 +136,9 @@ export function autoDealerJsonLd(s: {
   state: string;
   telephone: string;
   image?: string | null;
+  hours?: Hours | null;
 }) {
+  const opening = s.hours ? openingHours(s.hours) : [];
   return {
     "@context": CONTEXT,
     "@type": "AutoDealer",
@@ -115,6 +146,7 @@ export function autoDealerJsonLd(s: {
     url: abs(s.path),
     telephone: `+${s.telephone}`,
     ...(s.image ? { image: s.image } : {}),
+    ...(opening.length ? { openingHoursSpecification: opening } : {}),
     address: {
       "@type": "PostalAddress",
       addressLocality: s.city,

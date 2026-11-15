@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SiteHeader } from "@/domains/auth/components/site-header";
 import {
   ShowcaseView,
   showcaseMetadata,
@@ -15,9 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
 /** Vitrine sem filtros: pré-renderizada, a principal página de SEO. */
 export default async function Home() {
   return (
-    <ShowcaseView
-      filters={NONE}
-      result={await cachedSearch("showcase", NONE)}
-    />
+    <>
+      <SiteHeader />
+      <ShowcaseView
+        filters={NONE}
+        result={await cachedSearch("showcase", NONE)}
+      />
+    </>
   );
 }

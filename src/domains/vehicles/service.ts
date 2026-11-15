@@ -1069,3 +1069,5 @@ async function syncSearchFields(tx: Db, vehicleId: string) {
 }
 
 export { BODIES, CONDITIONS, FEATURES, FUELS, TRANSMISSIONS } from "./lists";
+
+export { VEHICLES_TAG } from "./tags";

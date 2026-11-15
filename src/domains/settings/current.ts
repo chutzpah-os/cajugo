@@ -1,9 +1,8 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getDb } from "@/platform/db/client";
-import { getSettings } from "./service";
+import { getSettings, SETTINGS_TAG } from "./service";
 
-/** Tag do cache das regras: quem salva chama `updateTag(SETTINGS_TAG)`. */
-export const SETTINGS_TAG = "settings";
+export { SETTINGS_TAG };
 
 /**
  * Regras vigentes para as telas, com cache de até 1 minuto (CFG-NFR-001). O cache

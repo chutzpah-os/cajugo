@@ -8,6 +8,7 @@ import { CatalogList } from "./catalog-list";
 import { CatalogSkeleton } from "./catalog-skeleton";
 import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
+import { showcaseMetadata } from "./showcase-view";
 import { SortSelect } from "./sort-select";
 
 vi.mock("next/navigation", () => ({
@@ -201,5 +202,27 @@ describe("desktop [15a]", () => {
     expect(html).not.toContain("Ordenar por");
     expect(html).toContain('id="lateral-marca"');
     expect(html).not.toContain('id="filtro-marca"');
+  });
+});
+
+describe("vitrine vazia", () => {
+  it("[SHW-FR-001] sem veículo fica fora do Google; com o 1º, volta sozinha", () => {
+    // Act
+    const empty = showcaseMetadata({
+      items: [],
+      total: 0,
+      stores: 0,
+      nextCursor: null,
+    });
+    const full = showcaseMetadata({
+      items: [CARD],
+      total: 1,
+      stores: 1,
+      nextCursor: null,
+    });
+
+    // Assert
+    expect(empty.robots).toEqual({ index: false, follow: true });
+    expect(full.robots).toBeUndefined();
   });
 });

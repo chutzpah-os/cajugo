@@ -2,7 +2,7 @@
 id: 006
 slug: showcase
 title: Vitrine, catálogo da loja e página do veículo
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-09
 ---

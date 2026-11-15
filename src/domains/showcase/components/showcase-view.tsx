@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/domains/auth/components/site-header";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import {
@@ -52,72 +51,67 @@ export async function ShowcaseView({
   const { makes } = await cachedFacets("showcase");
   const filtered = filtersToQuery(filters) !== "";
   return (
-    <>
-      <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 py-6 md:max-w-5xl lg:max-w-6xl">
-        <JsonLd data={websiteJsonLd()} />
-        <JsonLd
-          data={breadcrumbJsonLd([{ name: "Início", path: BASE_PATH }])}
-        />
-        {result.total > 0 && (
-          <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
-        )}
-        <CatalogView
-          title={TITLE}
-          count={
-            result.total || filtered
-              ? showcaseCount(result.total, result.stores)
-              : ""
-          }
-          result={result}
-          filters={filters}
-          store={null}
-          cloudName={cloudName()}
-          showStore
-          toolbar={
-            makes.length > 0 || filtered ? (
-              <CatalogToolbar
-                filters={filters}
-                makes={makes}
-                total={result.total}
-                basePath={BASE_PATH}
-                store={null}
-              />
-            ) : undefined
-          }
-          sidebar={
-            makes.length > 0 || filtered ? (
-              <FiltersSide
-                filters={filters}
-                makes={makes}
-                total={result.total}
-                basePath={BASE_PATH}
-                store={null}
-              />
-            ) : undefined
-          }
-          sort={
-            result.total > 1 ? (
-              <SortSelect filters={filters} basePath={BASE_PATH} />
-            ) : undefined
-          }
-          empty={
-            filtered ? (
-              <NoResults filters={filters} basePath={BASE_PATH} />
-            ) : (
-              <div className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-5">
-                <p className="text-[17px] font-extrabold">
-                  Os primeiros veículos estão chegando
-                </p>
-                <p className="text-sm text-text-2">
-                  Tem uma loja de veículos? Coloque o seu estoque na CajuGo.
-                </p>
-                <ButtonLink href="/lojistas">Anunciar minha loja</ButtonLink>
-              </div>
-            )
-          }
-        />
-      </main>
-    </>
+    <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 py-6 md:max-w-5xl lg:max-w-6xl">
+      <JsonLd data={websiteJsonLd()} />
+      <JsonLd data={breadcrumbJsonLd([{ name: "Início", path: BASE_PATH }])} />
+      {result.total > 0 && (
+        <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
+      )}
+      <CatalogView
+        title={TITLE}
+        count={
+          result.total || filtered
+            ? showcaseCount(result.total, result.stores)
+            : ""
+        }
+        result={result}
+        filters={filters}
+        store={null}
+        cloudName={cloudName()}
+        showStore
+        toolbar={
+          makes.length > 0 || filtered ? (
+            <CatalogToolbar
+              filters={filters}
+              makes={makes}
+              total={result.total}
+              basePath={BASE_PATH}
+              store={null}
+            />
+          ) : undefined
+        }
+        sidebar={
+          makes.length > 0 || filtered ? (
+            <FiltersSide
+              filters={filters}
+              makes={makes}
+              total={result.total}
+              basePath={BASE_PATH}
+              store={null}
+            />
+          ) : undefined
+        }
+        sort={
+          result.total > 1 ? (
+            <SortSelect filters={filters} basePath={BASE_PATH} />
+          ) : undefined
+        }
+        empty={
+          filtered ? (
+            <NoResults filters={filters} basePath={BASE_PATH} />
+          ) : (
+            <div className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-5">
+              <p className="text-[17px] font-extrabold">
+                Os primeiros veículos estão chegando
+              </p>
+              <p className="text-sm text-text-2">
+                Tem uma loja de veículos? Coloque o seu estoque na CajuGo.
+              </p>
+              <ButtonLink href="/lojistas">Anunciar minha loja</ButtonLink>
+            </div>
+          )
+        }
+      />
+    </main>
   );
 }

@@ -27,6 +27,10 @@ import {
  * data do fato. Data anterior a qualquer alteração recebe o valor provisório (o mais
  * antigo de cada regra): o sistema nunca fica sem valor (CFG-FR-003).
  */
+
+/** Tag do cache das regras: quem salva chama `updateTag(SETTINGS_TAG)`. */
+export const SETTINGS_TAG = "settings";
+
 export async function getSettings(
   db: Db,
   at: Date = new Date(),
