@@ -565,3 +565,6 @@
 
 # 2026-11-15 · 006b/T007 página de descoberta
 - `discoveryPage`: nomes (marca corrigida), caminho, números (total, lojas, cidades, faixa de preço), `empty` com a página acima e `null` para o que nunca existiu (D2). Regra de visibilidade em `visibility.ts`. Migration `0013`: índice `vehicles (make_slug, model_slug)`; aplicada no staging.
+
+# 2026-11-15 · 006b/T008 índice e links
+- `discoveryIndex` (marcas e cidades da vitrine com contagem) e `discoveryLinks` (marca, modelo e cidade com veículos, numa consulta); `knownMakes` único para o índice e para as marcas dos filtros.

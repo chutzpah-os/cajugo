@@ -1,4 +1,3 @@
-import { brandName } from "@/domains/fipe/service";
 import {
   and,
   count,
@@ -38,6 +37,7 @@ import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import type { GateDecision } from "@/platform/http/public-gate";
 import type { Filters, Sort } from "./filters";
+import { knownMakes } from "./discovery";
 import { publicVisible, type Scope } from "./visibility";
 import { idFromVehicleParam, vehiclePath } from "./urls";
 
@@ -430,27 +430,7 @@ export async function facets(
     .where(publicVisible(scope))
     .groupBy(vehicles.makeSlug, vehicles.make)
     .orderBy(vehicles.make);
-  // Dois nomes da FIPE podem ter o mesmo nome conhecido ("Caoa Chery/Chery"): somam.
-  const bySlug = new Map<
-    string,
-    { slug: string; name: string; count: number }
-  >();
-  for (const r of rows) {
-    if (!r.slug || !r.name) continue;
-    const seen = bySlug.get(r.slug);
-    if (seen) seen.count += r.count;
-    else
-      bySlug.set(r.slug, {
-        slug: r.slug,
-        name: brandName(r.name),
-        count: r.count,
-      });
-  }
-  return {
-    makes: [...bySlug.values()].sort((a, b) =>
-      a.name.localeCompare(b.name, "pt-BR"),
-    ),
-  };
+  return { makes: knownMakes(rows) };
 }
 
 export type VehiclePage =
@@ -749,4 +729,9 @@ export async function sitemapEntries(
 }
 
 export { publicVisible, type Scope } from "./visibility";
-export { discoveryPage, type DiscoveryPage } from "./discovery";
+export {
+  discoveryIndex,
+  discoveryLinks,
+  discoveryPage,
+  type DiscoveryPage,
+} from "./discovery";

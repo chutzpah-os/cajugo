@@ -1,4 +1,14 @@
-import { and, count, countDistinct, desc, eq, max, min } from "drizzle-orm";
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  max,
+  min,
+  sql,
+  type SQL,
+} from "drizzle-orm";
 import { brandName } from "@/domains/fipe/service";
 import { stores, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
@@ -140,4 +150,135 @@ export async function discoveryPage(
     stats,
     fallback: listing ? null : fallbackOf(key, names),
   };
+}
+
+type Entry = { path: string; name: string; count: number };
+
+/**
+ * Marcas pelo nome conhecido, em ordem alfabética. Dois nomes da FIPE podem dar a
+ * mesma marca ("Caoa Chery/Chery" e "Caoa Chery"): as contagens somam.
+ */
+export function knownMakes(
+  rows: { slug: string | null; name: string | null; count: number }[],
+): { slug: string; name: string; count: number }[] {
+  const bySlug = new Map<
+    string,
+    { slug: string; name: string; count: number }
+  >();
+  for (const r of rows) {
+    if (!r.slug || !r.name) continue;
+    const seen = bySlug.get(r.slug);
+    if (seen) seen.count += r.count;
+    else
+      bySlug.set(r.slug, {
+        slug: r.slug,
+        name: brandName(r.name),
+        count: r.count,
+      });
+  }
+  return [...bySlug.values()].sort((a, b) =>
+    a.name.localeCompare(b.name, "pt-BR"),
+  );
+}
+
+/** Índice `/carros` (DSC-FR-013): marcas e cidades com veículos na vitrine. */
+export async function discoveryIndex(
+  db: Db,
+): Promise<{ makes: Entry[]; cities: Entry[] }> {
+  const visible = publicVisible("showcase");
+  const makeRows = await db
+    .select({ slug: vehicles.makeSlug, name: vehicles.make, count: count() })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(visible)
+    .groupBy(vehicles.makeSlug, vehicles.make);
+  const cityRows = await db
+    .select({
+      slug: stores.citySlug,
+      city: stores.city,
+      state: stores.state,
+      count: count(),
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(visible)
+    .groupBy(stores.citySlug, stores.city, stores.state);
+
+  const byName = (a: Entry, b: Entry) => a.name.localeCompare(b.name, "pt-BR");
+  return {
+    makes: knownMakes(makeRows).map((m) => ({
+      path: discoveryPath({ makeSlug: m.slug }),
+      name: m.name,
+      count: m.count,
+    })),
+    cities: cityRows
+      .flatMap((r) =>
+        r.slug
+          ? [
+              {
+                path: discoveryPath({ citySlug: r.slug }),
+                name: `${r.city}/${r.state}`,
+                count: r.count,
+              },
+            ]
+          : [],
+      )
+      .sort(byName),
+  };
+}
+
+const countWhere = (cond: SQL | undefined) =>
+  cond
+    ? sql<number>`count(*) filter (where ${cond})`.mapWith(Number)
+    : sql<number>`0`.mapWith(Number);
+
+/**
+ * Links do veículo [1b] e do catálogo da loja para as páginas de descoberta
+ * (DSC-FR-008, 009): só as que têm veículos na vitrine, numa consulta só.
+ */
+export async function discoveryLinks(
+  db: Db,
+  v: {
+    make?: string | null;
+    makeSlug?: string | null;
+    model?: string | null;
+    modelSlug?: string | null;
+    city: string;
+    state: string;
+    citySlug: string | null;
+  },
+): Promise<{ name: string; path: string }[]> {
+  const make = v.makeSlug ? eq(vehicles.makeSlug, v.makeSlug) : undefined;
+  const model =
+    make && v.modelSlug
+      ? and(make, eq(vehicles.modelSlug, v.modelSlug))
+      : undefined;
+  const city = v.citySlug ? eq(stores.citySlug, v.citySlug) : undefined;
+  const [n] = await db
+    .select({
+      make: countWhere(make),
+      model: countWhere(model),
+      city: countWhere(city),
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(publicVisible("showcase"));
+  const brand = v.make ? brandName(v.make) : "";
+  const links: { name: string; path: string }[] = [];
+  if (n.make > 0 && v.makeSlug)
+    links.push({
+      name: `${brand} usados`,
+      path: discoveryPath({ makeSlug: v.makeSlug }),
+    });
+  if (n.model > 0 && v.makeSlug && v.modelSlug)
+    links.push({
+      name: `${brand} ${v.model} usados`,
+      path: discoveryPath({ makeSlug: v.makeSlug, modelSlug: v.modelSlug }),
+    });
+  if (n.city > 0 && v.citySlug)
+    links.push({
+      name: `Carros usados em ${v.city}/${v.state}`,
+      path: discoveryPath({ citySlug: v.citySlug }),
+    });
+  return links;
 }
