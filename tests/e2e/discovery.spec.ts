@@ -94,6 +94,13 @@ test.describe("páginas de descoberta (390 px)", () => {
   });
 
   test("[DSC-FR-013] índice /carros a partir da vitrine", async ({ page }) => {
+    // Busca sem resultado ainda leva ao índice
+    await page.goto("/?q=nenhum-carro-assim");
+    await expect(page.getByTestId("no-results")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Buscar por marca" }),
+    ).toBeVisible();
+
     await page.goto("/");
     await page.getByRole("link", { name: "Buscar por cidade" }).click();
 
@@ -158,6 +165,15 @@ test.describe("descoberta sem JavaScript", () => {
     expect(html).toContain("Fiat Argo usados à venda em 2 cidades");
     expect(html).not.toContain(S.plate);
     expect(html).not.toContain(S.chassis);
+
+    // Prévia do link com foto também no índice e na página vazia (SEO.md §6)
+    for (const path of ["/carros/fiat/argo", "/carros", "/carros/fiat/uno"]) {
+      const body = await (await request.get(path)).text();
+      expect(body, path).toMatch(/property="og:image" content="https:\/\//);
+    }
+    expect(await (await request.get("/carros/fiat/uno")).text()).toContain(
+      'name="description" content="Nenhum Fiat Uno à venda agora.',
+    );
   });
 
   test("[DSC-FR-010] [DSC-SEC-003] sitemap de descoberta e robots.txt", async ({

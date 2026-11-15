@@ -587,3 +587,8 @@
 # 2026-11-15 · 006b/T014 e2e da descoberta
 - `tests/e2e/discovery.spec.ts` (390 e 1280 px): as quatro páginas, filtro na URL, carregar mais, página vazia, `/carros`, links no veículo e na loja, HTML cru, sitemap e `robots.txt`; seed com loja em Recife/PE. Build de produção: 404/200 de `/carros/*` e LCP da descoberta (1,2 s, CLS 0,002).
 - Testes de veículos e do menu ajustados à página nova: contam só a lista do catálogo e repetem o clique do menu até ele abrir.
+
+# 2026-11-15 · 006b/verify ajustes da revisão
+- Migration `0014`: `make_slug` de Kia e Caoa Chery corrigido; teste compara as correções de `brandName` que mudam o endereço com as migrations.
+- Marca na cidade que nunca existiu junta responde 404; página vazia com descrição "Nenhum … à venda agora" e foto na prévia; `/carros` com foto e fora do sitemap quando vazio; atalhos da vitrine também com filtro sem resultado.
+- Spec 006b `implemented`, PLAN marcado; teste de LCP da descoberta com `DSC-NFR-003`.

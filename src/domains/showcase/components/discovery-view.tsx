@@ -40,15 +40,22 @@ export async function discoveryRouteMetadata(
   const loaded = await load(segments, params);
   if (!loaded) return null;
   const { page, filters } = loaded;
-  const result =
+  // A prévia do link usa a 1ª foto da lista que a página mostra (SEO.md §6).
+  const shown =
     page.kind === "listing"
       ? await cachedSearch({ discovery: page.key }, filters)
-      : null;
+      : await fallbackSearch(page);
   return discoveryMetadata(page, {
     filtered: filtersToQuery(filters) !== "",
-    total: result?.total ?? 0,
-    coverPublicId: result?.items[0]?.coverPublicId,
+    total: page.kind === "listing" ? shown.total : 0,
+    coverPublicId: shown.items[0]?.coverPublicId,
   });
+}
+
+/** Veículos da página acima, mostrados quando esta está vazia (DSC-FR-005). */
+function fallbackSearch(page: DiscoveryPage) {
+  const up = page.fallback?.key;
+  return cachedSearch(up ? { discovery: up } : "showcase", parseFilters({}));
 }
 
 /** Página de descoberta [1a] (DSC-FR-001 a 007); `null` vira 404 na rota. */
@@ -135,11 +142,7 @@ async function ListingDiscovery({
 
 /** Ficou sem veículos: mensagem e os veículos da página acima (DSC-FR-005). */
 async function EmptyDiscovery({ page }: { page: DiscoveryPage }) {
-  const up = page.fallback?.key;
-  const others = await cachedSearch(
-    up ? { discovery: up } : "showcase",
-    parseFilters({}),
-  );
+  const others = await fallbackSearch(page);
   const cloud = cloudName();
   return (
     <main className={MAIN}>

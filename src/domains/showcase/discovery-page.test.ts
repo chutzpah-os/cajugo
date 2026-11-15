@@ -133,13 +133,20 @@ describe("página de descoberta", () => {
   });
 
   it("[DSC-SEC-004] o que nunca existiu não tem página", async () => {
+    // Arrange: BMW existe em Campinas e Sumaré existe, mas nunca teve BMW
+    await car(t.db, campinas, { make: "BMW", model: "320i" });
+
+    // Assert
+    expect(
+      await discoveryPage(t.db, { citySlug: "sumare-sp", makeSlug: "bmw" }),
+    ).toBeNull();
     expect(await discoveryPage(t.db, { makeSlug: "nao-existe" })).toBeNull();
     expect(
       await discoveryPage(t.db, { makeSlug: "fiat", modelSlug: "uno" }),
     ).toBeNull();
     expect(await discoveryPage(t.db, { citySlug: "recife-pe" })).toBeNull();
     expect(
-      await discoveryPage(t.db, { citySlug: "campinas-sp", makeSlug: "bmw" }),
+      await discoveryPage(t.db, { citySlug: "campinas-sp", makeSlug: "audi" }),
     ).toBeNull();
   });
 });

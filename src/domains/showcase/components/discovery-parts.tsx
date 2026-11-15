@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
-import { discoveryDescription, discoveryTitle } from "@/platform/seo/discovery";
+import {
+  discoveryDescription,
+  discoveryEmptyHeading,
+  discoveryTitle,
+} from "@/platform/seo/discovery";
 import { pageMetadata } from "@/platform/seo/seo";
 import { ButtonLink } from "@/ui/button";
 import type { DiscoveryKey } from "../discovery-urls";
@@ -37,18 +41,13 @@ export function discoveryFilters(key: DiscoveryKey, filters: Filters): Filters {
 
 /** Página que ficou sem veículos [12a] (DSC-FR-005): diz o que falta e leva acima. */
 export function DiscoveryEmpty({ page }: { page: DiscoveryPage }) {
-  const subject =
-    [page.names.make, page.names.model].filter(Boolean).join(" ") || "carro";
-  const place = page.names.city
-    ? ` em ${page.names.city}/${page.names.state}`
-    : "";
   return (
     <div
       data-testid="discovery-empty"
       className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-5"
     >
       <p className="text-[17px] font-extrabold">
-        Nenhum {subject} à venda agora{place}
+        {discoveryEmptyHeading(page.names)}
       </p>
       <p className="text-sm text-text-2">
         Veja abaixo outros veículos que podem interessar.

@@ -4,10 +4,15 @@ import {
   DiscoveryIndexView,
   discoveryIndexMetadata,
 } from "@/domains/showcase/components/discovery-index";
-import { cachedDiscoveryIndex } from "@/domains/showcase/current";
+import { cachedDiscoveryIndex, cachedSearch } from "@/domains/showcase/current";
+import { parseFilters } from "@/domains/showcase/filters";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return discoveryIndexMetadata(await cachedDiscoveryIndex());
+  const [index, showcase] = await Promise.all([
+    cachedDiscoveryIndex(),
+    cachedSearch("showcase", parseFilters({})),
+  ]);
+  return discoveryIndexMetadata(index, showcase.items[0]?.coverPublicId);
 }
 
 /** Índice das páginas de descoberta (DSC-FR-013), pré-renderizado. */

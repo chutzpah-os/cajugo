@@ -30,15 +30,21 @@ export type DiscoveryPage = {
   fallback: { key: DiscoveryKey | null; path: string; name: string } | null;
 };
 
-/** Nome da marca (corrigido) e do modelo de algum veículo já registrado (D2). */
-async function vehicleNames(db: Db, makeSlug: string, modelSlug?: string) {
+/**
+ * Nome da marca (corrigido) e do modelo de algum veículo já registrado, em qualquer
+ * status (D2). Com cidade, o veículo tem de ser de uma loja dela: marca e cidade que
+ * existem, mas nunca juntas, não viram página (DSC-SEC-004).
+ */
+async function vehicleNames(db: Db, key: DiscoveryKey) {
   const [row] = await db
     .select({ make: vehicles.make, model: vehicles.model })
     .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
     .where(
       and(
-        eq(vehicles.makeSlug, makeSlug),
-        modelSlug ? eq(vehicles.modelSlug, modelSlug) : undefined,
+        eq(vehicles.makeSlug, key.makeSlug!),
+        key.modelSlug ? eq(vehicles.modelSlug, key.modelSlug) : undefined,
+        key.citySlug ? eq(stores.citySlug, key.citySlug) : undefined,
       ),
     )
     .orderBy(desc(vehicles.updatedAt))
@@ -63,7 +69,7 @@ async function namesOf(
 ): Promise<DiscoveryNames | null> {
   const names: DiscoveryNames = {};
   if (key.makeSlug) {
-    const v = await vehicleNames(db, key.makeSlug, key.modelSlug);
+    const v = await vehicleNames(db, key);
     if (!v) return null;
     names.make = v.make;
     if (key.modelSlug) {
@@ -331,7 +337,5 @@ export async function discoverySitemap(db: Db): Promise<SitemapEntry[]> {
         touch({ citySlug: r.citySlug, makeSlug: r.makeSlug }, r.lastModified);
     }
   }
-  // O índice `/carros` fica sempre, mesmo sem veículos.
-  if (!pages.has("/carros")) pages.set("/carros", new Date(0));
   return [...pages].map(([path, lastModified]) => ({ path, lastModified }));
 }

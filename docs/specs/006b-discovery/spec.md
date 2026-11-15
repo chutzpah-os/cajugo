@@ -2,7 +2,7 @@
 id: 006b
 slug: discovery
 title: Páginas de descoberta por marca, modelo e cidade
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-15
 ---

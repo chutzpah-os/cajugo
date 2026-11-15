@@ -48,4 +48,25 @@ describe("nome conhecido da marca", () => {
     // Assert
     expect(looksLikeCity).toEqual([]);
   });
+
+  it("[DSC-FR-011] correção que muda o endereço tem migration para os veículos já gravados", () => {
+    // Arrange: endereços trocados nas migrations 0012 e 0014. Correção nova que muda o
+    // endereço precisa de UPDATE numa migration e de entrar nesta lista.
+    const migrated = {
+      "gm-chevrolet": "chevrolet",
+      "vw-volkswagen": "volkswagen",
+      "kia-motors": "kia",
+      "caoa-chery-chery": "caoa-chery",
+    };
+
+    // Act
+    const renamed = Object.fromEntries(
+      FIPE_BRANDS.filter((b) => slugify(b) !== slugify(brandName(b))).map(
+        (b) => [slugify(b), slugify(brandName(b))],
+      ),
+    );
+
+    // Assert
+    expect(renamed).toEqual(migrated);
+  });
 });

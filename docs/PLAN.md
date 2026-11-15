@@ -97,6 +97,7 @@
 - **SEO (`SEO.md`)**: título, descrição, canônica, JSON-LD e Open Graph pelas funções de `src/platform/seo/`, sitemap índice e `robots.txt`.
 
 ## 006b · Páginas de descoberta
+> ✅ **Implementada** em 2026-11-15 (`docs/specs/006b-discovery/`): `/carros/{marca}`, `/carros/{marca}/{modelo}`, `/carros/{cidade}-{uf}`, `/carros/{cidade}-{uf}/{marca}` (ADR 0014) e índice `/carros`, com a lista da vitrine, filtros com a dimensão fixa, parágrafo gerado, caminho e JSON-LD; página vazia 200 fora do Google com a página acima; 404 real no `proxy.ts`; `discovery.xml`; links no veículo, na loja e na vitrine; nome conhecido da marca (`brandName`). LCP 1,2 s e CLS 0,002 em 4G no build de produção. Migrations `0012`–`0014` no staging; `0014` no prod pendente, **aplicar antes do push**.
 - Páginas por marca, modelo e cidade (só com pelo menos 1 veículo) e links internos entre veículo, loja e descoberta (`SEO.md`).
 
 ## 006c · Ferramentas do comprador — telas 14a, 14b, 12a (alerta), 9a

@@ -75,13 +75,13 @@ test.describe("build de produção · vitrine", () => {
     );
   });
 
-  for (const [name, path] of [
-    ["vitrine", "/"],
-    ["catálogo", `/loja/${S.slug}`],
-    ["veículo", `/v/${S.fullId}`],
-    ["descoberta", "/carros/fiat"],
+  for (const [id, name, path] of [
+    ["SHW-NFR-003", "vitrine", "/"],
+    ["SHW-NFR-003", "catálogo", `/loja/${S.slug}`],
+    ["SHW-NFR-003", "veículo", `/v/${S.fullId}`],
+    ["DSC-NFR-003", "descoberta", "/carros/fiat"],
   ])
-    test(`[SHW-NFR-003] ${name}: LCP e CLS em 4G dentro do limite`, async ({
+    test(`[${id}] ${name}: LCP e CLS em 4G dentro do limite`, async ({
       page,
       request,
     }) => {

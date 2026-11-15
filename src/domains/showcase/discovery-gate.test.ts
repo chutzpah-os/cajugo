@@ -55,7 +55,7 @@ describe("descoberta: status real e sitemap", () => {
     expect(await gateDecision(t.db, "/carros/fiat/argo")).toBe("ok");
   });
 
-  it("[DSC-FR-010] sitemap com o índice e as páginas com veículos; vendido o último, sai", async () => {
+  it("[DSC-FR-010] sitemap com o índice e as páginas com veículos; vendido o último, todas saem", async () => {
     // Arrange
     const paths = async () =>
       (await sitemapEntries(t.db, "discovery")).map((e) => e.path).sort();
@@ -72,7 +72,8 @@ describe("descoberta: status real e sitemap", () => {
       .update(vehicles)
       .set({ status: "sold" })
       .where(eq(vehicles.id, argo));
-    expect(await paths()).toEqual(["/carros"]);
+    // O índice vazio fica fora do Google, então sai do sitemap junto
+    expect(await paths()).toEqual([]);
   });
 
   it("[DSC-SEC-002] [DSC-SEC-003] não divulgado não cria página no sitemap; nada de placa", async () => {

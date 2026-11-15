@@ -282,3 +282,6 @@
 
 # 2026-11-15 · 006b/T014
 - O menu da home perdia o clique feito antes da hidratação quando a máquina estava carregada; o teste repete o clique só com o menu fechado, sem esconder falha real (se nunca abrir, falha em 20 s).
+
+# 2026-11-15 · 006b/verify
+- A revisão achou correções de marca que mudam o endereço sem migration (Kia, Caoa Chery): o teste-guarda força a próxima correção a vir com o UPDATE, em vez de depender de lembrar. Marca na cidade passa a exigir veículo da marca numa loja da cidade para "já existiu" (D2), para não abrir uma página 200 para cada combinação inventada.

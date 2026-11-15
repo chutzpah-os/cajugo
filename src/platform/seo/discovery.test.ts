@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   discoveryDescription,
+  discoveryEmptyHeading,
   discoveryIntro,
   discoveryTitle,
 } from "./discovery";
@@ -63,5 +64,21 @@ describe("SEO das páginas de descoberta", () => {
         maxPriceCents: null,
       }),
     ).toBe("3 Fiat Argo usados à venda em 2 cidades.");
+  });
+
+  it("[DSC-FR-005] página vazia diz o que falta, sem contar zero", () => {
+    // Arrange
+    const empty = { ...STATS, total: 0, stores: 0, cities: 0 };
+    const mobi = { make: "Fiat", model: "Mobi" };
+
+    // Act / Assert
+    expect(discoveryEmptyHeading(mobi)).toBe("Nenhum Fiat Mobi à venda agora");
+    expect(
+      discoveryEmptyHeading({ make: "Fiat", city: "Campinas", state: "SP" }),
+    ).toBe("Nenhum Fiat à venda agora em Campinas/SP");
+    expect(discoveryEmptyHeading({})).toBe("Nenhum carro à venda agora");
+    expect(discoveryDescription(mobi, empty)).toBe(
+      "Nenhum Fiat Mobi à venda agora. Veja outros veículos usados na CajuGo, com contato direto com a loja pelo WhatsApp.",
+    );
   });
 });

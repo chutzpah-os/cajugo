@@ -92,7 +92,8 @@ export async function ShowcaseView({
             />
           ) : undefined
         }
-        intro={result.total > 0 ? <DiscoveryShortcuts /> : undefined}
+        // Some só com a vitrine toda vazia; filtro sem resultado ainda leva a /carros.
+        intro={makes.length > 0 ? <DiscoveryShortcuts /> : undefined}
         sort={
           result.total > 1 ? (
             <SortSelect filters={filters} basePath={BASE_PATH} />

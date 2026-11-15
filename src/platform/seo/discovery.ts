@@ -57,10 +57,17 @@ export function discoveryIntro(n: DiscoveryNames, s: DiscoveryStats): string {
   return `${parts.join(", ")}.`;
 }
 
+/** "Nenhum Fiat Mobi à venda agora em Campinas/SP" (DSC-FR-005). */
+export function discoveryEmptyHeading(n: DiscoveryNames): string {
+  return `Nenhum ${subject(n) || "carro"} à venda agora${place(n)}`;
+}
+
 export function discoveryDescription(
   n: DiscoveryNames,
   s: DiscoveryStats,
 ): string {
+  if (!s.total)
+    return `${discoveryEmptyHeading(n)}. Veja outros veículos usados na CajuGo, com contato direto com a loja pelo WhatsApp.`;
   const intro = discoveryIntro(n, s).slice(0, -1);
   return `${intro}. Fotos, preço e contato direto com a loja pelo WhatsApp.`;
 }

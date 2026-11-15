@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cloudName } from "@/platform/cloudinary/cloudinary";
+import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { breadcrumbJsonLd, itemListJsonLd } from "@/platform/seo/catalog";
 import { JsonLd, pageMetadata } from "@/platform/seo/seo";
 import { cachedDiscoveryIndex } from "../current";
@@ -13,12 +15,19 @@ const CRUMBS = [
   { name: "Carros", path: "/carros" },
 ];
 
-export function discoveryIndexMetadata(index: Index): Metadata {
+/** `coverPublicId`: 1ª foto da vitrine, para a prévia do link (SEO.md §6). */
+export function discoveryIndexMetadata(
+  index: Index,
+  coverPublicId?: string | null,
+): Metadata {
   const meta = pageMetadata({
     title: "Carros usados por marca e por cidade",
     description:
       "Encontre carros usados e seminovos à venda pela marca ou pela cidade, com fotos, preço e contato direto com a loja.",
     path: "/carros",
+    image: coverPublicId
+      ? imageUrlFor(cloudName(), coverPublicId, IMAGE_WIDTHS.full)
+      : undefined,
   });
   return index.makes.length || index.cities.length
     ? meta

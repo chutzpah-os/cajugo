@@ -11,7 +11,7 @@ Tudo dentro do domínio `showcase`: um novo escopo de busca (`{ discovery: { mak
 ## Impacto
 | Camada | Mudança |
 |---|---|
-| Dados (migration `0012`, aditiva) | `stores.city_slug` gerado (`{cidade sem acento}-{uf}`) + índice `(city_slug, status)`; índice `vehicles (make_slug, model_slug)` (migration `0013`); `make_slug` recalculado só para as marcas corrigidas (`gm-chevrolet` → `chevrolet`, `vw-volkswagen` → `volkswagen`) |
+| Dados (migration `0012`, aditiva) | `stores.city_slug` gerado (`{cidade sem acento}-{uf}`) + índice `(city_slug, status)`; índice `vehicles (make_slug, model_slug)` (migration `0013`); `make_slug` recalculado só para as marcas corrigidas que mudam o endereço (`gm-chevrolet` → `chevrolet`, `vw-volkswagen` → `volkswagen` na `0012`; `kia-motors` → `kia`, `caoa-chery-chery` → `caoa-chery` na `0014`, esquecidas na `0012` e achadas no `/verify`; um teste compara a lista de correções com as migrations) |
 | `src/domains/fipe/` | `brandName(make)`: lista de correções dos nomes da FIPE (DSC-FR-011) |
 | `src/domains/vehicles/` | `syncSearchFields` grava `make_slug = slugify(brandName(make))` |
 | `src/domains/showcase/` | `discovery-urls.ts` (puro: lê e monta `/carros/...`); no `service.ts`: escopo `discovery`, `discoveryPage`, `discoveryIndex`, `discoveryLinks`, `gateDecision` para `/carros/*`, `sitemapEntries(db, "discovery")`; facets com `brandName`; `current.ts` com as leituras em cache; actions passam a receber a origem da lista (`source`) em vez de `store`; componentes `DiscoveryView`, `Breadcrumbs`, `RelatedLinks` |
@@ -56,7 +56,7 @@ A lista da página reusa `searchShowcase(db, { scope: { discovery: key }, filter
 | DSC-FR-007 | `crumbs` montados no serviço; `Breadcrumbs` visível + `breadcrumbJsonLd` |
 | DSC-FR-008 | `vehiclePage` passa a devolver `makeSlug`, `modelSlug`, `citySlug`; a página chama `cachedDiscoveryLinks` e mostra `RelatedLinks` |
 | DSC-FR-009 | `storePage` devolve `citySlug`; catálogo mostra o link da cidade se `discoveryLinks` o devolver |
-| DSC-FR-010 | `SITEMAP_IDS` + `discovery`; `sitemapEntries(db, "discovery")` lista `/carros` e as páginas com veículos (mesmas consultas do índice + modelos e marca na cidade), com `lastModified` do veículo mais recente |
+| DSC-FR-010 | `SITEMAP_IDS` + `discovery`; `sitemapEntries(db, "discovery")` lista `/carros` (só com veículos na vitrine; vazio, fica fora do Google e do sitemap) e as páginas com veículos (mesmas consultas do índice + modelos e marca na cidade), com `lastModified` do veículo mais recente |
 | DSC-FR-011 | `fipe.brandName(make)`: tabela de correções (prefixo "GM - ", "VW - ", nomes em maiúsculas conhecidos); `make_slug = slugify(brandName(make))`; facets e títulos mostram `brandName` |
 | DSC-FR-012 | `parseDiscoveryPath`: 1º segmento termina em `-{uf}` com UF da lista das 27 → cidade; senão marca; segmento só `[a-z0-9-]{1,60}`; ADR 0014 |
 | DSC-FR-013 | `/carros` (sem parâmetros, pré-renderizada) com `discoveryIndex`; `ShowcaseView` ganha os links "Buscar por marca" e "Buscar por cidade" (`/carros#marcas`, `/carros#cidades`) |
@@ -116,7 +116,7 @@ O teste de migration compara a coluna gerada com `slugify` da aplicação para *
 
 ## Decisões (aprovadas em 2026-11-15)
 - **D1. Cidade no endereço gerada no banco** (`stores.city_slug` como coluna gerada com `translate`), provada igual ao `slugify` da aplicação para todas as cidades da lista do IBGE. Recomendo: não há caminho de escrita para esquecer. A alternativa é gravar pela aplicação no cadastro e na edição da loja, com um ajuste dos registros existentes.
-- **D2. Quando a página "já existiu":** marca ou modelo com algum veículo registrado (em qualquer estado), cidade com alguma loja. Isso decide entre a mensagem com alternativas (DSC-FR-005) e o 404 (DSC-SEC-004). Recomendo: é o que se sabe sem nova tabela. A alternativa é guardar quais páginas já foram publicadas (tabela nova).
+- **D2. Quando a página "já existiu":** marca ou modelo com algum veículo registrado (em qualquer estado), cidade com alguma loja; marca na cidade, com algum veículo da marca numa loja da cidade (ajuste do `/verify`: marca e cidade que existem, mas nunca juntas, respondem 404). Isso decide entre a mensagem com alternativas (DSC-FR-005) e o 404 (DSC-SEC-004). Recomendo: é o que se sabe sem nova tabela. A alternativa é guardar quais páginas já foram publicadas (tabela nova).
 - **D3. `make_slug` corrigido também na vitrine** (`?marca=chevrolet` em vez de `?marca=gm-chevrolet`), com o ajuste dos veículos existentes na migration. Recomendo: um nome só em todo lugar. Links antigos com `?marca=gm-chevrolet` passam a mostrar "nenhum resultado" (são filtros, não estão indexados).
 
 ## Ajustes de documento (aprovados em 2026-11-15, feitos na T001)
