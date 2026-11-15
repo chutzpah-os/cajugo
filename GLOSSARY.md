@@ -44,6 +44,10 @@ Plano de assinatura da loja (Plano Catálogo, R$ 100/mês): catálogo próprio +
 Catálogo central, na raiz do site (`cajugo.vercel.app`; depois `cajugo.com.br`), com os veículos que as lojas escolheram divulgar.
 _Evite_: marketplace, catálogo geral, portal
 
+**Página de descoberta** (`discovery page`):
+Página pública da vitrine CajuGo por marca, modelo, cidade ou marca na cidade (`/carros/...`), com os veículos divulgados daquele recorte; o índice `/carros` lista todas. Só é indexada enquanto tem veículo.
+_Evite_: landing de SEO, página de categoria
+
 **Catálogo da loja** (`store catalog`):
 Página pública com todos os veículos publicados de uma loja.
 _Evite_: vitrine da loja, site da loja, estoque público
