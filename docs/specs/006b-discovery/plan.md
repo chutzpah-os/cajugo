@@ -11,7 +11,7 @@ Tudo dentro do domínio `showcase`: um novo escopo de busca (`{ discovery: { mak
 ## Impacto
 | Camada | Mudança |
 |---|---|
-| Dados (migration `0012`, aditiva) | `stores.city_slug` gerado (`{cidade sem acento}-{uf}`) + índice `(city_slug, status)`; índice `vehicles (status, model_slug)`; `make_slug` recalculado só para as marcas corrigidas (`gm-chevrolet` → `chevrolet`, `vw-volkswagen` → `volkswagen`) |
+| Dados (migration `0012`, aditiva) | `stores.city_slug` gerado (`{cidade sem acento}-{uf}`) + índice `(city_slug, status)`; índice `vehicles (make_slug, model_slug)` (migration `0013`); `make_slug` recalculado só para as marcas corrigidas (`gm-chevrolet` → `chevrolet`, `vw-volkswagen` → `volkswagen`) |
 | `src/domains/fipe/` | `brandName(make)`: lista de correções dos nomes da FIPE (DSC-FR-011) |
 | `src/domains/vehicles/` | `syncSearchFields` grava `make_slug = slugify(brandName(make))` |
 | `src/domains/showcase/` | `discovery-urls.ts` (puro: lê e monta `/carros/...`); no `service.ts`: escopo `discovery`, `discoveryPage`, `discoveryIndex`, `discoveryLinks`, `gateDecision` para `/carros/*`, `sitemapEntries(db, "discovery")`; facets com `brandName`; `current.ts` com as leituras em cache; actions passam a receber a origem da lista (`source`) em vez de `store`; componentes `DiscoveryView`, `Breadcrumbs`, `RelatedLinks` |
@@ -78,13 +78,13 @@ citySlug: text("city_slug").generatedAlwaysAs(
 ),
 // índices
 index("stores_city_slug_idx").on(t.citySlug, t.status),
-index("vehicles_model_slug_idx").on(t.status, t.modelSlug),
+index("vehicles_make_model_slug").on(t.makeSlug, t.modelSlug), // 0013
 ```
 ```sql
 -- drizzle/0012_discovery.sql (aditiva)
 ALTER TABLE stores ADD COLUMN city_slug text GENERATED ALWAYS AS (...) STORED;
 CREATE INDEX stores_city_slug_idx ON stores (city_slug, status);
-CREATE INDEX vehicles_model_slug_idx ON vehicles (status, model_slug);
+-- 0013: CREATE INDEX vehicles_make_model_slug ON vehicles (make_slug, model_slug);
 -- marcas com nome corrigido (DSC-FR-011): só o slug muda, o nome da FIPE fica
 UPDATE vehicles SET make_slug = 'chevrolet' WHERE make_slug = 'gm-chevrolet';
 UPDATE vehicles SET make_slug = 'volkswagen' WHERE make_slug = 'vw-volkswagen';
@@ -130,6 +130,6 @@ O teste de migration compara a coluna gerada com `slugify` da aplicação para *
 - [x] Schemas de entrada não aceitam campos privilegiados
 - [x] Dados pessoais novos: nenhum
 - [x] Formulário público com honeypot + rate limit: não há formulário
-- [x] Consultas novas têm índice previsto (`stores (city_slug, status)`, `vehicles (status, model_slug)`; marca já indexada na 006)
+- [x] Consultas novas têm índice previsto (`stores (city_slug, status)`; `vehicles (make_slug, model_slug)` na `0013`: a 006 não tinha índice de marca, ao contrário do que este plano dizia)
 - [x] Migrations aditivas: coluna gerada, dois índices e ajuste de `make_slug` das duas marcas (sem apagar nem renomear)
 - [x] Nada do Supabase além de Postgres e Auth

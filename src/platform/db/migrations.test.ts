@@ -226,7 +226,7 @@ describe("migrations", () => {
       expect(wrong).toEqual([]);
     });
 
-    it("[DSC-FR-003] índices de descoberta por cidade e por modelo", async () => {
+    it("[DSC-FR-003] índices de descoberta por cidade e por marca e modelo", async () => {
       // Arrange / Act
       const client = await migrated();
 
@@ -237,7 +237,7 @@ describe("migrations", () => {
       expect(rows.map((r) => r.indexname)).toEqual(
         expect.arrayContaining([
           "stores_city_slug_status",
-          "vehicles_status_model_slug",
+          "vehicles_make_model_slug",
         ]),
       );
     });

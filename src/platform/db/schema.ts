@@ -447,7 +447,8 @@ export const vehicles = pgTable(
   (t) => [
     index("vehicles_store_status").on(t.storeId, t.status),
     index("vehicles_status_share").on(t.status, t.shareOnCajugo),
-    index("vehicles_status_model_slug").on(t.status, t.modelSlug),
+    // Marca, marca + modelo e "a página já existiu" (D2 da 006b), em qualquer status.
+    index("vehicles_make_model_slug").on(t.makeSlug, t.modelSlug),
     index("vehicles_search").using("gin", t.search),
     index("vehicles_status_rank").on(t.status, t.rankScore.desc(), t.id),
     index("vehicles_status_price").on(t.status, t.priceCents, t.id),

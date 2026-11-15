@@ -562,3 +562,6 @@
 
 # 2026-11-15 · 006b/T006 escopo de descoberta
 - `Scope` ganha `{ discovery }` (marca, modelo, cidade, marca na cidade): só acrescenta condições à regra da vitrine, valendo para busca, contagem ao vivo e marcas disponíveis.
+
+# 2026-11-15 · 006b/T007 página de descoberta
+- `discoveryPage`: nomes (marca corrigida), caminho, números (total, lojas, cidades, faixa de preço), `empty` com a página acima e `null` para o que nunca existiu (D2). Regra de visibilidade em `visibility.ts`. Migration `0013`: índice `vehicles (make_slug, model_slug)`; aplicada no staging.
