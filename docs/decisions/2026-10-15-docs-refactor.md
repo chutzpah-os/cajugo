@@ -273,3 +273,6 @@
 # 2026-11-15 · 006/T021
 - O 308 de `/vitrine` direta criava laço no build de produção: a reescrita interna de `/?filtros` passa de novo pelo proxy. Sem a regra, o acesso direto só mostra a vitrine com canônica `/`.
 - Medido no build de produção em 4G (Lighthouse móvel): LCP 1,3–2,0 s e CLS ≤ 0,002 na vitrine, no catálogo e no veículo; a prova final no Lighthouse segue na 013.
+
+# 2026-11-15 · 006b/T002
+- Cidade do endereço como coluna gerada (D1): nenhum caminho de cadastro pode esquecer de gravá-la. `translate` antes de `lower` para não depender do locale do banco (PGlite e Supabase).

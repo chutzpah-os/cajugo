@@ -88,6 +88,10 @@ export const profiles = pgTable(
 /** CPF ou CNPJ de quem paga a loja (spec 004). */
 export const taxIdType = pgEnum("tax_id_type", ["cpf", "cnpj"]);
 
+/** Letras acentuadas do português (e vizinhas) e o equivalente sem acento. */
+const ACCENTS_FROM = "ÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇÑáàâãäéèêëíìîïóòôõöúùûüçñ";
+const ACCENTS_TO = "AAAAAEEEEIIIIOOOOOUUUUCNaaaaaeeeeiiiiooooouuuucn";
+
 export const stores = pgTable(
   "stores",
   {
@@ -97,6 +101,16 @@ export const stores = pgTable(
     slug: text("slug").notNull().unique(),
     city: text("city").notNull(),
     state: text("state").notNull(),
+    /**
+     * Cidade no endereço de descoberta (`/carros/campinas-sp`, ADR 0014), gerada pelo
+     * banco: igual ao `slugify` da aplicação para todas as cidades do IBGE (teste de
+     * migration). `translate` antes de `lower`: não depende do locale do banco.
+     */
+    citySlug: text("city_slug").generatedAlwaysAs((): SQL =>
+      sql.raw(
+        `trim(both '-' from regexp_replace(lower(translate(city, '${ACCENTS_FROM}', '${ACCENTS_TO}')), '[^a-z0-9]+', '-', 'g')) || '-' || lower(state)`,
+      ),
+    ),
     whatsapp: text("whatsapp").notNull(),
     /** Endereço em campos (SEO local); cidade e UF ficam em `city`/`state`. */
     addressStreet: text("address_street"),
@@ -133,7 +147,10 @@ export const stores = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (t) => [index("stores_tax_id").on(t.taxId)],
+  (t) => [
+    index("stores_tax_id").on(t.taxId),
+    index("stores_city_slug_status").on(t.citySlug, t.status),
+  ],
 ).enableRLS();
 
 /** Contador por janela de tempo para rate limit de formulários públicos e login. */
@@ -430,6 +447,7 @@ export const vehicles = pgTable(
   (t) => [
     index("vehicles_store_status").on(t.storeId, t.status),
     index("vehicles_status_share").on(t.status, t.shareOnCajugo),
+    index("vehicles_status_model_slug").on(t.status, t.modelSlug),
     index("vehicles_search").using("gin", t.search),
     index("vehicles_status_rank").on(t.status, t.rankScore.desc(), t.id),
     index("vehicles_status_price").on(t.status, t.priceCents, t.id),

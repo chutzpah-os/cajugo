@@ -11,6 +11,8 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { afterEach, describe, expect, it } from "vitest";
+import cities from "../geo/cities.json";
+import { slugify } from "../br/slug";
 import * as schema from "./schema";
 
 /** Copia `drizzle/` mantendo só as primeiras `count` migrations no journal. */
@@ -194,6 +196,49 @@ describe("migrations", () => {
       expect(store).not.toContain("address");
       expect(await columns(client, "store_slug_redirects")).toEqual(
         expect.arrayContaining(["old_slug", "store_id", "expires_at"]),
+      );
+    });
+
+    it("[DSC-FR-012] [DSC-FR-003] cidade no endereço é igual ao slugify da aplicação, em todas as cidades do IBGE", async () => {
+      // Arrange
+      const client = await migrated();
+      const [{ generation_expression: expr }] = (
+        await client.query<{ generation_expression: string }>(
+          "select generation_expression from information_schema.columns where table_name = 'stores' and column_name = 'city_slug'",
+        )
+      ).rows;
+      const all = (cities as string[]).map((e) => e.split("|"));
+
+      // Act: a expressão do banco aplicada à lista inteira, numa consulta só
+      const { rows } = await client.query<{ slug: string }>(
+        `select ${expr} as slug from jsonb_to_recordset($1::jsonb) as t(i int, city text, state text) order by i`,
+        [JSON.stringify(all.map(([city, state], i) => ({ i, city, state })))],
+      );
+
+      // Assert
+      const wrong = rows
+        .map((r, i) => [
+          r.slug,
+          `${slugify(all[i][0])}-${all[i][1].toLowerCase()}`,
+        ])
+        .filter(([db, app]) => db !== app);
+      expect(rows).toHaveLength(all.length);
+      expect(wrong).toEqual([]);
+    });
+
+    it("[DSC-FR-003] índices de descoberta por cidade e por modelo", async () => {
+      // Arrange / Act
+      const client = await migrated();
+
+      // Assert
+      const { rows } = await client.query<{ indexname: string }>(
+        "select indexname from pg_indexes where tablename in ('stores', 'vehicles')",
+      );
+      expect(rows.map((r) => r.indexname)).toEqual(
+        expect.arrayContaining([
+          "stores_city_slug_status",
+          "vehicles_status_model_slug",
+        ]),
       );
     });
 

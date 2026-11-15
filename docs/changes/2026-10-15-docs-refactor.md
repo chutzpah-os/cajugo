@@ -547,3 +547,6 @@
 
 # 2026-11-15 · 006b/T001 documentos
 - SEO.md (índice /carros, marca na cidade, discovery.xml, /carros/* no proxy, página vazia), PRD [1a] (links Buscar por marca/cidade), ARCHITECTURE (`stores.city_slug`), ADR 0014 aceita.
+
+# 2026-11-15 · 006b/T002 migration 0012
+- `stores.city_slug` gerado pelo banco (igual ao slugify em todas as 5.571 cidades do IBGE, provado em teste), índices por cidade e por modelo, `make_slug` de GM e VW corrigido; aplicada no staging.
