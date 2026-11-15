@@ -553,3 +553,6 @@
 
 # 2026-11-15 · 006b/T003 nome da marca
 - `fipe.brandName` com a lista de correções dos 108 nomes guardados (GM/VW sem prefixo, maiúsculas, Kia, Caoa Chery); `make_slug` sai do nome corrigido e as marcas da vitrine mostram esse nome, somando nomes da FIPE iguais.
+
+# 2026-11-15 · 006b/T004 endereços de descoberta
+- `showcase/discovery-urls.ts`: lê e monta `/carros/{marca}[/{modelo}]` e `/carros/{cidade}-{uf}[/{marca}]` (cidade pelas 27 UFs); formato inválido vira `null` e não chega ao banco.

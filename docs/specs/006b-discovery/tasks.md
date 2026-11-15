@@ -10,7 +10,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T001** Documentos: SEO.md §1 e §2 (índice `/carros`, marca na cidade, `discovery.xml`, `/carros/*` no proxy), PRD [1a] (links "Buscar por marca/cidade" e `/carros`), ARCHITECTURE §4 (`stores.city_slug`), ADR 0014 aceito · _—_ (ajustes aprovados em 2026-11-15)
 - [x] **T002** Migration `0012`: `stores.city_slug` gerado, índices `stores (city_slug, status)` e `vehicles (status, model_slug)`, `make_slug` de "GM - Chevrolet" e "VW - VolksWagen" corrigido; teste de migration: coluna gerada igual a `slugify` para todas as cidades de `platform/geo/cities.ts` · _DSC-FR-003, DSC-FR-012_
 - [x] **T003** [P] `fipe.brandName` com a lista de correções, testada contra os nomes reais guardados da FIPE; `vehicles.syncSearchFields` grava `make_slug` pelo nome corrigido; facets da vitrine mostram o nome corrigido · _DSC-FR-011_
-- [ ] **T004** [P] `showcase/discovery-urls.ts`: `parseDiscoveryPath` (cidade por `-{uf}` das 27 UFs, marca, modelo, marca na cidade; segmento inválido → `null`) e `discoveryPath` · _DSC-FR-012, DSC-SEC-004_
+- [x] **T004** [P] `showcase/discovery-urls.ts`: `parseDiscoveryPath` (cidade por `-{uf}` das 27 UFs, marca, modelo, marca na cidade; segmento inválido → `null`) e `discoveryPath` · _DSC-FR-012, DSC-SEC-004_
 - [ ] **T005** [P] `platform/seo`: `discoveryTitle`, `discoveryDescription`, `discoveryIntro`; `SITEMAP_IDS` com `discovery` e `robots.txt` · _DSC-FR-006, DSC-FR-010_
 
 ## Fase 2 — Fatias verticais (domínio `showcase`)
