@@ -1,6 +1,6 @@
 # Endereços das páginas de descoberta
 
-Status: proposta (plano da 006b, 2026-11-15)
+Status: aceita (plano da 006b, aprovado em 2026-11-15)
 
 As páginas de descoberta ficam sob `/carros`, com marca e cidade no mesmo nível: `/carros/{marca}`, `/carros/{marca}/{modelo}`, `/carros/{cidade}-{uf}` e `/carros/{cidade}-{uf}/{marca}`. A cidade é reconhecida por terminar com uma das 27 UFs; o resto é marca. Endereço indexado é difícil de mudar (cada troca custa redirecionamentos e posição no Google), por isso a regra fica registrada.
 

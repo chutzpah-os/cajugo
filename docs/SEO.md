@@ -10,7 +10,7 @@
 | Veículo [1b] | "fiat 500 2015 são josé do rio preto" | `/v/{id}-fiat-500-2014-sao-jose-do-rio-preto-sp` |
 | Catálogo da loja [1a] | "auto center silva campinas", "seminovos campinas" | `/loja/{slug}` |
 | Vitrine [1a] | "carros usados", "seminovos à venda" | `/` |
-| Páginas de descoberta (marca, modelo, cidade) | "fiat 500 usado", "carros usados em campinas" | `/carros/fiat/500`, `/carros/campinas-sp` |
+| Páginas de descoberta (marca, modelo, cidade, marca na cidade) e índice | "fiat 500 usado", "carros usados em campinas", "fiat usado campinas" | `/carros`, `/carros/fiat/500`, `/carros/campinas-sp`, `/carros/campinas-sp/fiat` (ADR 0014) |
 | Landing do lojista [5b], cadastro da Rede Caju [7a], cadastro do Caju Indica [9b], link de indicação [8c] | "catálogo de carros para loja", "vender carros como autônomo" | `/lojistas`, `/rede/cadastro`, `/indica/cadastro`, `/i/{codigo}` |
 
 ## 2. Regras técnicas 🤖
@@ -20,19 +20,19 @@
   - loja: `{Loja} – Carros usados e seminovos em {Cidade}/{UF} | CajuGo`;
   - descoberta: `{Marca} {Modelo} usados à venda {em Cidade} | CajuGo`.
 - **URL amigável e estável:** minúsculas, sem acento, com hífen; o id garante unicidade e o texto ajuda a busca. Se o texto mudar (ex.: o lojista corrige o modelo), a URL antiga faz 301 para a nova.
-- **Status HTTP real:** redirecionamento (308) e 404 de `/loja/*` e `/v/*` são decididos no `proxy.ts`, antes da página, com memória de 60 s (ADR 0013): a página do Next envia o cabeçalho antes de decidir e responderia 200.
+- **Status HTTP real:** redirecionamento (308) e 404 de `/loja/*`, `/v/*` e `/carros/*` são decididos no `proxy.ts`, antes da página, com memória de 60 s (ADR 0013): a página do Next envia o cabeçalho antes de decidir e responderia 200.
 - **Canônica:** um veículo aparece na vitrine e no catálogo da loja; a `canonical` aponta para **uma** URL (a da vitrine, se o veículo é divulgado na CajuGo; senão, a da loja). Parâmetros de filtro, ordenação, paginação e `?ref=` do vendedor nunca entram na canônica.
 - **Dados estruturados (schema.org, JSON-LD):** `Car` + `Offer` (preço, moeda, disponibilidade) no veículo; `AutoDealer` (nome, cidade, telefone, horário) na loja; `BreadcrumbList` em todas; `ItemList` nas listagens; `Organization` + `WebSite` com `SearchAction` na home.
 - **Prévia de link (Open Graph):** título, descrição e foto de capa do veículo/loja em `og:*` e `twitter:*`. Links compartilhados no WhatsApp e no Instagram são o canal nº 1 do lojista e do vendedor.
 - **Imagens:** `alt` gerado a partir de marca, modelo, ano e cor; tamanhos responsivos pelo Cloudinary (`f_auto,q_auto`); capa com prioridade de carregamento; o resto com lazy-load.
 - **Indexação:**
-  - um sitemap por tipo (`/sitemap/pages.xml`, `stores.xml`, `vehicles.xml`; descoberta entra na 006b), todos listados no `robots.txt` e atualizados a cada publicação/venda;
+  - um sitemap por tipo (`/sitemap/pages.xml`, `stores.xml`, `vehicles.xml`, `discovery.xml`), todos listados no `robots.txt` e atualizados a cada publicação/venda;
   - `robots.txt` bloqueia `/painel`, `/rede` e `/indica` (áreas logadas; liberando `/rede/cadastro` e `/indica/cadastro`), `/lojistas/pagamento`, `/admin`, `/entrar`, `/nova-senha`, `/api`;
   - páginas logadas, de filtro sem resultado e de prévia da Vercel com `noindex`;
   - veículo **vendido**: continua respondendo (tela [12d] com parecidos), com `noindex` e `Offer` como `SoldOut`; sai do sitemap.
 - **Desempenho (Core Web Vitals):** LCP < 2,5 s em 4G, CLS < 0,1, INP < 200 ms nas páginas públicas. Fontes por `next/font`, sem layout shift.
-- **Conteúdo útil, não duplicado:** a descrição do veículo vem do lojista; a página soma ficha técnica, itens, cidade e loja. Páginas de descoberta só existem com pelo menos 1 veículo (sem página vazia indexada).
-- **Links internos:** veículo → loja, → mesma marca/modelo, → mesma cidade; loja → veículos; descoberta → veículos; breadcrumbs em tudo.
+- **Conteúdo útil, não duplicado:** a descrição do veículo vem do lojista; a página soma ficha técnica, itens, cidade e loja. Páginas de descoberta só são indexadas com pelo menos 1 veículo; a que fica vazia responde 200 com alternativas e `noindex`, e endereço que nunca teve veículo responde 404.
+- **Links internos:** veículo → loja, → mesma marca/modelo, → mesma cidade; loja → veículos, → cidade; vitrine → índice `/carros`; descoberta → veículos; breadcrumbs em tudo.
 
 ## 3. Domínio
 - O endereço `cajugo.vercel.app` não acumula autoridade para um domínio nosso; quanto antes o domínio próprio (`cajugo.com.br`, ~R$ 40/ano) estiver no ar, melhor para o SEO. Ao trocar, todo endereço antigo faz 301 para o novo (`DEPLOYMENT.md`).

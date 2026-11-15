@@ -105,7 +105,7 @@ profiles ✅              # 1:1 com auth.users (mesmo id; sem FK, porque o schem
 
 # Loja e assinatura (a assinatura vive na própria loja)
 stores ✅ (+ colunas novas)
-  id, name, slug (unique, `[a-z0-9-]`), tax_id + tax_id_type (cpf|cnpj: documento de quem paga, spec 004), city, state, whatsapp, about, instagram,
+  id, name, slug (unique, `[a-z0-9-]`), tax_id + tax_id_type (cpf|cnpj: documento de quem paga, spec 004), city, state, city_slug (gerado: cidade sem acento + `-uf`, endereço de descoberta, 006b), whatsapp, about, instagram,
   address_street, address_number, address_complement, address_district, address_zip (spec 003),
   logo_public_id, cover_public_id, hours (jsonb), share_by_default, owner_id,
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),

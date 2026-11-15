@@ -396,6 +396,7 @@ Navegação:
 **Elementos**
 - Cabeçalho fixo: logo, favoritos (♡ → [14a]), menu (☰ → [11a]).
 - Busca: "Buscar marca, modelo ou versão" (busca textual em marca, modelo, versão).
+- Links **Buscar por marca** e **Buscar por cidade** (modo CajuGo) → índice `/carros` com as páginas de descoberta (`SEO.md`, ADR 0014).
 - Chips horizontais: **Filtros** (com contador de filtros ativos) + Marca, Preço, Ano, Km, Câmbio (cada um abre bottom sheet).
 - Ordenação: Mais relevantes (padrão), Menor preço, Maior preço, Mais recentes, Menor km, Ano mais novo.
 - Card do veículo: foto de capa (contador 1/N), favoritar, selo opcional (ex.: "Abaixo da FIPE", "Único dono"), MARCA MODELO, versão, ano fab/modelo, km, cidade (UF), [loja], preço, "a partir de R$ X/mês*", botão **Ver detalhes**.

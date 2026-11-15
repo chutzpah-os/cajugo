@@ -544,3 +544,6 @@
 
 # 2026-11-15 · 006/T022 migration no prod
 - `0011` aplicada no prod e conferida: 12 migrations, colunas de busca em `vehicles` e as regras `installment_down_bps`/`installment_months`.
+
+# 2026-11-15 · 006b/T001 documentos
+- SEO.md (índice /carros, marca na cidade, discovery.xml, /carros/* no proxy, página vazia), PRD [1a] (links Buscar por marca/cidade), ARCHITECTURE (`stores.city_slug`), ADR 0014 aceita.
