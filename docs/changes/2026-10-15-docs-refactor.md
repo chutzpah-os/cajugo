@@ -556,3 +556,6 @@
 
 # 2026-11-15 · 006b/T004 endereços de descoberta
 - `showcase/discovery-urls.ts`: lê e monta `/carros/{marca}[/{modelo}]` e `/carros/{cidade}-{uf}[/{marca}]` (cidade pelas 27 UFs); formato inválido vira `null` e não chega ao banco.
+
+# 2026-11-15 · 006b/T005 SEO da descoberta
+- `platform/seo/discovery.ts`: título, descrição e parágrafo gerado (veículos, cidades ou lojas, faixa de preço em reais inteiros). `SITEMAP_IDS` com `discovery` passa para a T009, junto do conteúdo.
