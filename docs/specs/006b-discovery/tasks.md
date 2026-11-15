@@ -23,7 +23,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 3 — Telas
 - [x] **T011** `/carros/[first]` e `/carros/[first]/[second]`: `DiscoveryView` com lista, filtros com marca fixa, parágrafo, `Breadcrumbs`, JSON-LD (`ItemList`, `BreadcrumbList`) e o estado "Nenhum … à venda agora" com `noindex` · _DSC-FR-001 a DSC-FR-007, DSC-NFR-002_
 - [x] **T012** `/carros` (índice pré-renderizado) e links "Buscar por marca" e "Buscar por cidade" na vitrine · _DSC-FR-013_
-- [ ] **T013** `RelatedLinks` na página do veículo (marca, modelo, cidade) e link da cidade no catálogo da loja · _DSC-FR-008, DSC-FR-009_
+- [x] **T013** `RelatedLinks` na página do veículo (marca, modelo, cidade) e link da cidade no catálogo da loja · _DSC-FR-008, DSC-FR-009_
 
 ## Fase 4 — Fechamento
 - [ ] **T014** Playwright (390 e 1280 px, staging): seed com marca, modelo e duas cidades; as quatro páginas, filtro na URL, carregar mais, página vazia após venda, `/carros`, links no veículo e na loja, HTML cru com SEO, sitemap sem placa, `audit()`; contra o build de produção: 404 real, pré-renderização e LCP/CLS · _DSC-FR-001 a DSC-FR-013, DSC-NFR-001 a DSC-NFR-003, DSC-SEC-001 a DSC-SEC-004_

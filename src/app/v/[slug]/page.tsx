@@ -7,7 +7,11 @@ import {
   VehicleDetails,
   VehicleSold,
 } from "@/domains/showcase/components/vehicle-details";
-import { cachedVehiclePage } from "@/domains/showcase/current";
+import { RelatedLinks } from "@/domains/showcase/components/related-links";
+import {
+  cachedDiscoveryLinks,
+  cachedVehiclePage,
+} from "@/domains/showcase/current";
 import { idFromVehicleParam } from "@/domains/showcase/urls";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
@@ -126,7 +130,23 @@ export default async function VehiclePage({ params }: PageProps<"/v/[slug]">) {
           },
         ])}
       />
-      <VehicleDetails page={page} cloudName={cloud} />
+      <VehicleDetails
+        page={page}
+        cloudName={cloud}
+        related={
+          <RelatedLinks
+            links={await cachedDiscoveryLinks({
+              make: page.make,
+              makeSlug: page.makeSlug,
+              model: page.model,
+              modelSlug: page.modelSlug,
+              city: page.store.city,
+              state: page.store.state,
+              citySlug: page.store.citySlug,
+            })}
+          />
+        }
+      />
     </>
   );
 }

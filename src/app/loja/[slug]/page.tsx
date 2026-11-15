@@ -5,10 +5,12 @@ import { CatalogToolbar } from "@/domains/showcase/components/catalog-toolbar";
 import { CatalogView } from "@/domains/showcase/components/catalog-view";
 import { FiltersSide } from "@/domains/showcase/components/filters-side";
 import { NoResults } from "@/domains/showcase/components/no-results";
+import { RelatedLinks } from "@/domains/showcase/components/related-links";
 import { SortSelect } from "@/domains/showcase/components/sort-select";
 import { StoreIdentity } from "@/domains/showcase/components/store-identity";
 import { Unavailable } from "@/domains/showcase/components/unavailable";
 import {
+  cachedDiscoveryLinks,
   cachedFacets,
   cachedSearch,
   cachedStorePage,
@@ -84,9 +86,14 @@ export default async function StorePage({
 
   const scope = { storeId: page.storeId };
   const filters = parseFilters(await searchParams);
-  const [result, { makes }] = await Promise.all([
+  const [result, { makes }, cityLinks] = await Promise.all([
     cachedSearch(scope, filters),
     cachedFacets(scope),
+    cachedDiscoveryLinks({
+      city: page.city,
+      state: page.state,
+      citySlug: page.citySlug,
+    }),
   ]);
   const filtered = filtersToQuery(filters) !== "";
   const cloud = cloudName();
@@ -128,6 +135,7 @@ export default async function StorePage({
           cloudName={cloud}
           caption="catálogo CajuGo"
         />
+        <RelatedLinks links={cityLinks} title="Mais carros na cidade" />
         <CatalogView
           title={`Estoque ${page.name}`}
           count={`${result.total} ${result.total === 1 ? "veículo disponível" : "veículos disponíveis"}`}

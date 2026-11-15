@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { RelatedLinks } from "./related-links";
 import {
   DiscoveryIndexList,
   DiscoveryShortcuts,
@@ -47,5 +48,19 @@ describe("índice de descoberta [1a]", () => {
     expect(discoveryIndexMetadata(INDEX).alternates?.canonical).toMatch(
       /\/carros$/,
     );
+  });
+});
+
+describe("links para a descoberta", () => {
+  it("[DSC-FR-008] [DSC-FR-009] mostra os links recebidos; sem links, nada", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <RelatedLinks links={[{ name: "Fiat usados", path: "/carros/fiat" }]} />,
+    );
+
+    // Assert
+    expect(html).toContain('href="/carros/fiat"');
+    expect(html).toContain("Fiat usados");
+    expect(renderToStaticMarkup(<RelatedLinks links={[]} />)).toBe("");
   });
 });

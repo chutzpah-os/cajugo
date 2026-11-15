@@ -81,6 +81,21 @@ describe("página do veículo [1b]", () => {
       expect(json).not.toContain(secret);
   });
 
+  it("[DSC-FR-008] traz marca, modelo e cidade nos endereços de descoberta", async () => {
+    const a = await liveStore(t.db, "loja-a");
+    const v = await car(t.db, a.storeId, {
+      make: "GM - Chevrolet",
+      model: "ONIX",
+    });
+
+    expect(await vehiclePage(t.db, v.id)).toMatchObject({
+      kind: "vehicle",
+      makeSlug: "chevrolet",
+      modelSlug: "onix",
+      store: { citySlug: "aracaju-se" },
+    });
+  });
+
   it("[SHW-FR-008] veículo não divulgado abre pelo mesmo endereço", async () => {
     const a = await liveStore(t.db, "loja-a");
     const v = await car(t.db, a.storeId, { shareOnCajugo: false });

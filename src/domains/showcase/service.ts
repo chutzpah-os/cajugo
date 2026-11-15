@@ -342,6 +342,8 @@ export type StorePage =
       state: string;
       about: string | null;
       hours: Record<string, { ranges?: { from: string; to: string }[] }> | null;
+      /** Cidade no endereço de descoberta (DSC-FR-009). */
+      citySlug: string | null;
       whatsapp: string;
       logoPublicId: string | null;
       coverPublicId: string | null;
@@ -378,6 +380,7 @@ export async function storePage(
       state: stores.state,
       about: stores.about,
       hours: stores.hours,
+      citySlug: stores.citySlug,
       whatsapp: stores.whatsapp,
       logoPublicId: stores.logoPublicId,
       coverPublicId: stores.coverPublicId,
@@ -398,6 +401,7 @@ export async function storePage(
     state: s.state,
     about: s.about,
     hours: s.hours as StoreHours,
+    citySlug: s.citySlug,
     whatsapp: s.whatsapp,
     logoPublicId: s.logoPublicId,
     coverPublicId: s.coverPublicId,
@@ -461,11 +465,15 @@ export type VehiclePage =
       conditions: string[];
       features: string[];
       whatsappUrl: string;
+      /** Marca e modelo nos endereços de descoberta (DSC-FR-008). */
+      makeSlug: string | null;
+      modelSlug: string | null;
       store: {
         name: string;
         slug: string;
         city: string;
         state: string;
+        citySlug: string | null;
         initials: string;
         logoPublicId: string | null;
       };
@@ -521,6 +529,8 @@ export async function vehiclePage(
       shared: vehicles.shareOnCajugo,
       make: vehicles.make,
       makeSlug: vehicles.makeSlug,
+      modelSlug: vehicles.modelSlug,
+      citySlug: stores.citySlug,
       model: vehicles.model,
       version: vehicles.version,
       yearManufacture: vehicles.yearManufacture,
@@ -629,11 +639,14 @@ export async function vehiclePage(
       v.contactWhatsapp ?? v.storeWhatsapp,
       `Olá! Tenho interesse no ${name}${price}, anunciado na CajuGo: ${appUrl()}${path}`,
     ),
+    makeSlug: v.makeSlug,
+    modelSlug: v.modelSlug,
     store: {
       name: v.storeName,
       slug: v.storeSlug,
       city: v.city,
       state: v.state,
+      citySlug: v.citySlug,
       initials: initialsOf(v.storeName),
       logoPublicId: v.logoPublicId,
     },

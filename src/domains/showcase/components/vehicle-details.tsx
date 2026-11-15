@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { brl } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
@@ -52,9 +53,12 @@ function specs(p: Live): [string, string | number | null][] {
 export function VehicleDetails({
   page,
   cloudName,
+  related,
 }: {
   page: Live;
   cloudName: string;
+  /** Links para as páginas de descoberta (DSC-FR-008). */
+  related?: ReactNode;
 }) {
   const alt = vehicleAlt(page);
   const backHref = page.shared ? "/" : `/loja/${page.store.slug}`;
@@ -155,6 +159,7 @@ export function VehicleDetails({
             Ver estoque da loja
           </ButtonLink>
         </section>
+        {related}
         {page.installmentCents !== null && (
           <p className="text-xs text-text-3">
             *Valor estimado. Simule a sua parcela.

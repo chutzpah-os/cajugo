@@ -53,6 +53,7 @@ describe("catálogo da loja", () => {
       state: "SE",
       logoPublicId: "x/logo",
       initials: "LL",
+      citySlug: "aracaju-se",
     });
     expect(JSON.stringify(page)).not.toContain("12345678000195");
   });

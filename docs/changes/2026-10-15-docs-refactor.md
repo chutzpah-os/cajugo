@@ -580,3 +580,6 @@
 
 # 2026-11-15 · 006b/T012 índice /carros
 - `/carros` pré-renderizada com marcas e cidades da vitrine (contagem e link), JSON-LD e `noindex` enquanto vazia; vitrine com os atalhos "Buscar por marca" e "Buscar por cidade".
+
+# 2026-11-15 · 006b/T013 links internos
+- Página do veículo com "Veja também" (marca, modelo, cidade com veículos) e catálogo da loja com o link da cidade; `vehiclePage` e `storePage` devolvem os identificadores de descoberta.
