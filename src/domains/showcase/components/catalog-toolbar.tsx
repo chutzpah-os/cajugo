@@ -11,12 +11,14 @@ export function CatalogToolbar({
   total,
   basePath,
   source,
+  lockMake = false,
 }: {
   filters: Filters;
   makes: MakeOption[];
   total: number;
   basePath: string;
   source: ListSource;
+  lockMake?: boolean;
 }) {
   const others = new URLSearchParams(
     filtersToQuery({ ...filters, q: undefined }),
@@ -30,6 +32,7 @@ export function CatalogToolbar({
         total={total}
         basePath={basePath}
         source={source}
+        lockMake={lockMake}
       />
     </div>
   );

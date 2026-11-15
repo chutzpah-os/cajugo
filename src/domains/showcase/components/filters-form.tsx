@@ -72,6 +72,7 @@ export function FiltersForm({
   layout,
   section,
   showSort = true,
+  lockMake = false,
   onApply,
 }: {
   filters: Filters;
@@ -83,6 +84,8 @@ export function FiltersForm({
   layout: keyof typeof LAYOUT;
   section?: FilterSection;
   showSort?: boolean;
+  /** Página com marca fixa (descoberta): sem a seção Marca. */
+  lockMake?: boolean;
   onApply?: () => void;
 }) {
   const { navigate } = useCatalogNavigation();
@@ -154,38 +157,40 @@ export function FiltersForm({
             </div>
           </Group>
         )}
-        <Group id={`${idPrefix}-marca`} title="Marca">
-          {allMakes && (
-            <TextField
-              id={`${idPrefix}-make-search`}
-              label="Buscar marca"
-              value={makeSearch}
-              onChange={(e) => setMakeSearch(e.target.value)}
-            />
-          )}
-          <div className={chipRow}>
-            {visibleMakes.map((m) => (
-              <Chip
-                key={m.slug}
-                active={draft.makes.includes(m.slug)}
-                onClick={() =>
-                  update({ ...draft, makes: toggled(draft.makes, m.slug) })
-                }
+        {!lockMake && (
+          <Group id={`${idPrefix}-marca`} title="Marca">
+            {allMakes && (
+              <TextField
+                id={`${idPrefix}-make-search`}
+                label="Buscar marca"
+                value={makeSearch}
+                onChange={(e) => setMakeSearch(e.target.value)}
+              />
+            )}
+            <div className={chipRow}>
+              {visibleMakes.map((m) => (
+                <Chip
+                  key={m.slug}
+                  active={draft.makes.includes(m.slug)}
+                  onClick={() =>
+                    update({ ...draft, makes: toggled(draft.makes, m.slug) })
+                  }
+                >
+                  {m.name}
+                </Chip>
+              ))}
+            </div>
+            {!allMakes && makes.length > COLLAPSED_MAKES && (
+              <button
+                type="button"
+                onClick={() => setAllMakes(true)}
+                className="flex h-11 items-center self-start text-sm font-semibold text-caju-deep"
               >
-                {m.name}
-              </Chip>
-            ))}
-          </div>
-          {!allMakes && makes.length > COLLAPSED_MAKES && (
-            <button
-              type="button"
-              onClick={() => setAllMakes(true)}
-              className="flex h-11 items-center self-start text-sm font-semibold text-caju-deep"
-            >
-              Ver todas
-            </button>
-          )}
-        </Group>
+                Ver todas
+              </button>
+            )}
+          </Group>
+        )}
         <Group id={`${idPrefix}-preco`} title="Preço">
           <div className="grid grid-cols-2 gap-2">
             <TextField

@@ -21,7 +21,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T010** Actions de contagem e "Carregar mais" com `source` (vitrine, loja ou descoberta) em lista fechada, resolvida no servidor; `current.ts` com as leituras de descoberta em cache · _DSC-FR-004, DSC-NFR-004, DSC-NFR-005_
 
 ## Fase 3 — Telas
-- [ ] **T011** `/carros/[first]` e `/carros/[first]/[second]`: `DiscoveryView` com lista, filtros com marca fixa, parágrafo, `Breadcrumbs`, JSON-LD (`ItemList`, `BreadcrumbList`) e o estado "Nenhum … à venda agora" com `noindex` · _DSC-FR-001 a DSC-FR-007, DSC-NFR-002_
+- [x] **T011** `/carros/[first]` e `/carros/[first]/[second]`: `DiscoveryView` com lista, filtros com marca fixa, parágrafo, `Breadcrumbs`, JSON-LD (`ItemList`, `BreadcrumbList`) e o estado "Nenhum … à venda agora" com `noindex` · _DSC-FR-001 a DSC-FR-007, DSC-NFR-002_
 - [ ] **T012** `/carros` (índice pré-renderizado) e links "Buscar por marca" e "Buscar por cidade" na vitrine · _DSC-FR-013_
 - [ ] **T013** `RelatedLinks` na página do veículo (marca, modelo, cidade) e link da cidade no catálogo da loja · _DSC-FR-008, DSC-FR-009_
 

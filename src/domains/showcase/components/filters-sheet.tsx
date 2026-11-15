@@ -39,12 +39,14 @@ export function FiltersSheet({
   total,
   basePath,
   source,
+  lockMake = false,
 }: {
   filters: Filters;
   makes: MakeOption[];
   total: number;
   basePath: string;
   source: ListSource;
+  lockMake?: boolean;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const dragStart = useRef<number | null>(null);
@@ -74,7 +76,7 @@ export function FiltersSheet({
         >
           Filtros
         </Chip>
-        {CHIPS.map((c) => (
+        {CHIPS.filter((c) => !(lockMake && c.section === "marca")).map((c) => (
           <Chip
             key={c.section}
             aria-haspopup="dialog"
@@ -128,6 +130,7 @@ export function FiltersSheet({
           total={total}
           basePath={basePath}
           source={source}
+          lockMake={lockMake}
           idPrefix="filtro"
           layout="sheet"
           section={opening.section}

@@ -17,6 +17,7 @@ export function CatalogView({
   toolbar,
   sidebar,
   sort,
+  intro,
   empty,
 }: {
   title: string;
@@ -29,6 +30,8 @@ export function CatalogView({
   toolbar?: ReactNode;
   sidebar?: ReactNode;
   sort?: ReactNode;
+  /** Texto logo abaixo do título (parágrafo da descoberta, DSC-FR-006). */
+  intro?: ReactNode;
   empty: ReactNode;
 }) {
   const query = filtersToQuery(filters);
@@ -48,6 +51,7 @@ export function CatalogView({
             <h1 className="text-[26px] leading-tight font-extrabold tracking-[-0.02em]">
               {title}
             </h1>
+            {intro}
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm text-text-3" data-testid="catalog-count">
                 {count}

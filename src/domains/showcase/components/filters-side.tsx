@@ -9,12 +9,14 @@ export function FiltersSide({
   total,
   basePath,
   source,
+  lockMake = false,
 }: {
   filters: Filters;
   makes: MakeOption[];
   total: number;
   basePath: string;
   source: ListSource;
+  lockMake?: boolean;
 }) {
   return (
     <section
@@ -31,6 +33,7 @@ export function FiltersSide({
         idPrefix="lateral"
         layout="side"
         showSort={false}
+        lockMake={lockMake}
       />
     </section>
   );

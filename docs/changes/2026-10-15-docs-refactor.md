@@ -574,3 +574,6 @@
 
 # 2026-11-15 · 006b/T010 origem da lista
 - Actions de contagem e "Carregar mais" recebem `source` (vitrine, loja ou endereço de descoberta) validado por schema e resolvido no servidor; componentes passam `source` no lugar de `store`; leituras de descoberta em cache em `current.ts`.
+
+# 2026-11-15 · 006b/T011 páginas de descoberta
+- `/carros/[first]` e `/carros/[first]/[second]` com `DiscoveryView`: lista, filtros com a marca fixa (`lockMake`), parágrafo, caminho visível + JSON-LD, metadados com canônica sem filtros e `noindex` quando vazia; página vazia mostra os veículos da página acima.
