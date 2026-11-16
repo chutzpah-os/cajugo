@@ -1,5 +1,6 @@
 import { and, asc, count, eq, gt, isNull } from "drizzle-orm";
 import { z } from "zod";
+import { authorizeTo } from "@/domains/auth/service";
 import { getSettings } from "@/domains/settings/service";
 import {
   firstMatch,
@@ -11,11 +12,17 @@ import {
 } from "@/domains/showcase/service";
 import { brMobileSchema } from "@/platform/br/phone";
 import { isUniqueViolation } from "@/platform/db/errors";
-import { fieldErrorsFromZod, type FieldError } from "@/platform/http/errors";
+import { logActivity } from "@/platform/http/activity-log";
+import {
+  AppError,
+  fieldErrorsFromZod,
+  type FieldError,
+} from "@/platform/http/errors";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
+import type { Session } from "@/platform/http/session";
 import { appUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { cancelToken } from "./alert-token";
+import { alertIdFromToken, cancelToken } from "./alert-token";
 import { searchAlerts } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 
@@ -246,4 +253,74 @@ function noticeText(
     .filter(Boolean)
     .join(" ");
   return `Olá, ${name}! Você pediu na CajuGo para avisar quando chegasse: ${label}. Chegou este: ${title}, ${appUrl()}${v.path}\n\nSe não quiser mais este alerta: ${appUrl()}/alertas/cancelar/${cancelToken(alertId)}`;
+}
+
+/** Fechar o alerta apaga o dado pessoal na mesma escrita (ALR-SEC-004). */
+const closed = (status: "notified" | "canceled" | "expired", now: Date) => ({
+  status,
+  name: null,
+  phone: null,
+  closedAt: now,
+});
+
+const notifySchema = z.object({ alertId: z.uuid() }).strict();
+
+/**
+ * "Marcar como avisado" (ALR-FR-003): só admin e suporte (ALR-SEC-001); fecha o
+ * alerta e registra quem avisou. `false` quando ele já não estava pendente.
+ */
+export async function markNotified(
+  db: Db,
+  session: Session | null,
+  input: unknown,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const actor = authorizeTo(session, "alerts.notify");
+  const parsed = notifySchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { alertId } = parsed.data;
+  return db.transaction(async (tx) => {
+    const [row] = await tx
+      .update(searchAlerts)
+      .set({ ...closed("notified", now), notifiedBy: actor.userId })
+      .where(
+        and(eq(searchAlerts.id, alertId), eq(searchAlerts.status, "pending")),
+      )
+      .returning({ id: searchAlerts.id });
+    if (!row) return false;
+    await logActivity(tx, {
+      userId: actor.userId,
+      action: "search_alert.notified",
+      entity: "search_alert",
+      entityId: alertId,
+    });
+    return true;
+  });
+}
+
+/**
+ * Cancelar pelo link (ALR-FR-004, ALR-SEC-005): só com o link do próprio alerta.
+ * `closed` quando ele já foi avisado, cancelado ou venceu.
+ */
+export async function cancelAlert(
+  db: Db,
+  token: string,
+  now: Date = new Date(),
+): Promise<"canceled" | "closed" | "invalid"> {
+  const alertId = alertIdFromToken(token);
+  if (!alertId) return "invalid";
+  const [row] = await db
+    .update(searchAlerts)
+    .set(closed("canceled", now))
+    .where(
+      and(eq(searchAlerts.id, alertId), eq(searchAlerts.status, "pending")),
+    )
+    .returning({ id: searchAlerts.id });
+  if (row) return "canceled";
+  const [exists] = await db
+    .select({ id: searchAlerts.id })
+    .from(searchAlerts)
+    .where(eq(searchAlerts.id, alertId));
+  return exists ? "closed" : "invalid";
 }

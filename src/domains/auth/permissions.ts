@@ -31,6 +31,8 @@ export const PERMISSIONS = {
   "admin.read": ["admin", "support"],
   /** Aprovar veículos e tratar denúncias. */
   "admin.moderate": ["admin", "support"],
+  /** Ver "Alertas" e marcar como avisado (006d). */
+  "alerts.notify": ["admin", "support"],
   /** Confirmar ou recusar comprovante. */
   "payments.review": ["admin"],
   /** Ver a fila de comprovantes e abrir os arquivos (PIX-SEC-003). */

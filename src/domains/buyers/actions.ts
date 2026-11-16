@@ -9,10 +9,18 @@ import {
   type PublicCard,
 } from "@/domains/showcase/service";
 import { getDb } from "@/platform/db/client";
+import { currentSession } from "@/domains/auth/service";
 import { clientIp, hashIp } from "@/platform/http/client-ip";
+import { AppError } from "@/platform/http/errors";
+import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { errorMessage, logger } from "@/platform/http/logger";
 import { FAVORITES_LIMIT } from "./favorites";
-import { requestAlert, type AlertRequestResult } from "./service";
+import {
+  cancelAlert,
+  markNotified,
+  requestAlert,
+  type AlertRequestResult,
+} from "./service";
 import { ALERTS_TAG } from "./tags";
 
 const input = z
@@ -68,5 +76,46 @@ export async function createSearchAlertAction(
       message: "Não foi possível guardar agora. Tente de novo em instantes.",
       errors: [],
     };
+  }
+}
+
+/** "Marcar como avisado" em [Alertas] (ALR-FR-003): admin e suporte. */
+export async function markAlertNotifiedAction(input: {
+  alertId: string;
+}): Promise<{ ok: boolean; message?: string }> {
+  try {
+    const done = await markNotified(getDb(), await currentSession(), input);
+    updateTag(ALERTS_TAG);
+    return done
+      ? { ok: true }
+      : { ok: false, message: "Este alerta já tinha sido fechado." };
+  } catch (error) {
+    if (error instanceof AppError) return { ok: false, message: error.title };
+    logger.error("buyers.alert_notify_failed", { error: errorMessage(error) });
+    return { ok: false, message: "Não foi possível concluir agora." };
+  }
+}
+
+/** Cancelar pelo link (ALR-FR-004): limite por rede contra tentativa de adivinhar. */
+export async function cancelSearchAlertAction(input: {
+  token: string;
+}): Promise<"canceled" | "closed" | "invalid" | "rate-limited" | "failed"> {
+  try {
+    const db = getDb();
+    const { ok } = await consumeRateLimit(
+      db,
+      `alert-cancel:ip:${hashIp(clientIp(await headers()))}`,
+      RATE_LIMITS.liveCheck,
+    );
+    if (!ok) return "rate-limited";
+    const result = await cancelAlert(
+      db,
+      String(input?.token ?? "").slice(0, 200),
+    );
+    if (result === "canceled") updateTag(ALERTS_TAG);
+    return result;
+  } catch (error) {
+    logger.error("buyers.alert_cancel_failed", { error: errorMessage(error) });
+    return "failed";
   }
 }

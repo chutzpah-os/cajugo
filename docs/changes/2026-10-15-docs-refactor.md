@@ -654,3 +654,6 @@
 
 # 2026-11-16 · 006d/T008 alertas do admin
 - `buyers.alertInbox`: pendentes dentro da validade das regras (lida na hora), cada um com o 1º veículo compatível (`firstMatch`) e a mensagem `wa.me` (nome, veículo, link de cancelar); os sem veículo vão para "aguardando", sem nome nem celular. `cachedAlertInbox` em cache de 60 s com as tags de veículos, lojas, regras e alertas. `showcase.searchLabel` dá o rótulo da busca.
+
+# 2026-11-16 · 006d/T009 avisar e cancelar
+- `markNotified` (permissão nova `alerts.notify`: admin e suporte) fecha o alerta, apaga nome e celular, grava `notified_by` e o `activity_log` sem dado pessoal; `cancelAlert` só com o link do próprio alerta (`canceled`, `closed`, `invalid`). Actions com `updateTag(ALERTS_TAG)`; cancelar com limite `liveCheck` por rede.
