@@ -866,3 +866,6 @@
 
 # 2026-11-16 · 008/T017 conta do vendedor
 - /rede/conta [13c]: dados com CPF mascarado e código, chave Pix com Trocar (PixKeyForm + updatePixKeyAction), avisos 'em breve', links (lojas, Caju Indica, termos) e Sair; só vendedor ativo. PIX_TYPE_OPTIONS num lugar só.
+
+# 2026-11-16 · 008/T018 tela de vendedores do admin
+- /admin/vendedores [7h] (sellers.view): indicadores, em análise primeiro com links para frente e verso do documento, ativos e bloqueados (com motivo); Aprovar (desabilitado sem as fotos), Bloquear com motivo na ConfirmSheet e Desbloquear só para quem tem sellers.review. formatBrPhone na plataforma.

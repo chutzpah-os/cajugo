@@ -15,7 +15,10 @@ import { errorMessage, logger } from "@/platform/http/logger";
 import { requestAuthProvider } from "@/platform/supabase/next";
 import { filtersFromQuery } from "@/domains/showcase/service";
 import {
+  approve,
   attachDocument,
+  block,
+  unblock,
   documentUpload,
   recordSellerClick,
   registerSeller,
@@ -206,4 +209,58 @@ export async function updatePixKeyAction(input: {
   } catch (error) {
     return { ok: false, ...stateOf(error, "Não foi possível salvar agora.") };
   }
+}
+
+export type DecisionResult =
+  | { ok: true }
+  | { ok: false; message: string; errors?: Record<string, string> };
+
+async function decide(
+  run: () => Promise<boolean>,
+  stale: string,
+): Promise<DecisionResult> {
+  try {
+    return (await run()) ? { ok: true } : { ok: false, message: stale };
+  } catch (error) {
+    const s = stateOf(error, "Não foi possível concluir agora.");
+    return {
+      ok: false,
+      message: s.message ?? "Confira os campos.",
+      errors: s.errors,
+    };
+  }
+}
+
+/** **Aprovar** em [7h] (SEL-FR-004): só o admin. */
+export async function approveSellerAction(input: {
+  sellerId: string;
+}): Promise<DecisionResult> {
+  const session = await currentSession();
+  return decide(
+    () => approve(getDb(), session, input),
+    "Este cadastro já foi analisado.",
+  );
+}
+
+/** **Bloquear** em [7h] (SEL-FR-005): só o admin, com motivo. */
+export async function blockSellerAction(input: {
+  sellerId: string;
+  reason: string;
+}): Promise<DecisionResult> {
+  const session = await currentSession();
+  return decide(
+    () => block(getDb(), session, input),
+    "Este vendedor já não está ativo.",
+  );
+}
+
+/** **Desbloquear** em [7h] (SEL-FR-005): só o admin. */
+export async function unblockSellerAction(input: {
+  sellerId: string;
+}): Promise<DecisionResult> {
+  const session = await currentSession();
+  return decide(
+    () => unblock(getDb(), session, input),
+    "Este vendedor já não está bloqueado.",
+  );
 }

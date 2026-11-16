@@ -118,7 +118,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T017** `/rede/conta` [13c]: CPF mascarado, **Trocar** chave Pix, links e os avisos "em breve".
 
   · _SEL-FR-014, SEL-SEC-001_
-- [ ] **T018** `/admin/vendedores` [7h]: indicadores, as três listas, links da frente e do verso, **Aprovar**, **Bloquear** (com motivo, em [6f]) e **Desbloquear**; o suporte vê sem botões.
+- [x] **T018** `/admin/vendedores` [7h]: indicadores, as três listas, links da frente e do verso, **Aprovar**, **Bloquear** (com motivo, em [6f]) e **Desbloquear**; o suporte vê sem botões.
 
   · _SEL-FR-003, SEL-FR-004, SEL-FR-005, SEL-SEC-005_
 - [ ] **T019** Página do veículo: `SellerClickPing` (lê `?ref=`, marca o aparelho por dia, chama a action) sem tirar a página do cache. Selo "via vendedor {nome}" em [3a].

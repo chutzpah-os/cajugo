@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { brMobileSchema } from "./phone";
+import { brMobileSchema, formatBrPhone } from "./phone";
 
 describe("celular brasileiro", () => {
   it("[ALR-FR-001] aceita celular com DDD, com máscara ou +55, e guarda como 55 + dígitos", () => {
@@ -26,5 +26,13 @@ describe("celular brasileiro", () => {
         "Informe um celular com WhatsApp, com DDD.",
       );
     }
+  });
+});
+
+describe("telefone na tela", () => {
+  it("[SEL-FR-003] mostra celular e fixo com DDD", () => {
+    expect(formatBrPhone("5579999990000")).toBe("(79) 99999-0000");
+    expect(formatBrPhone("557932111234")).toBe("(79) 3211-1234");
+    expect(formatBrPhone("123")).toBe("123");
   });
 });

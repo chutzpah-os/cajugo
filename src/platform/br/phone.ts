@@ -27,3 +27,9 @@ export const brMobileSchema = z
       .regex(/^[1-9]{2}9\d{8}$/, "Informe um celular com WhatsApp, com DDD."),
   )
   .transform((d) => `55${d}`);
+
+/** `55` + DDD + número → `(79) 99999-0000`; outro formato volta como veio. */
+export function formatBrPhone(stored: string): string {
+  const m = /^55(\d{2})(\d{4,5})(\d{4})$/.exec(stored);
+  return m ? `(${m[1]}) ${m[2]}-${m[3]}` : stored;
+}
