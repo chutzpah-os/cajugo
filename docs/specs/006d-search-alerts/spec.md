@@ -2,7 +2,7 @@
 id: 006d
 slug: search-alerts
 title: Avisar quando chegar
-status: planned
+status: in-progress
 owner: dono do produto
 created: 2026-11-16
 ---
@@ -27,7 +27,7 @@ Quando a busca da vitrine não acha nada [12a], o comprador vai embora e a CajuG
 - **ALR-FR-001** A busca sem resultado [12a] da vitrine e das páginas de descoberta oferece "Avisar quando chegar", que pede nome e celular brasileiro com WhatsApp (DDD + 9 dígitos, começando com 9), guarda a busca feita (texto, filtros e, na página de descoberta, a marca, o modelo ou a cidade dela) e confirma "Vamos avisar quando chegar".
 - **ALR-FR-002** Um veículo atende a um alerta quando apareceria na lista da vitrine com a busca guardada (a mesma regra da lista) e entrou na vitrine depois que o alerta foi criado; o alerta aparece para o admin com esse veículo e um botão que abre o WhatsApp da pessoa com mensagem pronta, com o nome dela e o link do veículo.
 - **ALR-FR-003** O admin vê os alertas no item "Alertas" do menu (gaveta "Mais" no celular, barra lateral no desktop [15c]), com o contador de alertas com veículo compatível ainda não avisados, e marca cada um como avisado.
-- **ALR-FR-004** A mensagem de aviso leva um link para a pessoa cancelar o alerta; cancelado, ele deixa de aparecer para o admin.
+- **ALR-FR-004** A confirmação do pedido e a mensagem de aviso levam um link para a pessoa cancelar o alerta; cancelado, ele deixa de aparecer para o admin, e um alerta já fechado mostra "Este alerta já foi encerrado".
 - **ALR-FR-005** Um alerta pendente expira depois da validade das regras [4c] (90 dias no início) e deixa de aparecer para o admin.
 - **ALR-FR-006** A mesma busca para o mesmo celular, com um alerta ainda pendente, não cria outro: a pessoa vê "Já estamos de olho nessa busca".
 
@@ -64,9 +64,10 @@ Quando a busca da vitrine não acha nada [12a], o comprador vai embora e a CajuG
 - **E** depois de "Marcar como avisado" num deles, o contador vai para 1
 
 ### ALR-FR-004
-- **Dado** uma pessoa que recebeu o aviso com o link de cancelamento
+- **Dado** uma pessoa que pediu o alerta e viu o link de cancelamento na confirmação
 - **Quando** abre o link e confirma
 - **Então** o alerta é cancelado e não aparece mais para o admin
+- **E** depois de avisado, o link da mensagem mostra "Este alerta já foi encerrado"
 
 ### ALR-FR-005
 - **Dado** a validade de 90 dias nas regras e um alerta pendente criado há 91 dias

@@ -180,7 +180,7 @@ payouts                  id, profile_id, amount_cents, pix_key, cpf, status (req
 
 # Comprador
 favorites                profile_id + vehicle_id (pk), price_at_save_cents, created_at   # sem conta: no aparelho
-search_alerts            id, contact, filters (jsonb), active, notified_at, created_at
+search_alerts            id, status (pending|notified|canceled|expired), name, phone (apagados ao fechar), query (filtros normalizados), discovery_path, consent_at, created_at, closed_at, notified_by   # 006d
 
 # Plataforma
 setting_values           id, key, value (jsonb), valid_from, changed_by    # só INSERT; ADR 0010
@@ -220,7 +220,7 @@ ISR com `revalidateTag('vehicles')` e `revalidateTag('store:<slug>')`, chamados 
 - **Cancelamento e retenção:** `cancel_scheduled` → `canceled` no fim do período; `canceled` há mais de `retention_days` → `archived` (e expira o crédito Caju Indica).
 - **Slugs** reservados sem 1º pagamento confirmado há 7 dias são liberados.
 - **Limpeza** de `rate_limits` antigos (`purgeRateLimits`).
-- **Alertas de busca:** marca alertas com veículo compatível novo para o admin avisar.
+- **Alertas de busca:** marca como vencido o alerta pendente além da validade das regras e apaga nome e celular (006d). O veículo compatível **não** é job: é calculado quando o admin abre "Alertas", em cache de 60 s, para aparecer em até 1 minuto (o cron do plano Hobby é 1×/dia).
 
 Recompensas do Caju Indica **não** são job: são creditadas na hora em que o admin confirma o pagamento da loja indicada.
 

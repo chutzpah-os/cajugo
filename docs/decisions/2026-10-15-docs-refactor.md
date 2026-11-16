@@ -301,3 +301,6 @@
 # 2026-11-16 · 006c/verify
 - "Ver veículos parecidos" levava à página do veículo, que só mostra parecidos quando ele foi vendido; despublicado ou de loja fora do ar dava 404. Passa a levar à página de descoberta do modelo, que existe enquanto houver registro dele. A leitura devolve só o endereço, nenhum dado do veículo.
 - Um favorito estragado no aparelho apagava a lista inteira no próximo toque; agora só ele sai. `buyers/components/favorites-view` usa o card de `showcase/components`, como o card usa o coração de `buyers`: UI de cliente, sem banco (mesma exceção da T008).
+
+# 2026-11-16 · 006d/T001
+- O cron do plano Hobby roda 1×/dia: calcular o compatível na leitura do admin (cache de 60 s) cumpre o "até 60 s" da spec. Como avisar fecha o alerta e apaga o contato, o link de cancelar só serve de verdade na confirmação do pedido; na mensagem, ele informa que o alerta foi encerrado.

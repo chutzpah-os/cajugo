@@ -629,3 +629,6 @@
 - `similarPaths`: favorito fora da vitrine leva à página de descoberta do modelo (ou da marca; sem registro, à vitrine); leitura de [14a] devolve `{ cards, similar }`.
 - Favorito estragado no aparelho sai sozinho, sem apagar os outros; aviso de 200 some em 4 s; coração com 22 px (DESIGN §2.4); nomes e esqueleto únicos em [14a].
 - Spec 006c `implemented`, PLAN marcado; plano com D3 revista e o `<dialog>` do simulador no lugar do `Drawer`.
+
+# 2026-11-16 · 006d/T001 documentos
+- ARCHITECTURE §4 (`search_alerts`) e §6 (vencimento no job; compatível na leitura), API.md §5 (actions, `/admin/alertas`, `/alertas/cancelar`, cron com contrato), SECURITY §8 (nome e celular do alerta), GLOSSARY (estados do alerta); ALR-FR-004 com o link de cancelar também na confirmação (D3).

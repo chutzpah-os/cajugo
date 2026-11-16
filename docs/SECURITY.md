@@ -97,6 +97,7 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 | Valor pago e motivo de recusa de um comprovante (spec 004) | só ao lojista dono e ao admin/suporte | ✅ no `activity_log` (valores e motivo, sem documento) |
 | E-mail e telefone do lojista | só no painel e no admin; o WhatsApp da loja é público por escolha dela | ❌ |
 | Nome, e-mail e telefone de quem envia lead | só à loja do lead e ao admin | ❌ |
+| Nome e celular de quem pede "Avisar quando chegar" (006d) | só ao admin e ao suporte, nunca à loja; apagados ao avisar, cancelar ou vencer | ❌ |
 | Placa | nunca; só o último dígito | ❌ |
 | IP de denúncia/rate limit | guardado como hash | ❌ |
 

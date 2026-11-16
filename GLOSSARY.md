@@ -191,7 +191,7 @@ Regras numéricas editáveis pelo admin (chave Pix, prazos, taxas, mínimos). Na
 Período em que um valor de regra (Config) vale: de quando o admin salvou até a próxima alteração. Cálculos (fatura, comissão, recompensa) usam o valor vigente na data do fato. No código: `valid_from`.
 
 **Favorito** e **Alerta de busca**:
-Veículo salvo pelo comprador, guardado no aparelho (sem conta no MVP); pedido "Avisar quando chegar" para uma busca sem resultado.
+Veículo salvo pelo comprador, guardado no aparelho (sem conta no MVP); pedido "Avisar quando chegar" para uma busca sem resultado. O alerta fica **pendente** até ser **avisado** pelo admin, **cancelado** pela pessoa ou **vencido** (validade das regras); fechado, perde o nome e o celular. No código: `search_alerts`, status `pending`, `notified`, `canceled`, `expired`.
 
 **Senha temporária**:
 Senha gerada pelo Admin para o lojista entrar quando esqueceu a dele; obriga a troca no próximo login.

@@ -90,7 +90,8 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | A | `reportVehicle(vehicleId, reason, details)` | 14d |
 | página | `/favoritos` — favoritos guardados no aparelho, `noindex` (006c) | 14a |
 | A | `favoriteCardsAction({ ids })` — leitura pública dos cards atuais dos favoritos (até 200 ids); sincronizar com conta é fase 2 | 14a |
-| A | `createSearchAlert(contact, filters)` | 12a |
+| A | `createSearchAlertAction({ name, phone, consent, source, query })` — honeypot + rate limit; só vitrine e descoberta (006d) | 12a |
+| página | `/alertas/cancelar/{token}` — cancelar o alerta pelo link (`noindex`) · A `cancelSearchAlertAction({ token })` | 12a |
 
 ### Auth e cadastros
 | Tipo | Rota / ação | Tela |
@@ -147,6 +148,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | A | `createStore` (dono com senha temporária) · `updateStore` · `setTemporaryPassword` | 1d, 6g |
 | A | `suspendStore` · `reactivateStore` | 4b, 6g |
 | A | `approveVehicle` · `requestVehicleChanges(reason)` | 14c |
+| página | `/admin/alertas` — alertas com veículo compatível e aguardando · A `markAlertNotifiedAction({ alertId })` (006d) | 12a |
 | A | `resolveReport(id, 'keep' \| 'hide' \| 'block', reason)` · `unhideVehicle` | 14e, 7h |
 | A | `approveSeller` · `blockSeller(reason)` · `unblockSeller` | 7h |
 | A | `markPayoutPaid(payoutId)` · `createCampaignLink(name)` | 8g, 8f |
@@ -155,7 +157,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Interno
 | Tipo | Rota | Uso |
 |---|---|---|
-| R | `GET /api/v1/cron/daily` (protegido por `CRON_SECRET`) | jobs de `ARCHITECTURE.md` §6 |
+| R | `GET /api/v1/cron/daily` (protegido por `CRON_SECRET`; contrato em `docs/specs/006d-search-alerts/contract.md`) | jobs de `ARCHITECTURE.md` §6 |
 
 ---
 
