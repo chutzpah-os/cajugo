@@ -53,7 +53,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T006** `registerSeller` com sessão: acrescenta o papel de vendedor à conta (lojista, indicador) sem nova senha. Conta da equipe é recusada.
 
   · _SEL-FR-016_
-- [ ] **T007** Fotos do documento:
+- [x] **T007** Fotos do documento:
   - `documentUpload` (assinado, `authenticated`, pasta do vendedor);
   - `attachDocument` (formato, até 10 MB, pasta própria; senão, apaga do Cloudinary);
   - `documentFile` + rota `GET /api/v1/sellers/[id]/document/[side]`: admin, suporte e o próprio vendedor recebem 200; outros, 404.

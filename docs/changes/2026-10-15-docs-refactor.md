@@ -833,3 +833,6 @@
 
 # 2026-11-16 · 008/T006 vendedor na mesma conta
 - registerSeller com sessão: acrescenta o papel seller (grantRole), CPF e Pix à conta e cria o vendedor in_review, sem nova senha; conta já vendedora → 409, equipe → 403; CPF da própria conta não conta como repetido.
+
+# 2026-11-16 · 008/T007 fotos do documento
+- sellers: documentUpload (assinado, authenticated, pasta do vendedor, só em análise), attachDocument (nome assinado, foto/PDF até 10 MB, recusado apagado, anterior apagada), documentFile + GET /api/v1/sellers/[id]/document/[side] (admin, suporte e o próprio; outros 404). Permissão sellers.view. checkPrivateUpload e privateFileResponse na plataforma, usados também pelo comprovante da 004.

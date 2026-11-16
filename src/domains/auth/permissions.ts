@@ -41,6 +41,8 @@ export const PERMISSIONS = {
   "payments.view": ["admin", "support"],
   /** Suspender ou reativar loja. */
   "stores.suspend": ["admin"],
+  /** Ver os vendedores [7h] e as fotos do documento (008). */
+  "sellers.view": ["admin", "support"],
   /** Aprovar ou bloquear vendedor. */
   "sellers.review": ["admin"],
   "users.temporaryPassword": ["admin"],

@@ -31,6 +31,11 @@ import { invoices, notices, payments, stores } from "@/platform/db/schema";
 import { isUniqueViolation } from "@/platform/db/errors";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
+import {
+  checkPrivateUpload,
+  PRIVATE_FORMATS,
+  privateExtension,
+} from "@/platform/cloudinary/private-files";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { storeUrl } from "@/platform/http/urls";
@@ -55,8 +60,7 @@ export type BillingDeps = { db: Db; now?: () => Date };
 export type FileDeps = BillingDeps & { cloudinary: Cloudinary };
 
 /** Comprovante: foto ou PDF, até 10 MB (PIX-FR-005, PIX-SEC-002). */
-export const RECEIPT_FORMATS = ["jpg", "png", "webp", "heic", "pdf"];
-export const RECEIPT_MAX_BYTES = 10 * 1024 * 1024;
+export const RECEIPT_FORMATS = PRIVATE_FORMATS;
 
 const clock = (deps: BillingDeps) => deps.now?.() ?? new Date();
 
@@ -336,27 +340,13 @@ export async function submitReceipt(
   if (!publicId.startsWith(prefix) || !UUID.test(publicId.slice(prefix.length)))
     throw AppError.notFound();
 
-  const file = await deps.cloudinary.verifyUpload(publicId, "authenticated");
-  const receiptError = (code: string, message: string) =>
-    AppError.validation([{ field: "receipt", code, message }]);
-  if (!file)
-    throw receiptError(
-      "not_uploaded",
-      "Não encontramos o comprovante enviado. Tente de novo.",
-    );
-  const refusal = !RECEIPT_FORMATS.includes(file.format)
-    ? receiptError(
-        "format",
-        "Envie uma foto (JPG, PNG, WEBP ou HEIC) ou um PDF.",
-      )
-    : file.bytes > RECEIPT_MAX_BYTES
-      ? receiptError("too_large", "O arquivo pode ter no máximo 10 MB.")
-      : null;
+  const file = await checkPrivateUpload(
+    deps.cloudinary,
+    publicId,
+    "receipt",
+    "Não encontramos o comprovante enviado. Tente de novo.",
+  );
   const discard = () => deps.cloudinary.destroy(publicId, "authenticated");
-  if (refusal) {
-    await discard();
-    throw refusal;
-  }
 
   const now = clock(deps);
   try {
@@ -783,15 +773,6 @@ export async function registerManualPayment(
   });
 }
 
-const EXTENSION: Record<string, string> = {
-  jpg: "jpg",
-  jpeg: "jpg",
-  png: "png",
-  webp: "webp",
-  heic: "heic",
-  pdf: "pdf",
-};
-
 /**
  * Arquivo do comprovante (ADR 0011, `contract.md`): admin e suporte veem qualquer um;
  * o lojista só o da própria loja. Outra loja, outro papel, id inválido, inexistente
@@ -826,7 +807,7 @@ export async function receiptFile(
   if (!row?.publicId || !row.format) throw AppError.notFound();
   const file = await deps.cloudinary.fetchPrivate(row.publicId, row.format);
   if (!file) throw AppError.notFound();
-  const ext = EXTENSION[row.format] ?? "bin";
+  const ext = privateExtension(row.format);
   return {
     ...file,
     filename: `comprovante-${REFERENCE_SLUG[row.kind]}.${ext}`,

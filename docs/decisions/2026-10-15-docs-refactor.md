@@ -370,3 +370,6 @@
 
 # 2026-11-16 · 008/T001 documentos
 - D1–D6 aprovadas: cadastro em dois passos (fotos logado), comissão no banco já na 008, CPF/Pix em profiles, pixKeySchema na plataforma, máscara de CPF existente, origem seller no lead.
+
+# 2026-11-16 · 008/T007 fotos do documento
+- Upload e entrega privados já existiam no billing; viraram helpers da plataforma em vez de uma segunda cópia.

@@ -1,11 +1,21 @@
 import { and, eq, ne } from "drizzle-orm";
-import { grantRole, type AuthDeps } from "@/domains/auth/service";
-import { profiles, sellers } from "@/platform/db/schema";
+import { can, grantRole, type AuthDeps } from "@/domains/auth/service";
+import type {
+  Cloudinary,
+  SignedUpload,
+} from "@/platform/cloudinary/cloudinary";
+import {
+  checkPrivateUpload,
+  PRIVATE_FORMATS,
+  privateExtension,
+} from "@/platform/cloudinary/private-files";
+import { profiles, sellers, userRole } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
-import type { Session } from "@/platform/http/session";
+import type { PrivateFile } from "@/platform/http/private-file";
+import { authorize, type Session } from "@/platform/http/session";
 import { addSellerSchema, sellerSignupSchema } from "./schemas";
 
 /**
@@ -138,4 +148,123 @@ async function addSellerToAccount(
   await assertCpfFree(db, parsed.data.cpf, session.userId);
   await db.transaction((tx) => createSeller(tx, session.userId, parsed.data));
   return { userId: session.userId };
+}
+
+export type FileDeps = { db: Db; cloudinary: Cloudinary };
+export type DocumentSide = "front" | "back";
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const SIDES: readonly DocumentSide[] = ["front", "back"];
+const documentFolder = (sellerId: string) => `sellers/${sellerId}`;
+const documentName = (side: DocumentSide) => `document-${side}-`;
+
+/** O vendedor da sessão, com o status; quem não é vendedor → 403. */
+async function ownSeller(db: Db, session: Session | null) {
+  const s = authorize(session, ["seller"]);
+  const [row] = await db
+    .select()
+    .from(sellers)
+    .where(eq(sellers.profileId, s.userId));
+  if (!row) throw AppError.forbidden();
+  return row;
+}
+
+const sideOf = (raw: unknown): DocumentSide => {
+  if (!SIDES.includes(raw as DocumentSide)) throw AppError.notFound();
+  return raw as DocumentSide;
+};
+
+/**
+ * Assinatura para o navegador enviar a foto do documento direto ao Cloudinary,
+ * privada (`authenticated`), na pasta do vendedor da sessão e com nome gerado aqui
+ * (SEL-FR-001, SEL-SEC-009). Só enquanto o cadastro está Em análise.
+ */
+export async function documentUpload(
+  deps: FileDeps,
+  session: Session | null,
+  side: unknown,
+): Promise<SignedUpload> {
+  const me = await ownSeller(deps.db, session);
+  if (me.status !== "in_review")
+    throw AppError.conflict("O cadastro já foi analisado.");
+  return deps.cloudinary.signUpload({
+    folder: documentFolder(me.profileId),
+    publicId: `${documentName(sideOf(side))}${crypto.randomUUID()}`,
+    allowedFormats: PRIVATE_FORMATS,
+    type: "authenticated",
+  });
+}
+
+/**
+ * Guarda a foto enviada (SEL-FR-001, SEL-SEC-009): tem que ser exatamente o nome
+ * assinado para o vendedor e o lado (senão 404), foto ou PDF de até 10 MB (recusada é
+ * apagada). A foto anterior do mesmo lado é apagada.
+ */
+export async function attachDocument(
+  deps: FileDeps,
+  session: Session | null,
+  input: { side: unknown; publicId: unknown },
+): Promise<void> {
+  const me = await ownSeller(deps.db, session);
+  if (me.status !== "in_review")
+    throw AppError.conflict("O cadastro já foi analisado.");
+  const side = sideOf(input.side);
+  const prefix = deps.cloudinary.fullPublicId(
+    documentFolder(me.profileId),
+    documentName(side),
+  );
+  const publicId = typeof input.publicId === "string" ? input.publicId : "";
+  if (!publicId.startsWith(prefix) || !UUID.test(publicId.slice(prefix.length)))
+    throw AppError.notFound();
+  const { format } = await checkPrivateUpload(
+    deps.cloudinary,
+    publicId,
+    side,
+    "Não encontramos a foto enviada. Tente de novo.",
+  );
+  const previous =
+    side === "front" ? me.documentFrontPublicId : me.documentBackPublicId;
+  await deps.db
+    .update(sellers)
+    .set(
+      side === "front"
+        ? { documentFrontPublicId: publicId, documentFrontFormat: format }
+        : { documentBackPublicId: publicId, documentBackFormat: format },
+    )
+    .where(eq(sellers.profileId, me.profileId));
+  if (previous && previous !== publicId)
+    await deps.cloudinary.destroy(previous, "authenticated");
+}
+
+/**
+ * Foto do documento (ADR 0011, `contract.md`): admin e suporte veem qualquer uma; o
+ * vendedor só a própria. Outro papel, outro vendedor, id ou lado inválido ou sem a
+ * foto → 404 (SEL-SEC-009).
+ */
+export async function documentFile(
+  deps: FileDeps,
+  session: Session | null,
+  sellerId: string,
+  side: unknown,
+): Promise<PrivateFile> {
+  const s = authorize(session, userRole.enumValues);
+  const which = sideOf(side);
+  if (!UUID.test(sellerId)) throw AppError.notFound();
+  if (!can(s, "sellers.view") && s.userId !== sellerId)
+    throw AppError.notFound();
+  const [row] = await deps.db
+    .select()
+    .from(sellers)
+    .where(eq(sellers.profileId, sellerId));
+  const publicId =
+    which === "front" ? row?.documentFrontPublicId : row?.documentBackPublicId;
+  const format =
+    which === "front" ? row?.documentFrontFormat : row?.documentBackFormat;
+  if (!publicId || !format) throw AppError.notFound();
+  const file = await deps.cloudinary.fetchPrivate(publicId, format);
+  if (!file) throw AppError.notFound();
+  return {
+    ...file,
+    filename: `documento-${which}.${privateExtension(format)}`,
+  };
 }
