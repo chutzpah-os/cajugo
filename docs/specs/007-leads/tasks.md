@@ -95,7 +95,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - o catálogo `/loja/{slug}` grava a marca de origem da aba (D1).
 
   · _LED-FR-001, LED-FR-002, LED-FR-004, LED-FR-015, LED-SEC-004, LED-NFR-002_
-- [ ] **T014** `WhatsappButton` na barra inferior de [1b] e no simulador [14b]:
+- [x] **T014** `WhatsappButton` na barra inferior de [1b] e no simulador [14b]:
   - abre a conversa sempre;
   - registra o lead uma vez a cada 24 h por aparelho;
   - teste com a action falhando.

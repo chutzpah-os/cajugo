@@ -725,3 +725,6 @@
 
 # 2026-11-16 · 007/T013
 - [1b]: `ContactForm` abaixo do card da loja (mensagem padrão, honeypot, privacidade, "Mensagem enviada…"); `ViewPing` conta a visualização depois da hidratação; `CatalogVisit` em `/loja/{slug}` marca a aba; `browserStorage` com queda silenciosa; a marca de origem usa o slug da loja.
+
+# 2026-11-16 · 007/T014
+- `WhatsappButton` na barra de [1b] e em "Enviar simulação à loja" [14b]: link comum em outra aba; `onWhatsappTap` registra no máximo um lead por aparelho e veículo a cada 24 h, sem esperar e sem lançar.

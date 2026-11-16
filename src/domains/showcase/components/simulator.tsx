@@ -3,6 +3,10 @@
 import { useState, type ReactNode } from "react";
 import { simulateInstallment } from "@/platform/br/installment";
 import { brl } from "@/platform/br/money";
+import {
+  WhatsappButton,
+  type LeadVehicle,
+} from "@/domains/leads/components/whatsapp-button";
 import { whatsappLink } from "@/platform/whatsapp/link";
 import { Chip } from "@/ui/chip";
 import {
@@ -75,7 +79,14 @@ function Row({
  * Simulador [14b] (BUY-FR-002, BUY-FR-003): calcula no aparelho, pela mesma conta da
  * parcela do card (BUY-NFR-003). Folha de baixo no celular; centralizado no desktop.
  */
-export function SimulatorSheet({ setup }: { setup: SimulatorSetup }) {
+export function SimulatorSheet({
+  setup,
+  lead,
+}: {
+  setup: SimulatorSetup;
+  /** O toque em "Enviar simulação à loja" também vira lead (LED-FR-003). */
+  lead: LeadVehicle;
+}) {
   const options = simulatorOptions(setup);
   const [downBps, setDown] = useState(setup.downBps);
   const [months, setMonths] = useState(setup.months);
@@ -150,18 +161,17 @@ export function SimulatorSheet({ setup }: { setup: SimulatorSetup }) {
           {percentLabel(setup.rateBps)} ao mês. As condições reais dependem da
           loja e do banco.
         </p>
-        <a
+        <WhatsappButton
           href={whatsappLink(
             setup.whatsappNumber,
             simulationMessage(setup, choice, sim),
           )}
-          target="_blank"
-          rel="noopener noreferrer"
+          lead={lead}
           data-testid="send-simulation"
           className="flex h-[50px] items-center justify-center rounded-button bg-whatsapp text-[15px] font-bold text-white"
         >
           Enviar simulação à loja
-        </a>
+        </WhatsappButton>
       </div>
     </dialog>
   );

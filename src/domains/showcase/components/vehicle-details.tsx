@@ -5,6 +5,7 @@ import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
 import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
 import { ContactForm } from "@/domains/leads/components/contact-form";
+import { WhatsappButton } from "@/domains/leads/components/whatsapp-button";
 import { Badge } from "@/ui/badge";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/button";
@@ -67,6 +68,11 @@ export function VehicleDetails({
 }) {
   const alt = vehicleAlt(page);
   const backHref = page.shared ? "/" : `/loja/${page.store.slug}`;
+  const lead = {
+    vehicleId: page.vehicleId,
+    storeSlug: page.store.slug,
+    shared: page.shared,
+  };
   return (
     <main className="mx-auto w-full max-w-[480px] flex-1 pb-24 md:max-w-3xl">
       <Gallery
@@ -171,11 +177,7 @@ export function VehicleDetails({
             Ver estoque da loja
           </ButtonLink>
         </section>
-        <ContactForm
-          vehicleId={page.vehicleId}
-          storeSlug={page.store.slug}
-          shared={page.shared}
-        />
+        <ContactForm {...lead} />
         {related}
         {page.installmentCents !== null && (
           <p className="text-xs text-text-3">
@@ -195,18 +197,17 @@ export function VehicleDetails({
               Ver parcelas
             </SimulatorTrigger>
           )}
-          <a
+          <WhatsappButton
             href={page.whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            lead={lead}
             data-testid="whatsapp"
             className="flex h-[50px] items-center justify-center rounded-button bg-whatsapp text-[15px] font-bold text-white"
           >
             WhatsApp
-          </a>
+          </WhatsappButton>
         </div>
       </div>
-      {page.simulator && <SimulatorSheet setup={page.simulator} />}
+      {page.simulator && <SimulatorSheet setup={page.simulator} lead={lead} />}
     </main>
   );
 }
