@@ -30,7 +30,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
 - [x] **T003** [P] `platform/browser/marks.ts` com `claimOncePer(storage, key, id, now, windowMs)`. `leads/device.ts` passa a usá-lo, e os testes da 007 continuam verdes. Teste de 1 h × 25 h.
 
   · _RPT-FR-010_
-- [ ] **T004** [P] `moderation/reasons.ts` e `moderation/schemas.ts`:
+- [x] **T004** [P] `moderation/reasons.ts` e `moderation/schemas.ts`:
   - `reasons.ts`: rótulos dos motivos;
   - `reportSchema` (`.strict()`): motivo obrigatório e sem `other`, descrição ≤ 1.000, honeypot, `requestId` v7;
   - `hideSchema`: "Outro" exige nota de 1 a 200 caracteres.

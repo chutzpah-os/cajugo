@@ -755,3 +755,6 @@
 
 # 2026-11-16 · 007b/T003 marcas no aparelho
 - src/platform/browser/marks.ts: claimOncePer, readMark/writeMark, browserStorage. leads/device.ts usa claimOncePer para o WhatsApp; componentes de leads importam browserStorage da plataforma.
+
+# 2026-11-16 · 007b/T004 motivos e schemas
+- Domínio moderation: reasons.ts (4 motivos da denúncia, 5 do Ocultar, rótulos) e schemas.ts (reportSchema strict com requestId v7 e descrição ≤ 1.000 sem 'Outro'; hideSchema com nota obrigatória no 'Outro' até 200; vehicleDecisionSchema).
