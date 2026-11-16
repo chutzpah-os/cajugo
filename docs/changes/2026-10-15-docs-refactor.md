@@ -663,3 +663,7 @@
 
 # 2026-11-16 · 006d/T011 formulário [12a]
 - `buyers/components/alert-form.tsx` no `NoResults` da vitrine e da descoberta (prop `alertSource`; o catálogo da loja não passa): botão que abre nome, celular, consentimento com link para a privacidade e honeypot; confirmação "Vamos avisar quando chegar" com "Não quero mais este aviso" (D3) ou "Já estamos de olho nessa busca". Termos [12i] com o trecho "Avisar quando chegar".
+
+# 2026-11-16 · 006d/T012 tela Alertas
+- `/admin/alertas` (admin e suporte, `alerts.notify`): "Com veículo" com o pedido, o veículo, "Avisar no WhatsApp" e "Marcar como avisado"; "Aguardando" com a busca e o vencimento, sem nome nem celular; estado vazio. Item "Alertas" no menu do admin com contador (`NavItem.count`; ponto no "Mais"), do mesmo cache da tela.
+- `brDate` saiu de `stores` para `platform/br/date.ts`.

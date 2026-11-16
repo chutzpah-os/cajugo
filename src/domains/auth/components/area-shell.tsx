@@ -12,6 +12,10 @@ import type { Area } from "../permissions";
 import { currentStoreStatus } from "../current";
 import { noticesFor } from "@/domains/notices/service";
 import { NoticeList } from "@/domains/notices/components/notice-list";
+import { cachedAlertInbox } from "@/domains/buyers/current";
+import type { NavItem } from "@/ui/panel-nav";
+import { can } from "../service";
+import type { Session } from "@/platform/http/session";
 
 const AREA_ROOT: Record<Area, string> = {
   painel: "/painel",
@@ -19,6 +23,20 @@ const AREA_ROOT: Record<Area, string> = {
   indica: "/indica",
   admin: "/admin",
 };
+
+/** Pendências no menu: alertas com veículo para avisar (ALR-FR-003), do mesmo cache da tela. */
+async function withCounts(
+  items: NavItem[] | undefined,
+  session: Session,
+): Promise<NavItem[] | undefined> {
+  if (!items?.some((i) => i.href === "/admin/alertas")) return items;
+  if (!can(session, "alerts.notify"))
+    return items.filter((i) => i.href !== "/admin/alertas");
+  const pending = (await cachedAlertInbox()).matched.length;
+  return items.map((i) =>
+    i.href === "/admin/alertas" ? { ...i, count: pending } : i,
+  );
+}
 
 /**
  * Moldura das áreas logadas: sessão, papel da área, menu, troca de painel, sair
@@ -37,7 +55,7 @@ export async function AreaShell({
   if (allowed) await rememberPanel(getDb(), session, area);
   const storeStatus = await currentStoreStatus(session.storeId);
   // Menu só para quem tem a área; sem permissão, nada da área aparece.
-  const nav = allowed ? AREA_NAV[area] : undefined;
+  const nav = allowed ? await withCounts(AREA_NAV[area], session) : undefined;
   // Avisos de quem está conectado, em qualquer área (ADR 0007, PIX-FR-013).
   const notices = allowed ? await noticesFor(getDb(), session) : [];
 

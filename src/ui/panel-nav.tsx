@@ -10,7 +10,23 @@ export type NavItem = {
   label: string;
   /** Fica na barra inferior do celular (até 4); os demais vão para o "Mais". */
   mobile?: boolean;
+  /** Pendências do item (ex.: alertas com veículo); 0 ou ausente não mostra nada. */
+  count?: number;
 };
+
+/** Selo com o número de pendências, lido como "N pendentes" pelo leitor de tela. */
+function Count({ n }: { n?: number }) {
+  if (!n) return null;
+  return (
+    <span
+      data-testid="nav-count"
+      className="ml-auto min-w-6 rounded-full bg-caju px-1.5 text-center text-xs leading-6 font-bold text-white"
+    >
+      {n}
+      <span className="sr-only"> pendentes</span>
+    </span>
+  );
+}
 
 /** O primeiro item (início do painel) só fica ativo nele mesmo. */
 export function isActive(pathname: string, href: string, root: string) {
@@ -87,6 +103,13 @@ export function PanelNavView({
               >
                 {moreActive && <ActiveMark />}
                 Mais
+                {more.some((i) => i.count) && (
+                  <span
+                    data-testid="more-dot"
+                    aria-hidden
+                    className="absolute top-2 right-[calc(50%-1.5rem)] size-2 rounded-full bg-caju"
+                  />
+                )}
               </button>
             </li>
           )}
@@ -124,6 +147,7 @@ export function PanelNavView({
                     className="flex min-h-12 items-center text-[15px] font-bold aria-[current=page]:text-caju-deep"
                   >
                     {i.label}
+                    <Count n={i.count} />
                   </Link>
                 </li>
               ))}
@@ -148,6 +172,7 @@ export function PanelNavView({
                 )}
               >
                 {i.label}
+                <Count n={i.count} />
               </Link>
             </li>
           ))}

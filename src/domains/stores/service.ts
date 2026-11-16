@@ -1,3 +1,4 @@
+import { brDate } from "@/platform/br/date";
 import { and, eq, gt, inArray, like } from "drizzle-orm";
 import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
 import {
@@ -341,9 +342,6 @@ export async function storeSummary(
 
 const SLUG_CHANGE_INTERVAL_DAYS = 30;
 const SLUG_REDIRECT_DAYS = 90;
-const brDate = new Intl.DateTimeFormat("pt-BR", {
-  timeZone: "America/Sao_Paulo",
-});
 
 /** Quando a loja pode trocar de endereço de novo (30 dias depois da última troca). */
 function nextSlugChangeAt(changedAt: Date | null): Date | null {

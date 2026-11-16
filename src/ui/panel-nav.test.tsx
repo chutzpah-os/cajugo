@@ -62,4 +62,33 @@ describe("menu do painel", () => {
     expect(html).not.toContain("Mais");
     expect(html).not.toContain("<dialog");
   });
+
+  it("[ALR-FR-003] contador de pendências no item, no Mais e na barra lateral", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <PanelNavView
+        items={[
+          ...items,
+          { href: "/admin/alertas", label: "Alertas", count: 2 },
+        ]}
+        pathname="/admin"
+      />,
+    );
+
+    // Assert
+    expect(html.match(/data-testid="nav-count"[^>]*>2</g)).toHaveLength(2); // gaveta + lateral
+    expect(html).toContain("> pendentes</span>");
+    expect(html).toContain('data-testid="more-dot"');
+    expect(
+      renderToStaticMarkup(
+        <PanelNavView
+          items={[
+            ...items,
+            { href: "/admin/alertas", label: "Alertas", count: 0 },
+          ]}
+          pathname="/admin"
+        />,
+      ),
+    ).not.toContain("nav-count");
+  });
 });
