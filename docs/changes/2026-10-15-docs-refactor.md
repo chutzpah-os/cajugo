@@ -610,3 +610,6 @@
 
 # 2026-11-16 · 006c/T006 dados do simulador
 - `vehiclePage.simulator` (preço, regras [4c] vigentes, contato do anúncio, título e link) ou `null` sem "Exibir parcela estimada" ou sem preço; `showcase/simulator.ts` com as opções (regra fora da lista entra nela, D2) e a mensagem pronta para a loja.
+
+# 2026-11-16 · 006c/T007 simulador [14b]
+- `SimulatorSheet` (folha de baixo; centralizada no desktop) com entrada e prazo em chips, parcela, entrada, financiado, total, aviso de estimativa e "Enviar simulação à loja"; "Simular" abaixo do preço e "Ver parcelas" ao lado do WhatsApp, só com a parcela ativada.

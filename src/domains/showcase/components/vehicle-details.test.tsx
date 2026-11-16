@@ -80,6 +80,40 @@ describe("página do veículo [1b]", () => {
     expect(render({ ...PAGE, installmentCents: null })).not.toContain("/mês");
   });
 
+  it("[BUY-FR-001] [BUY-FR-002] Simular e Ver parcelas abrem o simulador com as regras marcadas", () => {
+    // Arrange
+    const simulator = {
+      priceCents: 6_000_000,
+      downBps: 2000,
+      months: 48,
+      rateBps: 179,
+      whatsappNumber: "5579999990000",
+      title: "Fiat Argo 2022",
+      url: "https://cajugo.test/v/v1",
+    };
+
+    // Act
+    const html = render({ ...PAGE, simulator });
+
+    // Assert
+    expect(html).toContain(">Simular<");
+    expect(html).toContain(">Ver parcelas<");
+    expect(html).toContain('id="simulador"');
+    expect(html).toMatch(/aria-pressed="true"[^>]*>.*?20%/);
+    expect(html).toMatch(/aria-pressed="true"[^>]*>.*?48x/);
+    expect(html).toContain("Estimativa sem análise de crédito");
+    expect(html).toContain(brl(1_200_000)); // entrada de 20%
+    expect(html).toContain(brl(4_800_000)); // financiado
+    expect(html).toContain("https://wa.me/5579999990000?text=");
+  });
+
+  it("[BUY-FR-001] sem a parcela ativada, nem Simular nem Ver parcelas", () => {
+    const html = render({ ...PAGE, simulator: null });
+    expect(html).not.toContain("Simular<");
+    expect(html).not.toContain("Ver parcelas");
+    expect(html).not.toContain('id="simulador"');
+  });
+
   it("[SHW-FR-009] compartilhar existe sem código de vendedor no link", () => {
     // Act
     const html = render();

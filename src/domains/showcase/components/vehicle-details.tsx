@@ -4,11 +4,13 @@ import { brl } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
 import { Badge } from "@/ui/badge";
+import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/button";
 import type { PublicCard as Card, VehiclePage } from "../service";
 import { Gallery } from "./gallery";
 import { PublicCard } from "./public-card";
 import { ShareButton } from "./share-button";
+import { SimulatorSheet, SimulatorTrigger } from "./simulator";
 import { StoreIdentity } from "./store-identity";
 import { Unavailable } from "./unavailable";
 
@@ -105,6 +107,11 @@ export function VehicleDetails({
                 a partir de {brl(page.installmentCents)}/mês*
               </p>
             )}
+            {page.simulator && (
+              <SimulatorTrigger className="flex min-h-11 items-center text-sm font-semibold text-caju-deep underline">
+                Simular
+              </SimulatorTrigger>
+            )}
           </div>
         )}
         <dl
@@ -167,7 +174,17 @@ export function VehicleDetails({
         )}
       </div>
       <div className="fixed inset-x-0 bottom-0 border-t border-line bg-surface p-3">
-        <div className="mx-auto max-w-[480px] md:max-w-3xl">
+        <div
+          className={cn(
+            "mx-auto max-w-[480px] md:max-w-3xl",
+            page.simulator && "grid grid-cols-2 gap-2",
+          )}
+        >
+          {page.simulator && (
+            <SimulatorTrigger className="flex h-[50px] items-center justify-center rounded-button border-[1.5px] border-ink text-[15px] font-bold text-ink">
+              Ver parcelas
+            </SimulatorTrigger>
+          )}
           <a
             href={page.whatsappUrl}
             target="_blank"
@@ -179,6 +196,7 @@ export function VehicleDetails({
           </a>
         </div>
       </div>
+      {page.simulator && <SimulatorSheet setup={page.simulator} />}
     </main>
   );
 }
