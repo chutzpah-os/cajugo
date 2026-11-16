@@ -713,3 +713,6 @@
 
 # 2026-11-16 · 007/T009
 - `leadsBoard` (cards da loja da sessão, mais novo primeiro, até 200; contagens por status; Novos agora; % da vitrine em 30 dias; destaque; veículo excluído marcado; WhatsApp e tel só com telefone) e `newLeadsCount`; permissão `leads.view`.
+
+# 2026-11-16 · 007/T010
+- `moveLead` e `moveLeadAction`: próximo status ou Perdido só a partir de status aberto (409 se fechado), troca com `where status = esperado`; lead de outra loja ou id inválido → 404; permissão nova `leads.manage` (dono e usuário da loja).

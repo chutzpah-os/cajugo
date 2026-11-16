@@ -46,6 +46,7 @@ describe("ações do painel da loja", () => {
   const staffAllowed: Permission[] = [
     "vehicles.manage",
     "leads.view",
+    "leads.manage",
     "sales.confirm",
   ];
   const ownerOnly: Permission[] = [

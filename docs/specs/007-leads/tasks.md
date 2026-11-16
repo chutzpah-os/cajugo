@@ -66,7 +66,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - loja B vê lista vazia e contagens zeradas.
 
   · _LED-FR-005, LED-FR-006, LED-FR-009, LED-FR-010, LED-FR-014, LED-SEC-001, LED-SEC-003_
-- [ ] **T010** `moveLead` e `moveLeadAction`:
+- [x] **T010** `moveLead` e `moveLeadAction`:
   - `next` e `lost` só a partir de status aberto (`update … where status = esperado`);
   - permissão nova `leads.manage`;
   - suporte recusado;

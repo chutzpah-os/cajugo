@@ -18,6 +18,8 @@ export type Area = keyof typeof AREAS;
 export const PERMISSIONS = {
   "vehicles.manage": ["store_owner", "store_staff"],
   "leads.view": ["store_owner", "store_staff"],
+  /** Mudar o status do lead [3a]; admin e suporte só leem (LED-SEC-005). */
+  "leads.manage": ["store_owner", "store_staff"],
   "sales.confirm": ["store_owner", "store_staff"],
   /** Minha loja. */
   "store.edit": ["store_owner"],

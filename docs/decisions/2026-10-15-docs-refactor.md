@@ -331,3 +331,6 @@
 
 # 2026-11-16 · 007/T009
 - Lista limitada a 200 no MVP: paginação por cursor quando uma loja passar disso (API.md §3).
+
+# 2026-11-16 · 007/T010
+- Permissão separada de `leads.view` porque admin e suporte vão ler leads na 012, mas só a loja muda o status (LED-SEC-005).

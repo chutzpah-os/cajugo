@@ -38,3 +38,8 @@ export const whatsappClickSchema = z.object({ vehicleId, origin }).strict();
 
 /** Abertura da página do veículo (LED-FR-015). */
 export const viewSchema = z.object({ vehicleId }).strict();
+
+/** "→ próximo status" ou "Perdido" no card de [3a] (LED-FR-008). */
+export const moveLeadSchema = z
+  .object({ leadId: z.uuid(), to: z.enum(["next", "lost"]) })
+  .strict();

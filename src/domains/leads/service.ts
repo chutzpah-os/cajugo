@@ -14,8 +14,19 @@ import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { isKnownBot } from "@/platform/http/bots";
 import type { Session } from "@/platform/http/session";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { leadFormSchema, viewSchema, whatsappClickSchema } from "./schemas";
-import { highlighted, type LeadOrigin, type LeadStatus } from "./status";
+import {
+  leadFormSchema,
+  moveLeadSchema,
+  viewSchema,
+  whatsappClickSchema,
+} from "./schemas";
+import {
+  highlighted,
+  isOpen,
+  nextStatus,
+  type LeadOrigin,
+  type LeadStatus,
+} from "./status";
 
 export type ContactResult =
   { ok: true } | { ok: false; message: string; errors: FieldError[] };
@@ -307,4 +318,37 @@ export async function newLeadsCount(
     .from(leads)
     .where(and(eq(leads.storeId, storeId), eq(leads.status, "new")));
   return row.n;
+}
+
+/**
+ * "→ próximo status" e "Perdido" no card [3a] (LED-FR-008, LED-SEC-001, 005): só a
+ * loja do lead (dono e usuário da loja) e só a partir de um status aberto. A troca
+ * confere o status lido (`where status = esperado`): dois toques não pulam dois passos.
+ */
+export async function moveLead(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<LeadStatus> {
+  const storeId = storeOf(session, "leads.manage");
+  const parsed = moveLeadSchema.safeParse(raw);
+  if (!parsed.success) throw AppError.notFound();
+  const { leadId, to } = parsed.data;
+  const own = and(eq(leads.id, leadId), eq(leads.storeId, storeId));
+  const [lead] = await db
+    .select({ status: leads.status })
+    .from(leads)
+    .where(own);
+  if (!lead) throw AppError.notFound();
+  const target = to === "lost" ? "lost" : nextStatus(lead.status);
+  if (!isOpen(lead.status) || !target)
+    throw AppError.conflict("Este lead já foi encerrado.");
+  const [moved] = await db
+    .update(leads)
+    .set({ status: target, updatedAt: now })
+    .where(and(own, eq(leads.status, lead.status)))
+    .returning({ status: leads.status });
+  if (!moved) throw AppError.conflict("O lead mudou. Atualize a página.");
+  return moved.status;
 }
