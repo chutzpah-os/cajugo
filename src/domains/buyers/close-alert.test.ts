@@ -4,7 +4,7 @@ import { activityLog, profiles, searchAlerts } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import type { Role, Session } from "@/platform/http/session";
 import { cancelToken } from "./alert-token";
-import { cancelAlert, markNotified } from "./service";
+import { cancelAlert, markNotified, purgeExpired } from "./service";
 
 const NOW = new Date("2026-11-16T12:00:00Z");
 const ADMIN_ID = "0192f1e0-0000-7000-8000-0000000000a1";
@@ -105,6 +105,38 @@ describe("fechar o alerta", () => {
     const other = "0192f1e0-0000-7000-8000-0000000000ff";
     expect(await cancelAlert(t.db, cancelToken(other), NOW)).toBe("invalid");
     expect(await cancelAlert(t.db, `${alertId}.abc`, NOW)).toBe("invalid");
+    expect((await row()).status).toBe("pending");
+  });
+
+  it("[ALR-FR-005] [ALR-SEC-004] job diário: vencido fecha e perde nome e celular; repetir não muda nada", async () => {
+    // Arrange: o alerta do beforeEach é de NOW; este venceu (90 dias nas regras)
+    const [{ id: old }] = await t.db
+      .insert(searchAlerts)
+      .values({
+        name: "Bia",
+        phone: "5579988887777",
+        query: "q=onix",
+        consentAt: new Date("2026-08-01T00:00:00Z"),
+        createdAt: new Date("2026-08-01T00:00:00Z"),
+      })
+      .returning({ id: searchAlerts.id });
+
+    // Act
+    const first = await purgeExpired(t.db, NOW);
+    const again = await purgeExpired(t.db, NOW);
+
+    // Assert
+    expect([first, again]).toEqual([1, 0]);
+    const [expired] = await t.db
+      .select()
+      .from(searchAlerts)
+      .where(eq(searchAlerts.id, old));
+    expect(expired).toMatchObject({
+      status: "expired",
+      name: null,
+      phone: null,
+      closedAt: NOW,
+    });
     expect((await row()).status).toBe("pending");
   });
 });

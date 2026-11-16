@@ -657,3 +657,6 @@
 
 # 2026-11-16 · 006d/T009 avisar e cancelar
 - `markNotified` (permissão nova `alerts.notify`: admin e suporte) fecha o alerta, apaga nome e celular, grava `notified_by` e o `activity_log` sem dado pessoal; `cancelAlert` só com o link do próprio alerta (`canceled`, `closed`, `invalid`). Actions com `updateTag(ALERTS_TAG)`; cancelar com limite `liveCheck` por rede.
+
+# 2026-11-16 · 006d/T010 job diário
+- Primeiro cron: `GET /api/v1/cron/daily` (contract.md da 006d) com `isCronRequest` (`Bearer CRON_SECRET`, tempo constante; sem segredo, recusa tudo), `purgeExpired` (pendente vencido → `expired` sem nome e celular) e `purgeRateLimits` (> 2 dias); `vercel.json` com `crons` às 06:00 UTC; `.env.example` explica o `CRON_SECRET`.

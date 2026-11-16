@@ -1,4 +1,4 @@
-import { and, asc, count, eq, gt, isNull } from "drizzle-orm";
+import { and, asc, count, eq, gt, isNull, lte } from "drizzle-orm";
 import { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { getSettings } from "@/domains/settings/service";
@@ -323,4 +323,27 @@ export async function cancelAlert(
     .from(searchAlerts)
     .where(eq(searchAlerts.id, alertId));
   return exists ? "closed" : "invalid";
+}
+
+/**
+ * Job diário (ALR-FR-005, ALR-SEC-004): pendente além da validade das regras vira
+ * `expired` e perde nome e celular. Idempotente: devolve quantos fechou agora.
+ */
+export async function purgeExpired(
+  db: Db,
+  now: Date = new Date(),
+): Promise<number> {
+  const validityMs =
+    (await getSettings(db, now)).search_alert_validity_days * DAY_MS;
+  const rows = await db
+    .update(searchAlerts)
+    .set(closed("expired", now))
+    .where(
+      and(
+        eq(searchAlerts.status, "pending"),
+        lte(searchAlerts.createdAt, new Date(now.getTime() - validityMs)),
+      ),
+    )
+    .returning({ id: searchAlerts.id });
+  return rows.length;
 }
