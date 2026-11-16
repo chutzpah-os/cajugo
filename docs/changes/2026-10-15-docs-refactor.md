@@ -869,3 +869,9 @@
 
 # 2026-11-16 · 008/T018 tela de vendedores do admin
 - /admin/vendedores [7h] (sellers.view): indicadores, em análise primeiro com links para frente e verso do documento, ativos e bloqueados (com motivo); Aprovar (desabilitado sem as fotos), Bloquear com motivo na ConfirmSheet e Desbloquear só para quem tem sellers.review. formatBrPhone na plataforma.
+
+# 2026-11-16 · 008/T019 clique e selo do vendedor
+- SellerClickPing na página do veículo (lê ?ref=, marca o aparelho por 24 h por vendedor e veículo, chama sellerClickAction; a página segue em cache). [3a]: selo 'via vendedor {nome}' no lead de origem seller.
+
+# 2026-11-16 · 008/T019 clique e selo do vendedor
+- SellerClickPing na página do veículo (lê ?ref=, marca o aparelho por 24 h por vendedor e veículo, chama sellerClickAction; a página segue em cache). [3a]: selo 'via vendedor {nome}' no lead de origem seller. Teste da curadoria confere o CPF e a chave Pix reais em vez de um padrão de dígitos (instável).

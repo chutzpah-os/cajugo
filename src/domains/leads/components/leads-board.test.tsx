@@ -142,4 +142,14 @@ describe("tela Leads", () => {
     expect(html).toContain("Nenhum lead ainda");
     expect(html).toContain("–");
   });
+
+  it("[SEL-FR-011] lead do link do vendedor mostra 'via vendedor {nome}'", () => {
+    // Act
+    const html = render(
+      board([card({ origin: "seller", sellerName: "Bia Lima" })]),
+    );
+
+    // Assert
+    expect(html).toContain("via vendedor Bia Lima");
+  });
 });

@@ -173,6 +173,14 @@ describe("curadoria dos vendedores [7h]", () => {
       entityId: ana.userId,
       data: { reason: "Cobrou sinal por fora" },
     });
-    expect(JSON.stringify(log)).not.toMatch(/\d{11}|@x\.com/);
+    const { profiles } = await import("@/platform/db/schema");
+    const { eq } = await import("drizzle-orm");
+    const [p] = await t.db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, ana.userId));
+    const json = JSON.stringify(log);
+    expect(json).not.toContain(p.cpf!);
+    expect(json).not.toContain(p.pixKey!);
   });
 });

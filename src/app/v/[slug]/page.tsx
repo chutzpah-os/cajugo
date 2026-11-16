@@ -9,6 +9,7 @@ import {
 } from "@/domains/showcase/components/vehicle-details";
 import { RelatedLinks } from "@/domains/showcase/components/related-links";
 import { ViewPing } from "@/domains/leads/components/device-marks";
+import { SellerClickPing } from "@/domains/sellers/components/click-ping";
 import {
   cachedDiscoveryLinks,
   cachedVehiclePage,
@@ -134,6 +135,7 @@ export default async function VehiclePage({ params }: PageProps<"/v/[slug]">) {
         ])}
       />
       <ViewPing vehicleId={page.vehicleId} />
+      <SellerClickPing vehicleId={page.vehicleId} />
       <VehicleDetails
         page={page}
         cloudName={cloud}

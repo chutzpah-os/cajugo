@@ -121,7 +121,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T018** `/admin/vendedores` [7h]: indicadores, as três listas, links da frente e do verso, **Aprovar**, **Bloquear** (com motivo, em [6f]) e **Desbloquear**; o suporte vê sem botões.
 
   · _SEL-FR-003, SEL-FR-004, SEL-FR-005, SEL-SEC-005_
-- [ ] **T019** Página do veículo: `SellerClickPing` (lê `?ref=`, marca o aparelho por dia, chama a action) sem tirar a página do cache. Selo "via vendedor {nome}" em [3a].
+- [x] **T019** Página do veículo: `SellerClickPing` (lê `?ref=`, marca o aparelho por dia, chama a action) sem tirar a página do cache. Selo "via vendedor {nome}" em [3a].
 
   · _SEL-FR-010, SEL-FR-011, SEL-NFR-002_
 - [ ] **T020** Seed do e2e (vendedor em análise com fotos, vendedor ativo parceiro da loja da vitrine, comissão da loja) e `tests/e2e/sellers.spec.ts`:

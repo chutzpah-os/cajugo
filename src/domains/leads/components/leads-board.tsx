@@ -75,7 +75,11 @@ function LeadCardItem({ lead, now }: { lead: LeadCard; now: Date }) {
             <Badge tone={STATUS_TONE[lead.status]}>
               {STATUS_LABEL[lead.status]}
             </Badge>
-            <Badge tone="neutral">{ORIGIN_LABEL[lead.origin]}</Badge>
+            <Badge tone="neutral">
+              {lead.origin === "seller" && lead.sellerName
+                ? `${ORIGIN_LABEL.seller} ${lead.sellerName}`
+                : ORIGIN_LABEL[lead.origin]}
+            </Badge>
           </div>
         </div>
       </div>
