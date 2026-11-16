@@ -59,7 +59,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - `documentFile` + rota `GET /api/v1/sellers/[id]/document/[side]`: admin, suporte e o próprio vendedor recebem 200; outros, 404.
 
   · _SEL-FR-001, SEL-SEC-009_
-- [ ] **T008** `sellerHome`: status para "em análise" (faltando foto ou completo) e "bloqueado" (com o motivo); painel com os cliques do mês e as lojas Parceiro e Pendente.
+- [x] **T008** `sellerHome`: status para "em análise" (faltando foto ou completo) e "bloqueado" (com o motivo); painel com os cliques do mês e as lojas Parceiro e Pendente.
 
   · _SEL-FR-002, SEL-FR-006, SEL-SEC-004_
 - [ ] **T009** `sellersAdmin` e as decisões:

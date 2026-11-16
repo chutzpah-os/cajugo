@@ -836,3 +836,6 @@
 
 # 2026-11-16 · 008/T007 fotos do documento
 - sellers: documentUpload (assinado, authenticated, pasta do vendedor, só em análise), attachDocument (nome assinado, foto/PDF até 10 MB, recusado apagado, anterior apagada), documentFile + GET /api/v1/sellers/[id]/document/[side] (admin, suporte e o próprio; outros 404). Permissão sellers.view. checkPrivateUpload e privateFileResponse na plataforma, usados também pelo comprovante da 004.
+
+# 2026-11-16 · 008/T008 início do vendedor
+- sellerHome: em análise (faltando foto ou não) e bloqueado (com motivo) mostram só o status; ativo mostra o código, os cliques do mês de São Paulo e as lojas Parceiro e Pendente. Fixtures seller/activeSeller.

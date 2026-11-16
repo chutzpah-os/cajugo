@@ -1,4 +1,4 @@
-import { and, eq, ne } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, ne, sum } from "drizzle-orm";
 import { can, grantRole, type AuthDeps } from "@/domains/auth/service";
 import type {
   Cloudinary,
@@ -9,7 +9,15 @@ import {
   PRIVATE_FORMATS,
   privateExtension,
 } from "@/platform/cloudinary/private-files";
-import { profiles, sellers, userRole } from "@/platform/db/schema";
+import { brDay } from "@/platform/br/date";
+import {
+  partnerships,
+  profiles,
+  sellers,
+  sellerVehicleClicks,
+  stores,
+  userRole,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
@@ -17,6 +25,7 @@ import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { PrivateFile } from "@/platform/http/private-file";
 import { authorize, type Session } from "@/platform/http/session";
 import { addSellerSchema, sellerSignupSchema } from "./schemas";
+import type { PartnerState, SellerStatus } from "./status";
 
 /**
  * Rede Caju, lado do vendedor (spec 008). O vendedor age sempre como ele mesmo
@@ -266,5 +275,74 @@ export async function documentFile(
   return {
     ...file,
     filename: `documento-${which}.${privateExtension(format)}`,
+  };
+}
+
+export type SellerHome =
+  | {
+      kind: "status";
+      status: Exclude<SellerStatus, "active">;
+      /** Motivo do bloqueio (SEL-FR-002). */
+      reason: string | null;
+      documentsMissing: boolean;
+    }
+  | {
+      kind: "panel";
+      code: string;
+      clicksThisMonth: number;
+      stores: { storeId: string; name: string; status: PartnerState }[];
+    };
+
+/**
+ * Início do vendedor [7b] (SEL-FR-002, 006, SEL-SEC-004): em análise ou bloqueado, só o
+ * status; ativo, o painel com os cliques do mês (São Paulo) e as lojas com parceria
+ * ativa ou pendente. Sempre só os dados do vendedor da sessão.
+ */
+export async function sellerHome(
+  db: Db,
+  session: Session | null,
+  now: Date = new Date(),
+): Promise<SellerHome> {
+  const me = await ownSeller(db, session);
+  if (me.status !== "active" || !me.code)
+    return {
+      kind: "status",
+      status: me.status === "blocked" ? "blocked" : "in_review",
+      reason: me.status === "blocked" ? me.blockedReason : null,
+      documentsMissing: !me.documentFrontPublicId || !me.documentBackPublicId,
+    };
+  const [clicks] = await db
+    .select({ n: sum(sellerVehicleClicks.clicks).mapWith(Number) })
+    .from(sellerVehicleClicks)
+    .where(
+      and(
+        eq(sellerVehicleClicks.sellerId, me.profileId),
+        gte(sellerVehicleClicks.day, `${brDay(now).slice(0, 8)}01`),
+      ),
+    );
+  const rows = await db
+    .select({
+      storeId: stores.id,
+      name: stores.name,
+      status: partnerships.status,
+    })
+    .from(partnerships)
+    .innerJoin(stores, eq(stores.id, partnerships.storeId))
+    .where(
+      and(
+        eq(partnerships.sellerId, me.profileId),
+        inArray(partnerships.status, ["active", "pending"]),
+      ),
+    )
+    .orderBy(asc(stores.name));
+  return {
+    kind: "panel",
+    code: me.code,
+    clicksThisMonth: clicks?.n ?? 0,
+    stores: rows.map((r) => ({
+      storeId: r.storeId,
+      name: r.name,
+      status: r.status === "active" ? "partner" : "pending",
+    })),
   };
 }
