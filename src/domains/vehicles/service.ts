@@ -58,6 +58,18 @@ const NOT_EDITABLE = "Este veículo não pode mais ser editado.";
 const isEditable = (status: string) =>
   (EDITABLE as readonly string[]).includes(status);
 
+/**
+ * No ar para a loja: publicado ou oculto pela CajuGo (007b). Vender, despublicar e
+ * excluir valem para os dois; a marca de moderação decide para onde ele volta.
+ */
+const ON_AIR: (typeof vehicles.$inferSelect.status)[] = ["published", "hidden"];
+const HIDDEN_LOCKED =
+  "Este veículo foi ocultado pela CajuGo. Para revisar, fale com a CajuGo.";
+
+/** Publicar ou desfazer a venda volta a oculto enquanto houver a marca (RPT-FR-009). */
+const onAirStatus = (v: { hiddenReason: string | null }) =>
+  v.hiddenReason ? ("hidden" as const) : ("published" as const);
+
 function parse<T>(schema: z.ZodType<T>, input: unknown): T {
   const parsed = schema.safeParse(input);
   if (!parsed.success)
@@ -564,7 +576,7 @@ export async function publish(
     session,
     vehicleId,
   );
-  if (vehicle.status === "published") return;
+  if (ON_AIR.includes(vehicle.status)) return;
   if (vehicle.status !== "draft")
     throw AppError.conflict("Este veículo não pode ser publicado agora.");
   const now = clock(deps);
@@ -575,7 +587,7 @@ export async function publish(
       .from(vehicles)
       .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.storeId, storeId)))
       .for("update");
-    if (!v || v.status === "published") return;
+    if (!v || ON_AIR.includes(v.status)) return;
     if (v.status !== "draft")
       throw AppError.conflict("Este veículo não pode ser publicado agora.");
     const errors: FieldError[] = PUBLISH_REQUIRED.filter(
@@ -590,7 +602,7 @@ export async function publish(
     if (errors.length) throw AppError.validation(errors);
     await tx
       .update(vehicles)
-      .set({ status: "published", publishedAt: now, updatedAt: now })
+      .set({ status: onAirStatus(v), publishedAt: now, updatedAt: now })
       .where(eq(vehicles.id, v.id));
     await syncSearchFields(tx, v.id);
     await logActivity(tx, {
@@ -612,6 +624,7 @@ export async function setShare(
   const { storeId, vehicle } = await ownVehicle(deps.db, session, vehicleId);
   if (typeof on !== "boolean")
     throw fieldError("shareOnCajugo", "Valor inválido.");
+  if (vehicle.status === "hidden") throw AppError.conflict(HIDDEN_LOCKED);
   const done = await deps.db
     .update(vehicles)
     .set({ shareOnCajugo: on, updatedAt: clock(deps) })
@@ -741,7 +754,7 @@ export const markSold = (
   vehicleId: string,
 ) =>
   transition(deps, session, vehicleId, {
-    from: ["published"],
+    from: ON_AIR,
     set: (v, now) => ({
       status: "sold",
       soldAt: now,
@@ -764,7 +777,7 @@ export const undoSold = (
       !!v.soldAt &&
       now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
     set: (v) => ({
-      status: "published",
+      status: onAirStatus(v),
       soldAt: null,
       shareOnCajugo: v.shareBeforeSale ?? v.shareOnCajugo,
       shareBeforeSale: null,
@@ -780,7 +793,7 @@ export const unpublish = (
   vehicleId: string,
 ) =>
   transition(deps, session, vehicleId, {
-    from: ["published"],
+    from: ON_AIR,
     set: () => ({ status: "draft" }),
     action: "vehicle.unpublished",
     conflict: "Só um veículo publicado pode ser despublicado.",
@@ -1071,3 +1084,65 @@ async function syncSearchFields(tx: Db, vehicleId: string) {
 export { BODIES, CONDITIONS, FEATURES, FUELS, TRANSMISSIONS } from "./lists";
 
 export { VEHICLES_TAG } from "./tags";
+
+export type ModerationMark = {
+  reason: NonNullable<typeof vehicles.$inferSelect.hiddenReason>;
+  note: string | null;
+};
+
+/** O veículo de uma decisão da CajuGo: a loja a avisar e o nome para o aviso. */
+export type ModeratedVehicle = { storeId: string; title: string };
+
+/**
+ * Ocultar (RPT-FR-004, 005, 009): só admin e suporte; publicado → oculto, com a marca de
+ * moderação (motivo, nota, quando, quem). Só o veículo do id muda (RPT-SEC-004). `null`
+ * quando ele já não estava publicado. Use dentro da transação da decisão.
+ */
+export async function hideVehicle(
+  db: Db,
+  session: Session | null,
+  vehicleId: string,
+  mark: ModerationMark,
+  now: Date = new Date(),
+): Promise<ModeratedVehicle | null> {
+  const actor = authorizeTo(session, "admin.moderate");
+  const [v] = await db
+    .update(vehicles)
+    .set({
+      status: "hidden",
+      hiddenReason: mark.reason,
+      hiddenNote: mark.reason === "other" ? mark.note : null,
+      hiddenAt: now,
+      hiddenBy: actor.userId,
+      updatedAt: now,
+    })
+    .where(and(eq(vehicles.id, vehicleId), eq(vehicles.status, "published")))
+    .returning();
+  return v ? { storeId: v.storeId, title: vehicleName(v) } : null;
+}
+
+/**
+ * Mostrar de novo (RPT-FR-008): só admin e suporte; oculto → publicado, sem a marca.
+ * `null` quando ele já não estava oculto.
+ */
+export async function showVehicle(
+  db: Db,
+  session: Session | null,
+  vehicleId: string,
+  now: Date = new Date(),
+): Promise<ModeratedVehicle | null> {
+  authorizeTo(session, "admin.moderate");
+  const [v] = await db
+    .update(vehicles)
+    .set({
+      status: "published",
+      hiddenReason: null,
+      hiddenNote: null,
+      hiddenAt: null,
+      hiddenBy: null,
+      updatedAt: now,
+    })
+    .where(and(eq(vehicles.id, vehicleId), eq(vehicles.status, "hidden")))
+    .returning();
+  return v ? { storeId: v.storeId, title: vehicleName(v) } : null;
+}

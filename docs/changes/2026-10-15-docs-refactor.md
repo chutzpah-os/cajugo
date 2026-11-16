@@ -767,3 +767,6 @@
 
 # 2026-11-16 · 007b/T007 Manter
 - keep (admin.moderate): denúncias abertas do anúncio viram kept com quem e quando, numa transação com o activity_log (vehicle_reports.kept, só a contagem). keepReportsAction.
+
+# 2026-11-16 · 007b/T008 veículo oculto
+- vehicles: hideVehicle (published → hidden com a marca) e showVehicle (hidden → published, limpa a marca), só admin.moderate. Vender, despublicar e excluir aceitam hidden; publicar e desfazer a venda voltam a hidden enquanto há marca; divulgar e editar o oculto → 409.

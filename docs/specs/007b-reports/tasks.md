@@ -55,7 +55,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
 - [x] **T007** `keep` e `keepReportsAction`: arquiva as denúncias abertas como `kept`, e uma denúncia nova reabre o anúncio. Grava no `activity_log` sem texto das denúncias. Teste de 403.
 
   · _RPT-FR-003, RPT-SEC-003, RPT-SEC-005_
-- [ ] **T008** `vehicles`: `hideVehicle`, `showVehicle` e as transições com a marca de moderação:
+- [x] **T008** `vehicles`: `hideVehicle`, `showVehicle` e as transições com a marca de moderação:
   - `markSold`, `unpublish` e `remove` aceitam `hidden`;
   - `publish` e `undoSale` vão para `hidden` quando há marca;
   - `setShare` e a edição recusam `hidden` (409);
