@@ -347,6 +347,8 @@ export const payments = pgTable(
 export const noticeKind = pgEnum("notice_kind", [
   "payment_confirmed",
   "payment_rejected",
+  "vehicle_hidden",
+  "vehicle_shown",
 ]);
 
 export const notices = pgTable(
@@ -378,6 +380,17 @@ export const vehicleStatus = pgEnum("vehicle_status", [
   "hidden",
   "sold",
   "deleted",
+]);
+
+/**
+ * Motivo da denúncia e do Ocultar (spec 007b). `other` só no Ocultar, com nota.
+ */
+export const reportReason = pgEnum("report_reason", [
+  "sold",
+  "unreal_price",
+  "wrong_photos",
+  "scam",
+  "other",
 ]);
 
 /** Veículo (spec 005). Placa e chassi nunca vão para página pública (VEH-SEC-002). */
@@ -425,6 +438,14 @@ export const vehicles = pgTable(
     shareOnCajugo: boolean("share_on_cajugo").notNull().default(true),
     /** Divulgação antes da venda, para "Desfazer venda" (VEH-FR-013). */
     shareBeforeSale: boolean("share_before_sale"),
+    /**
+     * Marca de moderação do Ocultar (007b, D2): sobrevive a despublicar, publicar e
+     * desfazer a venda; só "Mostrar de novo" limpa.
+     */
+    hiddenReason: reportReason("hidden_reason"),
+    hiddenNote: text("hidden_note"),
+    hiddenAt: timestamp("hidden_at", { withTimezone: true }),
+    hiddenBy: uuid("hidden_by").references(() => profiles.id),
     publishedAt: timestamp("published_at", { withTimezone: true }),
     soldAt: timestamp("sold_at", { withTimezone: true }),
     /** Excluído: guardado 90 dias para o admin (VEH-FR-014). */
@@ -640,4 +661,34 @@ export const vehicleDailyStats = pgTable(
     views: integer("views").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.vehicleId, t.day] })],
+).enableRLS();
+
+/** Status da denúncia de anúncio (spec 007b). */
+export const reportStatus = pgEnum("report_status", ["open", "kept", "hidden"]);
+
+/**
+ * Denúncia de anúncio (spec 007b). Não guarda quem denunciou, nem conta nem IP
+ * (RPT-SEC-006); o id é a chave do envio gerada na tela (idempotência).
+ */
+export const vehicleReports = pgTable(
+  "vehicle_reports",
+  {
+    id: uuid("id").primaryKey(),
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id, { onDelete: "cascade" }),
+    reason: reportReason("reason").notNull(),
+    details: text("details"),
+    status: reportStatus("status").notNull().default("open"),
+    decidedBy: uuid("decided_by").references(() => profiles.id),
+    decidedAt: timestamp("decided_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("vehicle_reports_open")
+      .on(t.vehicleId, t.createdAt)
+      .where(sql`${t.status} = 'open'`),
+  ],
 ).enableRLS();

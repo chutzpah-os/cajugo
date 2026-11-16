@@ -18,7 +18,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - GLOSSARY (Ocultar, Mostrar de novo, status da denúncia).
 
   · _—_
-- [ ] **T002** Migration `0017`, aditiva:
+- [x] **T002** Migration `0017`, aditiva:
   - enums `report_reason` e `report_status`;
   - tabela `vehicle_reports` com índice parcial das abertas;
   - colunas `hidden_reason`, `hidden_note`, `hidden_at`, `hidden_by` em `vehicles`;

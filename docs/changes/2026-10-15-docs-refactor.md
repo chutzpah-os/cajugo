@@ -749,3 +749,6 @@
 
 # 2026-11-16 · 007b/T001 documentos
 - Spec, plano e tasks da 007b; PRD §5.12 e [1b] (oculto abre como veículo do catálogo, noindex). ARCHITECTURE §3 (platform/browser) e §4 (vehicle_reports, marca de moderação em vehicles), API.md §5, SECURITY §8, GLOSSARY (Ocultar, Mostrar de novo, status da denúncia).
+
+# 2026-11-16 · 007b/T002 migration 0017
+- Migration aditiva 0017_reports: enums report_reason e report_status, tabela vehicle_reports (id da tela, FK cascade, índice parcial das abertas, RLS), marca de moderação em vehicles (hidden_reason, hidden_note, hidden_at, hidden_by), notice_kind + vehicle_hidden/vehicle_shown. Aplicada no staging.
