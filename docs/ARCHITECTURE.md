@@ -88,6 +88,7 @@ tests/e2e/                 Playwright
 Regras:
 - `app/` não acessa o banco: chama `domains/*`.
 - Um domínio usa outro só pelo `service.ts` dele, nunca pelos arquivos internos.
+  - **Exceção de tela:** a página do veículo (`showcase`) usa componentes de outros domínios que agem sobre ela: o coração dos favoritos (`buyers`, 006c) e o formulário de contato e o botão WhatsApp (`leads`, 007). Só componente de tela; dado e regra continuam no `service.ts` de cada um.
 - `ui/` não conhece domínio nem banco.
 - `platform/` não conhece domínio.
 

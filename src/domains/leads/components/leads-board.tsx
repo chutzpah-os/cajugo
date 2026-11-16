@@ -5,15 +5,14 @@ import { Badge, type BadgeTone } from "@/ui/badge";
 import { cn } from "@/ui/cn";
 import { EmptyState } from "@/ui/empty-state";
 import type { LeadCard, LeadFilter, LeadsBoard } from "../service";
-import { ORIGIN_LABEL, STATUS_LABEL, type LeadStatus } from "../status";
+import {
+  FILTER_LABEL,
+  LEAD_FILTERS,
+  ORIGIN_LABEL,
+  STATUS_LABEL,
+  type LeadStatus,
+} from "../status";
 import { LeadActions } from "./lead-actions";
-
-const FILTERS: [LeadFilter, string][] = [
-  ["all", "Todos"],
-  ["new", "Novo"],
-  ["contacting", "Em contato"],
-  ["negotiating", "Negociando"],
-];
 
 const STATUS_TONE: Record<LeadStatus, BadgeTone> = {
   new: "caju",
@@ -26,7 +25,7 @@ const STATUS_TONE: Record<LeadStatus, BadgeTone> = {
 const filterHref = (f: LeadFilter) =>
   f === "all" ? "/painel/leads" : `/painel/leads?status=${f}`;
 
-function Card({ lead, now }: { lead: LeadCard; now: Date }) {
+function LeadCardItem({ lead, now }: { lead: LeadCard; now: Date }) {
   const viaWhatsapp = lead.channel === "whatsapp";
   const vehicle = (
     <>
@@ -154,14 +153,15 @@ export function LeadsBoardView({
       </div>
 
       <nav aria-label="Filtrar leads" className="flex gap-2 overflow-x-auto">
-        {FILTERS.map(([key, label]) => (
+        {LEAD_FILTERS.map((key) => (
           <Link
             key={key}
             href={filterHref(key)}
             aria-current={filter === key ? "page" : undefined}
             className="flex h-11 shrink-0 items-center gap-1.5 rounded-full border border-field bg-surface px-3.5 text-sm font-semibold aria-[current=page]:border-ink aria-[current=page]:bg-ink aria-[current=page]:text-white"
           >
-            {label} <span className="opacity-60">{board.counts[key]}</span>
+            {FILTER_LABEL[key]}{" "}
+            <span className="opacity-60">{board.counts[key]}</span>
           </Link>
         ))}
       </nav>
@@ -169,7 +169,7 @@ export function LeadsBoardView({
       {board.cards.length ? (
         <ul className="grid grid-cols-1 gap-3 lg:grid-cols-2">
           {board.cards.map((lead) => (
-            <Card key={lead.id} lead={lead} now={now} />
+            <LeadCardItem key={lead.id} lead={lead} now={now} />
           ))}
         </ul>
       ) : filter !== "all" ? (

@@ -740,3 +740,6 @@
 
 # 2026-11-16 · 007/T018
 - e2e `tests/e2e/leads.spec.ts` (390 e 1280 px): formulário com erros e envio via CajuGo, WhatsApp pelo catálogo (dois toques, um lead Seu catálogo), tela Leads (indicadores, destaque, filtro, avançar, Perdido, veículo excluído, contador), vitrine sem o contato. Seed `leads/testing/e2e-seed.ts` na loja da vitrine. Selo de contador também nos itens da barra do celular. Link do veículo no card com 44 px. LCP de [1b] no build de produção: 1,86 s, CLS 0,001.
+
+# 2026-11-16 · 007/verify ajustes da revisão
+- Lead idempotente (`requestId` uuid v7 da tela vira o id, `on conflict do nothing`); `uuidv7` com Web Crypto; lista de robôs sem CUBOT nem navegador de app; WhatsApp do card só para celular; `isHoneypotFilledIn` (leads e alertas); filtros de [3a] em `status.ts`; `newLeadsCount` devolve 0 sem permissão; exceção de tela showcase → leads no ARCHITECTURE §3; API.md e plano atualizados.

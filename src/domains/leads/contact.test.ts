@@ -1,3 +1,4 @@
+import { uuidv7 } from "@/platform/db/uuid";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { leads } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
@@ -7,6 +8,7 @@ import { contactStore } from "./service";
 const NOW = new Date("2026-11-16T10:00:00Z");
 const ctx = { ipHash: "ip-1", now: NOW };
 const form = (vehicleId: string, over: Record<string, unknown> = {}) => ({
+  requestId: uuidv7(),
   vehicleId,
   origin: "cajugo",
   name: "Ana",
@@ -51,6 +53,23 @@ describe("mensagem à loja", () => {
         createdAt: NOW,
       }),
     ]);
+  });
+
+  it("[LED-FR-001] o mesmo envio repetido (mesma chave) cria um lead só", async () => {
+    // Arrange
+    const { storeId } = await liveStore(t.db, "loja-a");
+    const v = await car(t.db, storeId);
+    const once = form(v.id);
+
+    // Act
+    const results = [
+      await contactStore(t.db, once, ctx),
+      await contactStore(t.db, once, ctx),
+    ];
+
+    // Assert
+    expect(results).toEqual([{ ok: true }, { ok: true }]);
+    expect(await t.db.select().from(leads)).toHaveLength(1);
   });
 
   it("[LED-FR-004] veículo não divulgado na CajuGo é sempre Seu catálogo", async () => {

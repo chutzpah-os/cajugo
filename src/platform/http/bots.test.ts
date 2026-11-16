@@ -9,6 +9,8 @@ describe("isKnownBot", () => {
       "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
       "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)",
       "WhatsApp/2.23.20.0",
+      "TelegramBot (like TwitterBot)",
+      "Pinterestbot/1.0 (+http://www.pinterest.com/bot.html)",
       "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/120.0.0.0 Safari/537.36",
       "curl/8.5.0",
       "",
@@ -24,6 +26,11 @@ describe("isKnownBot", () => {
     const people = [
       "Mozilla/5.0 (Linux; Android 14; SM-A546E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
       "Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1 Mobile/15E148 Safari/604.1",
+      // Celular com "bot" no nome do aparelho e navegadores dentro de apps
+      "Mozilla/5.0 (Linux; Android 13; CUBOT X30 Build/TP1A) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36",
+      "Mozilla/5.0 (Linux; Android 14; SM-A546E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 Telegram-Android/11.2.3",
+      "Mozilla/5.0 (Linux; Android 14; SM-A546E) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 [Pinterest/Android]",
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 18_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 350.0.0",
     ];
 
     // Act / Assert

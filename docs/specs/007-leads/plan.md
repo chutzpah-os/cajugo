@@ -160,6 +160,13 @@ Diferenças em relação ao `ARCHITECTURE.md` §4:
 | LED-SEC-005 | — | suporte em `moveLead` → forbidden | — |
 | LED-SEC-006 | — | `purgeOldLeads` 2 anos + 1 dia limpa, 1 dia antes não; continua contando | — |
 
+## Ajustes do `/verify` (2026-11-16)
+- **Idempotência do lead** (`API.md` §2.6): a tela gera um uuid v7 por envio (`requestId`), que vira o id do lead com `on conflict do nothing`; repetir o mesmo envio não duplica. `uuidv7` passou a usar a Web Crypto (servidor e navegador).
+- **Robôs:** a lista não pega mais aparelho com "bot" no nome (CUBOT) nem o navegador dentro do Telegram, do Pinterest e do Instagram; só a prévia de link (`TelegramBot`, `Pinterestbot`, `WhatsApp/…` no começo).
+- **Telefone fixo** no card: só "Ligar"; o botão WhatsApp fica para celular. Mensagem pronta sem "pela CajuGo" (o lead pode ter vindo do catálogo).
+- Honeypot de objeto em `platform/http/honeypot.ts` (usado também pelo alerta da 006d); filtros e rótulos de [3a] num lugar só (`status.ts`); `newLeadsCount` devolve 0 sem permissão (o layout só repassa); exceção de tela `showcase` → `leads` registrada no `ARCHITECTURE.md` §3.
+- Fica como está: o limite de 60 visualizações por minuto por rede (previsto no plano); a marca de catálogo vale para a aba inteira (D1); admin e suporte ainda sem tela de leitura (spec 012).
+
 ## Riscos e alternativas descartadas
 - **Escrita por visualização:** cada aparelho grava uma vez por veículo por dia. Com o tráfego do MVP isso cabe na cota gratuita do Supabase. Se crescer, a saída é agregar em memória e gravar em lote; agora seria complexidade sem necessidade.
 - **Contagem no aparelho (D2) é burlável:** quem limpa o navegador conta de novo. Aceito: o número é para o lojista ter noção, não é cobrança. O limite por IP segura o abuso.

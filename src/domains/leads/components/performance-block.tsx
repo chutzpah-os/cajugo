@@ -1,4 +1,4 @@
-const n = new Intl.NumberFormat("pt-BR");
+const count = new Intl.NumberFormat("pt-BR");
 
 /**
  * "Desempenho do anúncio" em [6e] (LED-FR-012): Visualizações (1 por aparelho por dia),
@@ -14,11 +14,11 @@ export function PerformanceBlock({
   daysOnAir: number | null;
 }) {
   const items = [
-    ["Visualizações", n.format(views), "perf-views"],
-    ["Leads", n.format(leads), "perf-leads"],
+    ["Visualizações", count.format(views), "perf-views"],
+    ["Leads", count.format(leads), "perf-leads"],
     [
       "Dias no ar",
-      daysOnAir === null ? "–" : n.format(daysOnAir),
+      daysOnAir === null ? "–" : count.format(daysOnAir),
       "days-on-air",
     ],
   ] as const;

@@ -346,3 +346,6 @@
 
 # 2026-11-16 · 007/T018
 - O contador do menu só aparecia na gaveta "Mais" e na barra lateral; "Leads" é item fixo da barra do celular, então o selo passou a valer ali também.
+
+# 2026-11-16 · 007/verify ajustes da revisão
+- API.md §2.6 pede criação de lead que aguente repetição; a chave no id dispensa coluna e migration nova. A lista de robôs cortava gente real (aparelhos e navegadores dentro de apps), justamente quem abre link compartilhado.

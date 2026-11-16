@@ -11,8 +11,7 @@ import {
   sql,
   sum,
 } from "drizzle-orm";
-import { z } from "zod";
-import { authorizeTo, type Permission } from "@/domains/auth/service";
+import { authorizeTo, can, type Permission } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { brDay } from "@/platform/br/date";
 import { leads, vehicleDailyStats, vehicles } from "@/platform/db/schema";
@@ -24,21 +23,26 @@ import {
 } from "@/platform/http/errors";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
 import { isKnownBot } from "@/platform/http/bots";
+import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import type { Session } from "@/platform/http/session";
 import { whatsappLink } from "@/platform/whatsapp/link";
 import {
   leadFormSchema,
   moveLeadSchema,
+  vehicleIdSchema,
   viewSchema,
   whatsappClickSchema,
 } from "./schemas";
 import {
   highlighted,
   isOpen,
+  type LeadFilter,
   nextStatus,
   type LeadOrigin,
   type LeadStatus,
 } from "./status";
+
+export type { LeadFilter } from "./status";
 
 export type ContactResult =
   { ok: true } | { ok: false; message: string; errors: FieldError[] };
@@ -70,6 +74,44 @@ const finalOrigin = (origin: LeadOrigin, shared: boolean): LeadOrigin =>
   shared ? origin : "store_catalog";
 
 /**
+ * Grava o lead com a chave do envio como id (API.md §2.6): o mesmo envio repetido
+ * (duplo toque, nova tentativa da rede) não duplica. Status e canal vêm daqui.
+ */
+async function insertLead(
+  db: Db,
+  lead: {
+    requestId: string;
+    vehicleId: string;
+    origin: LeadOrigin;
+    target: { storeId: string; shared: boolean };
+    channel: "form" | "whatsapp";
+    contact?: {
+      name: string;
+      email: string;
+      phone: string;
+      message: string | null;
+    };
+  },
+  now: Date,
+) {
+  await db
+    .insert(leads)
+    .values({
+      id: lead.requestId,
+      storeId: lead.target.storeId,
+      vehicleId: lead.vehicleId,
+      channel: lead.channel,
+      origin: finalOrigin(lead.origin, lead.target.shared),
+      // O lead pelo WhatsApp já começou a conversa (LED-FR-014).
+      status: lead.channel === "whatsapp" ? "contacting" : "new",
+      ...lead.contact,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .onConflictDoNothing({ target: leads.id });
+}
+
+/**
  * "Envie uma mensagem à loja" em [1b] (LED-FR-001, 002, 004, LED-SEC-002, 004): limite
  * por IP, honeypot que finge sucesso, schema estrito; a loja vem do veículo visível.
  */
@@ -81,9 +123,7 @@ export async function contactStore(
   const now = ctx.now ?? new Date();
   if (!(await withinLimits(db, "lead", ctx.ipHash, now)))
     return fail("Muitas tentativas. Aguarde alguns minutos e tente de novo.");
-  const honeypot = (raw as { website?: unknown } | null)?.website;
-  if (typeof honeypot === "string" && honeypot.trim() !== "")
-    return { ok: true };
+  if (isHoneypotFilledIn(raw)) return { ok: true };
 
   const parsed = leadFormSchema.safeParse(raw);
   if (!parsed.success)
@@ -91,23 +131,22 @@ export async function contactStore(
       "Confira os campos destacados.",
       fieldErrorsFromZod(parsed.error),
     );
-  const { vehicleId, origin, name, email, phone, message } = parsed.data;
+  const { requestId, vehicleId, origin, name, email, phone, message } =
+    parsed.data;
   const target = await contactTarget(db, vehicleId);
   if (!target) return fail("Este veículo não está mais disponível.");
-
-  await db.insert(leads).values({
-    storeId: target.storeId,
-    vehicleId,
-    channel: "form",
-    origin: finalOrigin(origin, target.shared),
-    status: "new",
-    name,
-    email,
-    phone,
-    message: message || null,
-    createdAt: now,
-    updatedAt: now,
-  });
+  await insertLead(
+    db,
+    {
+      requestId,
+      vehicleId,
+      origin,
+      target,
+      channel: "form",
+      contact: { name, email, phone, message: message || null },
+    },
+    now,
+  );
   return { ok: true };
 }
 
@@ -128,15 +167,7 @@ export async function recordWhatsappClick(
   if (!(await withinLimits(db, "lead-whatsapp", ctx.ipHash, now))) return;
   const target = await contactTarget(db, parsed.data.vehicleId);
   if (!target) return;
-  await db.insert(leads).values({
-    storeId: target.storeId,
-    vehicleId: parsed.data.vehicleId,
-    channel: "whatsapp",
-    origin: finalOrigin(parsed.data.origin, target.shared),
-    status: "contacting",
-    createdAt: now,
-    updatedAt: now,
-  });
+  await insertLead(db, { ...parsed.data, target, channel: "whatsapp" }, now);
 }
 
 /**
@@ -174,8 +205,6 @@ function storeOf(session: Session | null, permission: Permission): string {
   return s.storeId;
 }
 
-export type LeadFilter = "all" | "new" | "contacting" | "negotiating";
-
 export type LeadCard = {
   id: string;
   status: LeadStatus;
@@ -211,6 +240,9 @@ export type LeadsBoard = {
 /** Até onde [3a] mostra de uma vez; paginação quando uma loja passar disso. */
 const BOARD_LIMIT = 200;
 const SHARE_WINDOW_MS = 30 * 86_400_000;
+
+/** `55` + DDD + 9 + 8 dígitos: celular; telefone fixo não abre WhatsApp (LED-FR-007). */
+const isMobile = (phone: string) => /^55[1-9]{2}9\d{8}$/.test(phone);
 
 const initialsOf = (name: string | null) =>
   name
@@ -262,7 +294,8 @@ export async function leadsBoard(
     .from(leads)
     .where(own)
     .groupBy(leads.status);
-  const n = (s: LeadStatus) => byStatus.find((r) => r.status === s)?.n ?? 0;
+  const countOf = (s: LeadStatus) =>
+    byStatus.find((r) => r.status === s)?.n ?? 0;
   const [recent] = await db
     .select({
       all: count(),
@@ -291,12 +324,13 @@ export async function leadsBoard(
         message: r.message,
         createdAt: r.createdAt,
         highlight: highlighted(r.status, r.createdAt, now),
-        whatsappUrl: r.phone
-          ? whatsappLink(
-              r.phone,
-              `Olá${r.name ? `, ${r.name.split(/\s+/)[0]}` : ""}! Recebemos seu contato sobre o ${title} pela CajuGo.`,
-            )
-          : null,
+        whatsappUrl:
+          r.phone && isMobile(r.phone)
+            ? whatsappLink(
+                r.phone,
+                `Olá${r.name ? `, ${r.name.split(/\s+/)[0]}` : ""}! Recebemos seu contato sobre o ${title}.`,
+              )
+            : null,
         telUrl: r.phone ? `tel:+${r.phone}` : null,
         vehicle: {
           id: r.vehicleId,
@@ -308,11 +342,11 @@ export async function leadsBoard(
     }),
     counts: {
       all: byStatus.reduce((sum, r) => sum + r.n, 0),
-      new: n("new"),
-      contacting: n("contacting"),
-      negotiating: n("negotiating"),
+      new: countOf("new"),
+      contacting: countOf("contacting"),
+      negotiating: countOf("negotiating"),
     },
-    newCount: n("new"),
+    newCount: countOf("new"),
     cajugoShare: recent.all
       ? Math.round((recent.cajugo / recent.all) * 100)
       : null,
@@ -324,7 +358,9 @@ export async function newLeadsCount(
   db: Db,
   session: Session | null,
 ): Promise<number> {
-  const storeId = storeOf(session, "leads.view");
+  // Sem permissão de leads (ex.: outra área), o menu só não mostra número.
+  if (!session?.storeId || !can(session, "leads.view")) return 0;
+  const storeId = session.storeId;
   const [row] = await db
     .select({ n: count() })
     .from(leads)
@@ -376,7 +412,7 @@ export async function vehiclePerformance(
   vehicleId: string,
 ): Promise<{ views: number; leads: number }> {
   const storeId = storeOf(session, "vehicles.manage");
-  if (!z.uuid().safeParse(vehicleId).success) throw AppError.notFound();
+  if (!vehicleIdSchema.safeParse(vehicleId).success) throw AppError.notFound();
   const [v] = await db
     .select({ id: vehicles.id })
     .from(vehicles)

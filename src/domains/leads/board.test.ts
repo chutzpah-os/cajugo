@@ -119,6 +119,24 @@ describe("tela Leads", () => {
     expect(card.whatsappUrl).toMatch(/^https:\/\/wa\.me\/5579999990000\?text=/);
   });
 
+  it("[LED-FR-007] telefone fixo: Ligar sim, WhatsApp não", async () => {
+    // Arrange
+    const a = await liveStore(t.db, "loja-a");
+    const v = await car(t.db, a.storeId);
+    await lead(t.db, {
+      storeId: a.storeId,
+      vehicleId: v.id,
+      phone: "557932110000",
+    });
+
+    // Act
+    const [card] = (await leadsBoard(t.db, a, "all", NOW)).cards;
+
+    // Assert
+    expect(card.whatsappUrl).toBeNull();
+    expect(card.telUrl).toBe("tel:+557932110000");
+  });
+
   it("[LED-FR-014] lead via WhatsApp: sem contato, fora de Novos, mas no total e no % da vitrine", async () => {
     // Arrange
     const a = await liveStore(t.db, "loja-a");

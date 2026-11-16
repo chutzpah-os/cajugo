@@ -86,7 +86,7 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | página | `/`, `/loja/{slug}` — vitrine e catálogo da loja (filtros na query string) | 1a, 6d, 9a, 15a |
 | página | `/v/{id}-{make}-{model}` — detalhe, uma URL só para vitrine e catálogo (a origem do lead vem da marca da aba, 007/D1; guarda `?ref=` do vendedor na 008) | 1b, 12d |
 | página | `/i/{codigo}` — landing do Caju Indica | 8c |
-| A | `contactLeadAction({ vehicleId, origin, name, email, phone, message })` — honeypot + rate limit · `whatsappClickAction({ vehicleId, origin })` · `viewAction({ vehicleId })` (007) | 1b, 14b |
+| A | `contactLeadAction({ requestId, vehicleId, origin, name, email, phone, message })` — honeypot + rate limit · `whatsappClickAction({ requestId, vehicleId, origin })` · `viewAction({ vehicleId })` (007); `requestId` é um uuid v7 gerado na tela e vira o id do lead (idempotência, §2.6) | 1b, 14b |
 | A | `reportVehicle(vehicleId, reason, details)` | 14d |
 | página | `/favoritos` — favoritos guardados no aparelho, `noindex` (006c) | 14a |
 | A | `favoriteCardsAction({ ids })` — leitura pública dos cards atuais dos favoritos (até 200 ids); sincronizar com conta é fase 2 | 14a |

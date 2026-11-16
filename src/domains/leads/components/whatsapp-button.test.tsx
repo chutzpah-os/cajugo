@@ -48,6 +48,7 @@ describe("botão WhatsApp", () => {
     // Assert
     expect(send).toHaveBeenCalledOnce();
     expect(send).toHaveBeenCalledWith({
+      requestId: expect.stringMatching(/^[0-9a-f-]{36}$/),
       vehicleId: VEHICLE.vehicleId,
       origin: "cajugo",
     });

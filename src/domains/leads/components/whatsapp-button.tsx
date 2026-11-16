@@ -1,16 +1,12 @@
 "use client";
 
+import { uuidv7 } from "@/platform/db/uuid";
 import type { ReactNode } from "react";
 import { whatsappClickAction } from "../actions";
 import { browserStorage, claimWhatsappLead, leadOrigin } from "../device";
-import type { LeadOrigin } from "../status";
+import type { LeadOrigin, LeadVehicle } from "../status";
 
-/** O veículo do botão: o servidor descobre a loja; a origem vem da aba (D1). */
-export type LeadVehicle = {
-  vehicleId: string;
-  storeSlug: string;
-  shared: boolean;
-};
+export type { LeadVehicle } from "../status";
 
 type Storage = ReturnType<typeof browserStorage>;
 
@@ -24,12 +20,17 @@ export function onWhatsappTap(
     local: Storage;
     session: Storage;
     now: () => Date;
-    send: (input: { vehicleId: string; origin: LeadOrigin }) => Promise<void>;
+    send: (input: {
+      requestId: string;
+      vehicleId: string;
+      origin: LeadOrigin;
+    }) => Promise<void>;
   },
 ) {
   if (!claimWhatsappLead(deps.local, lead.vehicleId, deps.now())) return;
   deps
     .send({
+      requestId: uuidv7(),
       vehicleId: lead.vehicleId,
       origin: leadOrigin(deps.session, lead.storeSlug, lead.shared),
     })

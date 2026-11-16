@@ -1,5 +1,6 @@
 "use client";
 
+import { uuidv7 } from "@/platform/db/uuid";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { HONEYPOT_FIELD } from "@/platform/http/honeypot";
@@ -9,6 +10,7 @@ import { TextAreaField } from "@/ui/textarea-field";
 import { TextField } from "@/ui/text-field";
 import { contactLeadAction } from "../actions";
 import { browserStorage, leadOrigin } from "../device";
+import type { LeadVehicle } from "../status";
 
 const DEFAULT_MESSAGE =
   "Olá, tenho interesse no veículo. Por favor entre em contato.";
@@ -17,15 +19,9 @@ const DEFAULT_MESSAGE =
  * "Envie uma mensagem à loja" em [1b] (LED-FR-001, 002, LED-SEC-004). A origem vem da
  * marca da aba (D1); o servidor descobre a loja pelo veículo.
  */
-export function ContactForm({
-  vehicleId,
-  storeSlug,
-  shared,
-}: {
-  vehicleId: string;
-  storeSlug: string;
-  shared: boolean;
-}) {
+export function ContactForm({ vehicleId, storeSlug, shared }: LeadVehicle) {
+  // Chave deste envio (API.md §2.6): repetir o mesmo envio não duplica o lead.
+  const [requestId] = useState(() => uuidv7());
   const [message, setMessage] = useState(DEFAULT_MESSAGE);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
@@ -48,6 +44,7 @@ export function ContactForm({
     const form = new FormData(e.currentTarget);
     setBusy(true);
     const result = await contactLeadAction({
+      requestId,
       vehicleId,
       origin: leadOrigin(browserStorage("session"), storeSlug, shared),
       name: String(form.get("name") ?? ""),

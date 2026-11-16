@@ -10,6 +10,7 @@ import {
 } from "@/domains/showcase/service";
 import { isUniqueViolation } from "@/platform/db/errors";
 import { logActivity } from "@/platform/http/activity-log";
+import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import {
   AppError,
   fieldErrorsFromZod,
@@ -123,8 +124,7 @@ export async function requestAlert(
     if (!ok)
       return fail("Muitas tentativas. Aguarde alguns minutos e tente de novo.");
   }
-  const honeypot = (raw as { website?: unknown } | null)?.website;
-  if (typeof honeypot === "string" && honeypot.trim() !== "")
+  if (isHoneypotFilledIn(raw))
     return { ok: true, status: "created", cancelPath: null };
 
   const parsed = alertRequestSchema.safeParse(raw);

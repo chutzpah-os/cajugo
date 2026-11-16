@@ -1,3 +1,4 @@
+import { uuidv7 } from "@/platform/db/uuid";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { leads } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
@@ -23,7 +24,11 @@ describe("lead pelo WhatsApp", () => {
     const v = await car(t.db, storeId);
 
     // Act
-    await recordWhatsappClick(t.db, { vehicleId: v.id, origin: "cajugo" }, ctx);
+    await recordWhatsappClick(
+      t.db,
+      { requestId: uuidv7(), vehicleId: v.id, origin: "cajugo" },
+      ctx,
+    );
 
     // Assert
     expect(await t.db.select().from(leads)).toEqual([
@@ -48,12 +53,38 @@ describe("lead pelo WhatsApp", () => {
 
     // Act / Assert
     await expect(
-      recordWhatsappClick(t.db, { vehicleId: sold.id, origin: "cajugo" }, ctx),
+      recordWhatsappClick(
+        t.db,
+        {
+          requestId: uuidv7(),
+          vehicleId: sold.id,
+          origin: "cajugo",
+        },
+        ctx,
+      ),
     ).resolves.toBeUndefined();
     await expect(
       recordWhatsappClick(t.db, { vehicleId: "x", storeId }, ctx),
     ).resolves.toBeUndefined();
     expect(await t.db.select().from(leads)).toEqual([]);
+  });
+
+  it("[LED-FR-003] o mesmo toque repetido (mesma chave) cria um lead só", async () => {
+    // Arrange
+    const { storeId } = await liveStore(t.db, "loja-a");
+    const v = await car(t.db, storeId);
+    const tap = {
+      requestId: uuidv7(),
+      vehicleId: v.id,
+      origin: "cajugo",
+    };
+
+    // Act
+    await recordWhatsappClick(t.db, tap, ctx);
+    await recordWhatsappClick(t.db, tap, ctx);
+
+    // Assert
+    expect(await t.db.select().from(leads)).toHaveLength(1);
   });
 
   it("[LED-SEC-002] o 6º toque do IP no minuto não grava; a mensagem à loja tem limite próprio", async () => {
@@ -65,7 +96,7 @@ describe("lead pelo WhatsApp", () => {
     for (let i = 0; i < 6; i++)
       await recordWhatsappClick(
         t.db,
-        { vehicleId: v.id, origin: "cajugo" },
+        { requestId: uuidv7(), vehicleId: v.id, origin: "cajugo" },
         ctx,
       );
 

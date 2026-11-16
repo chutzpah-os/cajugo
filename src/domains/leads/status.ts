@@ -36,3 +36,26 @@ export const highlighted = (
   createdAt: Date,
   now: Date,
 ): boolean => status === "new" && now.getTime() - createdAt.getTime() > DAY_MS;
+
+/** Filtros da tela Leads [3a] (LED-FR-006), na ordem da tela. */
+export const LEAD_FILTERS = [
+  "all",
+  "new",
+  "contacting",
+  "negotiating",
+] as const;
+export type LeadFilter = (typeof LEAD_FILTERS)[number];
+
+export const FILTER_LABEL: Record<LeadFilter, string> = {
+  all: "Todos",
+  new: STATUS_LABEL.new,
+  contacting: STATUS_LABEL.contacting,
+  negotiating: STATUS_LABEL.negotiating,
+};
+
+/** O veículo de um contato em [1b]: o servidor acha a loja; a origem vem da aba (D1). */
+export type LeadVehicle = {
+  vehicleId: string;
+  storeSlug: string;
+  shared: boolean;
+};
