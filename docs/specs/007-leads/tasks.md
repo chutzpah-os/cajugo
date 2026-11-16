@@ -16,7 +16,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - termos [12i] (trecho do lead).
 
   · _—_
-- [ ] **T002** Migration `0016`, aditiva:
+- [x] **T002** Migration `0016`, aditiva:
   - enums `lead_channel`, `lead_origin` e `lead_status`;
   - tabelas `leads` e `vehicle_daily_stats`;
   - índices do plano.

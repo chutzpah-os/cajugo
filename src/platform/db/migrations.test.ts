@@ -283,4 +283,51 @@ describe("migrations", () => {
       ).rejects.toThrow();
     });
   });
+
+  describe("0016 leads", () => {
+    it("[LED-FR-005] [LED-FR-015] leads com status e origem, e visualizações por veículo e dia", async () => {
+      // Arrange / Act
+      const client = new PGlite();
+      cleanup.push(() => client.close());
+      await migrate(drizzle(client, { schema }), {
+        migrationsFolder: "drizzle",
+      });
+
+      // Assert
+      const cols = async (table: string) =>
+        (
+          await client.query<{ column_name: string }>(
+            "select column_name from information_schema.columns where table_name = $1",
+            [table],
+          )
+        ).rows.map((r) => r.column_name);
+      expect(await cols("leads")).toEqual(
+        expect.arrayContaining([
+          "store_id",
+          "vehicle_id",
+          "channel",
+          "origin",
+          "status",
+          "name",
+          "email",
+          "phone",
+          "message",
+          "purged_at",
+        ]),
+      );
+      expect(await cols("vehicle_daily_stats")).toEqual(
+        expect.arrayContaining(["vehicle_id", "day", "views"]),
+      );
+      const { rows } = await client.query<{ e: string }>(
+        "select unnest(enum_range(null::lead_status))::text as e",
+      );
+      expect(rows.map((r) => r.e)).toEqual([
+        "new",
+        "contacting",
+        "negotiating",
+        "sold",
+        "lost",
+      ]);
+    });
+  });
 });

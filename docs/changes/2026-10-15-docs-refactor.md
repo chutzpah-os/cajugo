@@ -689,3 +689,6 @@
 
 # 2026-11-16 · 007/T001
 - ARCHITECTURE §4 (`leads`, `vehicle_daily_stats`) e §6 (`purgeOldLeads`); API.md §5 com as actions de lead e `/painel/leads`; SECURITY §8 (2 anos, marcas no aparelho); GLOSSARY (status do lead, Visualização, Desempenho); PRD §8 com uma URL só para o veículo; termos com o trecho do lead.
+
+# 2026-11-16 · 007/T002
+- Migration `0016` (staging): enums `lead_channel`, `lead_origin`, `lead_status`; tabelas `leads` e `vehicle_daily_stats` com índices; FKs com cascade. GLOSSARY da T001 (ficou fora daquele commit).

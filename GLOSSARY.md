@@ -148,7 +148,16 @@ Contato de um visitante com uma loja sobre um veículo, pelo formulário ou pelo
 _Evite_: mensagem, contato, oportunidade
 
 **Origem do lead** (`origin`):
-Por onde o visitante chegou: Vitrine CajuGo (`cajugo`) ou Catálogo da loja (`store_catalog`).
+Por onde o visitante chegou: Vitrine CajuGo (`cajugo`) ou Catálogo da loja (`store_catalog`). "Seu catálogo" quando o visitante abriu o catálogo da loja na mesma aba, ou quando o veículo não é divulgado na CajuGo.
+
+**Status do lead** (`status`):
+Novo (`new`) → Em contato (`contacting`) → Negociando (`negotiating`) → Vendido (`sold`); Perdido (`lost`) de qualquer status aberto. O lead pelo WhatsApp já entra Em contato.
+
+**Visualização** (`views`):
+Abertura da página do veículo por um aparelho num dia; robôs não contam.
+
+**Desempenho do anúncio**:
+Bloco da edição do veículo [6e] com Visualizações, Leads e Dias no ar.
 
 **Denúncia** (`report`):
 Aviso sobre um anúncio suspeito (de qualquer pessoa, anônimo para a loja) ou sobre um vendedor (do lojista), revisado pelo admin.

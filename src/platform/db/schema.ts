@@ -1,6 +1,7 @@
 import {
   boolean,
   check,
+  date,
   index,
   integer,
   jsonb,
@@ -571,4 +572,72 @@ export const searchAlerts = pgTable(
       .where(sql`${t.status} = 'pending'`),
     index("search_alerts_status_created").on(t.status, t.createdAt),
   ],
+).enableRLS();
+
+export const leadChannel = pgEnum("lead_channel", ["form", "whatsapp"]);
+export const leadOrigin = pgEnum("lead_origin", ["cajugo", "store_catalog"]);
+export const leadStatus = pgEnum("lead_status", [
+  "new",
+  "contacting",
+  "negotiating",
+  "sold",
+  "lost",
+]);
+
+/**
+ * Contato de um visitante com a loja sobre um veículo (spec 007). Veículo e loja só
+ * são apagados de verdade na limpeza dos testes (no app é exclusão lógica): cascade.
+ */
+export const leads = pgTable(
+  "leads",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id, { onDelete: "cascade" }),
+    channel: leadChannel("channel").notNull(),
+    origin: leadOrigin("origin").notNull(),
+    status: leadStatus("status").notNull(),
+    /** Nulos no lead pelo WhatsApp e depois de 2 anos (LED-SEC-006). */
+    name: text("name"),
+    email: text("email"),
+    /** `55` + DDD + número. */
+    phone: text("phone"),
+    message: text("message"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    purgedAt: timestamp("purged_at", { withTimezone: true }),
+  },
+  (t) => [
+    index("leads_store_status_created").on(
+      t.storeId,
+      t.status,
+      t.createdAt.desc(),
+    ),
+    index("leads_store_created").on(t.storeId, t.createdAt.desc()),
+    index("leads_vehicle").on(t.vehicleId),
+    index("leads_created_unpurged")
+      .on(t.createdAt)
+      .where(sql`${t.purgedAt} is null`),
+  ],
+).enableRLS();
+
+/** Visualizações por veículo e dia (São Paulo): 1 por aparelho por dia (LED-FR-015). */
+export const vehicleDailyStats = pgTable(
+  "vehicle_daily_stats",
+  {
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id, { onDelete: "cascade" }),
+    day: date("day").notNull(),
+    views: integer("views").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.vehicleId, t.day] })],
 ).enableRLS();

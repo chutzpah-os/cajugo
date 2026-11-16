@@ -319,3 +319,6 @@
 
 # 2026-11-16 · 007/T001
 - Uma URL só para o veículo (D1) evita conteúdo duplicado no Google; a origem "Seu catálogo" vem da marca da aba.
+
+# 2026-11-16 · 007/T002
+- FK com cascade porque veículo e loja só são apagados de verdade na limpeza dos e2e; no app a exclusão é lógica e o lead fica.
