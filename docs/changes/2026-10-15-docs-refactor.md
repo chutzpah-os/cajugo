@@ -613,3 +613,6 @@
 
 # 2026-11-16 · 006c/T007 simulador [14b]
 - `SimulatorSheet` (folha de baixo; centralizada no desktop) com entrada e prazo em chips, parcela, entrada, financiado, total, aviso de estimativa e "Enviar simulação à loja"; "Simular" abaixo do preço e "Ver parcelas" ao lado do WhatsApp, só com a parcela ativada.
+
+# 2026-11-16 · 006c/T008 coração
+- `buyers/components/favorite-button.tsx` sobre a foto do `PublicCard` (vitrine, descoberta, catálogo, "Carregar mais", parecidos) e na galeria do veículo ao lado de compartilhar; sai desmarcado no servidor; aviso ao chegar a 200. `favorites.ts` valida à mão, sem zod, para não pesar nas páginas públicas.

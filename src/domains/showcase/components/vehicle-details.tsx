@@ -3,12 +3,13 @@ import type { ReactNode } from "react";
 import { brl } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
+import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
 import { Badge } from "@/ui/badge";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/button";
 import type { PublicCard as Card, VehiclePage } from "../service";
 import { Gallery } from "./gallery";
-import { PublicCard } from "./public-card";
+import { favoriteSnapshot, PublicCard } from "./public-card";
 import { ShareButton } from "./share-button";
 import { SimulatorSheet, SimulatorTrigger } from "./simulator";
 import { StoreIdentity } from "./store-identity";
@@ -17,8 +18,9 @@ import { Unavailable } from "./unavailable";
 type Live = Extract<VehiclePage, { kind: "vehicle" }>;
 
 const km = new Intl.NumberFormat("pt-BR");
-const overlayButton =
-  "absolute top-3 flex h-11 items-center rounded-full bg-[rgba(28,27,32,.7)] px-4 text-sm font-semibold text-white";
+const overlayPill =
+  "flex h-11 items-center rounded-full bg-[rgba(28,27,32,.7)] px-4 text-sm font-semibold text-white";
+const overlayButton = `absolute top-3 ${overlayPill}`;
 
 function Spec({
   label,
@@ -75,11 +77,13 @@ export function VehicleDetails({
         <Link href={backHref} className={`${overlayButton} left-3`}>
           Voltar
         </Link>
-        <ShareButton
-          path={page.path}
-          title={alt}
-          className={`${overlayButton} right-3`}
-        />
+        <div className="absolute top-3 right-3 flex gap-2">
+          <ShareButton path={page.path} title={alt} className={overlayPill} />
+          <FavoriteButton
+            snapshot={favoriteSnapshot(page)}
+            className="bg-[rgba(28,27,32,.7)] text-white"
+          />
+        </div>
       </Gallery>
       <div className="relative -mt-5 flex flex-col gap-5 rounded-t-[20px] bg-surface p-4">
         {page.badges.length > 0 && (

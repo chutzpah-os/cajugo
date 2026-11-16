@@ -2,10 +2,27 @@ import Link from "next/link";
 import { brl } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
+import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
 import { Badge } from "@/ui/badge";
 import type { PublicCard as Card } from "../service";
 
 const km = new Intl.NumberFormat("pt-BR");
+
+/** O que o aparelho guarda ao favoritar (BUY-FR-004): o preço é o do momento. */
+export function favoriteSnapshot(
+  v: Pick<
+    Card,
+    "vehicleId" | "path" | "make" | "model" | "yearModel" | "priceCents"
+  >,
+) {
+  return {
+    id: v.vehicleId,
+    path: v.path,
+    title:
+      [v.make, v.model, v.yearModel].filter(Boolean).join(" ") || "Veículo",
+    priceCents: v.priceCents,
+  };
+}
 
 /** Card do veículo [1a] (SHW-FR-003). `showStore`: vitrine CajuGo; catálogo da loja, não. */
 export function PublicCard({
@@ -42,6 +59,10 @@ export function PublicCard({
             <Badge tone="ok">{card.badge}</Badge>
           </span>
         )}
+        <FavoriteButton
+          snapshot={favoriteSnapshot(card)}
+          className="absolute top-1 right-1 bg-surface/90 text-ink"
+        />
       </div>
       <div className="flex flex-1 flex-col gap-1 p-3">
         <p className="text-xs font-bold tracking-wide text-text-3 uppercase">

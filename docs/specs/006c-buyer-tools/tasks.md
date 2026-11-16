@@ -18,7 +18,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 3 — Telas
 - [x] **T007** Simulador [14b]: "Simular" abaixo do preço e "Ver parcelas" na barra fixa abrem o `Drawer`; troca de entrada e prazo recalcula; aviso de estimativa; "Enviar simulação à loja" · _BUY-FR-001, BUY-FR-002, BUY-FR-003, BUY-NFR-001_
-- [ ] **T008** `FavoriteButton` no `PublicCard` (sobre a foto, fora do link; vitrine, descoberta, catálogo e "Carregar mais") e na página do veículo; HTML do servidor sempre desmarcado e com o mesmo tamanho · _BUY-FR-004, BUY-NFR-001, BUY-NFR-002_
+- [x] **T008** `FavoriteButton` no `PublicCard` (sobre a foto, fora do link; vitrine, descoberta, catálogo e "Carregar mais") e na página do veículo; HTML do servidor sempre desmarcado e com o mesmo tamanho · _BUY-FR-004, BUY-NFR-001, BUY-NFR-002_
 - [ ] **T009** `/favoritos` [14a]: ♡ no cabeçalho, casca pré-renderizada com `noindex` fora do sitemap, `FavoritesView` com a ordem, "Baixou R$ X", "Vendido" levando à página do veículo (D3) e estado vazio · _BUY-FR-005, BUY-FR-006, BUY-FR-007, BUY-FR-008, BUY-SEC-002_
 
 ## Fase 4 — Fechamento

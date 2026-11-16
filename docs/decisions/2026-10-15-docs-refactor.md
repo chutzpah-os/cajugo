@@ -291,3 +291,6 @@
 
 # 2026-11-16 · 006c/T004
 - Favorito feito no catálogo pode ser de veículo não divulgado na CajuGo; ele é público na página dele, então os favoritos seguem a regra da página do veículo, não a da vitrine.
+
+# 2026-11-16 · 006c/T008
+- O card (`showcase`) usa o componente do coração de `buyers/components`, como `auth` já usa `notices/components`: é UI de cliente, sem banco; a regra "só pelo service.ts" continua valendo para regra de negócio e dados. Zod ficou fora do arquivo que vai a toda página pública.

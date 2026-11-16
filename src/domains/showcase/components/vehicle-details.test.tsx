@@ -114,6 +114,12 @@ describe("página do veículo [1b]", () => {
     expect(html).not.toContain('id="simulador"');
   });
 
+  it("[BUY-FR-004] coração na galeria, ao lado de compartilhar, desmarcado no servidor", () => {
+    const html = render();
+    expect(html).toContain('aria-label="Favoritar Fiat Argo 2022"');
+    expect(html).toContain('aria-pressed="false"');
+  });
+
   it("[SHW-FR-009] compartilhar existe sem código de vendedor no link", () => {
     // Act
     const html = render();
