@@ -110,7 +110,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
 - [x] **T017** `HideSheet` ([6f] "Ocultar veículo"): 5 motivos, nota no "Outro" e o texto do efeito. "Ocultar da vitrine" não confirma sem motivo.
 
   · _RPT-FR-004_
-- [ ] **T018** Aba "Ocultados" (`?aba=ocultados`), com o motivo, quando foi ocultado e **Mostrar de novo**.
+- [x] **T018** Aba "Ocultados" (`?aba=ocultados`), com o motivo, quando foi ocultado e **Mostrar de novo**.
 
   · _RPT-FR-008_
 - [ ] **T019** Painel do lojista:

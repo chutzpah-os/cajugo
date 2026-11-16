@@ -797,3 +797,6 @@
 
 # 2026-11-16 · 007b/T017 folha Ocultar
 - moderation/components/hide-sheet.tsx: Ocultar abre a ConfirmSheet 'Ocultar veículo' com os 5 motivos, texto no Outro (até 200) e o efeito; sem motivo não confirma ('Escolha um motivo.'). No card da fila ao lado de Manter.
+
+# 2026-11-16 · 007b/T018 aba Ocultados
+- /admin/denuncias ganha as abas Denúncias e Ocultados (?aba=ocultados): HiddenList com o motivo, quando foi ocultado e Mostrar de novo (ShowButton).
