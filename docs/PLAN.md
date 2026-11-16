@@ -105,6 +105,7 @@
 - Simulador [14b] (Price, valores das regras); favoritos [14a] com selos, no aparelho.
 
 ## 006d · Avisar quando chegar — tela 12a (alerta)
+> ✅ **Implementada** em 2026-11-16 (`docs/specs/006d-search-alerts/`): "Avisar quando chegar" [12a] na vitrine e na descoberta (nome, celular com WhatsApp, consentimento, honeypot e limite por IP; até 5 pendentes por celular; mesma busca não repete), tela Alertas do admin e do suporte com veículo compatível, `wa.me` com mensagem pronta e contador no menu, cancelar pelo link assinado, validade nas regras e job diário `/api/v1/cron/daily` que vence alertas e limpa rate limits, apagando nome e celular ao fechar. Migration `0015` no staging e no prod. `CRON_SECRET` na Vercel pendente (você).
 - "Avisar quando chegar" [12a] com nome e celular, tela Alertas do admin com `wa.me`. Dividida da 006c no `/clarify` de 2026-11-16; o banner Caju Indica [9a] foi para a 010.
 
 ## 007 · Leads e denúncias — telas 1b (formulário/WhatsApp), 3a, 14d, 14e

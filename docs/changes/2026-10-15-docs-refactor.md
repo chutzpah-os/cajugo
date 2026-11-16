@@ -677,3 +677,6 @@
 # 2026-11-16 · 006d/verify ajustes da revisão
 - `auth` deixou de ler o cache de `buyers`: o contador do menu vem do `app/admin/layout.tsx` (`navCounts`) e o item tem `permission`. `buyers/schemas.ts`; cancelar com schema estrito; cancelar e vencer no `activity_log`.
 - Pedido com trava por celular em transação; busca guardada sem maiúscula/acento; avisar e cancelar vencem antes os atrasados; o job invalida o cache do admin; `NoResults` com `alert={{ source }}`; título do veículo e validade num lugar só; termos sem "90 dias" fixo.
+
+# 2026-11-16 · 006d/T015 fechamento
+- Spec `implemented`: ALR-SEC-001 diz "admin e suporte" e ALR-FR-002 conta só veículos publicados depois do alerta. Migration `0015` aplicada no prod (tabela e regra de 90 dias conferidas). PLAN e T015 marcados.

@@ -310,3 +310,6 @@
 
 # 2026-11-16 · 006d/verify
 - O contador do menu passou a vir da rota (`app/`), que pode usar qualquer domínio: assim `auth` não lê dado de `buyers` fora do `service.ts`. A trava por celular evita que dois pedidos simultâneos passem dos 5 pendentes; o job invalida o cache para o nome e o celular de um vencido não ficarem guardados nele.
+
+# 2026-11-16 · 006d/T015
+- A spec foi alinhada ao que o plano aprovou: o suporte é equipe da CajuGo e já vê outras filas do admin. Contar só veículos publicados depois do alerta evita uma coluna nova para a data em que a divulgação começou; o caso é raro, porque a loja divulga por padrão ao publicar.

@@ -27,4 +27,4 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 4 — Fechamento
 - [x] **T014** Playwright (390 e 1280 px, staging): pedido na vitrine e na descoberta, duplicado, sem formulário no catálogo; veículo compatível publicado aparece em "Alertas" com contador; marcar como avisado; cancelar e link adulterado; lojista sem acesso; `audit()`; build de produção: LCP/CLS da vitrine · _ALR-FR-001 a ALR-FR-006, ALR-NFR-001 a ALR-NFR-003, ALR-SEC-001, ALR-SEC-002, ALR-SEC-005_
-- [ ] **T015** Migration `0015` no staging e (com sua autorização) no prod, `CRON_SECRET` na Vercel (você), conferir o cron; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_
+- [x] **T015** Migration `0015` no staging e (com sua autorização) no prod, `CRON_SECRET` na Vercel (você), conferir o cron; `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_

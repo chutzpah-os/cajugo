@@ -2,7 +2,7 @@
 id: 006d
 slug: search-alerts
 title: Avisar quando chegar
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-16
 ---
@@ -25,7 +25,7 @@ Quando a busca da vitrine não acha nada [12a], o comprador vai embora e a CajuG
 
 ## Requisitos funcionais
 - **ALR-FR-001** A busca sem resultado [12a] da vitrine e das páginas de descoberta oferece "Avisar quando chegar", que pede nome e celular brasileiro com WhatsApp (DDD + 9 dígitos, começando com 9), guarda a busca feita (texto, filtros e, na página de descoberta, a marca, o modelo ou a cidade dela) e confirma "Vamos avisar quando chegar".
-- **ALR-FR-002** Um veículo atende a um alerta quando apareceria na lista da vitrine com a busca guardada (a mesma regra da lista) e entrou na vitrine depois que o alerta foi criado; o alerta aparece para o admin com esse veículo e um botão que abre o WhatsApp da pessoa com mensagem pronta, com o nome dela e o link do veículo.
+- **ALR-FR-002** Um veículo atende a um alerta quando apareceria na lista da vitrine com a busca guardada (a mesma regra da lista) e foi publicado depois que o alerta foi criado (um veículo já publicado que só passa a ser divulgado depois não conta); o alerta aparece para o admin com esse veículo e um botão que abre o WhatsApp da pessoa com mensagem pronta, com o nome dela e o link do veículo.
 - **ALR-FR-003** O admin vê os alertas no item "Alertas" do menu (gaveta "Mais" no celular, barra lateral no desktop [15c]), com o contador de alertas com veículo compatível ainda não avisados, e marca cada um como avisado.
 - **ALR-FR-004** A confirmação do pedido e a mensagem de aviso levam um link para a pessoa cancelar o alerta; cancelado, ele deixa de aparecer para o admin, e um alerta já fechado mostra "Este alerta já foi encerrado".
 - **ALR-FR-005** Um alerta pendente expira depois da validade das regras [4c] (90 dias no início) e deixa de aparecer para o admin.
@@ -37,7 +37,7 @@ Quando a busca da vitrine não acha nada [12a], o comprador vai embora e a CajuG
 - **ALR-NFR-003** Um veículo compatível aparece nos alertas do admin em até 60 segundos depois de entrar na vitrine.
 
 ## Requisitos de segurança e privacidade
-- **ALR-SEC-001** O lojista nunca vê os alertas nem o contato de quem pediu; só o admin vê.
+- **ALR-SEC-001** O lojista nunca vê os alertas nem o contato de quem pediu; só a equipe da CajuGo (admin e suporte) vê.
 - **ALR-SEC-002** O formulário tem honeypot e limite de envios por IP (5 por minuto e 30 por dia, `SECURITY.md` §6) e de no máximo 5 alertas pendentes por celular; valida nome, celular e busca; e só guarda com o consentimento para ser contatado, com link para a privacidade [12i].
 - **ALR-SEC-003** Um veículo que a loja não divulga na CajuGo, ou de loja fora do ar, nunca aparece num alerta.
 - **ALR-SEC-004** O alerta guarda só nome, celular, busca e datas; o nome e o celular são apagados no momento em que o alerta é avisado, cancelado ou expira, e fica só a contagem, sem dado pessoal.
@@ -55,7 +55,7 @@ Quando a busca da vitrine não acha nada [12a], o comprador vai embora e a CajuG
 - **Dado** um alerta de Ana para "Fiat Toro" automático até R$ 120.000, criado ontem
 - **Quando** um Fiat Toro automático de R$ 110.000 é publicado e divulgado na vitrine hoje
 - **Então** o admin vê o alerta com esse veículo e o botão que abre o WhatsApp de Ana com a mensagem citando o nome dela e o link do veículo
-- **E** um Fiat Toro manual, um de R$ 130.000 ou um que já estava na vitrine antes do alerta não aparecem
+- **E** um Fiat Toro manual, um de R$ 130.000 ou um publicado antes do alerta não aparecem
 
 ### ALR-FR-003
 - **Dado** 2 alertas com veículo compatível e 1 sem
@@ -108,6 +108,6 @@ Quando a busca da vitrine não acha nada [12a], o comprador vai embora e a CajuG
 ## Pendências
 Nenhuma. Resolvidas no `/clarify` da 006c (2026-11-16): contato com nome e celular, os dois obrigatórios; item "Alertas" no menu do admin com contador; validade de 90 dias como regra [4c]; dados pessoais apagados ao avisar, cancelar ou expirar. No `/clarify` da 006d (2026-11-16):
 - Banner Caju Indica [9a] sai daqui e entra com a spec 010.
-- "Atende à busca" = a mesma regra da lista da vitrine, só para veículos que entraram depois do alerta (ALR-FR-002).
+- "Atende à busca" = a mesma regra da lista da vitrine, só para veículos publicados depois do alerta (ALR-FR-002).
 - Limite por IP do `SECURITY.md` §6 e até 5 pendentes por celular; mesma busca não duplica (ALR-SEC-002, ALR-FR-006).
 - Só celular brasileiro com DDD (ALR-FR-001).
