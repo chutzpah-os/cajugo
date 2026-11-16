@@ -14,7 +14,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 2 — Fatias verticais (servidor)
 - [x] **T004** Escopo `{ vehicleIds }` em `publicVisible` e `favoriteCards`: publicado e loja no ar, divulgado ou não; sem vendido, rascunho e loja suspensa; card sem placa/chassi · _BUY-FR-007, BUY-SEC-002_
 - [x] **T005** `favoriteCardsAction`: schema (uuid, 1 a 200, campo desconhecido rejeitado), só leitura, nada gravado · _BUY-NFR-004, BUY-SEC-001, BUY-SEC-002_
-- [ ] **T006** `vehiclePage.simulator` (regras [4c] vigentes, número do contato, título, link) ou `null` sem "Exibir parcela estimada" ou sem preço; `simulationMessage` e opções com o valor das regras (D2) · _BUY-FR-001, BUY-FR-003_
+- [x] **T006** `vehiclePage.simulator` (regras [4c] vigentes, número do contato, título, link) ou `null` sem "Exibir parcela estimada" ou sem preço; `simulationMessage` e opções com o valor das regras (D2) · _BUY-FR-001, BUY-FR-003_
 
 ## Fase 3 — Telas
 - [ ] **T007** Simulador [14b]: "Simular" abaixo do preço e "Ver parcelas" na barra fixa abrem o `Drawer`; troca de entrada e prazo recalcula; aviso de estimativa; "Enviar simulação à loja" · _BUY-FR-001, BUY-FR-002, BUY-FR-003, BUY-NFR-001_

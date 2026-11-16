@@ -16,6 +16,7 @@ import {
   type SQL,
 } from "drizzle-orm";
 import { getSettings } from "@/domains/settings/service";
+import type { SimulatorSetup } from "./simulator";
 import {
   isStoreLive,
   LIVE_STATUSES,
@@ -478,6 +479,8 @@ export type VehiclePage =
       conditions: string[];
       features: string[];
       whatsappUrl: string;
+      /** Simulador [14b]; `null` sem "Exibir parcela estimada" ou sem preço (BUY-FR-001). */
+      simulator: SimulatorSetup | null;
       /** Marca e modelo nos endereços de descoberta (DSC-FR-008). */
       makeSlug: string | null;
       modelSlug: string | null;
@@ -608,6 +611,7 @@ export async function vehiclePage(
     .filter(Boolean)
     .join(" ");
   const price = v.priceCents !== null ? ` por ${brl(v.priceCents)}` : "";
+  const contact = v.contactWhatsapp ?? v.storeWhatsapp;
   const conditions = (v.conditions ?? {}) as Record<string, boolean>;
 
   return {
@@ -649,9 +653,21 @@ export async function vehiclePage(
       .map(([, label]) => label),
     features: labels(v.features, FEATURES),
     whatsappUrl: whatsappLink(
-      v.contactWhatsapp ?? v.storeWhatsapp,
+      contact,
       `Olá! Tenho interesse no ${name}${price}, anunciado na CajuGo: ${appUrl()}${path}`,
     ),
+    simulator:
+      v.showInstallment && v.priceCents !== null
+        ? {
+            priceCents: v.priceCents,
+            downBps: s.installment_down_bps,
+            months: s.installment_months,
+            rateBps: s.installment_rate_bps,
+            whatsappNumber: contact,
+            title: name,
+            url: `${appUrl()}${path}`,
+          }
+        : null,
     makeSlug: v.makeSlug,
     modelSlug: v.modelSlug,
     store: {

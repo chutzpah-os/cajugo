@@ -32,6 +32,7 @@ const PAGE: Live = {
   conditions: ["Único dono", "IPVA pago"],
   features: ["Ar-condicionado"],
   whatsappUrl: "https://wa.me/5579999990000?text=oi",
+  simulator: null,
   makeSlug: "fiat",
   modelSlug: "argo",
   store: {

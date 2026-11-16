@@ -607,3 +607,6 @@
 
 # 2026-11-16 · 006c/T005 leitura dos favoritos
 - `buyers/actions.ts`: `favoriteCardsAction({ ids })` (uuid, 1 a 200, sem campo a mais, ids repetidos juntados) chama `showcase.favoriteCards`; só lê e devolve `null` em entrada inválida ou falha.
+
+# 2026-11-16 · 006c/T006 dados do simulador
+- `vehiclePage.simulator` (preço, regras [4c] vigentes, contato do anúncio, título e link) ou `null` sem "Exibir parcela estimada" ou sem preço; `showcase/simulator.ts` com as opções (regra fora da lista entra nela, D2) e a mensagem pronta para a loja.
