@@ -131,7 +131,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   Build de produção: LCP/CLS de [1b].
 
   · _LED-FR-001 a LED-FR-015, LED-NFR-001 a LED-NFR-003, LED-SEC-003, LED-SEC-004_
-- [ ] **T019** Fechamento:
+- [x] **T019** Fechamento:
   - migration `0016` no staging e, com sua autorização, no prod antes do push;
   - `/verify` com rastreabilidade verde;
   - spec `implemented`;

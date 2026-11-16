@@ -743,3 +743,6 @@
 
 # 2026-11-16 · 007/verify ajustes da revisão
 - Lead idempotente (`requestId` uuid v7 da tela vira o id, `on conflict do nothing`); `uuidv7` com Web Crypto; lista de robôs sem CUBOT nem navegador de app; WhatsApp do card só para celular; `isHoneypotFilledIn` (leads e alertas); filtros de [3a] em `status.ts`; `newLeadsCount` devolve 0 sem permissão; exceção de tela showcase → leads no ARCHITECTURE §3; API.md e plano atualizados.
+
+# 2026-11-16 · 007/T019 fechamento
+- Spec 007 `implemented`: rastreabilidade verde (24 requisitos com teste), revisão em dois eixos corrigida, migration 0016 no prod. PLAN e T019 marcados.

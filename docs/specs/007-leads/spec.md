@@ -2,7 +2,7 @@
 id: 007
 slug: leads
 title: Leads e desempenho do anúncio
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-16
 ---

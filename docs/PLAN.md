@@ -109,6 +109,7 @@
 - "Avisar quando chegar" [12a] com nome e celular, tela Alertas do admin com `wa.me`. Dividida da 006c no `/clarify` de 2026-11-16; o banner Caju Indica [9a] foi para a 010.
 
 ## 007 · Leads e desempenho do anúncio — telas 1b (formulário/WhatsApp), 3a, 6e
+> ✅ **Implementada** em 2026-11-16 (`docs/specs/007-leads/`): formulário "Envie uma mensagem à loja" e WhatsApp (barra e simulador) virando lead em [1b], com origem via CajuGo / Seu catálogo pela aba e 1 lead de WhatsApp por aparelho a cada 24 h; visualizações 1 por aparelho por dia, sem robôs; menu do painel do lojista (Veículos · Leads · Minha loja · Conta) com contador; tela Leads [3a] com indicadores, filtros, avanço de status e Perdido; "Desempenho do anúncio" em [6e]; job diário apaga dados de leads com mais de 2 anos. Migration `0016` no staging e no prod. LCP de [1b] 1,86 s e CLS 0,001 em 4G no build de produção.
 - Formulário com honeypot + rate limit; clique no WhatsApp gera lead; origem cajugo / catálogo (vendedor na 008/009).
 - Tela Leads com status e destaque de novos; desempenho do anúncio [6e] (visualizações, leads, dias no ar).
 - Dividida no `/clarify` de 2026-11-16: denúncias foram para a 007b.
