@@ -5,16 +5,12 @@ import { discoveryIntro, discoveryTitle } from "@/platform/seo/discovery";
 import { JsonLd } from "@/platform/seo/seo";
 import { cachedDiscoveryPage, cachedFacets, cachedSearch } from "../current";
 import { parseDiscoveryPath } from "../discovery-urls";
-import { filtersToQuery, parseFilters } from "../filters";
+import { discoveryFilters, filtersToQuery, parseFilters } from "../filters";
 import type { DiscoveryPage } from "../service";
 import { Breadcrumbs } from "./breadcrumbs";
 import { CatalogToolbar } from "./catalog-toolbar";
 import { CatalogView, showcaseCount } from "./catalog-view";
-import {
-  DiscoveryEmpty,
-  discoveryFilters,
-  discoveryMetadata,
-} from "./discovery-parts";
+import { DiscoveryEmpty, discoveryMetadata } from "./discovery-parts";
 import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { PublicCard } from "./public-card";

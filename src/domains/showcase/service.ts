@@ -808,6 +808,7 @@ export async function sitemapEntries(
 }
 
 export { publicVisible, type Scope } from "./visibility";
+export { savedSearch, type SavedSearch } from "./saved-search";
 export {
   discoveryIndex,
   discoveryLinks,

@@ -28,6 +28,7 @@ import type {
 } from "@/platform/cloudinary/cloudinary";
 import { brCode } from "@/platform/pix/br-code";
 import { invoices, notices, payments, stores } from "@/platform/db/schema";
+import { isUniqueViolation } from "@/platform/db/errors";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
@@ -310,17 +311,6 @@ export async function receiptUpload(
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const IN_REVIEW = "Já recebemos um comprovante. Aguarde a conferência.";
-
-/** Unicidade violada no Postgres (ex.: segundo comprovante em análise na corrida). */
-function isUniqueViolation(error: unknown): boolean {
-  for (
-    let e = error;
-    e && typeof e === "object";
-    e = (e as { cause?: unknown }).cause
-  )
-    if ((e as { code?: string }).code === "23505") return true;
-  return false;
-}
 
 /**
  * Envio do comprovante (PIX-FR-005, PIX-FR-006): o arquivo tem que ser exatamente o

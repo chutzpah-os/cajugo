@@ -13,7 +13,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T004** [P] `cancelToken` e verificação (`id.hmac` com `HASH_SECRET`, comparação em tempo constante; token trocado, outro id e formato inválido recusados) · _ALR-SEC-005_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T005** `createAlert`: busca normalizada (`filtersToQuery`) e página da descoberta validada; consentimento; `"duplicate"` pelo índice único; até 5 pendentes por celular · _ALR-FR-001, ALR-FR-006, ALR-SEC-002, ALR-SEC-004_
+- [x] **T005** `createAlert`: busca normalizada (`filtersToQuery`) e página da descoberta validada; consentimento; `"duplicate"` pelo índice único; até 5 pendentes por celular · _ALR-FR-001, ALR-FR-006, ALR-SEC-002, ALR-SEC-004_
 - [ ] **T006** `createSearchAlertAction`: schema `.strict()`, honeypot (finge sucesso), limite por IP (`publicForm`, `publicFormDaily`), mensagens; só vitrine e descoberta (`source` de loja recusado) · _ALR-FR-001, ALR-SEC-002_
 - [ ] **T007** `showcase.firstMatch(scope, filters, after)`: mesma regra e filtros da lista, só publicados depois do alerta, mais antigo primeiro; não divulgado e loja suspensa de fora · _ALR-FR-002, ALR-SEC-003_
 - [ ] **T008** `alertInbox` (com veículo / aguardando; vencidos de fora com a validade lida na hora; mensagem `wa.me` com nome, link do veículo e link de cancelar) em cache de 60 s com as tags de veículos, regras e alertas · _ALR-FR-002, ALR-FR-005, ALR-NFR-003_

@@ -1,13 +1,9 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { parseFilters } from "../filters";
+import { discoveryFilters, parseFilters } from "../filters";
 import type { DiscoveryPage } from "../service";
 import { Breadcrumbs } from "./breadcrumbs";
-import {
-  discoveryFilters,
-  discoveryMetadata,
-  DiscoveryEmpty,
-} from "./discovery-parts";
+import { discoveryMetadata, DiscoveryEmpty } from "./discovery-parts";
 import { FiltersSide } from "./filters-side";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));

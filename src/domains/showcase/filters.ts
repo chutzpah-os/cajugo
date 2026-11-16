@@ -1,3 +1,5 @@
+import type { DiscoveryKey } from "./discovery-urls";
+
 /**
  * Filtros da vitrine na URL (SHW-FR-005), em português, e o que a consulta usa. Valor
  * inválido é ignorado, nunca vira erro nem chega ao banco (SHW-SEC-004).
@@ -171,3 +173,8 @@ export const FUEL_OPTIONS = [
   { value: "hybrid", label: "Híbrido" },
   { value: "electric", label: "Elétrico" },
 ];
+
+/** A marca da página de descoberta fica fixa: `?marca=` no endereço não troca o recorte. */
+export function discoveryFilters(key: DiscoveryKey, filters: Filters): Filters {
+  return key.makeSlug ? { ...filters, makes: [] } : filters;
+}

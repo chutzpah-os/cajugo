@@ -8,8 +8,6 @@ import {
 } from "@/platform/seo/discovery";
 import { pageMetadata } from "@/platform/seo/seo";
 import { ButtonLink } from "@/ui/button";
-import type { DiscoveryKey } from "../discovery-urls";
-import type { Filters } from "../filters";
 import type { DiscoveryPage } from "../service";
 
 const NOT_INDEXED = { index: false, follow: true };
@@ -32,11 +30,6 @@ export function discoveryMetadata(
   });
   const hidden = page.kind === "empty" || (list.filtered && !list.total);
   return hidden ? { ...meta, robots: NOT_INDEXED } : meta;
-}
-
-/** A marca da página fica fixa: `?marca=` no endereço não troca o recorte. */
-export function discoveryFilters(key: DiscoveryKey, filters: Filters): Filters {
-  return key.makeSlug ? { ...filters, makes: [] } : filters;
 }
 
 /** Página que ficou sem veículos [12a] (DSC-FR-005): diz o que falta e leva acima. */
