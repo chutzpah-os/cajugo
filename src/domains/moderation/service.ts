@@ -4,12 +4,17 @@ import { brandName } from "@/domains/fipe/service";
 import { contactTarget, favoriteCards } from "@/domains/showcase/service";
 import { vehicleReports, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
-import { fieldErrorsFromZod, type FieldError } from "@/platform/http/errors";
+import {
+  AppError,
+  fieldErrorsFromZod,
+  type FieldError,
+} from "@/platform/http/errors";
+import { logActivity } from "@/platform/http/activity-log";
 import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { Session } from "@/platform/http/session";
 import { REPORT_REASONS, type HideReason } from "./reasons";
-import { reportSchema } from "./schemas";
+import { reportSchema, vehicleDecisionSchema } from "./schemas";
 
 export type ReportResult =
   { ok: true } | { ok: false; message: string; errors: FieldError[] };
@@ -149,4 +154,47 @@ export async function openReportsCount(
     .innerJoin(vehicles, eq(vehicles.id, vehicleReports.vehicleId))
     .where(openOnAir);
   return rows.length;
+}
+
+function parseDecision(raw: unknown) {
+  const parsed = vehicleDecisionSchema.safeParse(raw);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  return parsed.data;
+}
+
+/**
+ * **Manter** (RPT-FR-003, RPT-SEC-005): arquiva as denúncias abertas do anúncio, que
+ * sai da fila; o anúncio não muda. Registro com quem decidiu, sem o texto das denúncias.
+ * `false` quando não havia denúncia aberta (outra pessoa já decidiu).
+ */
+export async function keep(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const actor = authorizeTo(session, "admin.moderate");
+  const { vehicleId } = parseDecision(raw);
+  return db.transaction(async (tx) => {
+    const closed = await tx
+      .update(vehicleReports)
+      .set({ status: "kept", decidedBy: actor.userId, decidedAt: now })
+      .where(
+        and(
+          eq(vehicleReports.vehicleId, vehicleId),
+          eq(vehicleReports.status, "open"),
+        ),
+      )
+      .returning({ id: vehicleReports.id });
+    if (!closed.length) return false;
+    await logActivity(tx, {
+      userId: actor.userId,
+      action: "vehicle_reports.kept",
+      entity: "vehicle",
+      entityId: vehicleId,
+      data: { reports: closed.length },
+    });
+    return true;
+  });
 }

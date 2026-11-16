@@ -52,7 +52,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - `admin.moderate` (lojista, usuário da loja e vendedor → 403; contador 0).
 
   · _RPT-FR-002, RPT-FR-007, RPT-SEC-003_
-- [ ] **T007** `keep` e `keepReportsAction`: arquiva as denúncias abertas como `kept`, e uma denúncia nova reabre o anúncio. Grava no `activity_log` sem texto das denúncias. Teste de 403.
+- [x] **T007** `keep` e `keepReportsAction`: arquiva as denúncias abertas como `kept`, e uma denúncia nova reabre o anúncio. Grava no `activity_log` sem texto das denúncias. Teste de 403.
 
   · _RPT-FR-003, RPT-SEC-003, RPT-SEC-005_
 - [ ] **T008** `vehicles`: `hideVehicle`, `showVehicle` e as transições com a marca de moderação:

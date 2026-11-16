@@ -764,3 +764,6 @@
 
 # 2026-11-16 · 007b/T006 fila de denúncias
 - reportQueue (admin.moderate; um card por anúncio publicado com denúncia aberta, da mais antiga; contagem por motivo, descrições, card público via favoriteCards) e openReportsCount (0 sem permissão). Fixture moderation/testing/fixtures.ts.
+
+# 2026-11-16 · 007b/T007 Manter
+- keep (admin.moderate): denúncias abertas do anúncio viram kept com quem e quando, numa transação com o activity_log (vehicle_reports.kept, só a contagem). keepReportsAction.
