@@ -14,11 +14,21 @@ import {
 
 const SIMULATOR_ID = "simulador";
 
+const dialog = () =>
+  document.getElementById(SIMULATOR_ID) as HTMLDialogElement | null;
+
+/** Navegador sem Invoker Commands: abre pelo JavaScript; com eles, já abriu. */
 function open() {
-  (
-    document.getElementById(SIMULATOR_ID) as HTMLDialogElement | null
-  )?.showModal();
+  const d = dialog();
+  if (d && !d.open) d.showModal();
 }
+
+/**
+ * Invoker Commands do HTML (`commandfor`/`command`): o botão abre e fecha o diálogo
+ * antes de o JavaScript carregar, como num 4G lento. O React ainda não tipa os atributos.
+ */
+const command = (action: "show-modal" | "close") =>
+  ({ commandfor: SIMULATOR_ID, command: action }) as Record<string, string>;
 
 /** "Simular" e "Ver parcelas" abrem o mesmo simulador [14b] (BUY-FR-001). */
 export function SimulatorTrigger({
@@ -33,6 +43,7 @@ export function SimulatorTrigger({
       type="button"
       aria-haspopup="dialog"
       aria-controls={SIMULATOR_ID}
+      {...command("show-modal")}
       onClick={open}
       className={className}
     >
@@ -70,10 +81,7 @@ export function SimulatorSheet({ setup }: { setup: SimulatorSetup }) {
   const [months, setMonths] = useState(setup.months);
   const choice = { downBps, months };
   const sim = simulateInstallment({ ...setup, ...choice });
-  const close = () =>
-    (
-      document.getElementById(SIMULATOR_ID) as HTMLDialogElement | null
-    )?.close();
+  const close = () => dialog()?.close();
 
   return (
     <dialog
@@ -89,6 +97,7 @@ export function SimulatorSheet({ setup }: { setup: SimulatorSetup }) {
           </h2>
           <button
             type="button"
+            {...command("close")}
             onClick={close}
             className="flex h-11 items-center px-2 text-sm font-semibold text-text-2"
           >

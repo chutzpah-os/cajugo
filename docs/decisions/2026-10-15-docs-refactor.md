@@ -294,3 +294,6 @@
 
 # 2026-11-16 · 006c/T008
 - O card (`showcase`) usa o componente do coração de `buyers/components`, como `auth` já usa `notices/components`: é UI de cliente, sem banco; a regra "só pelo service.ts" continua valendo para regra de negócio e dados. Zod ficou fora do arquivo que vai a toda página pública.
+
+# 2026-11-16 · 006c/T010
+- Com a máquina carregada, o toque em "Simular" antes da hidratação se perdia, o que também aconteceria num 4G lento: `commandfor`/`command` abrem o diálogo sem JavaScript, e o `onClick` fica para navegador sem suporte.

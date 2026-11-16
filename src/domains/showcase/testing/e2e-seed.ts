@@ -22,7 +22,7 @@ export const E2E_SHOWCASE = {
   citroen: 15,
   plate: "E2E1A23",
   chassis: "9BWZZZ377VT004999",
-  /** Veículo completo: selos, condições, itens e 3 fotos. */
+  /** Veículo completo: selos, condições, itens, 3 fotos e parcela ativada (simulador). */
   fullId: "00000000-0000-4000-8000-00000000e201",
   /** Publicado, mas não divulgado na vitrine CajuGo. */
   hiddenId: "00000000-0000-4000-8000-00000000e202",
@@ -139,6 +139,8 @@ export async function seedShowcase(
             },
             features: ["airConditioning", "abs"],
             description: "Carro de garagem, revisado.",
+            // Simulador [14b] (006c): só com a parcela ativada pelo lojista.
+            showInstallment: true,
           }
         : i === S.total - 1
           ? { ...v, id: S.hiddenId, shareOnCajugo: false }

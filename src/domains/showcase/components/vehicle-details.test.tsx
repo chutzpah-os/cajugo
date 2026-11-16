@@ -99,6 +99,8 @@ describe("página do veículo [1b]", () => {
     expect(html).toContain(">Simular<");
     expect(html).toContain(">Ver parcelas<");
     expect(html).toContain('id="simulador"');
+    // Abre antes do JavaScript carregar (Invoker Commands do HTML)
+    expect(html).toContain('commandfor="simulador" command="show-modal"');
     expect(html).toMatch(/aria-pressed="true"[^>]*>.*?20%/);
     expect(html).toMatch(/aria-pressed="true"[^>]*>.*?48x/);
     expect(html).toContain("Estimativa sem análise de crédito");

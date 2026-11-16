@@ -29,7 +29,8 @@ export function Gallery({
         {images.map((src, i) => (
           // eslint-disable-next-line @next/next/no-img-element -- URL do Cloudinary já otimizada
           <img
-            key={src}
+            // A mesma foto pode aparecer duas vezes; a posição torna a chave única.
+            key={`${i}-${src}`}
             src={src}
             alt={`${alt} – foto ${i + 1}`}
             width={1600}

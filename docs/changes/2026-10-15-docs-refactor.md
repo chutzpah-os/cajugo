@@ -620,3 +620,7 @@
 # 2026-11-16 · 006c/T009 Favoritos [14a]
 - `/favoritos` pré-renderizada com `noindex` e fora do sitemap; ♡ no cabeçalho; `FavoritesView` com esqueleto até hidratar, cards atuais na ordem, "Baixou R$ X", "Vendido" com "Ver veículos parecidos" (página do veículo, D3), estado vazio e "Tentar de novo".
 - `HeartIcon` em `ui/`; os hooks do navegador saíram para `buyers/use-favorites.ts` ("use client"), e `favorites.ts` ficou só com a regra, para a action do servidor poder ler o limite.
+
+# 2026-11-16 · 006c/T010 e2e das ferramentas do comprador
+- `tests/e2e/buyer-tools.spec.ts` (390 e 1280 px): simulador pelos dois botões, recálculo, mensagem à loja e ausência sem a opção; coração no card, na página e no catálogo, sem POST ao servidor; [14a] com ordem, "Baixou", "Vendido" e vazio; HTML sem placa; `/favoritos` no LCP do build de produção. Seed: veículo completo com a parcela ativada.
+- Botões do simulador abrem e fecham pelo HTML (Invoker Commands), antes do JavaScript; chave das fotos da galeria com a posição (foto repetida gerava aviso de chave duplicada).
