@@ -93,7 +93,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   · _RPT-FR-006, RPT-SEC-001_
 
 ## Fase 3 — Telas
-- [ ] **T014** `ReportSheet` em [1b]:
+- [x] **T014** `ReportSheet` em [1b]:
   - "Denunciar anúncio" abre um `<dialog>` (Invoker Commands), com os 4 motivos, descrição e honeypot;
   - "Escolha um motivo." quando falta o motivo;
   - confirma "Denúncia enviada. Vamos analisar.";

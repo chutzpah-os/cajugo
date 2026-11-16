@@ -10,6 +10,12 @@ import {
 import { whatsappLink } from "@/platform/whatsapp/link";
 import { Chip } from "@/ui/chip";
 import {
+  closeDialog,
+  dialogCommand,
+  openDialog,
+  SHEET_CLASS,
+} from "@/ui/dialog";
+import {
   percentLabel,
   simulationMessage,
   simulatorOptions,
@@ -18,21 +24,8 @@ import {
 
 const SIMULATOR_ID = "simulador";
 
-const dialog = () =>
-  document.getElementById(SIMULATOR_ID) as HTMLDialogElement | null;
-
-/** Navegador sem Invoker Commands: abre pelo JavaScript; com eles, já abriu. */
-function open() {
-  const d = dialog();
-  if (d && !d.open) d.showModal();
-}
-
-/**
- * Invoker Commands do HTML (`commandfor`/`command`): o botão abre e fecha o diálogo
- * antes de o JavaScript carregar, como num 4G lento. O React ainda não tipa os atributos.
- */
 const command = (action: "show-modal" | "close") =>
-  ({ commandfor: SIMULATOR_ID, command: action }) as Record<string, string>;
+  dialogCommand(SIMULATOR_ID, action);
 
 /** "Simular" e "Ver parcelas" abrem o mesmo simulador [14b] (BUY-FR-001). */
 export function SimulatorTrigger({
@@ -48,7 +41,7 @@ export function SimulatorTrigger({
       aria-haspopup="dialog"
       aria-controls={SIMULATOR_ID}
       {...command("show-modal")}
-      onClick={open}
+      onClick={() => openDialog(SIMULATOR_ID)}
       className={className}
     >
       {children}
@@ -92,14 +85,14 @@ export function SimulatorSheet({
   const [months, setMonths] = useState(setup.months);
   const choice = { downBps, months };
   const sim = simulateInstallment({ ...setup, ...choice });
-  const close = () => dialog()?.close();
+  const close = () => closeDialog(SIMULATOR_ID);
 
   return (
     <dialog
       id={SIMULATOR_ID}
       aria-labelledby="simulator-title"
       onClick={(e) => e.target === e.currentTarget && close()}
-      className="m-0 mt-auto max-h-[92dvh] w-full max-w-none overflow-y-auto rounded-t-[20px] bg-surface p-5 backdrop:bg-[rgba(28,27,32,.55)] md:m-auto md:max-w-md md:rounded-card"
+      className={SHEET_CLASS}
     >
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">

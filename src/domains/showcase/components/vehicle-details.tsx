@@ -6,6 +6,10 @@ import { vehicleAlt } from "@/platform/seo/catalog";
 import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
 import { ContactForm } from "@/domains/leads/components/contact-form";
 import { WhatsappButton } from "@/domains/leads/components/whatsapp-button";
+import {
+  ReportSheet,
+  ReportTrigger,
+} from "@/domains/moderation/components/report-sheet";
 import { Badge } from "@/ui/badge";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/button";
@@ -179,6 +183,7 @@ export function VehicleDetails({
         </section>
         <ContactForm {...lead} />
         {related}
+        <ReportTrigger />
         {page.installmentCents !== null && (
           <p className="text-xs text-text-3">
             *Valor estimado. Simule a sua parcela.
@@ -208,6 +213,7 @@ export function VehicleDetails({
         </div>
       </div>
       {page.simulator && <SimulatorSheet setup={page.simulator} lead={lead} />}
+      <ReportSheet vehicleId={page.vehicleId} />
     </main>
   );
 }

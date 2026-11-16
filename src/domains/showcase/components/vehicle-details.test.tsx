@@ -156,6 +156,26 @@ describe("página do veículo [1b]", () => {
     expect(html).toContain('name="website"');
   });
 
+  it("[RPT-FR-001] [RPT-NFR-002] Denunciar anúncio abre [14d] pelo HTML, com os 4 motivos, descrição e honeypot", () => {
+    // Act
+    const html = render();
+
+    // Assert
+    expect(html).toContain('data-testid="report-open"');
+    expect(html).toMatch(/commandfor="denunciar"[^>]*command="show-modal"/);
+    expect(html).toContain('<dialog id="denunciar"');
+    for (const r of [
+      "Já vendido",
+      "Preço não real",
+      "Fotos de outro carro",
+      "Suspeita de golpe",
+    ])
+      expect(html).toContain(r);
+    expect(html).not.toContain("Outro");
+    expect(html).toContain('maxLength="1000"');
+    expect(html).toContain('name="website"');
+  });
+
   it("[SHW-FR-010] vendido avisa e mostra parecidos", () => {
     // Act
     const html = renderToStaticMarkup(

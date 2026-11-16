@@ -785,3 +785,6 @@
 
 # 2026-11-16 · 007b/T013 leitura do lojista
 - listVehicles e vehicleSummary trazem moderation (motivo e nota da CajuGo) e nada das denúncias; o filtro e o indicador Publicados contam também o oculto; canSell no oculto, canShare não.
+
+# 2026-11-16 · 007b/T014 Denunciar anúncio em [1b]
+- moderation/components/report-sheet.tsx: ReportTrigger e ReportSheet (<dialog> por Invoker Commands, 4 motivos, descrição até 1.000, honeypot, chave do envio, uma vez a cada 24 h por aparelho com claimOncePer). ui/dialog.ts com os helpers do diálogo, usado também pelo simulador. Exceção de tela showcase → moderation no ARCHITECTURE §3.
