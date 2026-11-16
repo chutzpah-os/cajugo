@@ -635,3 +635,6 @@
 
 # 2026-11-16 · 006d/T002 migration 0015
 - Enum `search_alert_status`, tabela `search_alerts` (RLS ligado; nome e celular anuláveis), índice único parcial da busca pendente por celular (vitrine e descoberta separadas) e `(status, created_at)`; regra `search_alert_validity_days` (90, de 7 a 365) com o valor inicial semeado na migration. Aplicada no staging.
+
+# 2026-11-16 · 006d/T003 celular
+- `brMobileSchema`: só celular com DDD (9 + 8 dígitos), com máscara ou +55, guardado como `55…`; fixo recusado com "Informe um celular com WhatsApp, com DDD.".
