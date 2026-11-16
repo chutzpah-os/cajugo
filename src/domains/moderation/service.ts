@@ -1,7 +1,9 @@
 import { and, asc, eq } from "drizzle-orm";
 import { can, authorizeTo } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
+import { notifyStore } from "@/domains/notices/service";
 import { contactTarget, favoriteCards } from "@/domains/showcase/service";
+import { hideVehicle } from "@/domains/vehicles/service";
 import { vehicleReports, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import {
@@ -13,8 +15,10 @@ import { logActivity } from "@/platform/http/activity-log";
 import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { Session } from "@/platform/http/session";
-import { REPORT_REASONS, type HideReason } from "./reasons";
-import { reportSchema, vehicleDecisionSchema } from "./schemas";
+import { hiddenReasonText, REPORT_REASONS, type HideReason } from "./reasons";
+import { hideSchema, reportSchema, vehicleDecisionSchema } from "./schemas";
+
+export { hiddenReasonText, REASON_LABEL } from "./reasons";
 
 export type ReportResult =
   { ok: true } | { ok: false; message: string; errors: FieldError[] };
@@ -177,16 +181,13 @@ export async function keep(
   const actor = authorizeTo(session, "admin.moderate");
   const { vehicleId } = parseDecision(raw);
   return db.transaction(async (tx) => {
-    const closed = await tx
-      .update(vehicleReports)
-      .set({ status: "kept", decidedBy: actor.userId, decidedAt: now })
-      .where(
-        and(
-          eq(vehicleReports.vehicleId, vehicleId),
-          eq(vehicleReports.status, "open"),
-        ),
-      )
-      .returning({ id: vehicleReports.id });
+    const closed = await closeOpenReports(
+      tx,
+      vehicleId,
+      "kept",
+      actor.userId,
+      now,
+    );
     if (!closed.length) return false;
     await logActivity(tx, {
       userId: actor.userId,
@@ -194,6 +195,68 @@ export async function keep(
       entity: "vehicle",
       entityId: vehicleId,
       data: { reports: closed.length },
+    });
+    return true;
+  });
+}
+
+/** Fecha as denúncias abertas do anúncio com a decisão (dentro da transação). */
+const closeOpenReports = (
+  tx: Db,
+  vehicleId: string,
+  status: "kept" | "hidden",
+  actorId: string,
+  now: Date,
+) =>
+  tx
+    .update(vehicleReports)
+    .set({ status, decidedBy: actorId, decidedAt: now })
+    .where(
+      and(
+        eq(vehicleReports.vehicleId, vehicleId),
+        eq(vehicleReports.status, "open"),
+      ),
+    )
+    .returning({ id: vehicleReports.id });
+
+/**
+ * **Ocultar** (RPT-FR-004, 006, RPT-SEC-004, 005), numa transação: o veículo fica oculto
+ * com a marca de moderação, as denúncias abertas dele fecham, a loja dele é avisada com
+ * o motivo e a decisão vai para o registro (sem texto das denúncias). `false` quando o
+ * anúncio já não estava publicado. Quem chama invalida o cache público.
+ */
+export async function hide(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const actor = authorizeTo(session, "admin.moderate");
+  const parsed = hideSchema.safeParse(raw);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { vehicleId, reason } = parsed.data;
+  const note = reason === "other" ? (parsed.data.note ?? null) : null;
+  return db.transaction(async (tx) => {
+    const v = await hideVehicle(tx, actor, vehicleId, { reason, note }, now);
+    if (!v) return false;
+    await closeOpenReports(tx, vehicleId, "hidden", actor.userId, now);
+    await notifyStore(
+      tx,
+      v.storeId,
+      {
+        kind: "vehicle_hidden",
+        vehicle: v.title,
+        reason: hiddenReasonText(reason, note),
+      },
+      now,
+    );
+    await logActivity(tx, {
+      userId: actor.userId,
+      action: "vehicle.hidden",
+      entity: "vehicle",
+      entityId: vehicleId,
+      data: { reason, note },
     });
     return true;
   });

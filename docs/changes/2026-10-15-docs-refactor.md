@@ -776,3 +776,6 @@
 
 # 2026-11-16 · 007b/T010 avisos à loja
 - notices: tipos vehicle_hidden (nome do veículo e motivo em texto, tom de alerta) e vehicle_shown; notifyStore avisa só o dono e os usuários da loja.
+
+# 2026-11-16 · 007b/T011 Ocultar
+- moderation.hide numa transação: hideVehicle, denúncias abertas → hidden, notifyStore com o motivo em texto (hiddenReasonText), activity_log vehicle.hidden com motivo e nota. hideVehicleAction com updateTag(VEHICLES_TAG). closeOpenReports compartilhado com Manter.

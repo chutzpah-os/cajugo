@@ -71,7 +71,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
 - [x] **T010** [P] `notices`: tipos `vehicle_hidden` e `vehicle_shown` com o texto do aviso. `notifyStore(db, storeId, notice)` avisa o dono e os usuários da loja, e só eles (caso loja B).
 
   · _RPT-FR-006, RPT-SEC-004_
-- [ ] **T011** `hide` e `hideVehicleAction`, numa transação:
+- [x] **T011** `hide` e `hideVehicleAction`, numa transação:
   - `hideVehicle`;
   - denúncias abertas → `hidden`;
   - `notifyStore`;

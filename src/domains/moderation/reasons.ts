@@ -21,3 +21,9 @@ export const REASON_LABEL: Record<HideReason, string> = {
   scam: "Suspeita de golpe",
   other: "Outro",
 };
+
+/** Motivo do Ocultar como a loja vê (RPT-FR-006): "Outro" mostra a nota da CajuGo. */
+export const hiddenReasonText = (
+  reason: HideReason,
+  note: string | null,
+): string => (reason === "other" && note ? note : REASON_LABEL[reason]);
