@@ -12,7 +12,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T003** [P] `buyers/favorites.ts`: adicionar, remover, sem duplicar, mais recente primeiro, até 200 (`"full"`), JSON estragado = lista vazia, chave versionada, evento `storage` · _BUY-FR-004, BUY-FR-005, BUY-NFR-004_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T004** Escopo `{ vehicleIds }` em `publicVisible` e `favoriteCards`: publicado e loja no ar, divulgado ou não; sem vendido, rascunho e loja suspensa; card sem placa/chassi · _BUY-FR-007, BUY-SEC-002_
+- [x] **T004** Escopo `{ vehicleIds }` em `publicVisible` e `favoriteCards`: publicado e loja no ar, divulgado ou não; sem vendido, rascunho e loja suspensa; card sem placa/chassi · _BUY-FR-007, BUY-SEC-002_
 - [ ] **T005** `favoriteCardsAction`: schema (uuid, 1 a 200, campo desconhecido rejeitado), só leitura, nada gravado · _BUY-NFR-004, BUY-SEC-001, BUY-SEC-002_
 - [ ] **T006** `vehiclePage.simulator` (regras [4c] vigentes, número do contato, título, link) ou `null` sem "Exibir parcela estimada" ou sem preço; `simulationMessage` e opções com o valor das regras (D2) · _BUY-FR-001, BUY-FR-003_
 

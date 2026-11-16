@@ -288,3 +288,6 @@
 
 # 2026-11-16 · 006c/T001
 - O ARCHITECTURE já previa `buyers/` para favoritos e alertas; usar ele em vez de criar `favorites` deixa a 006d (alertas) no mesmo domínio.
+
+# 2026-11-16 · 006c/T004
+- Favorito feito no catálogo pode ser de veículo não divulgado na CajuGo; ele é público na página dele, então os favoritos seguem a regra da página do veículo, não a da vitrine.

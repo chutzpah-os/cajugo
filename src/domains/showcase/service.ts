@@ -327,6 +327,19 @@ export async function searchShowcase(
   };
 }
 
+/**
+ * Cards atuais dos favoritos do aparelho (BUY-FR-007): só os veículos que a página
+ * pública mostra agora; o que falta na resposta está indisponível.
+ */
+export async function favoriteCards(
+  db: Db,
+  ids: string[],
+): Promise<PublicCard[]> {
+  if (!ids.length) return [];
+  const rows = await baseQuery(db).where(publicVisible({ vehicleIds: ids }));
+  return toCards(db, rows);
+}
+
 type StoreHours = Extract<StorePage, { kind: "store" }>["hours"];
 
 /** Leitura dos filtros da URL, para quem usa o domínio de fora (testes de `vehicles`). */

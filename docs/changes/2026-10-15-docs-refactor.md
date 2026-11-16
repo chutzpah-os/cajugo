@@ -601,3 +601,6 @@
 
 # 2026-11-16 · 006c/T003 favoritos no aparelho
 - `buyers/favorites.ts`: loja de favoritos sobre o `localStorage` (chave `cajugo:favorites:v1`, conteúdo validado, até 200, mais recente primeiro, preço do momento), com `useFavorites`/`useFavorite` por `useSyncExternalStore` e aviso entre abas.
+
+# 2026-11-16 · 006c/T004 cards dos favoritos
+- Escopo `{ vehicleIds }` em `publicVisible` (publicado e loja no ar, divulgado ou não) e `favoriteCards(db, ids)`; `publicVisible` passa a decidir a parte do escopo numa função só (`scopeWhere`).
