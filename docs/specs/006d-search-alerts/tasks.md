@@ -23,7 +23,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 3 — Telas
 - [x] **T011** `AlertForm` no `NoResults` da vitrine e da descoberta (não no catálogo da loja): nome, celular, consentimento com link [12i], honeypot; "Vamos avisar quando chegar" com o link de cancelar (D3) e "Já estamos de olho nessa busca"; termos [12i] com o trecho de privacidade · _ALR-FR-001, ALR-FR-006, ALR-SEC-002, ALR-NFR-002_
 - [x] **T012** `/admin/alertas` (com veículo: card, WhatsApp, "Marcar como avisado"; aguardando: busca e vencimento) e item "Alertas" com contador (`NavItem.count`) · _ALR-FR-002, ALR-FR-003, ALR-SEC-001, ALR-NFR-001_
-- [ ] **T013** `/alertas/cancelar/[token]`: confirmação, "Alerta cancelado", "Este alerta já foi encerrado", "Link inválido"; `noindex` e `/alertas` no `robots.txt` · _ALR-FR-004, ALR-SEC-005_
+- [x] **T013** `/alertas/cancelar/[token]`: confirmação, "Alerta cancelado", "Este alerta já foi encerrado", "Link inválido"; `noindex` e `/alertas` no `robots.txt` · _ALR-FR-004, ALR-SEC-005_
 
 ## Fase 4 — Fechamento
 - [ ] **T014** Playwright (390 e 1280 px, staging): pedido na vitrine e na descoberta, duplicado, sem formulário no catálogo; veículo compatível publicado aparece em "Alertas" com contador; marcar como avisado; cancelar e link adulterado; lojista sem acesso; `audit()`; build de produção: LCP/CLS da vitrine · _ALR-FR-001 a ALR-FR-006, ALR-NFR-001 a ALR-NFR-003, ALR-SEC-001, ALR-SEC-002, ALR-SEC-005_

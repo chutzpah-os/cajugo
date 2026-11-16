@@ -667,3 +667,6 @@
 # 2026-11-16 · 006d/T012 tela Alertas
 - `/admin/alertas` (admin e suporte, `alerts.notify`): "Com veículo" com o pedido, o veículo, "Avisar no WhatsApp" e "Marcar como avisado"; "Aguardando" com a busca e o vencimento, sem nome nem celular; estado vazio. Item "Alertas" no menu do admin com contador (`NavItem.count`; ponto no "Mais"), do mesmo cache da tela.
 - `brDate` saiu de `stores` para `platform/br/date.ts`.
+
+# 2026-11-16 · 006d/T013 cancelar pelo link
+- `/alertas/cancelar/[token]` (`noindex, nofollow`; `/alertas` no `PRIVATE` do `robots.txt`): abrir só mostra a confirmação, e o toque em "Cancelar aviso" chama a action; mensagens de cancelado, já encerrado, link inválido, limite e falha.

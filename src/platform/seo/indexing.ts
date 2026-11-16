@@ -22,6 +22,7 @@ const PRIVATE = [
   "/nova-senha",
   "/recuperar",
   "/lojistas/pagamento",
+  "/alertas",
   "/api",
 ];
 /** Cadastros públicos dentro de áreas bloqueadas. */

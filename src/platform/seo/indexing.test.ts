@@ -31,6 +31,7 @@ describe("indexação", () => {
         "/conta",
         "/nova-senha",
         "/lojistas/pagamento",
+        "/alertas",
         "/api",
       ]),
     });

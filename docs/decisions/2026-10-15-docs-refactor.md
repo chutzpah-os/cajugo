@@ -304,3 +304,6 @@
 
 # 2026-11-16 · 006d/T001
 - O cron do plano Hobby roda 1×/dia: calcular o compatível na leitura do admin (cache de 60 s) cumpre o "até 60 s" da spec. Como avisar fecha o alerta e apaga o contato, o link de cancelar só serve de verdade na confirmação do pedido; na mensagem, ele informa que o alerta foi encerrado.
+
+# 2026-11-16 · 006d/T013
+- O link de cancelar não cancela ao abrir: o WhatsApp abre links para montar a prévia, o que cancelaria o alerta sem a pessoa pedir. Só o toque em "Cancelar aviso" fecha.
