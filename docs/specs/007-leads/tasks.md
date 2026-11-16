@@ -56,7 +56,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - veículo fora do ar ignorado.
 
   · _LED-FR-015, LED-SEC-002_
-- [ ] **T009** `leadsBoard` e `newLeadsCount`:
+- [x] **T009** `leadsBoard` e `newLeadsCount`:
   - lista da loja da sessão, mais novo primeiro;
   - contagens por status;
   - `newCount` só de `new`;

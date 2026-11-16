@@ -710,3 +710,6 @@
 
 # 2026-11-16 · 007/T008
 - `recordView` e `viewAction`: upsert em `vehicle_daily_stats` por veículo e dia de São Paulo; robô (`isKnownBot`), veículo fora do ar e mais de 60/min do IP não contam.
+
+# 2026-11-16 · 007/T009
+- `leadsBoard` (cards da loja da sessão, mais novo primeiro, até 200; contagens por status; Novos agora; % da vitrine em 30 dias; destaque; veículo excluído marcado; WhatsApp e tel só com telefone) e `newLeadsCount`; permissão `leads.view`.

@@ -328,3 +328,6 @@
 
 # 2026-11-16 · 007/T004
 - Lista própria em vez de pacote (sem dependência nova); visualização é número de referência, não cobrança.
+
+# 2026-11-16 · 007/T009
+- Lista limitada a 200 no MVP: paginação por cursor quando uma loja passar disso (API.md §3).
