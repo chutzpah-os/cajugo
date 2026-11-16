@@ -830,3 +830,6 @@
 
 # 2026-11-16 · 008/T005 cadastro do vendedor
 - sellers/service.ts registerSeller (visitante): limite por rede, honeypot com sucesso falso, schema estrito, e-mail existente pede para entrar, CPF já cadastrado no campo; conta no Auth + perfil com CPF e Pix + papel seller + vendedor in_review + activity_log numa transação, com rollback da conta.
+
+# 2026-11-16 · 008/T006 vendedor na mesma conta
+- registerSeller com sessão: acrescenta o papel seller (grantRole), CPF e Pix à conta e cria o vendedor in_review, sem nova senha; conta já vendedora → 409, equipe → 403; CPF da própria conta não conta como repetido.

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { profiles, sellers } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
+import { personWith, storeOwner } from "@/domains/billing/testing/fixtures";
 import { registerSeller } from "./service";
 
 const NOW = new Date("2026-11-16T12:00:00Z");
@@ -131,5 +132,70 @@ describe("cadastro do vendedor (visitante)", () => {
     expect(trap).toEqual({ userId: null });
     expect(await t.db.select().from(sellers)).toEqual([]);
     expect(statuses.filter((s) => s === 429)).toHaveLength(1);
+  });
+});
+
+describe("cadastro do vendedor (quem já tem conta)", () => {
+  let t: Awaited<ReturnType<typeof createTestDb>>;
+  let auth: FakeAuthProvider;
+  const deps = () => ({ db: t.db, auth, now: () => NOW });
+  const ctx = { ipHash: "rede-a" };
+  const ADD = {
+    cpf: "529.982.247-25",
+    city: "Aracaju",
+    pixType: "cpf",
+    pixKey: "529.982.247-25",
+    terms: true,
+  };
+
+  beforeEach(async () => {
+    vi.stubEnv("HASH_SECRET", "segredo-de-teste");
+    t = await createTestDb();
+    auth = new FakeAuthProvider();
+  });
+  afterEach(async () => {
+    vi.unstubAllEnvs();
+    await t.close();
+  });
+
+  it("[SEL-FR-016] o lojista ganha o papel de vendedor na mesma conta, sem nova senha", async () => {
+    // Arrange
+    const owner = await storeOwner(t.db, "loja-a", "caio@x.com");
+
+    // Act
+    const { userId } = await registerSeller(deps(), owner, ADD, ctx);
+
+    // Assert
+    expect(userId).toBe(owner.userId);
+    const [p] = await t.db
+      .select()
+      .from(profiles)
+      .where(eq(profiles.id, owner.userId));
+    expect(p.roles).toEqual(["store_owner", "seller"]);
+    expect(p.cpf).toBe("52998224725");
+    expect(await t.db.select().from(sellers)).toEqual([
+      expect.objectContaining({ profileId: owner.userId, status: "in_review" }),
+    ]);
+  });
+
+  it("[SEL-FR-016] conta que já é vendedor ou da equipe não cadastra de novo", async () => {
+    // Arrange
+    const owner = await storeOwner(t.db, "loja-a", "caio@x.com");
+    await registerSeller(deps(), owner, ADD, ctx);
+    const admin = await personWith(t.db, "admin");
+    const asSeller = { ...owner, roles: [...owner.roles, "seller" as const] };
+
+    // Act / Assert
+    await expect(
+      registerSeller(deps(), asSeller, ADD, ctx),
+    ).rejects.toMatchObject({ status: 409 });
+    await expect(
+      registerSeller(
+        deps(),
+        admin,
+        { ...ADD, cpf: "111.444.777-35", pixKey: "111.444.777-35" },
+        ctx,
+      ),
+    ).rejects.toMatchObject({ status: 403 });
   });
 });

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { grantRole, type AuthDeps } from "@/domains/auth/service";
 import { profiles, sellers } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
@@ -6,7 +6,7 @@ import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { Session } from "@/platform/http/session";
-import { sellerSignupSchema } from "./schemas";
+import { addSellerSchema, sellerSignupSchema } from "./schemas";
 
 /**
  * Rede Caju, lado do vendedor (spec 008). O vendedor age sempre como ele mesmo
@@ -25,11 +25,17 @@ const fieldError = (field: string, code: string, message: string) =>
 
 const CPF_TAKEN = () => fieldError("cpf", "cpf_taken", "CPF já cadastrado.");
 
-async function assertCpfFree(db: Db, cpf: string) {
+/** CPF livre, ou já da própria conta (indicador que já resgatou, 010). */
+async function assertCpfFree(db: Db, cpf: string, ownerId?: string) {
   const [taken] = await db
     .select({ id: profiles.id })
     .from(profiles)
-    .where(eq(profiles.cpf, cpf));
+    .where(
+      and(
+        eq(profiles.cpf, cpf),
+        ownerId ? ne(profiles.id, ownerId) : undefined,
+      ),
+    );
   if (taken) throw CPF_TAKEN();
 }
 
@@ -70,7 +76,7 @@ export async function registerSeller(
   )
     throw AppError.tooManyRequests(60);
   if (ctx.honeypotFilled) return { userId: null };
-  if (session) throw AppError.conflict("Entre e use o cadastro da sua conta.");
+  if (session) return addSellerToAccount(deps.db, session, input);
 
   const parsed = sellerSignupSchema.safeParse(input);
   if (!parsed.success)
@@ -110,4 +116,26 @@ export async function registerSeller(
       throw CPF_TAKEN();
     throw error;
   }
+}
+
+/**
+ * Quem já tem conta (lojista, usuário da loja, indicador) vira vendedor na mesma conta
+ * (SEL-FR-016, conta única do PRD §2): sem nova senha; nome, e-mail e celular vêm da
+ * conta. Equipe da CajuGo não acumula papéis (AUT-SEC-009).
+ */
+async function addSellerToAccount(
+  db: Db,
+  session: Session,
+  input: unknown,
+): Promise<{ userId: string }> {
+  if (session.roles.some((r) => r === "admin" || r === "support"))
+    throw AppError.forbidden();
+  if (session.roles.includes("seller"))
+    throw AppError.conflict("Sua conta já é de vendedor.");
+  const parsed = addSellerSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  await assertCpfFree(db, parsed.data.cpf, session.userId);
+  await db.transaction((tx) => createSeller(tx, session.userId, parsed.data));
+  return { userId: session.userId };
 }

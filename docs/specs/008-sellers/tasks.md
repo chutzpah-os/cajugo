@@ -50,7 +50,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - e-mail que já existe → "entre para continuar".
 
   · _SEL-FR-001, SEL-SEC-003_
-- [ ] **T006** `registerSeller` com sessão: acrescenta o papel de vendedor à conta (lojista, indicador) sem nova senha. Conta da equipe é recusada.
+- [x] **T006** `registerSeller` com sessão: acrescenta o papel de vendedor à conta (lojista, indicador) sem nova senha. Conta da equipe é recusada.
 
   · _SEL-FR-016_
 - [ ] **T007** Fotos do documento:
