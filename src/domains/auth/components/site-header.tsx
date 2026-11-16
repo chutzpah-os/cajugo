@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { getDb } from "@/platform/db/client";
 import { Logo } from "@/ui/logo";
+import { HeartIcon } from "@/ui/heart-icon";
 import { SiteMenu } from "@/ui/site-menu";
 import { currentSession } from "../current";
 import { accountMenu } from "../service";
@@ -15,7 +16,7 @@ async function AccountMenu() {
   );
 }
 
-/** Cabeçalho das páginas públicas: logo + menu [11a] (STO-FR-001). */
+/** Cabeçalho das páginas públicas: logo, ♡ para Favoritos [14a] e menu [11a] (STO-FR-001, BUY-FR-005). */
 export function SiteHeader() {
   return (
     <header className="mx-auto flex w-full max-w-[480px] items-center justify-between px-4 pt-3 md:max-w-5xl">
@@ -26,9 +27,18 @@ export function SiteHeader() {
       >
         <Logo />
       </Link>
-      <Suspense fallback={<SiteMenu account={null} />}>
-        <AccountMenu />
-      </Suspense>
+      <div className="flex items-center gap-1">
+        <Link
+          href="/favoritos"
+          aria-label="Favoritos"
+          className="flex size-11 items-center justify-center text-ink"
+        >
+          <HeartIcon />
+        </Link>
+        <Suspense fallback={<SiteMenu account={null} />}>
+          <AccountMenu />
+        </Suspense>
+      </div>
     </header>
   );
 }

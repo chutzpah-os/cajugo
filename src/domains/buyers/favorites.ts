@@ -1,5 +1,3 @@
-import { useSyncExternalStore } from "react";
-
 /**
  * Favoritos guardados no aparelho [14a] (BUY-FR-004, BUY-SEC-001): a CajuGo não sabe
  * quem favoritou. Sincronizar com conta é fase 2. O `localStorage` fica escondido aqui.
@@ -134,38 +132,5 @@ export function createFavoritesStore(
     },
     /** Outra aba mudou os favoritos (evento `storage`). */
     notify,
-  };
-}
-
-type FavoritesStore = ReturnType<typeof createFavoritesStore>;
-let browserStore: FavoritesStore | null = null;
-
-function store(): FavoritesStore {
-  if (!browserStore) {
-    browserStore = createFavoritesStore(window.localStorage);
-    window.addEventListener("storage", (e) => {
-      if (e.key === FAVORITES_KEY) browserStore!.notify();
-    });
-  }
-  return browserStore;
-}
-
-const subscribe = (listener: () => void) => store().subscribe(listener);
-/** No servidor e na hidratação, nada favoritado: o HTML é igual para todos (BUY-NFR-002). */
-const serverList = () => EMPTY;
-
-export function useFavorites(): FavoriteEntry[] {
-  return useSyncExternalStore(subscribe, () => store().list(), serverList);
-}
-
-export function useFavorite(id: string) {
-  const saved = useSyncExternalStore(
-    subscribe,
-    () => store().has(id),
-    () => false,
-  );
-  return {
-    saved,
-    toggle: (snapshot: FavoriteSnapshot) => store().toggle(snapshot),
   };
 }

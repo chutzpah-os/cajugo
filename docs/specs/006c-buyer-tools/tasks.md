@@ -19,7 +19,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 3 — Telas
 - [x] **T007** Simulador [14b]: "Simular" abaixo do preço e "Ver parcelas" na barra fixa abrem o `Drawer`; troca de entrada e prazo recalcula; aviso de estimativa; "Enviar simulação à loja" · _BUY-FR-001, BUY-FR-002, BUY-FR-003, BUY-NFR-001_
 - [x] **T008** `FavoriteButton` no `PublicCard` (sobre a foto, fora do link; vitrine, descoberta, catálogo e "Carregar mais") e na página do veículo; HTML do servidor sempre desmarcado e com o mesmo tamanho · _BUY-FR-004, BUY-NFR-001, BUY-NFR-002_
-- [ ] **T009** `/favoritos` [14a]: ♡ no cabeçalho, casca pré-renderizada com `noindex` fora do sitemap, `FavoritesView` com a ordem, "Baixou R$ X", "Vendido" levando à página do veículo (D3) e estado vazio · _BUY-FR-005, BUY-FR-006, BUY-FR-007, BUY-FR-008, BUY-SEC-002_
+- [x] **T009** `/favoritos` [14a]: ♡ no cabeçalho, casca pré-renderizada com `noindex` fora do sitemap, `FavoritesView` com a ordem, "Baixou R$ X", "Vendido" levando à página do veículo (D3) e estado vazio · _BUY-FR-005, BUY-FR-006, BUY-FR-007, BUY-FR-008, BUY-SEC-002_
 
 ## Fase 4 — Fechamento
 - [ ] **T010** Playwright (390 e 1280 px, staging): simulador pelos dois botões e sem a opção, números de 30%/36x, link do WhatsApp; coração no card, na página e no catálogo (veículo não divulgado); [14a] com ordem, "Baixou", "Vendido" (veículo vendido do seed) e vazio; painel do lojista sem dado de favorito; HTML sem placa; `audit()`; contra o build de produção: LCP/CLS da vitrine, do veículo e de `/favoritos` · _BUY-FR-001 a BUY-FR-008, BUY-NFR-001 a BUY-NFR-004, BUY-SEC-001, BUY-SEC-002_

@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { cn } from "@/ui/cn";
-import {
-  FAVORITES_LIMIT,
-  useFavorite,
-  type FavoriteSnapshot,
-} from "../favorites";
+import { HeartIcon } from "@/ui/heart-icon";
+import { FAVORITES_LIMIT, type FavoriteSnapshot } from "../favorites";
+import { useFavorite } from "../use-favorites";
 
 /**
  * Coração de favoritar (BUY-FR-004): no servidor e na hidratação sai desmarcado e do
@@ -34,18 +32,7 @@ export function FavoriteButton({
           className,
         )}
       >
-        <svg
-          aria-hidden
-          viewBox="0 0 24 24"
-          className={cn(
-            "size-6",
-            saved ? "fill-caju stroke-caju" : "fill-none stroke-current",
-          )}
-          strokeWidth={2}
-          strokeLinejoin="round"
-        >
-          <path d="M12 20.5s-7.5-4.6-9.3-9.2C1.5 8 3.6 4.5 7.2 4.5c2 0 3.6 1.1 4.8 2.8 1.2-1.7 2.8-2.8 4.8-2.8 3.6 0 5.7 3.5 4.5 6.8-1.8 4.6-9.3 9.2-9.3 9.2Z" />
-        </svg>
+        <HeartIcon filled={saved} />
       </button>
       {full && (
         <span

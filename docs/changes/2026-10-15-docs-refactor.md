@@ -616,3 +616,7 @@
 
 # 2026-11-16 · 006c/T008 coração
 - `buyers/components/favorite-button.tsx` sobre a foto do `PublicCard` (vitrine, descoberta, catálogo, "Carregar mais", parecidos) e na galeria do veículo ao lado de compartilhar; sai desmarcado no servidor; aviso ao chegar a 200. `favorites.ts` valida à mão, sem zod, para não pesar nas páginas públicas.
+
+# 2026-11-16 · 006c/T009 Favoritos [14a]
+- `/favoritos` pré-renderizada com `noindex` e fora do sitemap; ♡ no cabeçalho; `FavoritesView` com esqueleto até hidratar, cards atuais na ordem, "Baixou R$ X", "Vendido" com "Ver veículos parecidos" (página do veículo, D3), estado vazio e "Tentar de novo".
+- `HeartIcon` em `ui/`; os hooks do navegador saíram para `buyers/use-favorites.ts` ("use client"), e `favorites.ts` ficou só com a regra, para a action do servidor poder ler o limite.
