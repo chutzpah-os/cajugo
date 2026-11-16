@@ -3,7 +3,7 @@
  * Perdido de qualquer status aberto. Sem dependência de servidor: vale na tela e no serviço.
  */
 export type LeadStatus = "new" | "contacting" | "negotiating" | "sold" | "lost";
-export type LeadOrigin = "cajugo" | "store_catalog";
+export type LeadOrigin = "cajugo" | "store_catalog" | "seller";
 
 export const STATUS_LABEL: Record<LeadStatus, string> = {
   new: "Novo",
@@ -16,6 +16,8 @@ export const STATUS_LABEL: Record<LeadStatus, string> = {
 export const ORIGIN_LABEL: Record<LeadOrigin, string> = {
   cajugo: "via CajuGo",
   store_catalog: "Seu catálogo",
+  /** O card completa com o nome do vendedor (SEL-FR-011). */
+  seller: "via vendedor",
 };
 
 const NEXT: Partial<Record<LeadStatus, LeadStatus>> = {

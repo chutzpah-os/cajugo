@@ -818,3 +818,6 @@
 
 # 2026-11-16 · 008/T001 documentos
 - Spec, plano, contrato e tasks da 008; PRD §5.7, [7a], [7c] e §12.1 item 4; PLAN com a 008b. ARCHITECTURE §4 (sellers, partnerships, cliques, CPF/Pix em profiles, comissão em stores, leads.seller_id), API.md §5, SECURITY §8 (foto do documento), GLOSSARY (Código do vendedor, Curadoria, Status do vendedor).
+
+# 2026-11-16 · 008/T002 migration 0018
+- Migration aditiva 0018_sellers: enums seller_status, partnership_status, partnership_origin, commission_type; lead_origin + seller; tabelas sellers, partnerships (única aberta por par) e seller_vehicle_clicks (RLS); profiles.cpf (único quando preenchido), pix_key, pix_key_type; stores.commission_*; leads.seller_id. LeadOrigin com seller. Aplicada no staging.

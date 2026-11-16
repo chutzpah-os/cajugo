@@ -21,7 +21,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - GLOSSARY (Código do vendedor, status do vendedor, Curadoria).
 
   · _—_
-- [ ] **T002** Migration `0018`, aditiva:
+- [x] **T002** Migration `0018`, aditiva:
   - enums `seller_status`, `partnership_status`, `partnership_origin` e `commission_type`;
   - CPF (único quando preenchido) e Pix em `profiles`;
   - tabelas `sellers`, `partnerships` (índice único das abertas) e `seller_vehicle_clicks`;

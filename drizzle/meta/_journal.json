@@ -127,6 +127,13 @@
       "when": 1794821213778,
       "tag": "0017_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794842152614,
+      "tag": "0018_sellers",
+      "breakpoints": true
     }
   ]
 }

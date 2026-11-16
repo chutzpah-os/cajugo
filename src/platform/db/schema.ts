@@ -75,8 +75,16 @@ export const profiles = pgTable(
     tempPasswordExpiresAt: timestamp("temp_password_expires_at", {
       withTimezone: true,
     }),
+    /** Só dígitos; vendedor no cadastro (008), indicador no 1º resgate (010). */
+    cpf: text("cpf"),
+    /** Chave Pix para receber (vendedor, indicador); tipo de `pixKeySchema`. */
+    pixKey: text("pix_key"),
+    pixKeyType: text("pix_key_type"),
   },
   (t) => [
+    uniqueIndex("profiles_cpf")
+      .on(t.cpf)
+      .where(sql`${t.cpf} is not null`),
     // Equipe CajuGo e clientes não se misturam na mesma conta (AUT-SEC-009).
     check(
       "profiles_team_roles_separate",
@@ -88,6 +96,9 @@ export const profiles = pgTable(
 
 /** CPF ou CNPJ de quem paga a loja (spec 004). */
 export const taxIdType = pgEnum("tax_id_type", ["cpf", "cnpj"]);
+
+/** Comissão da loja para o vendedor (PRD §5.7): % do preço ou valor fixo. */
+export const commissionType = pgEnum("commission_type", ["pct", "fixed"]);
 
 /** Letras acentuadas do português (e vizinhas) e o equivalente sem acento. */
 const ACCENTS_FROM = "ÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇÑáàâãäéèêëíìîïóòôõöúùûüçñ";
@@ -126,6 +137,12 @@ export const stores = pgTable(
     coverPublicId: text("cover_public_id"),
     hours: jsonb("hours"),
     shareByDefault: boolean("share_by_default").notNull().default(true),
+    /**
+     * Comissão padrão da loja (008, D2): pontos-base em `pct`, centavos em `fixed`.
+     * A tela de configurar [7e] é da 009.
+     */
+    commissionType: commissionType("commission_type"),
+    commissionValue: integer("commission_value"),
     status: storeStatus("status").notNull().default("registered"),
     /** Última troca de endereço do catálogo: no máximo 1 a cada 30 dias (STO-FR-013). */
     slugChangedAt: timestamp("slug_changed_at", { withTimezone: true }),
@@ -596,7 +613,11 @@ export const searchAlerts = pgTable(
 ).enableRLS();
 
 export const leadChannel = pgEnum("lead_channel", ["form", "whatsapp"]);
-export const leadOrigin = pgEnum("lead_origin", ["cajugo", "store_catalog"]);
+export const leadOrigin = pgEnum("lead_origin", [
+  "cajugo",
+  "store_catalog",
+  "seller",
+]);
 export const leadStatus = pgEnum("lead_status", [
   "new",
   "contacting",
@@ -635,6 +656,10 @@ export const leads = pgTable(
       .notNull()
       .defaultNow(),
     purgedAt: timestamp("purged_at", { withTimezone: true }),
+    /** Vendedor do link, quando ativo e parceiro da loja (008). */
+    sellerId: uuid("seller_id").references(
+      (): AnyPgColumn => sellers.profileId,
+    ),
   },
   (t) => [
     index("leads_store_status_created").on(
@@ -691,4 +716,98 @@ export const vehicleReports = pgTable(
       .on(t.vehicleId, t.createdAt)
       .where(sql`${t.status} = 'open'`),
   ],
+).enableRLS();
+
+/** Status do vendedor (GLOSSARY, PRD §5.10). */
+export const sellerStatus = pgEnum("seller_status", [
+  "in_review",
+  "active",
+  "blocked",
+]);
+
+/**
+ * Vendedor da Rede Caju (spec 008): 1:1 com a conta. Fotos do documento privadas
+ * (`authenticated`, ADR 0011); o código nasce na aprovação e nunca muda.
+ */
+export const sellers = pgTable(
+  "sellers",
+  {
+    profileId: uuid("profile_id")
+      .primaryKey()
+      .references(() => profiles.id),
+    code: text("code").unique(),
+    city: text("city").notNull(),
+    status: sellerStatus("status").notNull().default("in_review"),
+    documentFrontPublicId: text("document_front_public_id"),
+    documentFrontFormat: text("document_front_format"),
+    documentBackPublicId: text("document_back_public_id"),
+    documentBackFormat: text("document_back_format"),
+    blockedReason: text("blocked_reason"),
+    decidedBy: uuid("decided_by").references(() => profiles.id),
+    approvedAt: timestamp("approved_at", { withTimezone: true }),
+    ...timestamps,
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [index("sellers_status_created").on(t.status, t.createdAt)],
+).enableRLS();
+
+export const partnershipStatus = pgEnum("partnership_status", [
+  "pending",
+  "active",
+  "declined",
+  "ended",
+]);
+export const partnershipOrigin = pgEnum("partnership_origin", [
+  "request",
+  "invite",
+]);
+
+/**
+ * Parceria vendedor × loja (GLOSSARY). Uma aberta (pendente ou ativa) por par; o
+ * bloqueio do vendedor não muda a parceria, só deixa de valer (008).
+ */
+export const partnerships = pgTable(
+  "partnerships",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    sellerId: uuid("seller_id")
+      .notNull()
+      .references(() => sellers.profileId),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    origin: partnershipOrigin("origin").notNull(),
+    status: partnershipStatus("status").notNull().default("pending"),
+    ...timestamps,
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    endedAt: timestamp("ended_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("partnerships_open")
+      .on(t.sellerId, t.storeId)
+      .where(sql`${t.status} in ('pending', 'active')`),
+    index("partnerships_store_status").on(t.storeId, t.status),
+  ],
+).enableRLS();
+
+/** Cliques no link do vendedor por veículo e dia de São Paulo (SEL-FR-010). */
+export const sellerVehicleClicks = pgTable(
+  "seller_vehicle_clicks",
+  {
+    sellerId: uuid("seller_id")
+      .notNull()
+      .references(() => sellers.profileId),
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id, { onDelete: "cascade" }),
+    day: date("day").notNull(),
+    clicks: integer("clicks").notNull().default(0),
+  },
+  (t) => [primaryKey({ columns: [t.sellerId, t.vehicleId, t.day] })],
 ).enableRLS();
