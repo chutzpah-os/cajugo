@@ -680,3 +680,6 @@
 
 # 2026-11-16 · 006d/T015 fechamento
 - Spec `implemented`: ALR-SEC-001 diz "admin e suporte" e ALR-FR-002 conta só veículos publicados depois do alerta. Migration `0015` aplicada no prod (tabela e regra de 90 dias conferidas). PLAN e T015 marcados.
+
+# 2026-11-16 · 006d docs do cron
+- `ARCHITECTURE.md` §6: horário inexato do Hobby (06:00–06:59 UTC), aviso da migração Cron Jobs → Schedules e custo. `DEPLOYMENT.md`: onde cadastrar o `CRON_SECRET` e como gerar.

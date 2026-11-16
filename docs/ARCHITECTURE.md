@@ -225,3 +225,7 @@ ISR com `revalidateTag('vehicles')` e `revalidateTag('store:<slug>')`, chamados 
 Recompensas do Caju Indica **não** são job: são creditadas na hora em que o admin confirma o pagamento da loja indicada.
 
 Todo job é idempotente e protegido por `CRON_SECRET`.
+
+- **Horário inexato no Hobby:** o job agendado para 06:00 UTC (`vercel.json`) pode rodar a qualquer momento entre 06:00 e 06:59 (03:00–03:59 em Brasília). Para vencer alertas e limpar rate limits isso não importa; um job novo que dependa de hora exata precisa levar isso em conta.
+- **Cron Jobs → Schedules:** a Vercel avisa que o Cron Jobs é legado e será migrado para o recurso Schedules. Quando a migração acontecer, conferir se o `vercel.json` (`crons`) precisa mudar.
+- **Custo:** incluído em todos os planos; cada execução conta como chamada de função, já coberta pela cota gratuita do Hobby.
