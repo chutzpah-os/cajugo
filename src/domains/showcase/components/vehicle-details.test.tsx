@@ -141,6 +141,20 @@ describe("página do veículo [1b]", () => {
     expect(html).toContain('alt="Fiat Argo 2022 Branco');
   });
 
+  it("[LED-FR-001] [LED-SEC-004] formulário de mensagem à loja com texto padrão, limite e privacidade", () => {
+    // Act
+    const html = render();
+
+    // Assert
+    expect(html).toContain('aria-label="Envie uma mensagem à loja"');
+    expect(html).toContain(
+      "Olá, tenho interesse no veículo. Por favor entre em contato.",
+    );
+    expect(html).toContain('maxLength="1000"');
+    expect(html).toContain('href="/termos#privacidade"');
+    expect(html).toContain('name="website"');
+  });
+
   it("[SHW-FR-010] vendido avisa e mostra parecidos", () => {
     // Act
     const html = renderToStaticMarkup(

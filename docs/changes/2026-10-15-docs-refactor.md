@@ -722,3 +722,6 @@
 
 # 2026-11-16 · 007/T012
 - `purgeOldLeads` no job diário: lead com 2 anos ou mais perde nome, e-mail, telefone e mensagem (`purged_at`), idempotente; resposta e log `cron.daily` com `purgedLeads`; contrato da 006d atualizado.
+
+# 2026-11-16 · 007/T013
+- [1b]: `ContactForm` abaixo do card da loja (mensagem padrão, honeypot, privacidade, "Mensagem enviada…"); `ViewPing` conta a visualização depois da hidratação; `CatalogVisit` em `/loja/{slug}` marca a aba; `browserStorage` com queda silenciosa; a marca de origem usa o slug da loja.

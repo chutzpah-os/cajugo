@@ -89,7 +89,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   · _LED-SEC-006_
 
 ## Fase 3 — Telas
-- [ ] **T013** Página do veículo [1b], formulário e visualização:
+- [x] **T013** Página do veículo [1b], formulário e visualização:
   - `ContactForm` abaixo da ficha, com mensagem padrão, honeypot, aviso de privacidade e a confirmação "Mensagem enviada…";
   - `ViewPing` depois da hidratação;
   - o catálogo `/loja/{slug}` grava a marca de origem da aba (D1).

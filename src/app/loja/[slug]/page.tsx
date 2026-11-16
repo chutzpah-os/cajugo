@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { CatalogToolbar } from "@/domains/showcase/components/catalog-toolbar";
 import { CatalogView } from "@/domains/showcase/components/catalog-view";
+import { CatalogVisit } from "@/domains/leads/components/device-marks";
 import { FiltersSide } from "@/domains/showcase/components/filters-side";
 import { NoResults } from "@/domains/showcase/components/no-results";
 import { RelatedLinks } from "@/domains/showcase/components/related-links";
@@ -126,6 +127,7 @@ export default async function StorePage({
         {result.total > 0 && (
           <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
         )}
+        <CatalogVisit storeSlug={page.slug} />
         <StoreIdentity
           name={page.name}
           city={page.city}

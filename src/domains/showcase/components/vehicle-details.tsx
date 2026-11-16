@@ -4,6 +4,7 @@ import { brl } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
 import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
+import { ContactForm } from "@/domains/leads/components/contact-form";
 import { Badge } from "@/ui/badge";
 import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/button";
@@ -170,6 +171,11 @@ export function VehicleDetails({
             Ver estoque da loja
           </ButtonLink>
         </section>
+        <ContactForm
+          vehicleId={page.vehicleId}
+          storeSlug={page.store.slug}
+          shared={page.shared}
+        />
         {related}
         {page.installmentCents !== null && (
           <p className="text-xs text-text-3">

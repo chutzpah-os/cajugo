@@ -73,9 +73,12 @@ export function claimView(
   return true;
 }
 
-/** O catálogo `/loja/{slug}` aberto nesta aba (`sessionStorage`) marca a origem (D1). */
-export function markCatalogVisit(storage: KeyValueStorage, storeId: string) {
-  write(storage, CATALOG_KEY, storeId);
+/**
+ * O catálogo `/loja/{slug}` aberto nesta aba (`sessionStorage`) marca a origem (D1). A
+ * chave da loja é o `slug`, que já é público.
+ */
+export function markCatalogVisit(storage: KeyValueStorage, storeKey: string) {
+  write(storage, CATALOG_KEY, storeKey);
 }
 
 /**
@@ -84,9 +87,23 @@ export function markCatalogVisit(storage: KeyValueStorage, storeId: string) {
  */
 export function leadOrigin(
   storage: KeyValueStorage,
-  storeId: string,
+  storeKey: string,
   shared: boolean,
 ): LeadOrigin {
   if (!shared) return "store_catalog";
-  return read(storage, CATALOG_KEY) === storeId ? "store_catalog" : "cajugo";
+  return read(storage, CATALOG_KEY) === storeKey ? "store_catalog" : "cajugo";
+}
+
+const NOWHERE: KeyValueStorage = { getItem: () => null, setItem: () => {} };
+
+/**
+ * Armazenamento do navegador: `local` (o aparelho) ou `session` (a aba). Sem acesso
+ * (servidor, bloqueio), um armazenamento vazio: as marcas só não ficam guardadas.
+ */
+export function browserStorage(kind: "local" | "session"): KeyValueStorage {
+  try {
+    return kind === "local" ? window.localStorage : window.sessionStorage;
+  } catch {
+    return NOWHERE;
+  }
 }
