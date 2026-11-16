@@ -598,3 +598,6 @@
 
 # 2026-11-16 · 006c/T002 simulação Price
 - `simulateInstallment` devolve entrada, financiado, parcela e total; `estimatedInstallment` (card) passa a usá-la, com teste de igualdade para várias entradas e prazos.
+
+# 2026-11-16 · 006c/T003 favoritos no aparelho
+- `buyers/favorites.ts`: loja de favoritos sobre o `localStorage` (chave `cajugo:favorites:v1`, conteúdo validado, até 200, mais recente primeiro, preço do momento), com `useFavorites`/`useFavorite` por `useSyncExternalStore` e aviso entre abas.

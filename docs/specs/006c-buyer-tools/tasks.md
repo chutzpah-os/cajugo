@@ -9,7 +9,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 ## Fase 1 — Fundação
 - [x] **T001** Documentos: GLOSSARY ("Simulador de parcelas"; "Favorito" no aparelho), API.md §5 (`favoriteCardsAction`), ARCHITECTURE §3 (`buyers/` com favoritos no aparelho) · _—_
 - [x] **T002** [P] `simulateInstallment` (entrada, financiado, parcela, total pela Price; taxa 0; entrada 50%) e `estimatedInstallment` passa a usá-la; teste de igualdade card × simulador · _BUY-FR-002, BUY-NFR-003_
-- [ ] **T003** [P] `buyers/favorites.ts`: adicionar, remover, sem duplicar, mais recente primeiro, até 200 (`"full"`), JSON estragado = lista vazia, chave versionada, evento `storage` · _BUY-FR-004, BUY-FR-005, BUY-NFR-004_
+- [x] **T003** [P] `buyers/favorites.ts`: adicionar, remover, sem duplicar, mais recente primeiro, até 200 (`"full"`), JSON estragado = lista vazia, chave versionada, evento `storage` · _BUY-FR-004, BUY-FR-005, BUY-NFR-004_
 
 ## Fase 2 — Fatias verticais (servidor)
 - [ ] **T004** Escopo `{ vehicleIds }` em `publicVisible` e `favoriteCards`: publicado e loja no ar, divulgado ou não; sem vendido, rascunho e loja suspensa; card sem placa/chassi · _BUY-FR-007, BUY-SEC-002_
