@@ -683,3 +683,6 @@
 
 # 2026-11-16 · 006d docs do cron
 - `ARCHITECTURE.md` §6: horário inexato do Hobby (06:00–06:59 UTC), aviso da migração Cron Jobs → Schedules e custo. `DEPLOYMENT.md`: onde cadastrar o `CRON_SECRET` e como gerar.
+
+# 2026-11-16 · 006d log do cron
+- `api/v1/cron/daily`: `logger.info("cron.daily", { expiredAlerts, durationMs })` a cada execução bem-sucedida, como pede o `OBSERVABILITY.md`.

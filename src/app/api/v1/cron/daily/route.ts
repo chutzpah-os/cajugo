@@ -25,6 +25,11 @@ export async function GET(request: Request) {
     // Janelas de rate limit vão até 1 dia; 2 dias de folga.
     const rateLimitsBefore = new Date(now.getTime() - 2 * DAY_MS);
     await purgeRateLimits(db, rateLimitsBefore);
+    // OBSERVABILITY.md: cada execução deixa rastro, mesmo sem nada a fazer.
+    logger.info("cron.daily", {
+      expiredAlerts,
+      durationMs: Date.now() - now.getTime(),
+    });
     return Response.json(
       {
         data: {

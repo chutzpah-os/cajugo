@@ -313,3 +313,6 @@
 
 # 2026-11-16 · 006d/T015
 - A spec foi alinhada ao que o plano aprovou: o suporte é equipe da CajuGo e já vê outras filas do admin. Contar só veículos publicados depois do alerta evita uma coluna nova para a data em que a divulgação começou; o caso é raro, porque a loja divulga por padrão ao publicar.
+
+# 2026-11-16 · 006d log do cron
+- Sem log no sucesso, o Runtime Logs da Vercel ficava vazio e não dava para saber se o job rodou; o `OBSERVABILITY.md` já pedia o evento `cron.daily`.
