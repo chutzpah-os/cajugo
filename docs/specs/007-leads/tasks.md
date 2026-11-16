@@ -32,7 +32,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   · _LED-FR-015_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T005** `showcase.contactTarget(vehicleId)`: devolve loja e divulgação do veículo visível ao público (`publicVisible`), ou `null` fora do ar. Mais `leadFormSchema` (`.strict()`, `z.email`, `brPhoneSchema`, limites).
+- [x] **T005** `showcase.contactTarget(vehicleId)`: devolve loja e divulgação do veículo visível ao público (`publicVisible`), ou `null` fora do ar. Mais `leadFormSchema` (`.strict()`, `z.email`, `brPhoneSchema`, limites).
 
   · _LED-FR-002, LED-SEC-004_
 - [ ] **T006** `contactStore` e `contactLeadAction`:

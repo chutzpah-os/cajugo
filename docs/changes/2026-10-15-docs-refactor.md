@@ -698,3 +698,6 @@
 
 # 2026-11-16 · 007/T004
 - `isKnownBot(userAgent)` em `platform/http/bots.ts`: buscadores, prévias de redes sociais, navegadores automatizados e clientes HTTP; sem User-Agent também conta como robô.
+
+# 2026-11-16 · 007/T005
+- `showcase.contactTarget(vehicleId)`: loja e divulgação de um veículo visível ao público (`publicVisible`), senão `null`. `leads/schemas.ts`: formulário estrito (e-mail, telefone BR fixo ou celular, mensagem ≤ 1.000), clique e visualização.

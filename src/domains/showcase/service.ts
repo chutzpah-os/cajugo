@@ -344,6 +344,23 @@ export async function favoriteCards(
 }
 
 /**
+ * A quem vai um contato pela página do veículo (LED-FR-001, LED-FR-004): a loja do
+ * veículo que o público vê agora (a mesma regra da página) e se ele é divulgado na
+ * CajuGo. Fora do ar, loja suspensa ou id desconhecido: `null`.
+ */
+export async function contactTarget(
+  db: Db,
+  vehicleId: string,
+): Promise<{ storeId: string; shared: boolean } | null> {
+  const [row] = await db
+    .select({ storeId: vehicles.storeId, shared: vehicles.shareOnCajugo })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(publicVisible({ vehicleIds: [vehicleId] }));
+  return row ?? null;
+}
+
+/**
  * Para onde leva "Ver veículos parecidos" de um favorito que saiu da vitrine
  * (BUY-FR-007): a página de descoberta do modelo (ou da marca), que existe enquanto
  * houver registro dele (D2 da 006b); sem registro, a vitrine. Só endereço, nenhum dado.
