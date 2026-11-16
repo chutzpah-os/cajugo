@@ -66,6 +66,13 @@ const ON_AIR: (typeof vehicles.$inferSelect.status)[] = ["published", "hidden"];
 const HIDDEN_LOCKED =
   "Este veículo foi ocultado pela CajuGo. Para revisar, fale com a CajuGo.";
 
+/** A marca de moderação como a loja vê: motivo e nota da CajuGo, sem quem ocultou. */
+const moderationOf = (v: {
+  hiddenReason: ModerationMark["reason"] | null;
+  hiddenNote: string | null;
+}): ModerationMark | null =>
+  v.hiddenReason ? { reason: v.hiddenReason, note: v.hiddenNote } : null;
+
 /** Publicar ou desfazer a venda volta a oculto enquanto houver a marca (RPT-FR-009). */
 const onAirStatus = (v: { hiddenReason: string | null }) =>
   v.hiddenReason ? ("hidden" as const) : ("published" as const);
@@ -656,6 +663,8 @@ export type VehicleSummary = {
   daysOnAir: number | null;
   /** "Desfazer venda" ainda vale (VEH-FR-013)? */
   canUndoSale: boolean;
+  /** Marca do Ocultar da CajuGo (RPT-FR-006); nada das denúncias (RPT-SEC-001). */
+  moderation: ModerationMark | null;
 };
 
 /** Resumo do veículo [6e] (VEH-FR-011), só da loja da sessão. */
@@ -695,6 +704,7 @@ export async function vehicleSummary(
       v.status === "sold" &&
       !!v.soldAt &&
       now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
+    moderation: moderationOf(v),
   };
 }
 
@@ -825,6 +835,8 @@ export type VehicleCard = {
   shareCaption: string;
   canShare: boolean;
   canSell: boolean;
+  /** Marca do Ocultar da CajuGo (RPT-FR-006); nada das denúncias (RPT-SEC-001). */
+  moderation: ModerationMark | null;
 };
 
 export type VehicleList = {
@@ -859,8 +871,9 @@ export async function listVehicles(
   const [c] = await deps.db
     .select({
       all: count(),
+      // No ar para a loja: publicados e ocultos pela CajuGo (RPT-FR-006).
       published:
-        sql<number>`count(*) filter (where ${vehicles.status} = 'published')`.mapWith(
+        sql<number>`count(*) filter (where ${vehicles.status} in ('published', 'hidden'))`.mapWith(
           Number,
         ),
       draft:
@@ -891,7 +904,11 @@ export async function listVehicles(
     .where(
       and(
         mine,
-        status === "all" ? undefined : eq(vehicles.status, status),
+        status === "all"
+          ? undefined
+          : status === "published"
+            ? inArray(vehicles.status, ON_AIR)
+            : eq(vehicles.status, status),
         input.cursor && UUID.test(input.cursor)
           ? lt(vehicles.id, input.cursor)
           : undefined,
@@ -958,7 +975,8 @@ export async function listVehicles(
         storeLive: live,
       }),
       canShare: v.status === "published",
-      canSell: v.status === "published",
+      canSell: ON_AIR.includes(v.status),
+      moderation: moderationOf(v),
     })),
   };
 }

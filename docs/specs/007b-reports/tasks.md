@@ -88,7 +88,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - 403.
 
   · _RPT-FR-008, RPT-SEC-003_
-- [ ] **T013** Leitura do lojista: a lista [1c] e o resumo [6e] trazem o selo "Oculto" e o motivo da CajuGo. Teste de que nada de `vehicle_reports` sai para o painel (contagem, motivos, descrições).
+- [x] **T013** Leitura do lojista: a lista [1c] e o resumo [6e] trazem o selo "Oculto" e o motivo da CajuGo. Teste de que nada de `vehicle_reports` sai para o painel (contagem, motivos, descrições).
 
   · _RPT-FR-006, RPT-SEC-001_
 

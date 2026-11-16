@@ -358,3 +358,6 @@
 
 # 2026-11-16 · 007b/T010 avisos à loja
 - O aviso guarda o motivo já em texto, para notices não depender do domínio moderation.
+
+# 2026-11-16 · 007b/T013 leitura do lojista
+- Os rótulos dos motivos ficam só em moderation/reasons; vehicles devolve a marca crua e a página monta o texto, para vehicles não depender de moderation (que já depende dele).

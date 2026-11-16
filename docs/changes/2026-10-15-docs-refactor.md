@@ -782,3 +782,6 @@
 
 # 2026-11-16 · 007b/T012 Ocultados e Mostrar de novo
 - moderation.hiddenList (ocultos do mais recente, motivo em texto) e show (showVehicle, aviso vehicle_shown, activity_log vehicle.shown) + showVehicleAction com updateTag. cardsOf compartilhado entre a fila e a aba. Aviso usa marca e modelo (Fiat Argo).
+
+# 2026-11-16 · 007b/T013 leitura do lojista
+- listVehicles e vehicleSummary trazem moderation (motivo e nota da CajuGo) e nada das denúncias; o filtro e o indicador Publicados contam também o oculto; canSell no oculto, canShare não.
