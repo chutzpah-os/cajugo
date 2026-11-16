@@ -91,4 +91,23 @@ describe("menu do painel", () => {
       ),
     ).not.toContain("nav-count");
   });
+
+  it("[LED-FR-011] item da barra do celular mostra o seu contador", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <PanelNavView
+        items={[
+          { href: "/painel/veiculos", label: "Veículos", mobile: true },
+          { href: "/painel/leads", label: "Leads", mobile: true, count: 3 },
+        ]}
+        pathname="/painel/veiculos"
+      />,
+    );
+
+    // Assert
+    const bar = html
+      .split('aria-label="Menu do painel (celular)"')[1]
+      .split("</ul>")[0];
+    expect(bar).toMatch(/Leads<span data-testid="nav-count"[^>]*>3/);
+  });
 });

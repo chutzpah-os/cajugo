@@ -737,3 +737,6 @@
 
 # 2026-11-16 · 007/T017
 - Bloco "Desempenho do anúncio" em `/painel/veiculos/[id]` [6e]: Visualizações, Leads e Dias no ar. Os dias saem da linha de selos para o bloco; `vehiclePerformance` devolve só visualizações e leads; e2e da 005 lê o número no bloco.
+
+# 2026-11-16 · 007/T018
+- e2e `tests/e2e/leads.spec.ts` (390 e 1280 px): formulário com erros e envio via CajuGo, WhatsApp pelo catálogo (dois toques, um lead Seu catálogo), tela Leads (indicadores, destaque, filtro, avançar, Perdido, veículo excluído, contador), vitrine sem o contato. Seed `leads/testing/e2e-seed.ts` na loja da vitrine. Selo de contador também nos itens da barra do celular. Link do veículo no card com 44 px. LCP de [1b] no build de produção: 1,86 s, CLS 0,001.

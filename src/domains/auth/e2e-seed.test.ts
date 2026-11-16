@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  leads,
   profiles,
   settingValues,
   stores,
@@ -227,10 +228,12 @@ describe("seedE2E", () => {
     // Act
     await seedE2E(withCloud(), "senha-e2e-1");
 
-    // Assert: 45 no ar, 1 vendido, 1 da loja suspensa e 3 de Recife
+    // Assert: 45 no ar, 1 vendido, 1 da loja suspensa, 3 de Recife e o excluído
+    // dos leads (007); os 7 leads da vitrine são refeitos, não somados
     expect(await t.db.select().from(vehicles)).toHaveLength(
-      E2E_SHOWCASE.total + 5,
+      E2E_SHOWCASE.total + 6,
     );
+    expect(await t.db.select().from(leads)).toHaveLength(7);
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 });

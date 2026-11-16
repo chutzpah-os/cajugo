@@ -100,7 +100,7 @@ export async function seedShowcase(
   db: Db,
   owners: { active: string; suspended: string; recife: string },
   now: Date,
-) {
+): Promise<{ storeId: string }> {
   const S = E2E_SHOWCASE;
   const storeId = await ownStore(db, owners.active, {
     name: S.storeName,
@@ -196,4 +196,5 @@ export async function seedShowcase(
     .update(stores)
     .set({ status: "suspended" })
     .where(eq(stores.id, suspendedId));
+  return { storeId };
 }

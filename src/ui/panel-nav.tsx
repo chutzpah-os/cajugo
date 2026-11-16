@@ -89,6 +89,15 @@ export function PanelNavView({
               >
                 {current(i.href) && <ActiveMark />}
                 {i.label}
+                {!!i.count && (
+                  <span
+                    data-testid="nav-count"
+                    className="absolute top-1 right-[calc(50%-2.5rem)] min-w-5 rounded-full bg-caju px-1 text-center text-[11px] leading-5 font-bold text-white"
+                  >
+                    {i.count}
+                    <span className="sr-only"> pendentes</span>
+                  </span>
+                )}
               </Link>
             </li>
           ))}

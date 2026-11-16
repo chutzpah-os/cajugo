@@ -117,7 +117,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   · _LED-FR-012_
 
 ## Fase 4 — Fechamento
-- [ ] **T018** Seed e2e com uma loja que tem leads em todos os status, um lead de WhatsApp, um Novo há 25 h e um lead de veículo excluído.
+- [x] **T018** Seed e2e com uma loja que tem leads em todos os status, um lead de WhatsApp, um Novo há 25 h e um lead de veículo excluído.
 
   Playwright em 390 e 1280 px:
   - formulário e WhatsApp em [1b] viram lead;

@@ -12,7 +12,11 @@ import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
 import { removeBillingForTests } from "@/domains/billing/service";
 import { seedAlerts } from "@/domains/buyers/testing/e2e-seed";
-import { seedShowcase } from "@/domains/showcase/testing/e2e-seed";
+import { seedLeads } from "@/domains/leads/testing/e2e-seed";
+import {
+  E2E_SHOWCASE,
+  seedShowcase,
+} from "@/domains/showcase/testing/e2e-seed";
 import { removeVehiclesForTests } from "@/domains/vehicles/service";
 import {
   e2eSignups,
@@ -171,7 +175,7 @@ export async function seedE2E(
   // Código pessoal do lojista de teste, para o e2e do link /i/{codigo} (spec 003).
   await getOrCreateCode(deps.db, ids.owner, "Lojista E2E");
   // Veículos da vitrine, numa loja separada (spec 006).
-  await seedShowcase(
+  const showcase = await seedShowcase(
     deps.db,
     {
       active: ids.showcaseOwner,
@@ -182,6 +186,12 @@ export async function seedE2E(
   );
   // "Avisar quando chegar": um alerta com veículo e um esperando (spec 006d).
   await seedAlerts(deps.db, now);
+  // Leads da loja da vitrine: um por status, WhatsApp, Novo antigo e veículo excluído (007).
+  await seedLeads(
+    deps.db,
+    { storeId: showcase.storeId, vehicleId: E2E_SHOWCASE.fullId },
+    now,
+  );
 
   return { ids, storeId: store.id };
 }

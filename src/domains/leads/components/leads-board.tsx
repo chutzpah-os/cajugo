@@ -67,7 +67,7 @@ function Card({ lead, now }: { lead: LeadCard; now: Date }) {
           ) : (
             <Link
               href={`/painel/veiculos/${lead.vehicle.id}`}
-              className="text-sm text-text-2 underline"
+              className="flex min-h-11 items-center text-sm text-text-2 underline"
             >
               {vehicle}
             </Link>

@@ -343,3 +343,6 @@
 
 # 2026-11-16 · 007/T017
 - Dias no ar continuam vindo do `daysOnAir` da 005 (VEH-FR-011): uma regra só para o mesmo número, em vez de repetir a conta no domínio `leads`.
+
+# 2026-11-16 · 007/T018
+- O contador do menu só aparecia na gaveta "Mais" e na barra lateral; "Leads" é item fixo da barra do celular, então o selo passou a valer ali também.
