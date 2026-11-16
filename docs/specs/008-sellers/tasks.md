@@ -135,7 +135,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - 390 e 1280 px com `audit()`.
 
   · _SEL-FR-001…011, 014–016, SEL-SEC-005, SEL-SEC-009, SEL-NFR-001_
-- [ ] **T021** LCP/CLS da página do veículo aberta com `?ref=` no e2e de produção.
+- [x] **T021** LCP/CLS da página do veículo aberta com `?ref=` no e2e de produção.
 
   · _SEL-NFR-002_
 

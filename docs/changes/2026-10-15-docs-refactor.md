@@ -878,3 +878,6 @@
 
 # 2026-11-16 · 008/T020 e2e da Rede Caju
 - Seed: removeSellersForTests (contas de teste e cadastros e2e, com as fotos) e seedSellers (conta sellerReferrer como vendedor ativo E2EVENDE, parceiro da loja da vitrine com comissão de 2%). tests/e2e/sellers.spec.ts: cadastro com fotos, admin abre documento/aprova/bloqueia/desbloqueia, suporte só vê, vitrine com Você ganha e link, pedir parceria, link → clique → lead via vendedor, conta, desktop. Formulário de cadastro envia sem reset (select da chave Pix) e manda campo vazio. Suíte: 97 passaram.
+
+# 2026-11-16 · 008/T021 LCP pelo link do vendedor
+- e2e de produção: página do veículo aberta com ?ref= no LCP (1,96 s, CLS 0,001). 16 passaram.

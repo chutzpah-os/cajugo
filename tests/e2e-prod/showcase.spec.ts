@@ -92,6 +92,11 @@ test.describe("build de produção · vitrine", () => {
     ["ALR-NFR-002", "busca sem resultado", "/?q=e2e-nada-por-aqui"],
     ["LED-NFR-002", "veículo com formulário e WhatsApp", `/v/${S.fullId}`],
     ["RPT-NFR-002", "veículo com Denunciar anúncio", `/v/${S.fullId}`],
+    [
+      "SEL-NFR-002",
+      "veículo pelo link do vendedor",
+      `/v/${S.fullId}?ref=E2EVENDE`,
+    ],
   ])
     test(`[${id}] ${name}: LCP e CLS em 4G dentro do limite`, async ({
       page,
