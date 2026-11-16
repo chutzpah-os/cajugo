@@ -827,3 +827,6 @@
 
 # 2026-11-16 · 008/T004 regras do vendedor
 - sellers/schemas.ts (sellerSignupSchema e addSellerSchema strict, CPF válido, Pix pelo tipo), status.ts (rótulos e codeCandidates do código do vendedor), commission.ts (commissionFor em bps ou centavos).
+
+# 2026-11-16 · 008/T005 cadastro do vendedor
+- sellers/service.ts registerSeller (visitante): limite por rede, honeypot com sucesso falso, schema estrito, e-mail existente pede para entrar, CPF já cadastrado no campo; conta no Auth + perfil com CPF e Pix + papel seller + vendedor in_review + activity_log numa transação, com rollback da conta.

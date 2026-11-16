@@ -43,7 +43,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   · _SEL-FR-001, SEL-FR-004, SEL-FR-008, SEL-SEC-008_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T005** `registerSeller` sem sessão:
+- [x] **T005** `registerSeller` sem sessão:
   - conta no Auth, `profile` com o papel de vendedor, CPF e Pix, e vendedor `in_review`;
   - honeypot e limite por IP;
   - CPF repetido → "CPF já cadastrado.";
