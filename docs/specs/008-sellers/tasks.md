@@ -107,7 +107,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - vitrine e conta só para vendedor ativo.
 
   · _SEL-FR-002, SEL-FR-006, SEL-FR-015_
-- [ ] **T016** `/rede/vitrine` [7c]:
+- [x] **T016** `/rede/vitrine` [7c]:
   - busca e filtros da vitrine;
   - **Compartilhar** (copiar e WhatsApp);
   - "Você ganha R$ X";

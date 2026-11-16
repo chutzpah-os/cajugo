@@ -5,3 +5,7 @@ export function whatsappLink(number: string, text?: string): string {
   const url = `https://wa.me/${digits}`;
   return text ? `${url}?text=${encodeURIComponent(text)}` : url;
 }
+
+/** Compartilhar pelo WhatsApp sem destinatário: a pessoa escolhe a conversa. */
+export const whatsappShareLink = (text: string): string =>
+  `https://wa.me/?text=${encodeURIComponent(text)}`;

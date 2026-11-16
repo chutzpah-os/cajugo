@@ -13,12 +13,17 @@ import { AppError } from "@/platform/http/errors";
 import { isHoneypotFilled } from "@/platform/http/honeypot";
 import { errorMessage, logger } from "@/platform/http/logger";
 import { requestAuthProvider } from "@/platform/supabase/next";
+import { filtersFromQuery } from "@/domains/showcase/service";
 import {
   attachDocument,
   documentUpload,
   recordSellerClick,
   registerSeller,
+  requestPartnership,
+  sellerShowcase,
+  type SellerCard,
 } from "./service";
+import type { PartnerState } from "./status";
 
 const ipHash = async () => hashIp(clientIp(await headers()));
 
@@ -150,5 +155,39 @@ export async function sellerClickAction(raw: unknown): Promise<void> {
     });
   } catch (error) {
     logger.error("sellers.click_failed", { error: errorMessage(error) });
+  }
+}
+
+/** "Pedir parceria" em [7c] (SEL-FR-009): devolve o estado novo da parceria. */
+export async function requestPartnershipAction(input: {
+  storeId: string;
+}): Promise<
+  { ok: true; state: PartnerState } | { ok: false; message: string }
+> {
+  try {
+    return {
+      ok: true,
+      state: await requestPartnership(getDb(), await currentSession(), input),
+    };
+  } catch (error) {
+    const s = stateOf(error, "Não foi possível pedir agora.");
+    return { ok: false, message: s.message ?? "Não foi possível pedir agora." };
+  }
+}
+
+/** Próxima página da vitrine do vendedor (SEL-NFR-003); `null` em falha. */
+export async function loadMoreSellerShowcaseAction(input: {
+  query: string;
+  cursor: string;
+}): Promise<{ items: SellerCard[]; nextCursor: string | null } | null> {
+  try {
+    const page = await sellerShowcase(getDb(), await currentSession(), {
+      filters: filtersFromQuery(String(input.query).slice(0, 500)),
+      cursor: String(input.cursor).slice(0, 300),
+    });
+    return { items: page.items, nextCursor: page.nextCursor };
+  } catch (error) {
+    logger.error("sellers.load_more_failed", { error: errorMessage(error) });
+    return null;
   }
 }

@@ -428,7 +428,7 @@ export async function firstMatch(
 type StoreHours = Extract<StorePage, { kind: "store" }>["hours"];
 
 /** Leitura dos filtros da URL, para quem usa o domínio de fora (testes de `vehicles`). */
-export { parseFilters } from "./filters";
+export { filtersFromQuery, parseFilters } from "./filters";
 
 export type StorePage =
   | {

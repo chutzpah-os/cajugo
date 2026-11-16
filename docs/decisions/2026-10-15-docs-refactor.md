@@ -373,3 +373,6 @@
 
 # 2026-11-16 · 008/T007 fotos do documento
 - Upload e entrega privados já existiam no billing; viraram helpers da plataforma em vez de uma segunda cópia.
+
+# 2026-11-16 · 008/T016 vitrine do vendedor
+- O botão desabilitado 'Esta loja não aceita vendedores' fica para a 009, que cria a escolha da loja; até lá o serviço não produz esse estado.
