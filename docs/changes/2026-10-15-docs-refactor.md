@@ -881,3 +881,6 @@
 
 # 2026-11-16 · 008/T021 LCP pelo link do vendedor
 - e2e de produção: página do veículo aberta com ?ref= no LCP (1,96 s, CLS 0,001). 16 passaram.
+
+# 2026-11-16 · 008 migration 0018 no prod
+- Migration 0018_sellers aplicada no Supabase de produção com autorização do dono; conferido: sellers, partnerships e seller_vehicle_clicks com RLS, 6 colunas novas (profiles, stores, leads) e lead_origin com seller.
