@@ -101,7 +101,8 @@ Tabelas e colunas em inglês, `snake_case` no banco (camelCase no TypeScript). I
 # Contas e papéis
 profiles ✅              # 1:1 com auth.users (mesmo id; sem FK, porque o schema auth é do Supabase)
   id, name, email, phone, roles (user_role[]: store_owner|store_staff|seller|referrer|admin|support),
-  store_id (loja do dono/equipe), cpf (só para vendedor/resgate), pix_key, pix_key_type,
+  store_id (loja do dono/equipe), cpf (só dígitos, único quando preenchido; vendedor na 008, resgate na 010),
+  pix_key, pix_key_type (cpf|cnpj|email|phone|random),
   notify_email, must_change_password, created_at, last_login_at
   # hoje a coluna é `role` (um papel); vira `roles` na spec 001 (migration aditiva + cópia)
 
@@ -113,7 +114,7 @@ stores ✅ (+ colunas novas)
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),
   billing_day, next_due_at, activated_at (1ª ativação), past_due_since, cancel_at, active_until, slug_reserved_until,
   slug_changed_at (troca no máximo 1× a cada 30 dias),
-  accepts_sellers (bool), commission_type (pct|fixed), commission_value,
+  accepts_sellers (bool, 009), commission_type (pct|fixed), commission_value (bps ou centavos; colunas na 008, tela [7e] na 009),
   created_at, updated_at                       # indicação usada: em referrals.referred_store_id
 store_slug_redirects     old_slug (pk), store_id, expires_at
 
@@ -160,18 +161,20 @@ approvals                id, vehicle_id, checks (jsonb), status (pending|approve
 leads                    id, store_id, vehicle_id, name, email, phone, message (nulos no WhatsApp e após 2 anos),
                          channel (form|whatsapp), origin (cajugo|store_catalog), status (new|contacting|
                          negotiating|sold|lost; WhatsApp entra em contacting), created_at, updated_at, purged_at
-                         (007; seller_id e a origem seller entram na 008/009)
+                         (007), seller_id + origem seller (008: só vendedor ativo e parceiro da loja)
 vehicle_reports          id (chave do envio, uuid v7 da tela), vehicle_id (cascade), reason (sold|unreal_price|
                          wrong_photos|scam), details, status (open|kept|hidden), decided_by, decided_at, created_at
                          (007b; sem autor nem IP; a denúncia de vendedor da 009 terá tabela própria)
 
 # Rede Caju
-sellers                  profile_id (pk), code (unique, usado no ?ref=), city,
-                         status (in_review|active|blocked), documents (jsonb: public_ids privados),
-                         approved_by, approved_at, rating_avg
+sellers                  profile_id (pk), code (unique, gerado ao aprovar, usado no ?ref=), city,
+                         status (in_review|active|blocked), document_front/back_public_id + _format (privados,
+                         `authenticated`), blocked_reason, decided_by, approved_at, created_at, updated_at   # 008
+                         (rating_avg entra na 009, com as avaliações)
 partnerships             id, seller_id, store_id, origin (request|invite),
-                         status (pending|active|declined|ended), created_at, ended_at
-seller_vehicle_clicks    seller_id + vehicle_id + day (pk), clicks
+                         status (pending|active|declined|ended), created_at, updated_at, ended_at
+                         # única aberta por vendedor e loja; bloqueio do vendedor não muda a parceria (008)
+seller_vehicle_clicks    seller_id + vehicle_id + day (pk, dia em São Paulo), clicks (1 por aparelho por dia, sem robôs, 008)
 sales                    id, vehicle_id, store_id, final_price_cents, seller_id,
                          attribution (link|other_partner|store), commission_cents,
                          commission_status (in_review|to_receive|paid), cajugo_fee_cents, invoice_id, confirmed_at

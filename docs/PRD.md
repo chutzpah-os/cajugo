@@ -257,7 +257,7 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 
 ### 5.7 Rede Caju
 - Vendedor **não paga**.
-- **Curadoria:** cadastro [7a] entra "Em análise"; o admin verifica CPF, antecedentes e documentos e **aprova** [7h]. Só aprovados aparecem para as lojas. Admin pode bloquear/desbloquear.
+- **Curadoria:** cadastro [7a] entra "Em análise"; o admin verifica CPF, antecedentes (consulta por fora, pelo CPF) e a foto do documento enviada no cadastro e **aprova** [7h]; o suporte só consulta. Só aprovados aparecem para as lojas. Admin pode bloquear/desbloquear.
 - Vendedor pede parceria [7c]; lojista **aprova/recusa** [7f] ou **convida** pela lista de disponíveis [13a].
 - Um vendedor pode ter várias lojas parceiras e divulgar toda a vitrine, mas **só ganha comissão de lojas parceiras**.
 - **Comissão** [7e]: definida pela loja — % do preço ou valor fixo; padrão da loja + ajuste por veículo; toggle "Aceitar vendedores independentes".
@@ -652,7 +652,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - Ações: Editar dados da loja, Ver catálogo público, **Definir senha temporária** (mostra a senha uma única vez para o admin copiar; obriga a troca no próximo login), Histórico de atividade, **Suspender loja** (→ [6f]; vira **Reativar** quando suspensa).
 
 ### [7a] Cadastro do vendedor (Rede Caju)
-- Campos: nome, CPF (dígitos válidos, único), celular, e-mail, cidade, chave Pix, senha, aceite dos termos [12i].
+- Campos: nome, CPF (dígitos válidos, único), celular, e-mail, cidade, chave Pix, foto de um documento com foto (frente e verso, arquivo privado), senha, aceite dos termos [12i]. Quem já tem conta entra e ganha o papel de vendedor na mesma conta.
 - Ao enviar: status **Em análise**; tela de confirmação explica a curadoria. Vendedor não paga nada.
 
 ### [7b] Painel do vendedor
@@ -661,7 +661,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - Navegação: Início · Vitrine · Extrato · Conta.
 
 ### [7c] Vitrine do vendedor
-- Todos os veículos da vitrine. Loja parceira: mostra **"Você ganha R$ X"** e **Compartilhar** (link `/v/{id}?ref={codigo}` + WhatsApp). Loja não parceira: **Pedir parceria**.
+- Todos os veículos da vitrine, cada um com **Compartilhar** (link `/v/{id}?ref={codigo}` + WhatsApp). Loja parceira: mostra também **"Você ganha R$ X"**. Loja não parceira: **Pedir parceria** (desabilitado com "Esta loja não aceita vendedores" quando ela não aceita); o contato pelo link só fica marcado com o vendedor em loja parceira.
 
 ### [7d] Extrato do vendedor
 - Filtros: Todas · A receber · Em análise · Pagas. Cada venda: veículo, loja, valor da comissão, status; botão **Recebi** em "A receber".
@@ -859,7 +859,7 @@ Ver `API.md` §5 (mapa de rotas).
 1. ~~Valores provisórios de `Config` (§5.14)~~ **Resolvido (spec 002):** lança com os valores provisórios do §5.14; a chave Pix começa vazia e o admin preenche em [4c]; o admin ajusta os demais quando quiser.
 2. ~~Fonte de dados FIPE~~ **Resolvido (spec 005):** API pública gratuita, copiada para o banco da CajuGo (listas sincronizadas; preço por versão uma vez por mês); o formulário não depende da API no ar.
 3. Usuários da loja: o lojista convida pelo [3c] (convite com senha temporária, sem e-mail no MVP)?
-4. Documentos exigidos do vendedor na curadoria (CPF, antecedentes: quais e como enviar).
+4. ~~Documentos exigidos do vendedor na curadoria~~ **Resolvido (spec 008):** foto de um documento com foto (frente e verso) por upload privado no cadastro [7a]; antecedentes o admin consulta por fora, pelo CPF.
 5. Revisão jurídica dos termos [12i] (Rede Caju, Caju Indica, LGPD).
 6. Gateway de pagamento na fase 2: Stripe ou outro.
 7. **Antecipar o domínio próprio** (`cajugo.com.br`)? A autoridade de busca acumulada em `cajugo.vercel.app` não é nossa (`docs/SEO.md` §3). O formato do endereço das lojas já está decidido: `/loja/{slug}` (ADR 0009).

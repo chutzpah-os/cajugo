@@ -127,6 +127,9 @@
 - Parcerias (aprovar, recusar, convidar, encerrar); vendedores disponíveis e perfil; avaliar; denunciar vendedor.
 - **Confirmar venda** [7g]: atribuição, valor final, comissão (A receber/Paga), **taxa CajuGo** registrada para a próxima fatura; veículo sai de todos os lugares.
 
+## 008b · Rede Caju: extrato do vendedor — tela 7d
+- Extrato com filtros (Todas · A receber · Em análise · Pagas) e **Recebi**; "a receber", vendas do mês e últimas vendas no painel [7b]. Dividida da 008 no `/clarify` de 2026-11-16: depende da Confirmar venda [7g] da 009.
+
 ## 010 · Caju Indica — telas 8a–8g, 9a, 9b, 9d, 9e
 - Banner e rodapé "Indique uma loja e ganhe" na vitrine [9a] (vindo da 006d), com a recompensa das regras e oculto com o programa desligado.
 - Código/link pessoal, landing [8c], aplicação no cadastro (vem da 003), indicações e status.

@@ -815,3 +815,6 @@
 
 # 2026-11-16 · 007b/verify ajustes e fechamento
 - Denúncia marca o aparelho só depois do envio aceito. Cards da equipe lidos direto (loja suspensa na fila, no contador e em Ocultados). Ocultados lista todo veículo com a marca; Mostrar de novo tira a marca e só republica o oculto; [6e] mostra o motivo sempre que há marca. canSell no resumo, shortTitle único, updateTag só quando muda. Spec 007b implemented, PLAN e T022 marcados.
+
+# 2026-11-16 · 008/T001 documentos
+- Spec, plano, contrato e tasks da 008; PRD §5.7, [7a], [7c] e §12.1 item 4; PLAN com a 008b. ARCHITECTURE §4 (sellers, partnerships, cliques, CPF/Pix em profiles, comissão em stores, leads.seller_id), API.md §5, SECURITY §8 (foto do documento), GLOSSARY (Código do vendedor, Curadoria, Status do vendedor).

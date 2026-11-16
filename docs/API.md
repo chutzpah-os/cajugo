@@ -100,7 +100,8 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | A | `updatePassword(password)` — tela Nova senha | 6b |
 | A | `checkSlugAvailability(slug)` · `checkReferralCode(code)` | 5c, 8d |
 | A | `registerStore(form)` → conta + loja `registered` (+ indicação, se houver código) | 5c |
-| A | `registerSeller(form)` → conta + vendedor `in_review` | 7a |
+| página | `/rede/cadastro` · `/rede/cadastro/documento` (008) | 7a |
+| A | `registerSellerAction(form)` → conta (ou papel na conta logada) + vendedor `in_review`; honeypot + rate limit · `sellerDocumentUploadAction({ side })` · `attachSellerDocumentAction({ side, publicId })` | 7a |
 | A | `registerReferrer(form)` → conta com papel indicador | 9b |
 
 ### Pagamento (Pix manual)
@@ -132,10 +133,13 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Vendedor (Rede Caju)
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| A | `requestPartnership(storeId)` | 7c |
+| página | `/rede` (status ou painel) · `/rede/vitrine` · `/rede/extrato` (008b) · `/rede/conta` | 7b, 7c, 7d, 13c |
+| A | `requestPartnershipAction({ storeId })` (008) | 7c |
 | — | link do veículo: `/v/{id}?ref={code}` (montado por função única) | 7c |
-| A | `markCommissionReceived(saleId)` | 7d |
-| A | `updateSellerAccount({ pixKey, ... })` | 13c |
+| A | `sellerClickAction({ vehicleId, code })` — pública, 1 por aparelho por dia, sem robôs (008) | 1b |
+| A | `markCommissionReceived(saleId)` (008b) | 7d |
+| A | `updatePixKeyAction({ pixKey })` (008) | 13c |
+| GET | `/api/v1/sellers/{id}/document/{side}` — foto privada do documento; admin, suporte ou o próprio vendedor (`contract.md` da 008) | 7h, 13c |
 
 ### Caju Indica
 | Tipo | Rota / ação | Tela |
@@ -152,7 +156,8 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | página | `/admin/alertas` — alertas com veículo compatível e aguardando · A `markAlertNotifiedAction({ alertId })` (006d) | 12a |
 | página | `/admin/denuncias` — fila de denúncias e aba `?aba=ocultados` (`admin.moderate`, 007b) | 14e |
 | A | `keepReportsAction({ vehicleId })` · `hideVehicleAction({ vehicleId, reason, note })` · `showVehicleAction({ vehicleId })` (007b) · `blockSeller` por denúncia de vendedor (009) | 14e, 6f, 7h |
-| A | `approveSeller` · `blockSeller(reason)` · `unblockSeller` | 7h |
+| página | `/admin/vendedores` — admin e suporte veem; só o admin decide (008) | 7h |
+| A | `approveSellerAction({ sellerId })` · `blockSellerAction({ sellerId, reason })` · `unblockSellerAction({ sellerId })` (008) | 7h |
 | A | `markPayoutPaid(payoutId)` · `createCampaignLink(name)` | 8g, 8f |
 | A | `updateSettings(partial)` (todas as regras de `Config`) · `inviteTeamMember` | 4c, 8f |
 

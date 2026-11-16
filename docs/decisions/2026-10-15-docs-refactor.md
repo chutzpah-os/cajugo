@@ -367,3 +367,6 @@
 
 # 2026-11-16 · 007b/verify ajustes e fechamento
 - Revisão em dois eixos: a marca gravada antes da resposta podia engolir uma denúncia recusada, e a leitura pública escondia da equipe anúncios de loja suspensa e o oculto despublicado.
+
+# 2026-11-16 · 008/T001 documentos
+- D1–D6 aprovadas: cadastro em dois passos (fotos logado), comissão no banco já na 008, CPF/Pix em profiles, pixKeySchema na plataforma, máscara de CPF existente, origem seller no lead.

@@ -86,7 +86,17 @@ _Evite_: comissão CajuGo
 Registro de um veículo vendido, com valor final e atribuição (vendedor do link, outro parceiro ou a própria loja).
 
 **Link do vendedor**:
-Link de um veículo com o código do vendedor (`?ref=`); leads vindos dele ficam marcados com o vendedor.
+Link de um veículo com o código do vendedor (`?ref=`); leads vindos dele ficam marcados com o vendedor quando ele é parceiro da loja.
+
+**Código do vendedor** (`code`):
+Código pessoal gerado quando a CajuGo aprova o vendedor (ex.: `ANA10`), usado no link do vendedor; nunca muda.
+
+**Curadoria**:
+Análise do cadastro do vendedor pela CajuGo [7h]: CPF, foto do documento e antecedentes (consultados por fora) antes de aprovar.
+
+**Status do vendedor**:
+Em análise (`in_review`, aguardando a curadoria) → Ativo (`active`, gera links e ganha comissão das parceiras) ⇄ Bloqueado (`blocked`, com motivo; parcerias suspensas até desbloquear).
+_Evite_: banido, suspenso
 
 ## Caju Indica
 
