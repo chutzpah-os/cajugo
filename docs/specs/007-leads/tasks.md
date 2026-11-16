@@ -43,7 +43,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - veículo fora do ar recusado.
 
   · _LED-FR-001, LED-FR-004, LED-SEC-002, LED-SEC-004_
-- [ ] **T007** `recordWhatsappClick` e `whatsappClickAction`:
+- [x] **T007** `recordWhatsappClick` e `whatsappClickAction`:
   - lead `whatsapp`/`contacting`, sem nome nem contato;
   - limite por IP com chave própria;
   - erro nunca chega à tela.

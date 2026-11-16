@@ -3,7 +3,7 @@ import { leads } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { fieldErrorsFromZod, type FieldError } from "@/platform/http/errors";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
-import { leadFormSchema } from "./schemas";
+import { leadFormSchema, whatsappClickSchema } from "./schemas";
 import type { LeadOrigin } from "./status";
 
 export type ContactResult =
@@ -75,4 +75,32 @@ export async function contactStore(
     updatedAt: now,
   });
   return { ok: true };
+}
+
+/**
+ * Toque em "WhatsApp" em [1b] ou no simulador (LED-FR-003, 014): lead sem nome nem
+ * contato, já Em contato (a conversa começou no WhatsApp da loja). Nunca lança: a
+ * conversa abre de qualquer jeito; entrada inválida, veículo fora do ar ou limite do IP
+ * só não gravam.
+ */
+export async function recordWhatsappClick(
+  db: Db,
+  raw: unknown,
+  ctx: { ipHash: string; now?: Date },
+): Promise<void> {
+  const now = ctx.now ?? new Date();
+  const parsed = whatsappClickSchema.safeParse(raw);
+  if (!parsed.success) return;
+  if (!(await withinLimits(db, "lead-whatsapp", ctx.ipHash, now))) return;
+  const target = await contactTarget(db, parsed.data.vehicleId);
+  if (!target) return;
+  await db.insert(leads).values({
+    storeId: target.storeId,
+    vehicleId: parsed.data.vehicleId,
+    channel: "whatsapp",
+    origin: finalOrigin(parsed.data.origin, target.shared),
+    status: "contacting",
+    createdAt: now,
+    updatedAt: now,
+  });
 }

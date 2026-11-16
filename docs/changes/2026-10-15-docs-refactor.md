@@ -704,3 +704,6 @@
 
 # 2026-11-16 · 007/T006
 - `leads.contactStore` e `contactLeadAction`: lead `form`/`new` na loja do veículo visível, origem `store_catalog` forçada para não divulgado, honeypot com sucesso falso, limite por IP (5/min, 30/dia), erros por campo.
+
+# 2026-11-16 · 007/T007
+- `recordWhatsappClick` e `whatsappClickAction`: lead `whatsapp`/`contacting` sem nome nem contato; limite por IP com chave própria; entrada inválida, veículo fora do ar ou limite só não gravam, nunca lançam.
