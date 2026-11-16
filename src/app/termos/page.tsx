@@ -46,6 +46,10 @@ const PRIVACY = [
     "Os dados públicos da loja aparecem no catálogo e na vitrine. Dados de quem envia uma mensagem vão só para a loja procurada. Não vendemos dados.",
   ],
   [
+    "Avisar quando chegar",
+    "Quem pede para ser avisado de uma busca informa nome e celular com WhatsApp. Só a equipe da CajuGo vê esses dados, nunca a loja, e eles são apagados quando o aviso é enviado, quando você cancela pelo link ou quando o pedido vence (90 dias, ajustável). Favoritos ficam só no seu aparelho.",
+  ],
+  [
     "Cookies",
     "Usamos cookies para manter você conectado. Quem abre um link de vendedor da Rede Caju recebe um cookie com o código desse vendedor, por 30 dias, para a indicação ser reconhecida; ele guarda só o código, não identifica você e não é lido pelas páginas.",
   ],

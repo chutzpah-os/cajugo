@@ -130,7 +130,13 @@ async function ListingDiscovery({
             <SortSelect filters={filters} basePath={page.path} />
           ) : undefined
         }
-        empty={<NoResults filters={filters} basePath={page.path} />}
+        empty={
+          <NoResults
+            filters={filters}
+            basePath={page.path}
+            alertSource={{ kind: "discovery", path: page.path }}
+          />
+        }
       />
     </main>
   );

@@ -660,3 +660,6 @@
 
 # 2026-11-16 · 006d/T010 job diário
 - Primeiro cron: `GET /api/v1/cron/daily` (contract.md da 006d) com `isCronRequest` (`Bearer CRON_SECRET`, tempo constante; sem segredo, recusa tudo), `purgeExpired` (pendente vencido → `expired` sem nome e celular) e `purgeRateLimits` (> 2 dias); `vercel.json` com `crons` às 06:00 UTC; `.env.example` explica o `CRON_SECRET`.
+
+# 2026-11-16 · 006d/T011 formulário [12a]
+- `buyers/components/alert-form.tsx` no `NoResults` da vitrine e da descoberta (prop `alertSource`; o catálogo da loja não passa): botão que abre nome, celular, consentimento com link para a privacidade e honeypot; confirmação "Vamos avisar quando chegar" com "Não quero mais este aviso" (D3) ou "Já estamos de olho nessa busca". Termos [12i] com o trecho "Avisar quando chegar".

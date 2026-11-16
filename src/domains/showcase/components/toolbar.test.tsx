@@ -18,6 +18,10 @@ vi.mock("../actions", () => ({
   countMatchesAction: vi.fn(),
   loadMoreAction: vi.fn(),
 }));
+vi.mock("@/domains/buyers/actions", () => ({
+  createSearchAlertAction: vi.fn(),
+  favoriteCardsAction: vi.fn(),
+}));
 
 const MAKES = [
   { slug: "bmw", name: "BMW", count: 2 },
@@ -98,6 +102,22 @@ describe("busca sem resultado [12a]", () => {
     // Assert
     expect(html).toContain("Limpar filtros");
     expect(html).toContain('href="/?marca=bmw"');
+  });
+
+  it("[ALR-FR-001] vitrine e descoberta oferecem Avisar quando chegar; o catálogo da loja, não", () => {
+    const at = (alertSource?: null | { kind: "discovery"; path: string }) =>
+      renderToStaticMarkup(
+        <NoResults
+          filters={parseFilters({ q: "toro" })}
+          basePath="/"
+          alertSource={alertSource}
+        />,
+      );
+    expect(at(null)).toContain("Avisar quando chegar");
+    expect(at({ kind: "discovery", path: "/carros/fiat" })).toContain(
+      "Avisar quando chegar",
+    );
+    expect(at()).not.toContain("Avisar quando chegar");
   });
 
   it("[SHW-FR-012] sem marca, usa a 1ª palavra da busca", () => {

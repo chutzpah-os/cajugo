@@ -101,7 +101,11 @@ export async function ShowcaseView({
         }
         empty={
           filtered ? (
-            <NoResults filters={filters} basePath={BASE_PATH} />
+            <NoResults
+              filters={filters}
+              basePath={BASE_PATH}
+              alertSource={null}
+            />
           ) : (
             <div className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-5">
               <p className="text-[17px] font-extrabold">

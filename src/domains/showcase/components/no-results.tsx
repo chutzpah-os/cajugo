@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { filterHref, parseFilters, type Filters } from "../filters";
+import { AlertForm } from "@/domains/buyers/components/alert-form";
+import {
+  filterHref,
+  filtersToQuery,
+  parseFilters,
+  type Filters,
+} from "../filters";
+import type { ListSource } from "../list-source";
 
 const linkClass =
   "flex min-h-11 items-center text-sm font-semibold text-caju-deep underline";
@@ -11,13 +18,18 @@ function narrower(f: Filters): Record<string, string> | null {
   return words.length > 1 ? { q: words[0] } : null;
 }
 
-/** Busca sem resultado [12a] (SHW-FR-012). */
+/**
+ * Busca sem resultado [12a] (SHW-FR-012). Com `alertSource` (vitrine ou descoberta),
+ * oferece "Avisar quando chegar" (ALR-FR-001); o catálogo da loja não tem alerta.
+ */
 export function NoResults({
   filters,
   basePath,
+  alertSource,
 }: {
   filters: Filters;
   basePath: string;
+  alertSource?: ListSource;
 }) {
   const hint = narrower(filters);
   return (
@@ -39,6 +51,11 @@ export function NoResults({
         >
           Buscar só por {hint.marca ?? hint.q}
         </Link>
+      )}
+      {alertSource !== undefined && (
+        <div className="mt-3 w-full border-t border-line pt-4">
+          <AlertForm source={alertSource} query={filtersToQuery(filters)} />
+        </div>
       )}
     </div>
   );

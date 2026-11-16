@@ -21,7 +21,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T010** Job diário `/api/v1/cron/daily` conforme `contract.md`: `CRON_SECRET`, `purgeExpired`, `purgeRateLimits`, idempotente; `vercel.json` com `crons`; `.env.example` · _ALR-FR-005, ALR-SEC-004_
 
 ## Fase 3 — Telas
-- [ ] **T011** `AlertForm` no `NoResults` da vitrine e da descoberta (não no catálogo da loja): nome, celular, consentimento com link [12i], honeypot; "Vamos avisar quando chegar" com o link de cancelar (D3) e "Já estamos de olho nessa busca"; termos [12i] com o trecho de privacidade · _ALR-FR-001, ALR-FR-006, ALR-SEC-002, ALR-NFR-002_
+- [x] **T011** `AlertForm` no `NoResults` da vitrine e da descoberta (não no catálogo da loja): nome, celular, consentimento com link [12i], honeypot; "Vamos avisar quando chegar" com o link de cancelar (D3) e "Já estamos de olho nessa busca"; termos [12i] com o trecho de privacidade · _ALR-FR-001, ALR-FR-006, ALR-SEC-002, ALR-NFR-002_
 - [ ] **T012** `/admin/alertas` (com veículo: card, WhatsApp, "Marcar como avisado"; aguardando: busca e vencimento) e item "Alertas" com contador (`NavItem.count`) · _ALR-FR-002, ALR-FR-003, ALR-SEC-001, ALR-NFR-001_
 - [ ] **T013** `/alertas/cancelar/[token]`: confirmação, "Alerta cancelado", "Este alerta já foi encerrado", "Link inválido"; `noindex` e `/alertas` no `robots.txt` · _ALR-FR-004, ALR-SEC-005_
 
