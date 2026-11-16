@@ -88,3 +88,9 @@ export const partnershipRequestSchema = z
 export const sellerClickSchema = z
   .object({ vehicleId: z.uuid(), code: z.string().max(40) })
   .strict();
+
+/** Trocar a chave Pix na conta [13c] (SEL-FR-014). */
+export const pixUpdateSchema = z
+  .object({ ...pixFields })
+  .strict()
+  .transform(withPix);

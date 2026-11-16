@@ -23,6 +23,7 @@ import {
 } from "@/domains/showcase/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import { brDay } from "@/platform/br/date";
+import { maskTaxId } from "@/platform/br/tax-id";
 import { appUrl } from "@/platform/http/urls";
 import {
   partnerships,
@@ -48,6 +49,7 @@ import {
   addSellerSchema,
   blockSellerSchema,
   partnershipRequestSchema,
+  pixUpdateSchema,
   sellerClickSchema,
   sellerDecisionSchema,
   sellerSignupSchema,
@@ -808,4 +810,74 @@ export async function sellerForLead(
       ),
     );
   return partner ? seller : null;
+}
+
+export type SellerAccount = {
+  name: string;
+  email: string;
+  phone: string | null;
+  city: string;
+  code: string;
+  /** Mascarado: o completo só a equipe vê (SEL-SEC-001). */
+  cpf: string | null;
+  pix: { type: string; key: string } | null;
+};
+
+/** Conta do vendedor [13c] (SEL-FR-014, SEL-SEC-001, 002): só a do vendedor ativo da sessão. */
+export async function sellerAccount(
+  db: Db,
+  session: Session | null,
+): Promise<SellerAccount> {
+  const me = await activeSellerOf(db, session);
+  const [row] = await db
+    .select({
+      name: profiles.name,
+      email: profiles.email,
+      phone: profiles.phone,
+      cpf: profiles.cpf,
+      pixKey: profiles.pixKey,
+      pixKeyType: profiles.pixKeyType,
+      city: sellers.city,
+    })
+    .from(profiles)
+    .innerJoin(sellers, eq(sellers.profileId, profiles.id))
+    .where(eq(profiles.id, me.sellerId));
+  return {
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    city: row.city,
+    code: me.code,
+    cpf: row.cpf ? maskTaxId("cpf", row.cpf) : null,
+    pix:
+      row.pixKey && row.pixKeyType
+        ? { type: row.pixKeyType, key: row.pixKey }
+        : null,
+  };
+}
+
+/**
+ * Trocar a chave Pix [13c] (SEL-FR-014): conferida pelo tipo; o registro de atividade
+ * não leva a chave (SEL-SEC-002).
+ */
+export async function updatePixKey(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<void> {
+  const me = await activeSellerOf(db, session);
+  const { pix } = parseOrThrow(pixUpdateSchema, raw);
+  await db.transaction(async (tx) => {
+    await tx
+      .update(profiles)
+      .set({ pixKey: pix.key, pixKeyType: pix.type })
+      .where(eq(profiles.id, me.sellerId));
+    await logActivity(tx, {
+      userId: me.sellerId,
+      action: "seller.pix_changed",
+      entity: "seller",
+      entityId: me.sellerId,
+      data: { type: pix.type },
+    });
+  });
 }

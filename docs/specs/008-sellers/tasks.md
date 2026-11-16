@@ -92,7 +92,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - [3a] traz o nome do vendedor.
 
   · _SEL-FR-011, SEL-SEC-006_
-- [ ] **T013** `sellerAccount` e `updatePixKey`: CPF mascarado; troca da chave Pix com `pixKeySchema` e `activity_log` sem a chave; a chave Pix não sai na vitrine, no lead nem na página do veículo.
+- [x] **T013** `sellerAccount` e `updatePixKey`: CPF mascarado; troca da chave Pix com `pixKeySchema` e `activity_log` sem a chave; a chave Pix não sai na vitrine, no lead nem na página do veículo.
 
   · _SEL-FR-014, SEL-SEC-001, SEL-SEC-002_
 

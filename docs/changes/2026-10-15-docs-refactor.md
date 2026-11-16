@@ -851,3 +851,6 @@
 
 # 2026-11-16 · 008/T012 lead com vendedor
 - sellerForLead (vendedor ativo e parceiro ativo da loja). insertLead grava seller_id e origem seller; contactLeadAction e whatsappClickAction leem o cookie cajugo_ref (REF_COOKIE agora em showcase/urls, usado pelo proxy). [3a] recebe sellerName (só o nome).
+
+# 2026-11-16 · 008/T013 conta do vendedor
+- sellerAccount (só vendedor ativo; CPF mascarado com maskTaxId, chave Pix) e updatePixKey (pixUpdateSchema pelo tipo; activity_log seller.pix_changed só com o tipo). Teste de que Pix e CPF não saem na vitrine do vendedor, no lead nem na página do veículo.
