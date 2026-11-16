@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { startTransition, useActionState, useState } from "react";
 import { Button } from "@/ui/button";
 import { HoneypotField } from "@/ui/honeypot-field";
 import { SelectField } from "@/ui/select-field";
@@ -40,7 +40,17 @@ export function SellerSignupForm({ signedIn }: { signedIn: boolean }) {
     );
 
   return (
-    <form action={action} className="relative flex flex-col gap-4" noValidate>
+    <form
+      // Envio manual: o envio pelo `action` do React limpa o formulário e
+      // devolveria o tipo da chave Pix ao primeiro da lista.
+      onSubmit={(e) => {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        startTransition(() => action(data));
+      }}
+      className="relative flex flex-col gap-4"
+      noValidate
+    >
       <HoneypotField />
       {!signedIn && (
         <>

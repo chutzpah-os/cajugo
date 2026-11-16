@@ -6,6 +6,8 @@ import {
   settingValues,
   stores,
   vehiclePhotos,
+  partnerships,
+  sellers,
   vehicleReports,
   vehicles,
 } from "@/platform/db/schema";
@@ -241,6 +243,11 @@ describe("seedE2E", () => {
         status: "open",
       }),
     ]);
+    // Vendedor ativo e parceria refeitos, não somados (008).
+    expect(await t.db.select().from(sellers)).toEqual([
+      expect.objectContaining({ code: "E2EVENDE", status: "active" }),
+    ]);
+    expect(await t.db.select().from(partnerships)).toHaveLength(1);
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 });

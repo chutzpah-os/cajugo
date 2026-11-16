@@ -875,3 +875,6 @@
 
 # 2026-11-16 · 008/T019 clique e selo do vendedor
 - SellerClickPing na página do veículo (lê ?ref=, marca o aparelho por 24 h por vendedor e veículo, chama sellerClickAction; a página segue em cache). [3a]: selo 'via vendedor {nome}' no lead de origem seller. Teste da curadoria confere o CPF e a chave Pix reais em vez de um padrão de dígitos (instável).
+
+# 2026-11-16 · 008/T020 e2e da Rede Caju
+- Seed: removeSellersForTests (contas de teste e cadastros e2e, com as fotos) e seedSellers (conta sellerReferrer como vendedor ativo E2EVENDE, parceiro da loja da vitrine com comissão de 2%). tests/e2e/sellers.spec.ts: cadastro com fotos, admin abre documento/aprova/bloqueia/desbloqueia, suporte só vê, vitrine com Você ganha e link, pedir parceria, link → clique → lead via vendedor, conta, desktop. Formulário de cadastro envia sem reset (select da chave Pix) e manda campo vazio. Suíte: 97 passaram.

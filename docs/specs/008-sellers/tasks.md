@@ -124,7 +124,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T019** Página do veículo: `SellerClickPing` (lê `?ref=`, marca o aparelho por dia, chama a action) sem tirar a página do cache. Selo "via vendedor {nome}" em [3a].
 
   · _SEL-FR-010, SEL-FR-011, SEL-NFR-002_
-- [ ] **T020** Seed do e2e (vendedor em análise com fotos, vendedor ativo parceiro da loja da vitrine, comissão da loja) e `tests/e2e/sellers.spec.ts`:
+- [x] **T020** Seed do e2e (vendedor em análise com fotos, vendedor ativo parceiro da loja da vitrine, comissão da loja) e `tests/e2e/sellers.spec.ts`:
   - cadastro com fotos;
   - admin aprova e bloqueia;
   - vitrine com "Você ganha" e Compartilhar;

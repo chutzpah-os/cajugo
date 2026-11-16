@@ -76,10 +76,8 @@ export async function registerSellerAction(
 ): Promise<SellerSignupState> {
   const session = await currentSession();
   const input: Record<string, unknown> = {};
-  for (const f of FIELDS) {
-    const v = form.get(f);
-    if (typeof v === "string" && v !== "") input[f] = v;
-  }
+  // Campo vazio vai como "" para a mensagem do próprio campo ("Informe seu nome.").
+  for (const f of FIELDS) input[f] = String(form.get(f) ?? "");
   if (session) for (const f of ACCOUNT_FIELDS) delete input[f];
   input.terms = form.get("terms") === "on";
   const hash = await ipHash();

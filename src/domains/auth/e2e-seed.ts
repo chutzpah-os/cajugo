@@ -15,6 +15,10 @@ import { seedAlerts } from "@/domains/buyers/testing/e2e-seed";
 import { seedLeads } from "@/domains/leads/testing/e2e-seed";
 import { seedReports } from "@/domains/moderation/testing/e2e-seed";
 import {
+  removeSellersForTests,
+  seedSellers,
+} from "@/domains/sellers/testing/e2e-seed";
+import {
   E2E_SHOWCASE,
   seedShowcase,
 } from "@/domains/showcase/testing/e2e-seed";
@@ -163,6 +167,13 @@ export async function seedE2E(
     ...signups.storeIds,
   ]);
   for (const publicId of photos) await deps.cloudinary?.destroy(publicId);
+  // Vendedores das contas de teste e dos cadastros dos e2e (spec 008), com as fotos.
+  const documents = await removeSellersForTests(deps.db, [
+    ...signups.profileIds,
+    ...Object.values(ids),
+  ]);
+  for (const publicId of documents)
+    await deps.cloudinary?.destroy(publicId, "authenticated");
   // Lojas e contas criadas pelos e2e de cadastro (spec 003).
   await removeE2ESignups(deps);
   // Loja de teste no estado inicial (Minha loja e troca de endereço, spec 003).
@@ -195,6 +206,11 @@ export async function seedE2E(
   );
   // Uma denúncia aberta de um veículo da vitrine (007b).
   await seedReports(deps.db, E2E_SHOWCASE.reportedId, now);
+  // Vendedor ativo, parceiro da loja da vitrine, com comissão de 2% (008).
+  await seedSellers(deps.db, {
+    sellerId: ids.sellerReferrer,
+    storeId: showcase.storeId,
+  });
 
   return { ids, storeId: store.id };
 }
