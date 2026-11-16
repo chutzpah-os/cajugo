@@ -138,6 +138,7 @@ describe("migrations", () => {
         referral_who: { store_owner: true, seller: true, referrer: true },
         require_approval: false,
         retention_days: 90,
+        search_alert_validity_days: 90,
         review_business_days: 1,
         support_whatsapp: "557981360206",
       });

@@ -534,3 +534,41 @@ export const fipePrices = pgTable("fipe_prices", {
   month: text("month").notNull(),
   fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull(),
 }).enableRLS();
+
+/** Estados do "Avisar quando chegar" (GLOSSARY: Alerta de busca, spec 006d). */
+export const searchAlertStatus = pgEnum("search_alert_status", [
+  "pending",
+  "notified",
+  "canceled",
+  "expired",
+]);
+
+/**
+ * "Avisar quando chegar" [12a]. Nome e celular só para o admin e apagados ao fechar
+ * (ALR-SEC-004); a busca é a query normalizada dos filtros e a página da descoberta.
+ */
+export const searchAlerts = pgTable(
+  "search_alerts",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    status: searchAlertStatus("status").notNull().default("pending"),
+    name: text("name"),
+    /** `55` + DDD + 9 dígitos. */
+    phone: text("phone"),
+    query: text("query").notNull(),
+    /** `/carros/...` quando o pedido veio de uma página de descoberta; vitrine = null. */
+    discoveryPath: text("discovery_path"),
+    consentAt: timestamp("consent_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+    notifiedBy: uuid("notified_by").references(() => profiles.id),
+  },
+  (t) => [
+    uniqueIndex("search_alerts_pending_search")
+      .on(t.phone, t.query, sql`coalesce(${t.discoveryPath}, '')`)
+      .where(sql`${t.status} = 'pending'`),
+    index("search_alerts_status_created").on(t.status, t.createdAt),
+  ],
+).enableRLS();

@@ -226,6 +226,13 @@ export const SETTINGS = {
     schema: integer(1, 20),
     initial: 6,
   }),
+  search_alert_validity_days: define({
+    group: "showcase",
+    input: "int",
+    label: 'Validade do "Avisar quando chegar" (dias)',
+    schema: integer(7, 365, " dias"),
+    initial: 90,
+  }),
   retention_days: define({
     group: "data",
     input: "int",

@@ -42,6 +42,7 @@ describe("settings", () => {
         require_approval: false,
         min_photos: 6,
         retention_days: 90,
+        search_alert_validity_days: 90,
         referral_enabled: true,
         referral_who: { store_owner: true, seller: true, referrer: true },
         referral_pct_bps: 3000,

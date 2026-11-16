@@ -632,3 +632,6 @@
 
 # 2026-11-16 · 006d/T001 documentos
 - ARCHITECTURE §4 (`search_alerts`) e §6 (vencimento no job; compatível na leitura), API.md §5 (actions, `/admin/alertas`, `/alertas/cancelar`, cron com contrato), SECURITY §8 (nome e celular do alerta), GLOSSARY (estados do alerta); ALR-FR-004 com o link de cancelar também na confirmação (D3).
+
+# 2026-11-16 · 006d/T002 migration 0015
+- Enum `search_alert_status`, tabela `search_alerts` (RLS ligado; nome e celular anuláveis), índice único parcial da busca pendente por celular (vitrine e descoberta separadas) e `(status, created_at)`; regra `search_alert_validity_days` (90, de 7 a 365) com o valor inicial semeado na migration. Aplicada no staging.

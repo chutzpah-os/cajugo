@@ -8,7 +8,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 1 — Fundação
 - [x] **T001** Documentos: ARCHITECTURE §4 (`search_alerts`) e §6 (compatível na leitura; job diário), API.md §5, SECURITY §8 (nome e celular do alerta), GLOSSARY (estados do alerta), ALR-FR-004 com o link na confirmação (D3, se aprovada) · _—_
-- [ ] **T002** Migration `0015`: enum `search_alert_status`, tabela `search_alerts`, índice único parcial da busca pendente por celular, índice `(status, created_at)`; regra `search_alert_validity_days` (90, de 7 a 365) em `definitions.ts` · _ALR-FR-005, ALR-FR-006_
+- [x] **T002** Migration `0015`: enum `search_alert_status`, tabela `search_alerts`, índice único parcial da busca pendente por celular, índice `(status, created_at)`; regra `search_alert_validity_days` (90, de 7 a 365) em `definitions.ts` · _ALR-FR-005, ALR-FR-006_
 - [ ] **T003** [P] `brMobileSchema` (DDD + 9 + 8 dígitos; fixo recusado com "Informe um celular com WhatsApp"; aceita máscara e +55) · _ALR-FR-001_
 - [ ] **T004** [P] `cancelToken` e verificação (`id.hmac` com `HASH_SECRET`, comparação em tempo constante; token trocado, outro id e formato inválido recusados) · _ALR-SEC-005_
 

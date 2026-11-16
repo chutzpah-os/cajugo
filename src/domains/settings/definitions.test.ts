@@ -51,6 +51,7 @@ describe("lista de regras", () => {
         "require_approval",
         "retention_days",
         "review_business_days",
+        "search_alert_validity_days",
         "support_whatsapp",
       ].sort(),
     );
