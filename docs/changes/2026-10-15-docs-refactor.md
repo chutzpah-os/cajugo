@@ -638,3 +638,6 @@
 
 # 2026-11-16 · 006d/T003 celular
 - `brMobileSchema`: só celular com DDD (9 + 8 dígitos), com máscara ou +55, guardado como `55…`; fixo recusado com "Informe um celular com WhatsApp, com DDD.".
+
+# 2026-11-16 · 006d/T004 link de cancelar
+- `buyers/alert-token.ts`: `cancelToken(id)` = `{id}.{HMAC-SHA256 do id, 18 bytes, base64url}` com `HASH_SECRET`; `alertIdFromToken` confere em tempo constante e recusa link adulterado, de outro alerta ou fora do formato.
