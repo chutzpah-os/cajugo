@@ -81,6 +81,7 @@ test.describe("build de produção · vitrine", () => {
     ["SHW-NFR-003", "veículo", `/v/${S.fullId}`],
     ["DSC-NFR-003", "descoberta", "/carros/fiat"],
     ["BUY-NFR-002", "favoritos", "/favoritos"],
+    ["ALR-NFR-002", "busca sem resultado", "/?q=e2e-nada-por-aqui"],
   ])
     test(`[${id}] ${name}: LCP e CLS em 4G dentro do limite`, async ({
       page,

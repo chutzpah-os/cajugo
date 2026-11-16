@@ -11,6 +11,7 @@ import type { Role } from "@/platform/http/session";
 import { getOrCreateCode } from "@/domains/referrals/service";
 import { restoreInitialSettings } from "@/domains/settings/service";
 import { removeBillingForTests } from "@/domains/billing/service";
+import { seedAlerts } from "@/domains/buyers/testing/e2e-seed";
 import { seedShowcase } from "@/domains/showcase/testing/e2e-seed";
 import { removeVehiclesForTests } from "@/domains/vehicles/service";
 import {
@@ -179,6 +180,8 @@ export async function seedE2E(
     },
     now,
   );
+  // "Avisar quando chegar": um alerta com veículo e um esperando (spec 006d).
+  await seedAlerts(deps.db, now);
 
   return { ids, storeId: store.id };
 }

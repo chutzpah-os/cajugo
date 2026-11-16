@@ -670,3 +670,6 @@
 
 # 2026-11-16 · 006d/T013 cancelar pelo link
 - `/alertas/cancelar/[token]` (`noindex, nofollow`; `/alertas` no `PRIVATE` do `robots.txt`): abrir só mostra a confirmação, e o toque em "Cancelar aviso" chama a action; mensagens de cancelado, já encerrado, link inválido, limite e falha.
+
+# 2026-11-16 · 006d/T014 e2e do Avisar quando chegar
+- `tests/e2e/search-alerts.spec.ts` (390 e 1280 px): pedido na vitrine com fixo e sem consentimento recusados, repetido ("Já estamos de olho") e cancelado pelo link; descoberta com formulário e catálogo sem; link adulterado; admin vê o compatível com WhatsApp e contador, marca como avisado; lojista sem acesso; suporte no desktop. Seed `buyers/testing/e2e-seed.ts` com um alerta compatível ("Argo V0") e um esperando. Build de produção: LCP da busca sem resultado (632 ms, CLS 0).
