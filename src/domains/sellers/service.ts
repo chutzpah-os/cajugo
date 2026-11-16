@@ -1,5 +1,11 @@
+import type { z } from "zod";
 import { and, asc, eq, gte, inArray, ne, sum } from "drizzle-orm";
-import { can, grantRole, type AuthDeps } from "@/domains/auth/service";
+import {
+  authorizeTo,
+  can,
+  grantRole,
+  type AuthDeps,
+} from "@/domains/auth/service";
 import type {
   Cloudinary,
   SignedUpload,
@@ -24,8 +30,13 @@ import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { PrivateFile } from "@/platform/http/private-file";
 import { authorize, type Session } from "@/platform/http/session";
-import { addSellerSchema, sellerSignupSchema } from "./schemas";
-import type { PartnerState, SellerStatus } from "./status";
+import {
+  addSellerSchema,
+  blockSellerSchema,
+  sellerDecisionSchema,
+  sellerSignupSchema,
+} from "./schemas";
+import { codeCandidates, type PartnerState, type SellerStatus } from "./status";
 
 /**
  * Rede Caju, lado do vendedor (spec 008). O vendedor age sempre como ele mesmo
@@ -345,4 +356,221 @@ export async function sellerHome(
       status: r.status === "active" ? "partner" : "pending",
     })),
   };
+}
+
+export type AdminSeller = {
+  sellerId: string;
+  name: string;
+  city: string;
+  phone: string | null;
+  /** Completo só para a equipe (SEL-SEC-001). */
+  cpf: string | null;
+  code: string | null;
+  hasDocuments: boolean;
+  blockedReason: string | null;
+  createdAt: Date;
+};
+
+export type SellersAdmin = {
+  counts: Record<SellerStatus, number>;
+  inReview: AdminSeller[];
+  active: AdminSeller[];
+  blocked: AdminSeller[];
+};
+
+/**
+ * Vendedores do admin [7h] (SEL-FR-003, SEL-SEC-005): admin e suporte veem. Em análise
+ * do mais antigo; ativos e bloqueados por nome.
+ */
+export async function sellersAdmin(
+  db: Db,
+  session: Session | null,
+): Promise<SellersAdmin> {
+  authorizeTo(session, "sellers.view");
+  const rows = await db
+    .select({
+      sellerId: sellers.profileId,
+      status: sellers.status,
+      name: profiles.name,
+      city: sellers.city,
+      phone: profiles.phone,
+      cpf: profiles.cpf,
+      code: sellers.code,
+      front: sellers.documentFrontPublicId,
+      back: sellers.documentBackPublicId,
+      blockedReason: sellers.blockedReason,
+      createdAt: sellers.createdAt,
+    })
+    .from(sellers)
+    .innerJoin(profiles, eq(profiles.id, sellers.profileId))
+    .orderBy(asc(sellers.createdAt), asc(sellers.profileId));
+  const view = (status: SellerStatus) =>
+    rows
+      .filter((r) => r.status === status)
+      .map((r): AdminSeller => ({
+        sellerId: r.sellerId,
+        name: r.name,
+        city: r.city,
+        phone: r.phone,
+        cpf: r.cpf,
+        code: r.code,
+        blockedReason: r.blockedReason,
+        createdAt: r.createdAt,
+        hasDocuments: !!r.front && !!r.back,
+      }));
+  const byName = (a: AdminSeller, b: AdminSeller) =>
+    a.name.localeCompare(b.name, "pt-BR");
+  const inReview = view("in_review");
+  const active = view("active").sort(byName);
+  const blocked = view("blocked").sort(byName);
+  return {
+    counts: {
+      in_review: inReview.length,
+      active: active.length,
+      blocked: blocked.length,
+    },
+    inReview,
+    active,
+    blocked,
+  };
+}
+
+function parseOrThrow<T>(schema: z.ZodType<T>, raw: unknown): T {
+  const parsed = schema.safeParse(raw);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  return parsed.data;
+}
+
+/** Primeiro código livre entre os candidatos do nome (SEL-FR-004). */
+async function freeCode(tx: Db, name: string): Promise<string> {
+  const candidates = codeCandidates(name, 90);
+  const taken = new Set(
+    (
+      await tx
+        .select({ code: sellers.code })
+        .from(sellers)
+        .where(inArray(sellers.code, candidates))
+    ).map((r) => r.code),
+  );
+  const code = candidates.find((c) => !taken.has(c));
+  if (!code) throw AppError.conflict("Não foi possível gerar o código.");
+  return code;
+}
+
+/**
+ * **Aprovar** (SEL-FR-004, SEL-SEC-005, 007): só o admin; Em análise → Ativo, com o
+ * código do vendedor. Sem as duas fotos do documento → 409. `false` quando o cadastro
+ * já não estava em análise.
+ */
+export async function approve(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const actor = authorizeTo(session, "sellers.review");
+  const { sellerId } = parseOrThrow(sellerDecisionSchema, raw);
+  return db.transaction(async (tx) => {
+    const [row] = await tx
+      .select({
+        status: sellers.status,
+        front: sellers.documentFrontPublicId,
+        back: sellers.documentBackPublicId,
+        name: profiles.name,
+      })
+      .from(sellers)
+      .innerJoin(profiles, eq(profiles.id, sellers.profileId))
+      .where(eq(sellers.profileId, sellerId))
+      .for("update");
+    if (!row) throw AppError.notFound();
+    if (row.status !== "in_review") return false;
+    if (!row.front || !row.back)
+      throw AppError.conflict("Falta a foto do documento.");
+    await tx
+      .update(sellers)
+      .set({
+        status: "active",
+        code: await freeCode(tx, row.name),
+        decidedBy: actor.userId,
+        approvedAt: now,
+      })
+      .where(eq(sellers.profileId, sellerId));
+    await logActivity(tx, {
+      userId: actor.userId,
+      action: "seller.approved",
+      entity: "seller",
+      entityId: sellerId,
+    });
+    return true;
+  });
+}
+
+/** Muda o status só a partir do esperado e registra a decisão. */
+async function decide(
+  db: Db,
+  actorId: string,
+  sellerId: string,
+  from: SellerStatus,
+  set: Partial<typeof sellers.$inferInsert>,
+  action: string,
+  data?: Record<string, unknown>,
+): Promise<boolean> {
+  return db.transaction(async (tx) => {
+    const done = await tx
+      .update(sellers)
+      .set({ ...set, decidedBy: actorId })
+      .where(and(eq(sellers.profileId, sellerId), eq(sellers.status, from)))
+      .returning({ id: sellers.profileId });
+    if (!done.length) return false;
+    await logActivity(tx, {
+      userId: actorId,
+      action,
+      entity: "seller",
+      entityId: sellerId,
+      data,
+    });
+    return true;
+  });
+}
+
+/**
+ * **Bloquear** (SEL-FR-005, SEL-SEC-005, 007): só o admin, com motivo; Ativo →
+ * Bloqueado. As parcerias ficam como estão e deixam de valer enquanto ele estiver
+ * bloqueado.
+ */
+export async function block(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<boolean> {
+  const actor = authorizeTo(session, "sellers.review");
+  const { sellerId, reason } = parseOrThrow(blockSellerSchema, raw);
+  return decide(
+    db,
+    actor.userId,
+    sellerId,
+    "active",
+    { status: "blocked", blockedReason: reason },
+    "seller.blocked",
+    { reason },
+  );
+}
+
+/** **Desbloquear** (SEL-FR-005): só o admin; Bloqueado → Ativo, sem o motivo. */
+export async function unblock(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<boolean> {
+  const actor = authorizeTo(session, "sellers.review");
+  const { sellerId } = parseOrThrow(sellerDecisionSchema, raw);
+  return decide(
+    db,
+    actor.userId,
+    sellerId,
+    "blocked",
+    { status: "active", blockedReason: null },
+    "seller.unblocked",
+  );
 }

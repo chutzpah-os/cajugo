@@ -839,3 +839,6 @@
 
 # 2026-11-16 · 008/T008 início do vendedor
 - sellerHome: em análise (faltando foto ou não) e bloqueado (com motivo) mostram só o status; ativo mostra o código, os cliques do mês de São Paulo e as lojas Parceiro e Pendente. Fixtures seller/activeSeller.
+
+# 2026-11-16 · 008/T009 curadoria
+- sellersAdmin (sellers.view: admin e suporte; indicadores, em análise do mais antigo, ativos e bloqueados por nome, CPF completo). approve (sellers.review; exige as duas fotos, gera o código livre), block (motivo 3–200) e unblock, transição só a partir do status esperado, activity_log sem CPF nem Pix.

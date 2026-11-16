@@ -62,7 +62,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T008** `sellerHome`: status para "em análise" (faltando foto ou completo) e "bloqueado" (com o motivo); painel com os cliques do mês e as lojas Parceiro e Pendente.
 
   · _SEL-FR-002, SEL-FR-006, SEL-SEC-004_
-- [ ] **T009** `sellersAdmin` e as decisões:
+- [x] **T009** `sellersAdmin` e as decisões:
   - `sellersAdmin`: indicadores e listas;
   - `approve`: gera o código e recusa sem as duas fotos;
   - `block` (com motivo) e `unblock`;

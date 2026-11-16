@@ -63,3 +63,18 @@ export const addSellerSchema = z
   .transform(withPix);
 
 export type SellerSignup = z.output<typeof sellerSignupSchema>;
+
+/** Decisão da equipe sobre um vendedor (SEL-FR-004, 005). */
+export const sellerDecisionSchema = z.object({ sellerId: z.uuid() }).strict();
+
+/** Bloquear pede o motivo (SEL-FR-005). */
+export const blockSellerSchema = z
+  .object({
+    sellerId: z.uuid(),
+    reason: z
+      .string()
+      .trim()
+      .min(3, "Informe o motivo.")
+      .max(200, "Use no máximo 200 caracteres."),
+  })
+  .strict();
