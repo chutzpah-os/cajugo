@@ -604,3 +604,6 @@
 
 # 2026-11-16 · 006c/T004 cards dos favoritos
 - Escopo `{ vehicleIds }` em `publicVisible` (publicado e loja no ar, divulgado ou não) e `favoriteCards(db, ids)`; `publicVisible` passa a decidir a parte do escopo numa função só (`scopeWhere`).
+
+# 2026-11-16 · 006c/T005 leitura dos favoritos
+- `buyers/actions.ts`: `favoriteCardsAction({ ids })` (uuid, 1 a 200, sem campo a mais, ids repetidos juntados) chama `showcase.favoriteCards`; só lê e devolve `null` em entrada inválida ou falha.
