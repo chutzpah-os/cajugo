@@ -100,8 +100,11 @@
 > ✅ **Implementada** em 2026-11-15 (`docs/specs/006b-discovery/`): `/carros/{marca}`, `/carros/{marca}/{modelo}`, `/carros/{cidade}-{uf}`, `/carros/{cidade}-{uf}/{marca}` (ADR 0014) e índice `/carros`, com a lista da vitrine, filtros com a dimensão fixa, parágrafo gerado, caminho e JSON-LD; página vazia 200 fora do Google com a página acima; 404 real no `proxy.ts`; `discovery.xml`; links no veículo, na loja e na vitrine; nome conhecido da marca (`brandName`). LCP 1,2 s e CLS 0,002 em 4G no build de produção. Migrations `0012`–`0014` no staging; `0014` no prod pendente, **aplicar antes do push**.
 - Páginas por marca, modelo e cidade (só com pelo menos 1 veículo) e links internos entre veículo, loja e descoberta (`SEO.md`).
 
-## 006c · Ferramentas do comprador — telas 14a, 14b, 12a (alerta), 9a
-- Simulador [14b] (Price, valores das regras); favoritos [14a] com selos; "Avisar quando chegar" [12a]; banner Caju Indica [9a].
+## 006c · Ferramentas do comprador — telas 14a, 14b
+- Simulador [14b] (Price, valores das regras); favoritos [14a] com selos, no aparelho.
+
+## 006d · Avisar quando chegar e banner Caju Indica — telas 12a (alerta), 9a
+- "Avisar quando chegar" [12a] com nome e celular, tela Alertas do admin com `wa.me`; banner Caju Indica [9a]. Dividida da 006c no `/clarify` de 2026-11-16.
 
 ## 007 · Leads e denúncias — telas 1b (formulário/WhatsApp), 3a, 14d, 14e
 - Formulário com honeypot + rate limit; clique no WhatsApp gera lead; origem cajugo / catálogo / vendedor.

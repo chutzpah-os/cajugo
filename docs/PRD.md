@@ -84,7 +84,7 @@ Tudo por caminho no domínio principal (ADR 0009): concentra a autoridade de bus
 
 | Papel | Quem é | Login no MVP |
 |---|---|---|
-| **Visitante / comprador** | Navega, favorita, simula, contata loja, denuncia anúncio. | Não precisa (favoritos ficam no aparelho; sincronizam se tiver conta) |
+| **Visitante / comprador** | Navega, favorita, simula, contata loja, denuncia anúncio. | Não precisa (favoritos ficam no aparelho; sincronizar com conta é fase 2) |
 | **Lojista** (dono) | Assina o Catálogo; gerencia veículos, leads, loja, vendedores parceiros, comissão e fatura. | E-mail e senha |
 | **Usuário da loja** | Equipe do lojista, com permissão de veículos e leads. | E-mail e senha |
 | **Vendedor** (Rede Caju) | Divulga veículos da vitrine e ganha comissão das lojas parceiras. | E-mail e senha |
@@ -282,16 +282,16 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - Entrada 0/20/30/50%; prazo 24/36/48/60x; taxa padrão **1,79% a.m.** (`Config`); fórmula Price.
 - Mostra parcela, entrada, valor financiado e total, com o aviso "estimativa sem análise de crédito".
 - CTA: enviar a simulação à loja pelo WhatsApp (mensagem pronta).
-- Cards e página do veículo mostram "a partir de R$ X/mês" se o lojista ativar "Exibir parcela estimada".
+- Cards e página do veículo mostram "a partir de R$ X/mês" se o lojista ativar "Exibir parcela estimada"; a mesma opção controla **Simular** e **Ver parcelas** (sem ela, o simulador não aparece).
 
 ### 5.10 Favoritos [14a]
-- Coração em cards e na página do veículo; salvos no aparelho; sincronizados quando a pessoa tem conta e entra.
+- Coração em cards e na página do veículo; salvos no aparelho. Sincronizar com conta: fase 2 (o comprador não tem conta no MVP).
 - Selos "Baixou R$ X" (preço menor que o do momento em que favoritou) e "Vendido" (leva a sugestões). Estado vazio próprio.
 - Aviso de queda de preço por WhatsApp: fase 2.
 
 ### 5.11 Busca sem resultado [12a]
-- Sugere limpar filtros ou buscar só a marca e oferece **"Avisar quando chegar"**: guarda contato + filtros (`AlertaBusca`).
-- MVP: quando entra um veículo compatível, o alerta aparece para o admin com botão `wa.me` para avisar a pessoa; envio automático é fase 2.
+- Sugere limpar filtros ou buscar só a marca e oferece **"Avisar quando chegar"**: guarda nome, celular com WhatsApp e a busca (`AlertaBusca`), com consentimento; vale pela validade de `Config` e os dados pessoais são apagados ao avisar, cancelar ou expirar.
+- MVP: quando entra um veículo compatível, o alerta aparece para o admin em **Alertas** com botão `wa.me` para avisar a pessoa; a mensagem leva link para cancelar; envio automático é fase 2.
 
 ### 5.12 Aprovação prévia e denúncias
 - Toggle global "Aprovar veículos antes de publicar" [4c] (padrão: desligado).
@@ -322,6 +322,7 @@ Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f] (spec
 | Caju Indica: % da mensalidade · meses · resgate mínimo | 30% · 3 · R$ 50 |
 | Caju Indica: programa ativo; quem pode indicar | sim; lojistas, vendedores, indicadores |
 | Taxa do simulador | 1,79% a.m. |
+| Validade do "Avisar quando chegar" | 90 dias |
 | Entrada da parcela estimada | 20% |
 | Prazo da parcela estimada | 48x |
 | Aprovação prévia · mínimo de fotos | desligada · 6 |
@@ -382,7 +383,7 @@ Viram requisitos e testes nas specs (`SDD.md`):
 Navegação:
 - Lojista (mobile): **Veículos · Leads · Minha loja · Conta** (Rede Caju, Caju Indica e Fatura acessados pela Conta e pelos atalhos).
 - Vendedor: **Início · Vitrine · Extrato · Conta**.
-- Admin (mobile): **Painel · Lojas · Assinaturas · Conta · Mais** ("Mais" abre a gaveta com Pagamentos Pix, Veículos, Rede Caju e Caju Indica); desktop [15c]: sidebar com Visão geral, Lojas, Assinaturas, Pagamentos Pix, Veículos, Rede Caju, Caju Indica, Conta (com contadores de pendências).
+- Admin (mobile): **Painel · Lojas · Assinaturas · Conta · Mais** ("Mais" abre a gaveta com Pagamentos Pix, Veículos, Alertas, Rede Caju e Caju Indica); desktop [15c]: sidebar com Visão geral, Lojas, Assinaturas, Pagamentos Pix, Veículos, Alertas, Rede Caju, Caju Indica, Conta (com contadores de pendências).
 
 ---
 
@@ -405,10 +406,10 @@ Navegação:
 
 **Regras**
 - Selo "Abaixo da FIPE" só se `preco < valor_fipe` (quando FIPE disponível).
-- Parcela estimada exibida somente se o lojista ativou "Exibir parcela estimada" [2a]; entrada, prazo e taxa são regras editáveis pelo admin (§5.14).
+- Parcela estimada, **Simular** e **Ver parcelas** exibidos somente se o lojista ativou "Exibir parcela estimada" [2a]; entrada, prazo e taxa são regras editáveis pelo admin (§5.14).
 - Selo: um por card, na ordem Abaixo da FIPE → Único dono → Aceita troca → Garantia de fábrica; na página do veículo aparecem todos.
 - Vitrine sem veículos: "Os primeiros veículos estão chegando" com convite para lojistas, fora do Google até ter pelo menos 1 veículo.
-- Favoritos: §5.10 (no aparelho; sincronizados com conta).
+- Favoritos: §5.10 (no aparelho).
 - Vitrine CajuGo mostra banner e rodapé **Caju Indica** [9a].
 - Relevância (MVP): recência de publicação + completude do anúncio (nº de fotos, descrição).
 
