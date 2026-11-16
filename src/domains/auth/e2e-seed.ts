@@ -13,6 +13,7 @@ import { restoreInitialSettings } from "@/domains/settings/service";
 import { removeBillingForTests } from "@/domains/billing/service";
 import { seedAlerts } from "@/domains/buyers/testing/e2e-seed";
 import { seedLeads } from "@/domains/leads/testing/e2e-seed";
+import { seedReports } from "@/domains/moderation/testing/e2e-seed";
 import {
   E2E_SHOWCASE,
   seedShowcase,
@@ -192,6 +193,8 @@ export async function seedE2E(
     { storeId: showcase.storeId, vehicleId: E2E_SHOWCASE.fullId },
     now,
   );
+  // Uma denúncia aberta de um veículo da vitrine (007b).
+  await seedReports(deps.db, E2E_SHOWCASE.reportedId, now);
 
   return { ids, storeId: store.id };
 }

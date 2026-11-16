@@ -27,6 +27,8 @@ export const E2E_SHOWCASE = {
   /** Publicado, mas não divulgado na vitrine CajuGo. */
   hiddenId: "00000000-0000-4000-8000-00000000e202",
   soldId: "00000000-0000-4000-8000-00000000e203",
+  /** BMW X1 V1 da vitrine, com uma denúncia aberta no seed (007b). */
+  reportedId: "00000000-0000-4000-8000-00000000e205",
   suspendedId: "00000000-0000-4000-8000-00000000e204",
 } as const;
 
@@ -144,7 +146,9 @@ export async function seedShowcase(
           }
         : i === S.total - 1
           ? { ...v, id: S.hiddenId, shareOnCajugo: false }
-          : v,
+          : i === 1
+            ? { ...v, id: S.reportedId }
+            : v,
     ),
     { ...row(storeId, 100, now), id: S.soldId, status: "sold" as const },
     {

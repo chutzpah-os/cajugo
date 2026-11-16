@@ -803,3 +803,6 @@
 
 # 2026-11-16 · 007b/T019 painel do lojista
 - [1c]: selo Oculto e o motivo, sem Divulgar, 'Ver' no lugar de Editar; [6e]: 'Veículo oculto', aviso com o motivo e 'Para revisar, fale com a CajuGo', sem seções nem Divulgar; vender, despublicar e excluir continuam. Legenda 'Oculto da vitrine pela CajuGo'. O aviso no painel vem dos notices.
+
+# 2026-11-16 · 007b/T020 e2e de denúncias
+- Seed: BMW X1 V1 da vitrine com id fixo (reportedId) e uma denúncia aberta (moderation/testing/e2e-seed.ts). tests/e2e/moderation.spec.ts: denunciar (sem motivo, repetida no mesmo aparelho), fila com contagens e contador no menu (390 e 1280 px), Manter, lojista sem permissão, Ocultar (noindex, fora do sitemap, aviso e [6e] da loja) e Mostrar de novo. Suíte completa: 91 passaram.

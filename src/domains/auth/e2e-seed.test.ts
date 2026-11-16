@@ -6,6 +6,7 @@ import {
   settingValues,
   stores,
   vehiclePhotos,
+  vehicleReports,
   vehicles,
 } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
@@ -229,11 +230,17 @@ describe("seedE2E", () => {
     await seedE2E(withCloud(), "senha-e2e-1");
 
     // Assert: 45 no ar, 1 vendido, 1 da loja suspensa, 3 de Recife e o excluído
-    // dos leads (007); os 7 leads da vitrine são refeitos, não somados
+    // dos leads (007); os 7 leads e a denúncia (007b) são refeitos, não somados
     expect(await t.db.select().from(vehicles)).toHaveLength(
       E2E_SHOWCASE.total + 6,
     );
     expect(await t.db.select().from(leads)).toHaveLength(7);
+    expect(await t.db.select().from(vehicleReports)).toEqual([
+      expect.objectContaining({
+        vehicleId: E2E_SHOWCASE.reportedId,
+        status: "open",
+      }),
+    ]);
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 });

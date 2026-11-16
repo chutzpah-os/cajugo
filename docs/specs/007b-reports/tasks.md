@@ -120,7 +120,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - o aviso no painel.
 
   · _RPT-FR-006, RPT-FR-009, RPT-SEC-001_
-- [ ] **T020** Seed do e2e (veículos com denúncia e um oculto) e `tests/e2e/moderation.spec.ts`:
+- [x] **T020** Seed do e2e (veículos com denúncia e um oculto) e `tests/e2e/moderation.spec.ts`:
   - denunciar, segunda denúncia sem aumentar a contagem;
   - Manter;
   - Ocultar, que some da vitrine na hora e continua no catálogo;
