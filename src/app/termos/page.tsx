@@ -43,7 +43,7 @@ const PRIVACY = [
   ],
   [
     "Compartilhamento",
-    "Os dados públicos da loja aparecem no catálogo e na vitrine. Dados de quem envia uma mensagem vão só para a loja procurada. Não vendemos dados.",
+    "Os dados públicos da loja aparecem no catálogo e na vitrine. Nome, e-mail, telefone e mensagem de quem escreve para uma loja vão só para essa loja (e a equipe da CajuGo pode consultá-los); são apagados 2 anos depois. Tocar no WhatsApp de um anúncio avisa a loja do interesse, sem seus dados. Não vendemos dados.",
   ],
   [
     "Avisar quando chegar",

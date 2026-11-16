@@ -316,3 +316,6 @@
 
 # 2026-11-16 · 006d log do cron
 - Sem log no sucesso, o Runtime Logs da Vercel ficava vazio e não dava para saber se o job rodou; o `OBSERVABILITY.md` já pedia o evento `cron.daily`.
+
+# 2026-11-16 · 007/T001
+- Uma URL só para o veículo (D1) evita conteúdo duplicado no Google; a origem "Seu catálogo" vem da marca da aba.

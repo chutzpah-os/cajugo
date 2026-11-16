@@ -84,9 +84,9 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | Tipo | Rota / ação | Tela |
 |---|---|---|
 | página | `/`, `/loja/{slug}` — vitrine e catálogo da loja (filtros na query string) | 1a, 6d, 9a, 15a |
-| página | `/v/{id}-{make}-{model}`, `/loja/{slug}/v/{id}` — detalhe (guarda `?ref=` do vendedor) | 1b, 12d |
+| página | `/v/{id}-{make}-{model}` — detalhe, uma URL só para vitrine e catálogo (a origem do lead vem da marca da aba, 007/D1; guarda `?ref=` do vendedor na 008) | 1b, 12d |
 | página | `/i/{codigo}` — landing do Caju Indica | 8c |
-| A | `createLead(vehicleId, form)` · `trackWhatsappClick(vehicleId)` | 1b |
+| A | `contactLeadAction({ vehicleId, origin, name, email, phone, message })` — honeypot + rate limit · `whatsappClickAction({ vehicleId, origin })` · `viewAction({ vehicleId })` (007) | 1b, 14b |
 | A | `reportVehicle(vehicleId, reason, details)` | 14d |
 | página | `/favoritos` — favoritos guardados no aparelho, `noindex` (006c) | 14a |
 | A | `favoriteCardsAction({ ids })` — leitura pública dos cards atuais dos favoritos (até 200 ids); sincronizar com conta é fase 2 | 14a |
@@ -121,7 +121,8 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | A | `markSold(vehicleId, { finalPriceCents, attribution, sellerId, commissionPaid })` | 6f, 7g |
 | A | `setShareOnCajugo(vehicleId, bool)` | 1c, 6e |
 | A | assinatura de upload (§4.1) · `reorderPhotos` · `removePhoto` | 2a |
-| A | `updateLeadStatus(leadId, status)` | 3a |
+| página | `/painel/leads` — leads da loja, indicadores e filtros (`?status=`) (007) | 3a |
+| A | `moveLeadAction({ leadId, to: "next" \| "lost" })` — `leads.manage` (dono e usuário da loja) (007) | 3a |
 | A | `updateStore(form)` · `changeSlug(slug)` | 3b |
 | A | `cancelSubscription(reason?)` · `undoCancel` | 12h |
 | A | `updateCommission({ acceptsSellers, type, value })` · `setVehicleCommission(vehicleId, ...)` | 7e |

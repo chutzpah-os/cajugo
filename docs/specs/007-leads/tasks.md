@@ -7,7 +7,7 @@ spec: 007
 Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um ciclo teste falhando → código → verde. Testes com o ID do requisito no nome. Toda ação com id tem o caso "loja B" (`TESTING.md`): `moveLead` e `vehiclePerformance` com lead ou veículo de outra loja → not found. Decisões D1–D3 do plano aprovadas nas opções recomendadas (2026-11-16).
 
 ## Fase 1 — Fundação
-- [ ] **T001** Documentos:
+- [x] **T001** Documentos:
   - ARCHITECTURE §4 (`leads`, `vehicle_daily_stats`) e §6 (`purgeOldLeads`);
   - API.md §5 (actions e `/painel/leads`);
   - SECURITY §8 (2 anos; marcas no aparelho sem dado pessoal);

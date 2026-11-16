@@ -96,7 +96,8 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 | Documentos do vendedor e comprovantes de Pix | privados (Cloudinary `authenticated`), entregues só pela rota do servidor que confere a sessão a cada abertura (ADR 0011); só admin, suporte e dono | ❌ |
 | Valor pago e motivo de recusa de um comprovante (spec 004) | só ao lojista dono e ao admin/suporte | ✅ no `activity_log` (valores e motivo, sem documento) |
 | E-mail e telefone do lojista | só no painel e no admin; o WhatsApp da loja é público por escolha dela | ❌ |
-| Nome, e-mail e telefone de quem envia lead | só à loja do lead e ao admin | ❌ |
+| Nome, e-mail, telefone e mensagem de quem envia lead | só à loja do lead e ao admin e suporte (leitura); apagados após 2 anos pelo job diário (007) | ❌ |
+| Marcas no aparelho do visitante (último lead de WhatsApp por veículo, visualização do dia, catálogo aberto na aba) | só no `localStorage`/`sessionStorage` do navegador; sem dado pessoal, nunca enviadas ao servidor (007) | ❌ |
 | Nome e celular de quem pede "Avisar quando chegar" (006d) | só ao admin e ao suporte, nunca à loja; apagados ao avisar, cancelar ou vencer | ❌ |
 | Placa | nunca; só o último dígito | ❌ |
 | IP de denúncia/rate limit | guardado como hash | ❌ |

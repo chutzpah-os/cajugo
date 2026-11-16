@@ -346,7 +346,7 @@ Viram requisitos e testes nas specs (`SDD.md`):
 | Id | Tela | Público | Rota sugerida |
 |---|---|---|---|
 | 1a | Vitrine / catálogo da loja | Visitante | `/` e `/loja/{slug}` |
-| 1b | Página do veículo (simular, denunciar) | Visitante | `/v/{id}-{marca}-{modelo}` e `/loja/{slug}/v/{id}` |
+| 1b | Página do veículo (simular, denunciar) | Visitante | `/v/{id}-{marca}-{modelo}` (uma URL só; `/loja/{slug}/v/{id}` redireciona para ela) |
 | 1c | Meus veículos | Lojista | `/painel/veiculos` |
 | 1d | Lojas / Veículos CajuGo / Usuários | Admin | `/admin/lojas`, `/admin/veiculos`, `/admin/usuarios` |
 | 2a | Novo / editar veículo | Lojista | `/painel/veiculos/novo`, `/painel/veiculos/{id}` |

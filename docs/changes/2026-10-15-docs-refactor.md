@@ -686,3 +686,6 @@
 
 # 2026-11-16 · 006d log do cron
 - `api/v1/cron/daily`: `logger.info("cron.daily", { expiredAlerts, durationMs })` a cada execução bem-sucedida, como pede o `OBSERVABILITY.md`.
+
+# 2026-11-16 · 007/T001
+- ARCHITECTURE §4 (`leads`, `vehicle_daily_stats`) e §6 (`purgeOldLeads`); API.md §5 com as actions de lead e `/painel/leads`; SECURITY §8 (2 anos, marcas no aparelho); GLOSSARY (status do lead, Visualização, Desempenho); PRD §8 com uma URL só para o veículo; termos com o trecho do lead.

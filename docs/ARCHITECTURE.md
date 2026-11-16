@@ -147,14 +147,16 @@ fipe_brands              id (pk, código FIPE), name, synced_at
 fipe_models              id (pk), brand_id, name, synced_at
 fipe_years               id (pk = modelo:ano), model_id, label, synced_at
 fipe_prices              year_id (pk), fipe_code, price_cents, month, fetched_at
-vehicle_daily_stats      vehicle_id + day (pk), views, whatsapp_clicks, leads, seller_link_clicks
+vehicle_daily_stats      vehicle_id + day (pk, dia em São Paulo), views (007: 1 por aparelho por dia, sem robôs;
+                         seller_link_clicks entra na 008; leads do desempenho são contados em `leads`)
 approvals                id, vehicle_id, checks (jsonb), status (pending|approved|changes_requested), reason,
                          reviewed_by, reviewed_at
 
 # Contato e moderação
-leads                    id, store_id, vehicle_id, seller_id, name, email, phone, message,
-                         channel (form|whatsapp), origin (cajugo|store_catalog|seller),
-                         status (new|contacting|negotiating|sold|lost), created_at, updated_at
+leads                    id, store_id, vehicle_id, name, email, phone, message (nulos no WhatsApp e após 2 anos),
+                         channel (form|whatsapp), origin (cajugo|store_catalog), status (new|contacting|
+                         negotiating|sold|lost; WhatsApp entra em contacting), created_at, updated_at, purged_at
+                         (007; seller_id e a origem seller entram na 008/009)
 reports                  id, target_type (vehicle|seller), target_id, reporter_id, reason, details, ip_hash,
                          status (open|kept|hidden|blocked), decided_by, decided_at, created_at
 
@@ -220,6 +222,7 @@ ISR com `revalidateTag('vehicles')` e `revalidateTag('store:<slug>')`, chamados 
 - **Cancelamento e retenção:** `cancel_scheduled` → `canceled` no fim do período; `canceled` há mais de `retention_days` → `archived` (e expira o crédito Caju Indica).
 - **Slugs** reservados sem 1º pagamento confirmado há 7 dias são liberados.
 - **Limpeza** de `rate_limits` antigos (`purgeRateLimits`).
+- **Leads com mais de 2 anos** perdem nome, e-mail, telefone e mensagem (`purgeOldLeads`, 007); continuam nos números da loja.
 - **Alertas de busca:** marca como vencido o alerta pendente além da validade das regras e apaga nome e celular (006d). O veículo compatível **não** é job: é calculado quando o admin abre "Alertas", em cache de 60 s, para aparecer em até 1 minuto (o cron do plano Hobby é 1×/dia).
 
 Recompensas do Caju Indica **não** são job: são creditadas na hora em que o admin confirma o pagamento da loja indicada.
