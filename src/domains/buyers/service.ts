@@ -16,7 +16,7 @@ import {
   fieldErrorsFromZod,
   type FieldError,
 } from "@/platform/http/errors";
-import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
+import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { Session } from "@/platform/http/session";
 import { appUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
@@ -114,16 +114,8 @@ export async function requestAlert(
   ctx: { ipHash: string; now?: Date },
 ): Promise<AlertRequestResult> {
   const now = ctx.now ?? new Date();
-  for (const rule of [RATE_LIMITS.publicForm, RATE_LIMITS.publicFormDaily]) {
-    const { ok } = await consumeRateLimit(
-      db,
-      `alert:ip:${ctx.ipHash}:${rule.windowSeconds}`,
-      rule,
-      now,
-    );
-    if (!ok)
-      return fail("Muitas tentativas. Aguarde alguns minutos e tente de novo.");
-  }
+  if (!(await withinPublicFormLimits(db, "alert", ctx.ipHash, now)))
+    return fail("Muitas tentativas. Aguarde alguns minutos e tente de novo.");
   if (isHoneypotFilledIn(raw))
     return { ok: true, status: "created", cancelPath: null };
 

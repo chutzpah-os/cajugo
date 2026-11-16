@@ -758,3 +758,6 @@
 
 # 2026-11-16 · 007b/T004 motivos e schemas
 - Domínio moderation: reasons.ts (4 motivos da denúncia, 5 do Ocultar, rótulos) e schemas.ts (reportSchema strict com requestId v7 e descrição ≤ 1.000 sem 'Outro'; hideSchema com nota obrigatória no 'Outro' até 200; vehicleDecisionSchema).
+
+# 2026-11-16 · 007b/T005 denunciar anúncio
+- moderation/service.ts reportVehicle e actions.ts reportVehicleAction: limite 5/min e 30/dia por hash do IP, honeypot com sucesso falso, requestId como id (on conflict do nothing), veículo visível ao público, sem autor nem IP. withinPublicFormLimits em platform/http/rate-limit (leads, alertas e denúncia).

@@ -48,6 +48,28 @@ export async function consumeRateLimit(
 }
 
 /**
+ * Formulário público por rede (SECURITY.md §6): 5/min e 30/dia, com uma chave por tipo de
+ * formulário (`lead`, `alert`, `report`...). Conta a tentativa nas duas janelas.
+ */
+export async function withinPublicFormLimits(
+  db: Db,
+  kind: string,
+  ipHash: string,
+  now: Date,
+): Promise<boolean> {
+  for (const rule of [RATE_LIMITS.publicForm, RATE_LIMITS.publicFormDaily]) {
+    const { ok } = await consumeRateLimit(
+      db,
+      `${kind}:ip:${ipHash}:${rule.windowSeconds}`,
+      rule,
+      now,
+    );
+    if (!ok) return false;
+  }
+  return true;
+}
+
+/**
  * Janela deslizante: registra um evento de `key` no instante exato (ex.: uma falha
  * de login). Eventos no mesmo instante somam no mesmo registro.
  */

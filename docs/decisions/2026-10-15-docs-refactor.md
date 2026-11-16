@@ -352,3 +352,6 @@
 
 # 2026-11-16 · 007b/T001 documentos
 - D1–D4 aprovadas: tabela própria sem autor nem IP; marca de moderação no veículo para o Ocultar sobreviver a republicar; oculto fora do Google mas vendável pelo catálogo; marca no aparelho compartilhada em platform/browser.
+
+# 2026-11-16 · 007b/T005 denunciar anúncio
+- O mesmo laço de limite por IP estava copiado em leads e buyers e entraria uma terceira vez; foi para a plataforma.

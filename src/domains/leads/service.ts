@@ -21,7 +21,11 @@ import {
   fieldErrorsFromZod,
   type FieldError,
 } from "@/platform/http/errors";
-import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
+import {
+  consumeRateLimit,
+  RATE_LIMITS,
+  withinPublicFormLimits,
+} from "@/platform/http/rate-limit";
 import { isKnownBot } from "@/platform/http/bots";
 import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import type { Session } from "@/platform/http/session";
@@ -49,25 +53,6 @@ export type ContactResult =
 
 const fail = (message: string, errors: FieldError[] = []) =>
   ({ ok: false, message, errors }) as const;
-
-/** Por IP, com uma chave por tipo de registro (LED-SEC-002). */
-async function withinLimits(
-  db: Db,
-  kind: string,
-  ipHash: string,
-  now: Date,
-): Promise<boolean> {
-  for (const rule of [RATE_LIMITS.publicForm, RATE_LIMITS.publicFormDaily]) {
-    const { ok } = await consumeRateLimit(
-      db,
-      `${kind}:ip:${ipHash}:${rule.windowSeconds}`,
-      rule,
-      now,
-    );
-    if (!ok) return false;
-  }
-  return true;
-}
 
 /** Veículo não divulgado só pode ter vindo do catálogo da loja (LED-FR-004). */
 const finalOrigin = (origin: LeadOrigin, shared: boolean): LeadOrigin =>
@@ -121,7 +106,7 @@ export async function contactStore(
   ctx: { ipHash: string; now?: Date },
 ): Promise<ContactResult> {
   const now = ctx.now ?? new Date();
-  if (!(await withinLimits(db, "lead", ctx.ipHash, now)))
+  if (!(await withinPublicFormLimits(db, "lead", ctx.ipHash, now)))
     return fail("Muitas tentativas. Aguarde alguns minutos e tente de novo.");
   if (isHoneypotFilledIn(raw)) return { ok: true };
 
@@ -164,7 +149,8 @@ export async function recordWhatsappClick(
   const now = ctx.now ?? new Date();
   const parsed = whatsappClickSchema.safeParse(raw);
   if (!parsed.success) return;
-  if (!(await withinLimits(db, "lead-whatsapp", ctx.ipHash, now))) return;
+  if (!(await withinPublicFormLimits(db, "lead-whatsapp", ctx.ipHash, now)))
+    return;
   const target = await contactTarget(db, parsed.data.vehicleId);
   if (!target) return;
   await insertLead(db, { ...parsed.data, target, channel: "whatsapp" }, now);

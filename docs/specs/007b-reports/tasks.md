@@ -38,7 +38,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   · _RPT-FR-001, RPT-FR-004, RPT-SEC-002_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T005** `reportVehicle` e `reportVehicleAction`:
+- [x] **T005** `reportVehicle` e `reportVehicleAction`:
   - grava a denúncia `open` com `id = requestId` (`on conflict do nothing`);
   - recusa veículo fora do ar (`contactTarget`);
   - honeypot com sucesso falso;
