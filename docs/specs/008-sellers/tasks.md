@@ -34,7 +34,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T003** [P] `pixKeySchema` em `platform/pix`, tirado de `settings/definitions.ts`; os testes da 002 continuam verdes.
 
   · _SEL-FR-014_
-- [ ] **T004** [P] `sellers/schemas.ts`, `sellers/status.ts` e `sellers/commission.ts`:
+- [x] **T004** [P] `sellers/schemas.ts`, `sellers/status.ts` e `sellers/commission.ts`:
   - `sellerSignupSchema` (`.strict()`; CPF válido, celular, Pix, termos, honeypot);
   - rótulos de status;
   - `commissionFor` (% e fixo);

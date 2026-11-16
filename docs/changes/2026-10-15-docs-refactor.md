@@ -824,3 +824,6 @@
 
 # 2026-11-16 · 008/T003 chave Pix na plataforma
 - src/platform/pix/key.ts: PIX_TYPES, normalizePixKey, pixKeySchema (tipo + chave normalizada). settings/definitions.ts usa a mesma normalização na chave da CajuGo.
+
+# 2026-11-16 · 008/T004 regras do vendedor
+- sellers/schemas.ts (sellerSignupSchema e addSellerSchema strict, CPF válido, Pix pelo tipo), status.ts (rótulos e codeCandidates do código do vendedor), commission.ts (commissionFor em bps ou centavos).
