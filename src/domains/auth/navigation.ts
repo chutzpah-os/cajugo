@@ -9,6 +9,32 @@ export type AreaNavItem = NavItem & { permission?: Permission };
  * o computador mostra todos na barra lateral [15c].
  */
 export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
+  painel: [
+    {
+      href: "/painel/veiculos",
+      label: "Veículos",
+      mobile: true,
+      permission: "vehicles.manage",
+    },
+    {
+      href: "/painel/leads",
+      label: "Leads",
+      mobile: true,
+      permission: "leads.view",
+    },
+    {
+      href: "/painel/loja",
+      label: "Minha loja",
+      mobile: true,
+      permission: "store.edit",
+    },
+    {
+      href: "/painel/conta",
+      label: "Conta",
+      mobile: true,
+      permission: "billing.manage",
+    },
+  ],
   admin: [
     { href: "/admin", label: "Painel", mobile: true },
     { href: "/admin/lojas", label: "Lojas", mobile: true },

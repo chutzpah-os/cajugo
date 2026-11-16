@@ -101,7 +101,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - teste com a action falhando.
 
   · _LED-FR-003, LED-FR-013_
-- [ ] **T015** Menu do painel do lojista (D3): `AREA_NAV.painel` com Veículos · Leads · Minha loja · Conta, permissões por item e `navCounts` com os leads novos em `app/painel/layout.tsx`.
+- [x] **T015** Menu do painel do lojista (D3): `AREA_NAV.painel` com Veículos · Leads · Minha loja · Conta, permissões por item e `navCounts` com os leads novos em `app/painel/layout.tsx`.
 
   · _LED-FR-011, LED-NFR-003_
 - [ ] **T016** `/painel/leads` [3a]:

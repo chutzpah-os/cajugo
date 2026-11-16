@@ -337,3 +337,6 @@
 
 # 2026-11-16 · 007/T013
 - `showcase` importa componentes de `leads` na página do veículo, como já faz com `buyers` (favoritos): exceção de UI registrada; a regra continua no serviço de cada domínio. Slug como chave da aba: já é público, sem expor o id da loja.
+
+# 2026-11-16 · 007/T015
+- Contador lido a cada abertura do painel (uma contagem com índice) para o lead aparecer na hora (LED-NFR-003); cache aqui atrasaria o aviso.

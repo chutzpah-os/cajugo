@@ -728,3 +728,6 @@
 
 # 2026-11-16 · 007/T014
 - `WhatsappButton` na barra de [1b] e em "Enviar simulação à loja" [14b]: link comum em outra aba; `onWhatsappTap` registra no máximo um lead por aparelho e veículo a cada 24 h, sem esperar e sem lançar.
+
+# 2026-11-16 · 007/T015
+- Menu do painel do lojista (`AREA_NAV.painel`): Veículos · Leads · Minha loja · Conta, cada item com a permissão da tela (usuário da loja vê Veículos e Leads); `app/painel/layout.tsx` passa `navCounts` com os leads novos, sem cache.
