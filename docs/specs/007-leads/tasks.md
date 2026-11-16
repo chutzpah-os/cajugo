@@ -27,7 +27,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - `device.ts`: marcas no aparelho (WhatsApp a cada 24 h, visualização por dia, origem do catálogo por aba).
 
   · _LED-FR-008, LED-FR-009, LED-FR-013, LED-FR-015, LED-FR-004_
-- [ ] **T004** [P] `isKnownBot(userAgent)` em `platform/http`, com a lista curta de robôs (Googlebot, Bingbot, crawlers de redes sociais, `HeadlessChrome`, etc.). Sem dependência nova.
+- [x] **T004** [P] `isKnownBot(userAgent)` em `platform/http`, com a lista curta de robôs (Googlebot, Bingbot, crawlers de redes sociais, `HeadlessChrome`, etc.). Sem dependência nova.
 
   · _LED-FR-015_
 

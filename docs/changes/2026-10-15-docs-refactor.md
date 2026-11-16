@@ -695,3 +695,6 @@
 
 # 2026-11-16 · 007/T003
 - `leads/status.ts` (próximo status, aberto, rótulos, destaque de Novo > 24 h) e `leads/device.ts` (lead de WhatsApp a cada 24 h, visualização por dia de São Paulo, origem pela aba do catálogo); `brDay` em `platform/br/date.ts`.
+
+# 2026-11-16 · 007/T004
+- `isKnownBot(userAgent)` em `platform/http/bots.ts`: buscadores, prévias de redes sociais, navegadores automatizados e clientes HTTP; sem User-Agent também conta como robô.

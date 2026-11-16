@@ -325,3 +325,6 @@
 
 # 2026-11-16 · 007/T003
 - Marcas no aparelho com falha silenciosa: sem armazenamento o registro segue e o limite por IP do servidor segura o abuso.
+
+# 2026-11-16 · 007/T004
+- Lista própria em vez de pacote (sem dependência nova); visualização é número de referência, não cobrança.
