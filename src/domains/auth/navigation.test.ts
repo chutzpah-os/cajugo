@@ -51,3 +51,16 @@ describe("menu do admin", () => {
     expect(can(as("support"), "admin.moderate")).toBe(true);
   });
 });
+
+describe("menu do vendedor", () => {
+  it("[SEL-FR-015] Início · Vitrine · Extrato · Conta, todos na barra do celular", () => {
+    // Assert
+    expect(AREA_NAV.rede?.map((i) => [i.label, i.href])).toEqual([
+      ["Início", "/rede"],
+      ["Vitrine", "/rede/vitrine"],
+      ["Extrato", "/rede/extrato"],
+      ["Conta", "/rede/conta"],
+    ]);
+    expect(AREA_NAV.rede?.every((i) => i.mobile)).toBe(true);
+  });
+});

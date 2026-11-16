@@ -857,3 +857,6 @@
 
 # 2026-11-16 · 008/T014 telas de cadastro
 - /rede/cadastro (SellerSignupForm; conectado só CPF, cidade e Pix; 'Entrar e continuar' para e-mail existente; 'Entrar' para CPF já cadastrado) e /rede/cadastro/documento (DocumentForm: frente e verso direto ao Cloudinary privado). registerSellerAction entra e segue para as fotos; actions de upload e anexo; sellerDocuments.
+
+# 2026-11-16 · 008/T015 área do vendedor
+- AREA_NAV.rede (Início · Vitrine · Extrato · Conta, todos na barra do celular). /rede com SellerHome (status em análise com 'Enviar documento' se faltar, bloqueado com motivo, ou painel com cliques do mês, código e lojas). /rede/extrato com o aviso até a 008b.

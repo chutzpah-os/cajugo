@@ -35,6 +35,12 @@ export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
       permission: "billing.manage",
     },
   ],
+  rede: [
+    { href: "/rede", label: "Início", mobile: true },
+    { href: "/rede/vitrine", label: "Vitrine", mobile: true },
+    { href: "/rede/extrato", label: "Extrato", mobile: true },
+    { href: "/rede/conta", label: "Conta", mobile: true },
+  ],
   admin: [
     { href: "/admin", label: "Painel", mobile: true },
     { href: "/admin/lojas", label: "Lojas", mobile: true },

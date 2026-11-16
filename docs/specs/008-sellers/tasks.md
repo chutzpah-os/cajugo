@@ -100,7 +100,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
 - [x] **T014** `/rede/cadastro` [7a] (com a conta única: entrar e voltar) e `/rede/cadastro/documento` (frente e verso) até a confirmação "Em análise".
 
   · _SEL-FR-001, SEL-FR-016, SEL-NFR-001_
-- [ ] **T015** Área do vendedor:
+- [x] **T015** Área do vendedor:
   - menu Início · Vitrine · Extrato · Conta;
   - `/rede` com o status ou o painel [7b];
   - `/rede/extrato` com o aviso até a 008b;
