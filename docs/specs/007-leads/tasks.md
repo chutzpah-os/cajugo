@@ -49,7 +49,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - erro nunca chega à tela.
 
   · _LED-FR-003, LED-FR-014, LED-SEC-002_
-- [ ] **T008** `recordView` e `viewAction`:
+- [x] **T008** `recordView` e `viewAction`:
   - upsert por `(vehicle_id, dia em São Paulo)`;
   - robô ignorado;
   - limite `liveCheck`;

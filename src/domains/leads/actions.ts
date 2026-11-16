@@ -6,6 +6,7 @@ import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { errorMessage, logger } from "@/platform/http/logger";
 import {
   contactStore,
+  recordView,
   recordWhatsappClick,
   type ContactResult,
 } from "./service";
@@ -37,5 +38,18 @@ export async function whatsappClickAction(raw: unknown): Promise<void> {
     });
   } catch (error) {
     logger.error("leads.whatsapp_failed", { error: errorMessage(error) });
+  }
+}
+
+/** Abertura da página do veículo (LED-FR-015): a tela não espera nem mostra erro. */
+export async function viewAction(raw: unknown): Promise<void> {
+  try {
+    const h = await headers();
+    await recordView(getDb(), raw, {
+      ipHash: hashIp(clientIp(h)),
+      userAgent: h.get("user-agent"),
+    });
+  } catch (error) {
+    logger.error("leads.view_failed", { error: errorMessage(error) });
   }
 }

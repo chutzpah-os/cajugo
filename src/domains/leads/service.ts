@@ -1,9 +1,12 @@
 import { contactTarget } from "@/domains/showcase/service";
-import { leads } from "@/platform/db/schema";
+import { sql } from "drizzle-orm";
+import { brDay } from "@/platform/br/date";
+import { leads, vehicleDailyStats } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { fieldErrorsFromZod, type FieldError } from "@/platform/http/errors";
 import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
-import { leadFormSchema, whatsappClickSchema } from "./schemas";
+import { isKnownBot } from "@/platform/http/bots";
+import { leadFormSchema, viewSchema, whatsappClickSchema } from "./schemas";
 import type { LeadOrigin } from "./status";
 
 export type ContactResult =
@@ -103,4 +106,32 @@ export async function recordWhatsappClick(
     createdAt: now,
     updatedAt: now,
   });
+}
+
+/**
+ * Abertura da página do veículo (LED-FR-015): o aparelho só chama uma vez por veículo
+ * por dia; aqui, robô, veículo fora do ar e mais de 60 por minuto do IP não contam.
+ */
+export async function recordView(
+  db: Db,
+  raw: unknown,
+  ctx: { ipHash: string; userAgent: string | null; now?: Date },
+): Promise<void> {
+  const now = ctx.now ?? new Date();
+  const parsed = viewSchema.safeParse(raw);
+  if (!parsed.success || isKnownBot(ctx.userAgent)) return;
+  const { ok } = await consumeRateLimit(
+    db,
+    `view:ip:${ctx.ipHash}`,
+    RATE_LIMITS.liveCheck,
+    now,
+  );
+  if (!ok || !(await contactTarget(db, parsed.data.vehicleId))) return;
+  await db
+    .insert(vehicleDailyStats)
+    .values({ vehicleId: parsed.data.vehicleId, day: brDay(now), views: 1 })
+    .onConflictDoUpdate({
+      target: [vehicleDailyStats.vehicleId, vehicleDailyStats.day],
+      set: { views: sql`${vehicleDailyStats.views} + 1` },
+    });
 }

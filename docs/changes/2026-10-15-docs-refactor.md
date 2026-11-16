@@ -707,3 +707,6 @@
 
 # 2026-11-16 · 007/T007
 - `recordWhatsappClick` e `whatsappClickAction`: lead `whatsapp`/`contacting` sem nome nem contato; limite por IP com chave própria; entrada inválida, veículo fora do ar ou limite só não gravam, nunca lançam.
+
+# 2026-11-16 · 007/T008
+- `recordView` e `viewAction`: upsert em `vehicle_daily_stats` por veículo e dia de São Paulo; robô (`isKnownBot`), veículo fora do ar e mais de 60/min do IP não contam.
