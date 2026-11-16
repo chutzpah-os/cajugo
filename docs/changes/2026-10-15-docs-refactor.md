@@ -648,3 +648,6 @@
 
 # 2026-11-16 · 006d/T006 formulário público do alerta
 - `buyers.requestAlert`: limite por IP (5/min, 30/dia), honeypot que finge sucesso, schema estrito (nome, celular, consentimento, origem, query), só vitrine ou descoberta, mensagens de duplicado e de limite do celular, link de cancelar para a confirmação; `createSearchAlertAction` só lê o IP, chama o serviço e invalida `ALERTS_TAG`.
+
+# 2026-11-16 · 006d/T007 veículo compatível
+- `showcase.firstMatch(search, after)`: escopo da página de descoberta (ou vitrine) + filtros da busca guardada pela mesma regra da lista, só publicado depois do alerta, o mais antigo primeiro; não divulgado e loja suspensa de fora.

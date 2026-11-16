@@ -37,7 +37,9 @@ import { plainText } from "@/platform/br/slug";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import type { GateDecision } from "@/platform/http/public-gate";
-import type { Filters, Sort } from "./filters";
+import { filtersFromQuery, type Filters, type Sort } from "./filters";
+import { discoveryKeyOf } from "./list-source";
+import type { SavedSearch } from "./saved-search";
 import { discoveryExists, discoverySitemap, knownMakes } from "./discovery";
 import { discoveryPath, parseDiscoveryPath } from "./discovery-urls";
 import { publicVisible, type Scope } from "./visibility";
@@ -369,6 +371,34 @@ export async function similarPaths(
         modelSlug: r.modelSlug ?? undefined,
       });
   return out;
+}
+
+/**
+ * Primeiro veículo que atende a uma busca guardada e entrou na vitrine depois de
+ * `after` (ALR-FR-002): a mesma regra e os mesmos filtros da lista, então o alerta e a
+ * vitrine nunca divergem; não divulgado e loja fora do ar nunca casam (ALR-SEC-003).
+ */
+export async function firstMatch(
+  db: Db,
+  search: SavedSearch,
+  after: Date,
+): Promise<PublicCard | null> {
+  const key = search.discoveryPath
+    ? discoveryKeyOf(search.discoveryPath)
+    : null;
+  if (search.discoveryPath && !key) return null;
+  const scope: Scope = key ? { discovery: key } : "showcase";
+  const rows = await baseQuery(db)
+    .where(
+      and(
+        whereOf(scope, filtersFromQuery(search.query)),
+        gt(vehicles.publishedAt, after),
+      ),
+    )
+    .orderBy(asc(vehicles.publishedAt), asc(vehicles.id))
+    .limit(1);
+  const [card] = await toCards(db, rows);
+  return card ?? null;
 }
 
 type StoreHours = Extract<StorePage, { kind: "store" }>["hours"];
