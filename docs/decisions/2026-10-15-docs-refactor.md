@@ -340,3 +340,6 @@
 
 # 2026-11-16 · 007/T015
 - Contador lido a cada abertura do painel (uma contagem com índice) para o lead aparecer na hora (LED-NFR-003); cache aqui atrasaria o aviso.
+
+# 2026-11-16 · 007/T017
+- Dias no ar continuam vindo do `daysOnAir` da 005 (VEH-FR-011): uma regra só para o mesmo número, em vez de repetir a conta no domínio `leads`.

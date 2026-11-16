@@ -365,23 +365,20 @@ export async function moveLead(
   return moved.status;
 }
 
-const DAY_MS = 86_400_000;
-
 /**
- * "Desempenho do anúncio" em [6e] (LED-FR-012): visualizações somadas, leads do veículo e
- * dias no ar (da publicação até hoje ou até a venda). Veículo de outra loja, excluído
- * ou id inválido: 404 (LED-SEC-001).
+ * "Desempenho do anúncio" em [6e] (LED-FR-012): visualizações somadas e leads do
+ * veículo; os dias no ar vêm do resumo do veículo (VEH-FR-011). Veículo de outra loja,
+ * excluído ou id inválido: 404 (LED-SEC-001).
  */
 export async function vehiclePerformance(
   db: Db,
   session: Session | null,
   vehicleId: string,
-  now: Date = new Date(),
-): Promise<{ views: number; leads: number; daysLive: number }> {
+): Promise<{ views: number; leads: number }> {
   const storeId = storeOf(session, "vehicles.manage");
   if (!z.uuid().safeParse(vehicleId).success) throw AppError.notFound();
   const [v] = await db
-    .select({ publishedAt: vehicles.publishedAt, soldAt: vehicles.soldAt })
+    .select({ id: vehicles.id })
     .from(vehicles)
     .where(
       and(
@@ -399,17 +396,7 @@ export async function vehiclePerformance(
     .select({ n: count() })
     .from(leads)
     .where(and(eq(leads.vehicleId, vehicleId), eq(leads.storeId, storeId)));
-  const end = v.soldAt ?? now;
-  return {
-    views: views?.n ?? 0,
-    leads: received.n,
-    daysLive: v.publishedAt
-      ? Math.max(
-          0,
-          Math.floor((end.getTime() - v.publishedAt.getTime()) / DAY_MS),
-        )
-      : 0,
-  };
+  return { views: views?.n ?? 0, leads: received.n };
 }
 
 /**

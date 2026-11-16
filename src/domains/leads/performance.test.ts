@@ -42,35 +42,21 @@ describe("desempenho do anúncio", () => {
       ]);
 
     // Act
-    const perf = await vehiclePerformance(t.db, a, v.id, NOW);
+    const perf = await vehiclePerformance(t.db, a, v.id);
 
     // Assert
-    expect(perf).toEqual({ views: 120, leads: 4, daysLive: 10 });
+    expect(perf).toEqual({ views: 120, leads: 4 });
   });
 
-  it("[LED-FR-012] vendido conta os dias até a venda; sem dados, zeros", async () => {
+  it("[LED-FR-012] sem visualizações nem leads, zeros", async () => {
     // Arrange
     const a = await liveStore(t.db, "loja-a");
-    const sold = await car(t.db, a.storeId, {
-      status: "sold",
-      publishedAt: daysAgo(10),
-      soldAt: daysAgo(3),
-    });
-    const draft = await car(t.db, a.storeId, {
-      status: "draft",
-      publishedAt: null,
-    });
+    const v = await car(t.db, a.storeId);
 
     // Act / Assert
-    expect(await vehiclePerformance(t.db, a, sold.id, NOW)).toEqual({
+    expect(await vehiclePerformance(t.db, a, v.id)).toEqual({
       views: 0,
       leads: 0,
-      daysLive: 7,
-    });
-    expect(await vehiclePerformance(t.db, a, draft.id, NOW)).toEqual({
-      views: 0,
-      leads: 0,
-      daysLive: 0,
     });
   });
 
@@ -81,11 +67,11 @@ describe("desempenho do anúncio", () => {
     const v = await car(t.db, a.storeId);
 
     // Act / Assert
-    await expect(vehiclePerformance(t.db, b, v.id, NOW)).rejects.toMatchObject({
+    await expect(vehiclePerformance(t.db, b, v.id)).rejects.toMatchObject({
       status: 404,
     });
     await expect(
-      vehiclePerformance(t.db, b, "nao-e-uuid", NOW),
+      vehiclePerformance(t.db, b, "nao-e-uuid"),
     ).rejects.toMatchObject({ status: 404 });
   });
 });

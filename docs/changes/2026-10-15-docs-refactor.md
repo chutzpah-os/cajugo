@@ -734,3 +734,6 @@
 
 # 2026-11-16 · 007/T016
 - `/painel/leads` [3a]: indicadores (Novos, % da vitrine em 30 dias), filtros com contagem (`?status=`), card com sigla, tempo relativo, veículo · preço, selos, mensagem, WhatsApp, Ligar, "→ próximo status" e "Perdido" no menu; card "Contato pelo WhatsApp"; destaque de Novo > 24 h; veículo excluído sem link. `relativeTime` em `platform/br`.
+
+# 2026-11-16 · 007/T017
+- Bloco "Desempenho do anúncio" em `/painel/veiculos/[id]` [6e]: Visualizações, Leads e Dias no ar. Os dias saem da linha de selos para o bloco; `vehiclePerformance` devolve só visualizações e leads; e2e da 005 lê o número no bloco.

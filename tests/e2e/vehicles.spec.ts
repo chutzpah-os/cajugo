@@ -119,7 +119,7 @@ test.describe("veículos do lojista", () => {
     await page.waitForURL(/\/painel\/veiculos\/[0-9a-f-]+$/, {
       timeout: 30_000,
     });
-    await expect(page.getByTestId("days-on-air")).toHaveText("0 dias no ar");
+    await expect(page.getByTestId("days-on-air")).toHaveText("0");
     await expect(heading(page)).toHaveText("Editar veículo");
     expect(await audit(page), "[6e]").toEqual(CLEAN);
     const summaryUrl = page.url();

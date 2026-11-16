@@ -112,7 +112,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - veículo excluído sem link.
 
   · _LED-FR-005 a LED-FR-010, LED-FR-014, LED-NFR-001, LED-NFR-003_
-- [ ] **T017** Bloco "Desempenho do anúncio" em `/painel/veiculos/[id]` [6e]: Visualizações, Leads e Dias no ar.
+- [x] **T017** Bloco "Desempenho do anúncio" em `/painel/veiculos/[id]` [6e]: Visualizações, Leads e Dias no ar.
 
   · _LED-FR-012_
 

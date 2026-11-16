@@ -54,6 +54,6 @@ describe("retenção dos leads", () => {
       status: "sold",
     });
     expect(rows[1]).toMatchObject({ name: "Ana", purgedAt: null });
-    expect((await vehiclePerformance(t.db, a, v.id, NOW)).leads).toBe(2);
+    expect((await vehiclePerformance(t.db, a, v.id)).leads).toBe(2);
   });
 });

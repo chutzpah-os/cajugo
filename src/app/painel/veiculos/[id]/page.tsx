@@ -6,6 +6,8 @@ import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireStorePage } from "@/domains/auth/guards";
 import { STATUS_TONE } from "@/domains/vehicles/captions";
 import { VehicleActions } from "@/domains/vehicles/components/vehicle-actions";
+import { PerformanceBlock } from "@/domains/leads/components/performance-block";
+import { vehiclePerformance } from "@/domains/leads/service";
 import { vehicleSummary } from "@/domains/vehicles/service";
 import { brl } from "@/platform/br/money";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
@@ -42,6 +44,8 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
       throw error;
     },
   );
+  // Desempenho do anúncio (LED-FR-012): visualizações e leads do domínio `leads`.
+  const performance = await vehiclePerformance(getDb(), session, v.vehicleId);
   const editable = ["draft", "pending_approval", "published"].includes(
     v.status,
   );
@@ -92,16 +96,11 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
             {v.status === "published" && v.shareOnCajugo && (
               <Badge tone="caju">Na CajuGo</Badge>
             )}
-            {v.daysOnAir !== null && (
-              <span className="text-sm text-text-3" data-testid="days-on-air">
-                {v.daysOnAir === 1
-                  ? "1 dia no ar"
-                  : `${v.daysOnAir} dias no ar`}
-              </span>
-            )}
           </div>
         </div>
       </div>
+
+      <PerformanceBlock {...performance} daysOnAir={v.daysOnAir} />
 
       {editable && (
         <nav

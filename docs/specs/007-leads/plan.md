@@ -42,7 +42,7 @@ leadsBoard(db, session, filter: LeadFilter, now): Promise<{
 }>
 moveLead(db, session, raw: { leadId; to: "next" | "lost" }): Promise<LeadStatus>
 newLeadsCount(db, session): Promise<number>                            // contador do menu
-vehiclePerformance(db, session, vehicleId, now): Promise<{ views; leads; daysLive }>
+vehiclePerformance(db, session, vehicleId): Promise<{ views; leads }>   // dias no ar: resumo do veículo (VEH-FR-011)
 purgeOldLeads(db, now): Promise<number>                                // job diário
 
 // domains/showcase/service.ts
@@ -71,7 +71,7 @@ As actions só fazem cinco coisas: ler o IP e o agente, chamar o serviço, inval
 | LED-FR-009 | `highlight = status === "new" && now − createdAt > 24 h`, calculado no serviço |
 | LED-FR-010 | o card liga para `/painel/veiculos/{id}` (vendido e despublicado abrem normalmente); veículo `deleted` → "Veículo excluído" sem link; o lead guarda `vehicle_id` e o veículo é soft delete |
 | LED-FR-011 | `newLeadsCount` no `navCounts` de `app/painel/layout.tsx` (`NavItem.count` da 006d); menu do painel (D3) |
-| LED-FR-012 | `PerformanceBlock` em `/painel/veiculos/[id]`: `views = sum(vehicle_daily_stats.views)`, `leads = count(leads)` do veículo, `daysLive` = dias desde `published_at` até hoje (ou até `sold_at`) |
+| LED-FR-012 | `PerformanceBlock` em `/painel/veiculos/[id]`: `views = sum(vehicle_daily_stats.views)`, `leads = count(leads)` do veículo; Dias no ar = `daysOnAir` do resumo (VEH-FR-011), que sai da linha de selos para o bloco (ajuste da T017) |
 | LED-FR-013 | o aparelho guarda em `localStorage` a hora do último lead de WhatsApp por veículo e não chama a action antes de 24 h (D2); a conversa abre sempre |
 | LED-FR-014 | `recordWhatsappClick` grava `status=contacting`; o card de `channel=whatsapp` mostra "Contato pelo WhatsApp" sem WhatsApp e Ligar; `newCount` e o contador só contam `new` |
 | LED-FR-015 | `ViewPing` chama `viewAction` uma vez por veículo por dia do aparelho (`localStorage`, D2); `recordView` ignora `isKnownBot(userAgent)` e faz `insert … on conflict (vehicle_id, day) do update set views = views + 1`; a contagem começa com a tabela vazia |
