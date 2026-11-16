@@ -692,3 +692,6 @@
 
 # 2026-11-16 · 007/T002
 - Migration `0016` (staging): enums `lead_channel`, `lead_origin`, `lead_status`; tabelas `leads` e `vehicle_daily_stats` com índices; FKs com cascade. GLOSSARY da T001 (ficou fora daquele commit).
+
+# 2026-11-16 · 007/T003
+- `leads/status.ts` (próximo status, aberto, rótulos, destaque de Novo > 24 h) e `leads/device.ts` (lead de WhatsApp a cada 24 h, visualização por dia de São Paulo, origem pela aba do catálogo); `brDay` em `platform/br/date.ts`.

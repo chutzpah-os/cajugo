@@ -322,3 +322,6 @@
 
 # 2026-11-16 · 007/T002
 - FK com cascade porque veículo e loja só são apagados de verdade na limpeza dos e2e; no app a exclusão é lógica e o lead fica.
+
+# 2026-11-16 · 007/T003
+- Marcas no aparelho com falha silenciosa: sem armazenamento o registro segue e o limite por IP do servidor segura o abuso.

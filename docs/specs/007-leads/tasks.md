@@ -22,7 +22,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - índices do plano.
 
   · _LED-FR-005, LED-FR-015_
-- [ ] **T003** [P] `leads/status.ts` e `leads/device.ts`:
+- [x] **T003** [P] `leads/status.ts` e `leads/device.ts`:
   - `status.ts`: próximo status (`NEXT`), rótulos, `highlight` (Novo há mais de 24 h);
   - `device.ts`: marcas no aparelho (WhatsApp a cada 24 h, visualização por dia, origem do catálogo por aba).
 
