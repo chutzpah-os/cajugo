@@ -2,6 +2,7 @@ import { brDate } from "@/platform/br/date";
 import { EmptyState } from "@/ui/empty-state";
 import { REASON_LABEL } from "../reasons";
 import type { ReportCard } from "../service";
+import { HideSheet } from "./hide-sheet";
 import { KeepButton } from "./keep-button";
 import { ModeratedVehicle } from "./moderated-vehicle";
 
@@ -61,6 +62,7 @@ export function ReportQueue({
           )}
           <div className="grid grid-cols-2 gap-2">
             <KeepButton vehicleId={c.vehicle.id} />
+            <HideSheet vehicleId={c.vehicle.id} />
           </div>
         </li>
       ))}

@@ -4,7 +4,10 @@ import type { ReportCard } from "../service";
 import { ReportQueue } from "./report-queue";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {} }) }));
-vi.mock("../actions", () => ({ keepReportsAction: vi.fn() }));
+vi.mock("../actions", () => ({
+  keepReportsAction: vi.fn(),
+  hideVehicleAction: vi.fn(),
+}));
 
 const CARD: ReportCard = {
   vehicle: {
@@ -41,6 +44,29 @@ describe("fila [14e]", () => {
     expect(html).toContain("Suspeita de golpe 1");
     expect(html).toContain("Metade da FIPE");
     expect(html).toContain("Manter");
+  });
+
+  it("[RPT-FR-004] Ocultar abre a confirmação com os 5 motivos e o efeito", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <ReportQueue cards={[CARD]} cloudName="demo" />,
+    );
+
+    // Assert
+    expect(html).toContain('data-testid="report-hide"');
+    expect(html).toContain("Ocultar veículo");
+    expect(html).toContain("Ocultar da vitrine");
+    expect(html).toContain(
+      "Sai só da vitrine, continua no catálogo da loja; o lojista é avisado com o motivo.",
+    );
+    for (const r of [
+      "Já vendido",
+      "Preço não real",
+      "Fotos de outro carro",
+      "Suspeita de golpe",
+      "Outro",
+    ])
+      expect(html).toContain(`>${r}</span>`);
   });
 
   it("[RPT-FR-003] uma denúncia no singular; fila vazia avisa", () => {

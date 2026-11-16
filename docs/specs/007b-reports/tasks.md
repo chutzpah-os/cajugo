@@ -107,7 +107,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
 - [x] **T016** `/admin/denuncias`: a fila [14e] com os cards (foto, veículo, loja, preço, link, contagens, descrições) e o botão **Manter**. "Sem permissão" para quem não modera.
 
   · _RPT-FR-002, RPT-FR-003, RPT-SEC-003, RPT-NFR-001_
-- [ ] **T017** `HideSheet` ([6f] "Ocultar veículo"): 5 motivos, nota no "Outro" e o texto do efeito. "Ocultar da vitrine" não confirma sem motivo.
+- [x] **T017** `HideSheet` ([6f] "Ocultar veículo"): 5 motivos, nota no "Outro" e o texto do efeito. "Ocultar da vitrine" não confirma sem motivo.
 
   · _RPT-FR-004_
 - [ ] **T018** Aba "Ocultados" (`?aba=ocultados`), com o motivo, quando foi ocultado e **Mostrar de novo**.

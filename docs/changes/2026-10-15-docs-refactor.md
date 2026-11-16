@@ -794,3 +794,6 @@
 
 # 2026-11-16 · 007b/T016 tela Denúncias
 - /admin/denuncias (admin.moderate; Sem permissão para os demais) com ReportQueue: card com foto, nome e link do anúncio, loja, preço, N denúncias, contagem por motivo, descrições e Manter. DecisionButton genérico das decisões; ModeratedVehicle.
+
+# 2026-11-16 · 007b/T017 folha Ocultar
+- moderation/components/hide-sheet.tsx: Ocultar abre a ConfirmSheet 'Ocultar veículo' com os 5 motivos, texto no Outro (até 200) e o efeito; sem motivo não confirma ('Escolha um motivo.'). No card da fila ao lado de Manter.
