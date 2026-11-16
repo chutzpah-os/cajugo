@@ -1,6 +1,7 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { REF_COOKIE } from "@/domains/showcase/service";
 import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
@@ -18,6 +19,9 @@ import type { LeadStatus } from "./status";
 /** Rede de quem chamou, só como hash (LED-SEC-002). */
 const requestIpHash = async () => hashIp(clientIp(await headers()));
 
+/** Código do link do vendedor guardado pelo proxy (`httpOnly`, SEL-FR-011). */
+const refCode = async () => (await cookies()).get(REF_COOKIE)?.value ?? null;
+
 /**
  * "Envie uma mensagem à loja" [1b] (LED-FR-001): o painel lê sem cache, então nada a
  * invalidar; o lead aparece na próxima abertura de [3a] (LED-NFR-003).
@@ -26,6 +30,7 @@ export async function contactLeadAction(raw: unknown): Promise<ContactResult> {
   try {
     return await contactStore(getDb(), raw, {
       ipHash: await requestIpHash(),
+      refCode: await refCode(),
     });
   } catch (error) {
     logger.error("leads.contact_failed", { error: errorMessage(error) });
@@ -42,6 +47,7 @@ export async function whatsappClickAction(raw: unknown): Promise<void> {
   try {
     await recordWhatsappClick(getDb(), raw, {
       ipHash: await requestIpHash(),
+      refCode: await refCode(),
     });
   } catch (error) {
     logger.error("leads.whatsapp_failed", { error: errorMessage(error) });

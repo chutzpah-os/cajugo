@@ -14,6 +14,7 @@ const card = (over: Partial<LeadCard> = {}): LeadCard => ({
   status: "new",
   channel: "form",
   origin: "cajugo",
+  sellerName: null,
   name: "Ana Souza",
   initials: "AS",
   message: "Olá, tenho interesse.",

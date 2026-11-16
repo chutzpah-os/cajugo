@@ -22,6 +22,10 @@ export function idFromVehicleParam(param: string): string | null {
   return UUID.exec(param)?.[0] ?? null;
 }
 
+/** Cookie do código do vendedor: 30 dias, vale o último (SHW-FR-009). */
+export const REF_COOKIE = "cajugo_ref";
+export const REF_MAX_AGE = 30 * 24 * 60 * 60;
+
 /** Código de vendedor do `?ref=`: só o formato esperado (SHW-SEC-005). */
 export function parseRefCode(value: string | null | undefined): string | null {
   return value && /^[A-Za-z0-9]{3,20}$/.test(value)

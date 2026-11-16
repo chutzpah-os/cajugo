@@ -784,3 +784,28 @@ export async function recordSellerClick(
       set: { clicks: sql`${sellerVehicleClicks.clicks} + 1` },
     });
 }
+
+/**
+ * Vendedor do lead (SEL-FR-011, SEL-SEC-006): só quando o código é de um vendedor
+ * ativo e parceiro ativo da loja do veículo. Sem parceria, bloqueado ou código falso:
+ * `null` e o lead fica sem vendedor.
+ */
+export async function sellerForLead(
+  db: Db,
+  code: string | null | undefined,
+  storeId: string,
+): Promise<{ sellerId: string; name: string } | null> {
+  const seller = await activeSellerByCode(db, code);
+  if (!seller) return null;
+  const [partner] = await db
+    .select({ id: partnerships.id })
+    .from(partnerships)
+    .where(
+      and(
+        eq(partnerships.sellerId, seller.sellerId),
+        eq(partnerships.storeId, storeId),
+        eq(partnerships.status, "active"),
+      ),
+    );
+  return partner ? seller : null;
+}

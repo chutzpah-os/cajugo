@@ -84,7 +84,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - limite por rede.
 
   · _SEL-FR-010_
-- [ ] **T012** Lead com vendedor:
+- [x] **T012** Lead com vendedor:
   - `sellerForLead`;
   - `contactStore` e `recordWhatsappClick` gravam `seller_id` e a origem `seller` com o cookie `cajugo_ref`;
   - sem parceria, vendedor bloqueado ou código falso → lead sem vendedor;

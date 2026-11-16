@@ -7,6 +7,10 @@ vi.mock("./service", () => service);
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({ db: true }) }));
 vi.mock("next/headers", () => ({
   headers: async () => new Headers({ "x-forwarded-for": "203.0.113.7" }),
+  cookies: async () => ({
+    get: (name: string) =>
+      name === "cajugo_ref" ? { name, value: "BIA" } : undefined,
+  }),
 }));
 
 const { contactLeadAction } = await import("./actions");
@@ -29,6 +33,19 @@ describe("action da mensagem à loja", () => {
     ];
     expect(ctx.ipHash).not.toContain("203.0.113.7");
     expect(ctx.ipHash).toMatch(/^[\w-]{16,}$/);
+  });
+
+  it("[SEL-FR-011] passa o código do link do vendedor guardado no cookie", async () => {
+    // Act
+    await contactLeadAction({ vehicleId: "x" });
+
+    // Assert
+    const [, , ctx] = service.contactStore.mock.calls[0] as unknown as [
+      unknown,
+      unknown,
+      { refCode: string | null },
+    ];
+    expect(ctx.refCode).toBe("BIA");
   });
 
   it("[LED-FR-001] falha inesperada vira mensagem amigável", async () => {

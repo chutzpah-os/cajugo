@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { gateDecision } from "@/domains/showcase/service";
-import { parseRefCode } from "@/domains/showcase/urls";
+import { parseRefCode, REF_COOKIE, REF_MAX_AGE } from "@/domains/showcase/urls";
 import { getDb } from "@/platform/db/client";
 import { isProtectedPath, loginUrl } from "@/platform/http/protected-paths";
 import { createGate } from "@/platform/http/public-gate";
@@ -16,8 +16,6 @@ import {
  */
 const gate = createGate((path) => gateDecision(getDb(), path));
 
-const REF_COOKIE = "cajugo_ref";
-const REF_MAX_AGE = 30 * 24 * 60 * 60;
 const FILTER_PARAMS = [
   "marca",
   "preco_de",

@@ -848,3 +848,6 @@
 
 # 2026-11-16 · 008/T011 cliques do link
 - recordSellerClick + sellerClickAction: soma em seller_vehicle_clicks por vendedor, veículo e dia de São Paulo; robô, código fora do formato ou de vendedor não ativo, veículo fora do ar e mais de 60/min da rede não contam. showcase exporta parseRefCode.
+
+# 2026-11-16 · 008/T012 lead com vendedor
+- sellerForLead (vendedor ativo e parceiro ativo da loja). insertLead grava seller_id e origem seller; contactLeadAction e whatsappClickAction leem o cookie cajugo_ref (REF_COOKIE agora em showcase/urls, usado pelo proxy). [3a] recebe sellerName (só o nome).

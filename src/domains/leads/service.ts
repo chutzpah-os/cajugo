@@ -1,3 +1,4 @@
+import { sellerForLead } from "@/domains/sellers/service";
 import { contactTarget } from "@/domains/showcase/service";
 import {
   and,
@@ -14,7 +15,12 @@ import {
 import { authorizeTo, can, type Permission } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { brDay } from "@/platform/br/date";
-import { leads, vehicleDailyStats, vehicles } from "@/platform/db/schema";
+import {
+  leads,
+  profiles,
+  vehicleDailyStats,
+  vehicles,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import {
   AppError,
@@ -70,6 +76,8 @@ async function insertLead(
     origin: LeadOrigin;
     target: { storeId: string; shared: boolean };
     channel: "form" | "whatsapp";
+    /** Código do link do vendedor guardado no aparelho (`?ref=`, SEL-FR-011). */
+    refCode?: string | null;
     contact?: {
       name: string;
       email: string;
@@ -79,6 +87,7 @@ async function insertLead(
   },
   now: Date,
 ) {
+  const seller = await sellerForLead(db, lead.refCode, lead.target.storeId);
   await db
     .insert(leads)
     .values({
@@ -86,7 +95,9 @@ async function insertLead(
       storeId: lead.target.storeId,
       vehicleId: lead.vehicleId,
       channel: lead.channel,
-      origin: finalOrigin(lead.origin, lead.target.shared),
+      // Vendedor ativo e parceiro da loja: o lead é dele (SEL-FR-011).
+      origin: seller ? "seller" : finalOrigin(lead.origin, lead.target.shared),
+      sellerId: seller?.sellerId ?? null,
       // O lead pelo WhatsApp já começou a conversa (LED-FR-014).
       status: lead.channel === "whatsapp" ? "contacting" : "new",
       ...lead.contact,
@@ -103,7 +114,7 @@ async function insertLead(
 export async function contactStore(
   db: Db,
   raw: unknown,
-  ctx: { ipHash: string; now?: Date },
+  ctx: { ipHash: string; now?: Date; refCode?: string | null },
 ): Promise<ContactResult> {
   const now = ctx.now ?? new Date();
   if (!(await withinPublicFormLimits(db, "lead", ctx.ipHash, now)))
@@ -128,6 +139,7 @@ export async function contactStore(
       origin,
       target,
       channel: "form",
+      refCode: ctx.refCode,
       contact: { name, email, phone, message: message || null },
     },
     now,
@@ -144,7 +156,7 @@ export async function contactStore(
 export async function recordWhatsappClick(
   db: Db,
   raw: unknown,
-  ctx: { ipHash: string; now?: Date },
+  ctx: { ipHash: string; now?: Date; refCode?: string | null },
 ): Promise<void> {
   const now = ctx.now ?? new Date();
   const parsed = whatsappClickSchema.safeParse(raw);
@@ -153,7 +165,11 @@ export async function recordWhatsappClick(
     return;
   const target = await contactTarget(db, parsed.data.vehicleId);
   if (!target) return;
-  await insertLead(db, { ...parsed.data, target, channel: "whatsapp" }, now);
+  await insertLead(
+    db,
+    { ...parsed.data, target, channel: "whatsapp", refCode: ctx.refCode },
+    now,
+  );
 }
 
 /**
@@ -196,6 +212,8 @@ export type LeadCard = {
   status: LeadStatus;
   channel: "form" | "whatsapp";
   origin: LeadOrigin;
+  /** "via vendedor {nome}" (SEL-FR-011); só o nome, nunca CPF ou contato. */
+  sellerName: string | null;
   /** Nulos no lead pelo WhatsApp e depois de 2 anos. */
   name: string | null;
   initials: string | null;
@@ -268,9 +286,11 @@ export async function leadsBoard(
       model: vehicles.model,
       priceCents: vehicles.priceCents,
       vehicleStatus: vehicles.status,
+      sellerName: profiles.name,
     })
     .from(leads)
     .innerJoin(vehicles, eq(vehicles.id, leads.vehicleId))
+    .leftJoin(profiles, eq(profiles.id, leads.sellerId))
     .where(filter === "all" ? own : and(own, eq(leads.status, filter)))
     .orderBy(desc(leads.createdAt), desc(leads.id))
     .limit(BOARD_LIMIT);
@@ -305,6 +325,7 @@ export async function leadsBoard(
         status: r.status,
         channel: r.channel,
         origin: r.origin,
+        sellerName: r.sellerName,
         name: r.name,
         initials: initialsOf(r.name),
         message: r.message,
