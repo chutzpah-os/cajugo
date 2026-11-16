@@ -2,7 +2,12 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeCloudinary } from "@/platform/cloudinary/fake-cloudinary";
 import { personWith, storeOwner } from "@/domains/billing/testing/fixtures";
-import { attachDocument, documentFile, documentUpload } from "./service";
+import {
+  attachDocument,
+  documentFile,
+  documentUpload,
+  sellerDocuments,
+} from "./service";
 import { seller, sellerRow } from "./testing/fixtures";
 
 const IMAGE = { format: "jpg", bytes: 200_000, width: 800, height: 600 };
@@ -110,6 +115,22 @@ describe("fotos do documento do vendedor", () => {
     await expect(
       documentFile(deps(), admin, "nao-e-uuid", "front"),
     ).rejects.toMatchObject({ status: 404 });
+  });
+
+  it("[SEL-FR-001] o passo das fotos sabe o que já foi enviado; fora de análise, nada", async () => {
+    // Arrange
+    const ana = await seller(t.db);
+    const ativo = await seller(t.db, { status: "active", code: "BIA" });
+
+    // Act
+    const before = await sellerDocuments(t.db, ana);
+    await send(ana, "front");
+    const after = await sellerDocuments(t.db, ana);
+
+    // Assert
+    expect(before).toEqual({ front: false, back: false });
+    expect(after).toEqual({ front: true, back: false });
+    expect(await sellerDocuments(t.db, ativo)).toBeNull();
   });
 
   it("[SEL-FR-001] vendedor ativo ou bloqueado não troca as fotos", async () => {

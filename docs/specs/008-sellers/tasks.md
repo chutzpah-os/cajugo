@@ -97,7 +97,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   · _SEL-FR-014, SEL-SEC-001, SEL-SEC-002_
 
 ## Fase 3 — Telas
-- [ ] **T014** `/rede/cadastro` [7a] (com a conta única: entrar e voltar) e `/rede/cadastro/documento` (frente e verso) até a confirmação "Em análise".
+- [x] **T014** `/rede/cadastro` [7a] (com a conta única: entrar e voltar) e `/rede/cadastro/documento` (frente e verso) até a confirmação "Em análise".
 
   · _SEL-FR-001, SEL-FR-016, SEL-NFR-001_
 - [ ] **T015** Área do vendedor:

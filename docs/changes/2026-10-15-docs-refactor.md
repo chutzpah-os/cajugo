@@ -854,3 +854,6 @@
 
 # 2026-11-16 · 008/T013 conta do vendedor
 - sellerAccount (só vendedor ativo; CPF mascarado com maskTaxId, chave Pix) e updatePixKey (pixUpdateSchema pelo tipo; activity_log seller.pix_changed só com o tipo). Teste de que Pix e CPF não saem na vitrine do vendedor, no lead nem na página do veículo.
+
+# 2026-11-16 · 008/T014 telas de cadastro
+- /rede/cadastro (SellerSignupForm; conectado só CPF, cidade e Pix; 'Entrar e continuar' para e-mail existente; 'Entrar' para CPF já cadastrado) e /rede/cadastro/documento (DocumentForm: frente e verso direto ao Cloudinary privado). registerSellerAction entra e segue para as fotos; actions de upload e anexo; sellerDocuments.

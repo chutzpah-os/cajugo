@@ -881,3 +881,16 @@ export async function updatePixKey(
     });
   });
 }
+
+/** O que já foi enviado no passo das fotos [7a]; `null` fora de "em análise". */
+export async function sellerDocuments(
+  db: Db,
+  session: Session | null,
+): Promise<{ front: boolean; back: boolean } | null> {
+  const me = await ownSeller(db, session);
+  if (me.status !== "in_review") return null;
+  return {
+    front: !!me.documentFrontPublicId,
+    back: !!me.documentBackPublicId,
+  };
+}
