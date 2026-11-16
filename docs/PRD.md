@@ -233,6 +233,7 @@ novo ──▶ em_contato ──▶ negociando ──▶ vendido
    └──────────┴─────────────┴────────▶ perdido
 ```
 - Avanço em um toque no card [3a]; "Perdido" pelo menu do card.
+- Lead pelo clique no WhatsApp já entra em `em_contato` (a conversa começou no WhatsApp da loja), sem nome nem contato; não conta como "Novo".
 - Origem: `cajugo` (vitrine), `catalogo` (link da loja), `vendedor` (link `?ref=`, guarda o vendedor).
 - Lead vendido sugere confirmar a venda do veículo [7g] (e vice-versa).
 
@@ -431,7 +432,7 @@ Navegação:
 - Aberta por link de vendedor (`?ref={codigo}`): o código é guardado e o lead criado leva o vendedor.
 
 **Regras**
-- Clique em WhatsApp também gera lead (origem + veículo + "via WhatsApp"; sem nome se não informado).
+- Clique em WhatsApp também gera lead (origem + veículo + "via WhatsApp"; sem nome se não informado), no máximo um por aparelho e veículo a cada 24 h, já em "Em contato" (§5.4).
 - Formulário: validação de e-mail e telefone BR; anti-spam (honeypot + rate limit por IP); confirmação "Mensagem enviada. A loja vai responder em breve."
 - Veículo vendido/oculto acessado por link direto: tela [12d] "Este veículo já foi vendido" + parecidos.
 - Final de placa: somente o último dígito; placa completa nunca é exibida.

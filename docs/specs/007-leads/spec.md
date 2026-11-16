@@ -2,7 +2,7 @@
 id: 007
 slug: leads
 title: Leads e desempenho do anúncio
-status: draft
+status: in-progress
 owner: dono do produto
 created: 2026-11-16
 ---
@@ -18,7 +18,8 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 - **Admin** e **suporte** (leitura, PRD §4)
 
 ## Fora de escopo
-- Denunciar anúncio [14d], fila de denúncias [14e] e Ocultar pelo admin: proposta de spec **007b** (divisão para a 007 não passar de 15 FR; ver Pendências).
+- Denunciar anúncio [14d], fila de denúncias [14e] e Ocultar pelo admin: spec **007b · Denúncias** (dividida no `/clarify` de 2026-11-16 para a 007 não passar de 15 FR).
+- Ao marcar o veículo como vendido, os leads abertos dele ficam como estão; a regra do PRD [6f] ("leads abertos viram Perdido, exceto o comprador escolhido") entra na spec **009**, junto com a escolha do comprador [7g] (`/clarify` de 2026-11-16).
 - Lead marcado com o vendedor ("via vendedor {nome}", link `?ref=`) e confirmar a venda com o comprador escolhido [7g]: specs **008/009**.
 - Lead vendido sugerindo confirmar a venda [7g]: spec **009**.
 - Leads da loja no detalhe da loja do admin [6g] e "Leads no mês" e origem dos leads no painel do admin [4a]: spec **012**.
@@ -28,16 +29,19 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 ## Requisitos funcionais
 - **LED-FR-001** A página do veículo [1b] tem o formulário "Envie uma mensagem à loja" com Nome, E-mail e Telefone obrigatórios e a Mensagem já preenchida com "Olá, tenho interesse no veículo. Por favor entre em contato."; ao enviar, cria um lead e confirma "Mensagem enviada. A loja vai responder em breve."
 - **LED-FR-002** O formulário recusa e-mail inválido e telefone que não seja brasileiro (DDD + número), com a mensagem no campo.
-- **LED-FR-003** Tocar em "WhatsApp" na página do veículo [1b] (barra inferior e simulador [14b]) cria um lead "via WhatsApp" sem nome nem contato e abre a conversa normalmente, mesmo se o registro falhar.
+- **LED-FR-003** Tocar em "WhatsApp" na página do veículo [1b] (barra inferior e simulador [14b]) cria um lead "via WhatsApp" sem nome nem contato (no máximo um por aparelho e veículo a cada 24 horas, LED-FR-013) e abre a conversa normalmente, mesmo se o registro falhar.
 - **LED-FR-004** O lead guarda a origem: "via CajuGo" quando o contato saiu da página do veículo na Vitrine CajuGo e "Seu catálogo" quando saiu do Catálogo da loja.
-- **LED-FR-005** O lojista vê em "Leads" [3a] os leads da loja, do mais novo ao mais antigo, com os indicadores "Novos, sem resposta" e "% vieram da vitrine CajuGo".
-- **LED-FR-006** [3a] filtra por Todos, Novo, Em contato e Negociando, cada filtro com a sua contagem.
+- **LED-FR-005** O lojista vê em "Leads" [3a] os leads da loja, do mais novo ao mais antigo, com os indicadores "Novos, sem resposta" (quantos leads estão "Novo" agora) e "% vieram da vitrine CajuGo" (leads dos últimos 30 dias, inclusive os "via WhatsApp").
+- **LED-FR-006** [3a] filtra por Todos, Novo, Em contato e Negociando, cada filtro com a contagem de todos os leads nesse status, sem limite de data.
 - **LED-FR-007** O card do lead mostra sigla, nome, tempo relativo ("há 2 h"), veículo · preço, selo de status, selo de origem, a mensagem e as ações WhatsApp (abre a conversa com a pessoa), Ligar (`tel:`) e "→ próximo status".
 - **LED-FR-008** "→ próximo status" avança o lead num toque, na ordem Novo → Em contato → Negociando → Vendido; "Perdido" fica no menu do card e vale de qualquer status aberto.
 - **LED-FR-009** Lead "Novo" há mais de 24 horas ganha destaque no card.
-- **LED-FR-010** Tocar no veículo do card abre a edição do veículo [6e].
+- **LED-FR-010** Tocar no veículo do card abre a edição do veículo [6e], também se ele foi vendido ou despublicado; o lead continua na lista depois que o veículo sai do ar, e o de veículo excluído mostra o nome do veículo com "Veículo excluído", sem link.
 - **LED-FR-011** O item "Leads" do menu do painel mostra o contador de leads novos (aviso no painel, PRD §11).
 - **LED-FR-012** A edição do veículo [6e] mostra o bloco "Desempenho do anúncio" com Visualizações, Leads e Dias no ar.
+- **LED-FR-013** Toques repetidos em "WhatsApp" do mesmo aparelho no mesmo veículo geram no máximo um lead a cada 24 horas; a conversa abre em todos os toques.
+- **LED-FR-014** O lead "via WhatsApp" entra como "Em contato" (a conversa já começou no WhatsApp da loja), com o card "Contato pelo WhatsApp" sem as ações WhatsApp e Ligar; a loja avança o status até Vendido ou Perdido, e ele não conta em "Novos, sem resposta" nem no contador do menu.
+- **LED-FR-015** Uma visualização é a abertura da página do veículo por um aparelho num dia: o mesmo aparelho no mesmo veículo conta uma vez por dia, robôs conhecidos não contam, e os veículos já publicados começam do zero quando esta spec entrar no ar.
 
 ## Requisitos não funcionais
 - **LED-NFR-001** O formulário em [1b] e a tela [3a] funcionam em 390 px e em 1280 px ([15b]), com alvos de toque de pelo menos 44 px.
@@ -50,6 +54,7 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 - **LED-SEC-003** Nome, e-mail, telefone e mensagem do lead só aparecem para a loja do lead (dono e usuário da loja) e para o admin e o suporte; nunca na vitrine, no catálogo ou em outra loja.
 - **LED-SEC-004** O formulário mostra o aviso de privacidade com link para a política [12i] e limita a mensagem a 1.000 caracteres e cada campo ao seu tamanho.
 - **LED-SEC-005** Admin e suporte só leem os leads; mudar status é da loja.
+- **LED-SEC-006** Lead com mais de 2 anos perde nome, e-mail, telefone e mensagem no job diário (`SECURITY.md` §8); o lead continua nos números da loja e no desempenho do anúncio.
 
 ## Critérios de aceite
 ### LED-FR-001
@@ -75,7 +80,7 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 - **Então** o primeiro lead tem o selo "via CajuGo" e o segundo "Seu catálogo"
 
 ### LED-FR-005
-- **Dado** a loja A com 4 leads no período, 3 "via CajuGo" e 1 "Seu catálogo", 2 deles "Novo"
+- **Dado** a loja A com 4 leads nos últimos 30 dias, 3 "via CajuGo" e 1 "Seu catálogo", 2 deles "Novo", e 1 lead "Seu catálogo" de 40 dias atrás
 - **Quando** o lojista abre [3a]
 - **Então** vê "Novos, sem resposta: 2" e "75% vieram da vitrine CajuGo"
 - **E** os leads aparecem do mais novo ao mais antigo
@@ -106,6 +111,12 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 - **Quando** o lojista toca no veículo do card
 - **Então** abre a edição desse veículo [6e]
 
+### LED-FR-010 (veículo fora do ar)
+- **Dado** um lead do Fiat Argo, depois marcado como vendido, e um lead do Fiat Uno, depois excluído
+- **Quando** o lojista abre [3a]
+- **Então** os dois leads continuam na lista
+- **E** tocar no Argo abre a edição dele, e o card do Uno mostra "Fiat Uno · Veículo excluído" sem link
+
 ### LED-FR-011
 - **Dado** a loja A com 3 leads "Novo"
 - **Quando** o lojista abre o painel
@@ -116,6 +127,25 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 - **Dado** um veículo publicado há 10 dias, aberto 120 vezes, com 4 leads
 - **Quando** o lojista abre [6e]
 - **Então** vê "Visualizações 120", "Leads 4" e "Dias no ar 10"
+- **E** um veículo publicado antes desta spec mostra as Visualizações contadas desde então
+
+### LED-FR-013
+- **Dado** um visitante que tocou em "WhatsApp" no Fiat Argo há 1 hora
+- **Quando** toca de novo
+- **Então** a conversa abre e a loja continua com um só lead "via WhatsApp" desse aparelho para o Argo
+- **E** um toque do mesmo aparelho 25 horas depois cria outro lead
+
+### LED-FR-014
+- **Dado** um lead "via WhatsApp" do Fiat Argo
+- **Quando** o lojista abre [3a]
+- **Então** o card mostra "Contato pelo WhatsApp", "Em contato" e "→ Negociando", sem WhatsApp nem Ligar
+- **E** "Novos, sem resposta" e o contador do menu não mudam, mas o lead entra no total e no "% vieram da vitrine CajuGo"
+
+### LED-FR-015
+- **Dado** um veículo publicado
+- **Quando** o mesmo aparelho abre a página 3 vezes hoje, outro aparelho abre 1 vez e um robô de busca abre 5 vezes
+- **Então** as Visualizações de hoje sobem 2
+- **E** amanhã, a 1ª abertura do primeiro aparelho conta de novo
 
 ### LED-SEC-001
 - **Dado** um lead da loja A
@@ -143,12 +173,11 @@ Hoje o comprador fala com a loja só pelo botão WhatsApp da página do veículo
 - **Quando** o suporte tenta mudar o status dele
 - **Então** a ação é recusada e o status não muda
 
+### LED-SEC-006
+- **Dado** um lead de Ana criado há 2 anos e 1 dia
+- **Quando** o job diário roda
+- **Então** o lead fica sem nome, e-mail, telefone e mensagem
+- **E** continua contando nos Leads do desempenho do veículo
+
 ## Pendências
-- [PENDENTE] **Divisão:** a 007 do `PLAN.md` inclui denúncias [14d], a fila [14e] e Ocultar; juntas passariam de 15 FR. Proponho mover essa parte para uma spec **007b · Denúncias**. Pode dividir?
-- [PENDENTE] **Clique no WhatsApp repetido:** cada toque vira um lead, ou toques do mesmo aparelho no mesmo veículo dentro de um tempo (ex.: 24 h) contam como um só?
-- [PENDENTE] **Lead "via WhatsApp" sem contato:** a CajuGo não sabe o número de quem tocou. Como fica o card (sem WhatsApp e Ligar?), ele entra em "Novos, sem resposta" e no contador do menu, e tem status para avançar? Ou ele só conta nos números (desempenho e % da vitrine) sem virar card?
-- [PENDENTE] **Visualizações:** o que conta como uma visualização (toda abertura da página, uma por aparelho por dia, sem robôs)? E desde quando: só a partir desta spec (os veículos antigos começam do zero)?
-- [PENDENTE] **Marcar como vendido** (PRD [6f]): "leads abertos viram Perdido, exceto o comprador escolhido". A escolha do comprador é da 009; nesta spec, ao marcar vendido, os leads abertos viram Perdido, ficam como estão, ou o diálogo [6f] já pergunta qual lead comprou?
-- [PENDENTE] **Período dos indicadores** de [3a] ("% vieram da vitrine CajuGo" e as contagens): mês atual, últimos 30 dias ou desde sempre?
-- [PENDENTE] **Retenção de 2 anos** (`SECURITY.md` §8): nesta spec o job diário apaga nome, e-mail, telefone e mensagem dos leads com mais de 2 anos, ou isso fica para depois?
-- [PENDENTE] **Veículo depois do lead:** lead de veículo vendido, despublicado ou excluído continua em [3a]? E tocar no veículo excluído faz o quê?
+Nenhuma. Resolvidas no `/clarify` de 2026-11-16 (2 rodadas).
