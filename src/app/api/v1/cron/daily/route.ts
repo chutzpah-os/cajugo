@@ -1,6 +1,7 @@
 import { revalidateTag } from "next/cache";
 import { purgeExpired } from "@/domains/buyers/service";
 import { ALERTS_TAG } from "@/domains/buyers/tags";
+import { purgeOldLeads } from "@/domains/leads/service";
 import { getDb } from "@/platform/db/client";
 import { isCronRequest } from "@/platform/http/cron";
 import { errorMessage, logger } from "@/platform/http/logger";
@@ -25,15 +26,19 @@ export async function GET(request: Request) {
     // Janelas de rate limit vão até 1 dia; 2 dias de folga.
     const rateLimitsBefore = new Date(now.getTime() - 2 * DAY_MS);
     await purgeRateLimits(db, rateLimitsBefore);
+    // Leads com mais de 2 anos perdem os dados pessoais (LED-SEC-006).
+    const purgedLeads = await purgeOldLeads(db, now);
     // OBSERVABILITY.md: cada execução deixa rastro, mesmo sem nada a fazer.
     logger.info("cron.daily", {
       expiredAlerts,
+      purgedLeads,
       durationMs: Date.now() - now.getTime(),
     });
     return Response.json(
       {
         data: {
           expiredAlerts,
+          purgedLeads,
           rateLimitsBefore: rateLimitsBefore.toISOString(),
         },
       },

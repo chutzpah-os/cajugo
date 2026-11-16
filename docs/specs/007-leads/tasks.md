@@ -80,7 +80,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - veículo da loja B → not found.
 
   · _LED-FR-012, LED-SEC-001_
-- [ ] **T012** `purgeOldLeads` no job diário:
+- [x] **T012** `purgeOldLeads` no job diário:
   - lead com 2 anos + 1 dia perde nome, e-mail, telefone e mensagem (`purged_at`), e 1 dia antes não;
   - continua contando;
   - idempotente;

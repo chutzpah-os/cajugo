@@ -1,5 +1,16 @@
 import { contactTarget } from "@/domains/showcase/service";
-import { and, count, desc, eq, gt, ne, sql, sum } from "drizzle-orm";
+import {
+  and,
+  count,
+  desc,
+  eq,
+  gt,
+  isNull,
+  lte,
+  ne,
+  sql,
+  sum,
+} from "drizzle-orm";
 import { z } from "zod";
 import { authorizeTo, type Permission } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
@@ -399,4 +410,22 @@ export async function vehiclePerformance(
         )
       : 0,
   };
+}
+
+/**
+ * Retenção de 2 anos (LED-SEC-006, `SECURITY.md` §8), no job diário: o lead perde nome,
+ * e-mail, telefone e mensagem, e continua nas contagens. Idempotente.
+ */
+export async function purgeOldLeads(
+  db: Db,
+  now: Date = new Date(),
+): Promise<number> {
+  const limit = new Date(now);
+  limit.setUTCFullYear(limit.getUTCFullYear() - 2);
+  const rows = await db
+    .update(leads)
+    .set({ name: null, email: null, phone: null, message: null, purgedAt: now })
+    .where(and(lte(leads.createdAt, limit), isNull(leads.purgedAt)))
+    .returning({ id: leads.id });
+  return rows.length;
 }

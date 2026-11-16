@@ -719,3 +719,6 @@
 
 # 2026-11-16 · 007/T011
 - `vehiclePerformance`: soma de `vehicle_daily_stats.views`, contagem de leads do veículo e dias no ar (publicação até hoje ou até a venda); veículo de outra loja, excluído ou id inválido → 404.
+
+# 2026-11-16 · 007/T012
+- `purgeOldLeads` no job diário: lead com 2 anos ou mais perde nome, e-mail, telefone e mensagem (`purged_at`), idempotente; resposta e log `cron.daily` com `purgedLeads`; contrato da 006d atualizado.

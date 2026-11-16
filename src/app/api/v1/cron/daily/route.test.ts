@@ -4,6 +4,8 @@ const purgeExpired = vi.fn(async () => 2);
 const purgeRateLimits = vi.fn(async () => {});
 vi.mock("@/domains/buyers/service", () => ({ purgeExpired }));
 vi.mock("@/platform/http/rate-limit", () => ({ purgeRateLimits }));
+const purgeOldLeads = vi.fn(async () => 3);
+vi.mock("@/domains/leads/service", () => ({ purgeOldLeads }));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({}) }));
 const revalidateTag = vi.fn();
 vi.mock("next/cache", () => ({ revalidateTag }));
@@ -27,6 +29,7 @@ describe("job diário", () => {
     const res = await call("Bearer errado");
     expect(res.status).toBe(401);
     expect(purgeExpired).not.toHaveBeenCalled();
+    expect(purgeOldLeads).not.toHaveBeenCalled();
   });
 
   it("[ALR-FR-005] com o segredo: vence alertas e limpa rate limit, sem cache", async () => {
@@ -38,5 +41,20 @@ describe("job diário", () => {
     expect(purgeRateLimits).toHaveBeenCalledOnce();
     // Os vencidos saem também da lista em cache do admin (ALR-SEC-004)
     expect(revalidateTag).toHaveBeenCalledWith("search-alerts", { expire: 0 });
+  });
+});
+
+describe("job diário › leads", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.clearAllMocks();
+  });
+
+  it("[LED-SEC-006] apaga os dados pessoais dos leads com mais de 2 anos", async () => {
+    vi.stubEnv("CRON_SECRET", "segredo-do-cron");
+    const res = await call("Bearer segredo-do-cron");
+    expect(res.status).toBe(200);
+    expect(purgeOldLeads).toHaveBeenCalledOnce();
+    expect((await res.json()).data.purgedLeads).toBe(3);
   });
 });
