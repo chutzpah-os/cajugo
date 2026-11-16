@@ -779,3 +779,6 @@
 
 # 2026-11-16 · 007b/T011 Ocultar
 - moderation.hide numa transação: hideVehicle, denúncias abertas → hidden, notifyStore com o motivo em texto (hiddenReasonText), activity_log vehicle.hidden com motivo e nota. hideVehicleAction com updateTag(VEHICLES_TAG). closeOpenReports compartilhado com Manter.
+
+# 2026-11-16 · 007b/T012 Ocultados e Mostrar de novo
+- moderation.hiddenList (ocultos do mais recente, motivo em texto) e show (showVehicle, aviso vehicle_shown, activity_log vehicle.shown) + showVehicleAction com updateTag. cardsOf compartilhado entre a fila e a aba. Aviso usa marca e modelo (Fiat Argo).

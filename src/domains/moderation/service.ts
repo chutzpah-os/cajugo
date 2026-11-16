@@ -1,9 +1,9 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { can, authorizeTo } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { notifyStore } from "@/domains/notices/service";
 import { contactTarget, favoriteCards } from "@/domains/showcase/service";
-import { hideVehicle } from "@/domains/vehicles/service";
+import { hideVehicle, showVehicle } from "@/domains/vehicles/service";
 import { vehicleReports, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import {
@@ -64,15 +64,40 @@ export async function reportVehicle(
   return { ok: true };
 }
 
+/** O anúncio num card da equipe: foto, nome, loja, preço e link (RPT-FR-002). */
+export type ModeratedCard = {
+  id: string;
+  title: string;
+  priceCents: number | null;
+  storeName: string;
+  path: string;
+  coverPublicId: string | null;
+};
+
+/** Dados de card dos veículos, pela leitura pública (catálogo: publicado ou oculto). */
+async function cardsOf(
+  db: Db,
+  ids: string[],
+): Promise<Map<string, ModeratedCard>> {
+  return new Map(
+    (await favoriteCards(db, ids)).map((c) => [
+      c.vehicleId,
+      {
+        id: c.vehicleId,
+        title:
+          [c.make && brandName(c.make), c.model].filter(Boolean).join(" ") ||
+          "Veículo",
+        priceCents: c.priceCents,
+        storeName: c.storeName,
+        path: c.path,
+        coverPublicId: c.coverPublicId,
+      },
+    ]),
+  );
+}
+
 export type ReportCard = {
-  vehicle: {
-    id: string;
-    title: string;
-    priceCents: number | null;
-    storeName: string;
-    path: string;
-    coverPublicId: string | null;
-  };
+  vehicle: ModeratedCard;
   /** Denúncias abertas do anúncio. */
   open: number;
   byReason: { reason: HideReason; count: number }[];
@@ -113,26 +138,14 @@ export async function reportQueue(
   const grouped = new Map<string, typeof rows>();
   for (const r of rows)
     grouped.set(r.vehicleId, [...(grouped.get(r.vehicleId) ?? []), r]);
-  const cards = new Map(
-    (await favoriteCards(db, [...grouped.keys()])).map((c) => [c.vehicleId, c]),
-  );
+  const cards = await cardsOf(db, [...grouped.keys()]);
 
   return [...grouped].flatMap(([vehicleId, reports]) => {
-    const card = cards.get(vehicleId);
-    if (!card) return [];
+    const vehicle = cards.get(vehicleId);
+    if (!vehicle) return [];
     return [
       {
-        vehicle: {
-          id: vehicleId,
-          title:
-            [card.make && brandName(card.make), card.model]
-              .filter(Boolean)
-              .join(" ") || "Veículo",
-          priceCents: card.priceCents,
-          storeName: card.storeName,
-          path: card.path,
-          coverPublicId: card.coverPublicId,
-        },
+        vehicle,
         open: reports.length,
         byReason: REPORT_REASONS.flatMap((reason) => {
           const n = reports.filter((r) => r.reason === reason).length;
@@ -257,6 +270,82 @@ export async function hide(
       entity: "vehicle",
       entityId: vehicleId,
       data: { reason, note },
+    });
+    return true;
+  });
+}
+
+export type HiddenCard = {
+  vehicle: ModeratedCard;
+  /** Motivo do Ocultar em texto (o da nota no "Outro"). */
+  reason: string;
+  hiddenAt: Date;
+};
+
+/**
+ * Aba "Ocultados" de [14e] (RPT-FR-008, RPT-SEC-003): só admin e suporte; os anúncios
+ * ocultos agora, do mais recente.
+ */
+export async function hiddenList(
+  db: Db,
+  session: Session | null,
+): Promise<HiddenCard[]> {
+  authorizeTo(session, "admin.moderate");
+  const rows = await db
+    .select({
+      id: vehicles.id,
+      reason: vehicles.hiddenReason,
+      note: vehicles.hiddenNote,
+      hiddenAt: vehicles.hiddenAt,
+    })
+    .from(vehicles)
+    .where(eq(vehicles.status, "hidden"))
+    .orderBy(desc(vehicles.hiddenAt), desc(vehicles.id));
+  const cards = await cardsOf(
+    db,
+    rows.map((r) => r.id),
+  );
+  return rows.flatMap((r) => {
+    const vehicle = cards.get(r.id);
+    return vehicle && r.reason && r.hiddenAt
+      ? [
+          {
+            vehicle,
+            reason: hiddenReasonText(r.reason, r.note),
+            hiddenAt: r.hiddenAt,
+          },
+        ]
+      : [];
+  });
+}
+
+/**
+ * **Mostrar de novo** (RPT-FR-008, RPT-SEC-005): o anúncio volta à vitrine sem a marca, a
+ * loja é avisada e a decisão vai para o registro. `false` quando ele já não estava
+ * oculto. Quem chama invalida o cache público.
+ */
+export async function show(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<boolean> {
+  const actor = authorizeTo(session, "admin.moderate");
+  const { vehicleId } = parseDecision(raw);
+  return db.transaction(async (tx) => {
+    const v = await showVehicle(tx, actor, vehicleId, now);
+    if (!v) return false;
+    await notifyStore(
+      tx,
+      v.storeId,
+      { kind: "vehicle_shown", vehicle: v.title },
+      now,
+    );
+    await logActivity(tx, {
+      userId: actor.userId,
+      action: "vehicle.shown",
+      entity: "vehicle",
+      entityId: vehicleId,
     });
     return true;
   });

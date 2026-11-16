@@ -81,7 +81,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   Casos: loja A × loja B, e 403.
 
   · _RPT-FR-004, RPT-FR-006, RPT-SEC-003, RPT-SEC-004, RPT-SEC-005, RPT-NFR-003_
-- [ ] **T012** `hiddenList`, `show` e `showVehicleAction`:
+- [x] **T012** `hiddenList`, `show` e `showVehicleAction`:
   - `show` volta o veículo a `published` e limpa a marca;
   - avisa a loja e grava no `activity_log`;
   - `updateTag`;

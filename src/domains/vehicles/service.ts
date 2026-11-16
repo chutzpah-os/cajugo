@@ -1085,6 +1085,10 @@ export { BODIES, CONDITIONS, FEATURES, FUELS, TRANSMISSIONS } from "./lists";
 
 export { VEHICLES_TAG } from "./tags";
 
+/** Nome curto no aviso à loja: "Fiat Argo" (marca e modelo, RPT-FR-006). */
+const moderatedTitle = (v: { make: string | null; model: string | null }) =>
+  [v.make && brandName(v.make), v.model].filter(Boolean).join(" ") || "Veículo";
+
 export type ModerationMark = {
   reason: NonNullable<typeof vehicles.$inferSelect.hiddenReason>;
   note: string | null;
@@ -1118,7 +1122,7 @@ export async function hideVehicle(
     })
     .where(and(eq(vehicles.id, vehicleId), eq(vehicles.status, "published")))
     .returning();
-  return v ? { storeId: v.storeId, title: vehicleName(v) } : null;
+  return v ? { storeId: v.storeId, title: moderatedTitle(v) } : null;
 }
 
 /**
@@ -1144,5 +1148,5 @@ export async function showVehicle(
     })
     .where(and(eq(vehicles.id, vehicleId), eq(vehicles.status, "hidden")))
     .returning();
-  return v ? { storeId: v.storeId, title: vehicleName(v) } : null;
+  return v ? { storeId: v.storeId, title: moderatedTitle(v) } : null;
 }

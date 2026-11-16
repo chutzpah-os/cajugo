@@ -8,7 +8,7 @@ import { getDb } from "@/platform/db/client";
 import { AppError, type FieldError } from "@/platform/http/errors";
 import { clientIp, hashIp } from "@/platform/http/client-ip";
 import { errorMessage, logger } from "@/platform/http/logger";
-import { hide, keep, reportVehicle, type ReportResult } from "./service";
+import { hide, keep, reportVehicle, show, type ReportResult } from "./service";
 
 /**
  * "Denunciar anúncio" [14d] (RPT-FR-001): a fila lê sem cache, então nada a invalidar.
@@ -67,5 +67,18 @@ export async function hideVehicleAction(raw: unknown): Promise<DecisionResult> {
       : { ok: false, message: "Este anúncio já saiu do ar." };
   } catch (error) {
     return decisionFailed("moderation.hide_failed", error);
+  }
+}
+
+/** **Mostrar de novo** na aba "Ocultados" (RPT-FR-008): a vitrine sai do cache na hora. */
+export async function showVehicleAction(raw: unknown): Promise<DecisionResult> {
+  try {
+    const done = await show(getDb(), await currentSession(), raw);
+    updateTag(VEHICLES_TAG);
+    return done
+      ? { ok: true }
+      : { ok: false, message: "Este anúncio já não está oculto." };
+  } catch (error) {
+    return decisionFailed("moderation.show_failed", error);
   }
 }
