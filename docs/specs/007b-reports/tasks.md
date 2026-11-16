@@ -101,7 +101,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - a página continua em cache.
 
   · _RPT-FR-001, RPT-FR-010, RPT-NFR-002_
-- [ ] **T015** Item "Denúncias" no menu do admin (`admin.moderate`), com o contador via `navCounts`, na gaveta "Mais" do celular e na barra lateral do desktop.
+- [x] **T015** Item "Denúncias" no menu do admin (`admin.moderate`), com o contador via `navCounts`, na gaveta "Mais" do celular e na barra lateral do desktop.
 
   · _RPT-FR-007_
 - [ ] **T016** `/admin/denuncias`: a fila [14e] com os cards (foto, veículo, loja, preço, link, contagens, descrições) e o botão **Manter**. "Sem permissão" para quem não modera.

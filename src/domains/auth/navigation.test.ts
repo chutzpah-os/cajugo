@@ -35,3 +35,19 @@ describe("menu do painel do lojista", () => {
     expect(itemsFor("store_staff")).toEqual(["Veículos", "Leads"]);
   });
 });
+
+describe("menu do admin", () => {
+  it("[RPT-FR-007] Denúncias para admin e suporte, na gaveta Mais do celular e na barra lateral", () => {
+    // Arrange
+    const item = AREA_NAV.admin?.find((i) => i.label === "Denúncias");
+
+    // Assert
+    expect(item).toMatchObject({
+      href: "/admin/denuncias",
+      permission: "admin.moderate",
+    });
+    expect(item?.mobile).toBeFalsy();
+    expect(can(as("admin"), "admin.moderate")).toBe(true);
+    expect(can(as("support"), "admin.moderate")).toBe(true);
+  });
+});

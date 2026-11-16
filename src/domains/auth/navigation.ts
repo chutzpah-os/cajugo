@@ -41,6 +41,11 @@ export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
     { href: "/admin/assinaturas", label: "Assinaturas", mobile: true },
     { href: "/admin/pagamentos", label: "Pagamentos Pix" },
     { href: "/admin/veiculos", label: "Veículos" },
+    {
+      href: "/admin/denuncias",
+      label: "Denúncias",
+      permission: "admin.moderate",
+    },
     { href: "/admin/alertas", label: "Alertas", permission: "alerts.notify" },
     { href: "/admin/vendedores", label: "Rede Caju" },
     { href: "/admin/indica", label: "Caju Indica" },

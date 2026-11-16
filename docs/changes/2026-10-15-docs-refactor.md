@@ -788,3 +788,6 @@
 
 # 2026-11-16 · 007b/T014 Denunciar anúncio em [1b]
 - moderation/components/report-sheet.tsx: ReportTrigger e ReportSheet (<dialog> por Invoker Commands, 4 motivos, descrição até 1.000, honeypot, chave do envio, uma vez a cada 24 h por aparelho com claimOncePer). ui/dialog.ts com os helpers do diálogo, usado também pelo simulador. Exceção de tela showcase → moderation no ARCHITECTURE §3.
+
+# 2026-11-16 · 007b/T015 menu Denúncias
+- Item Denúncias (/admin/denuncias, admin.moderate) no menu do admin, fora da barra do celular (gaveta Mais); contador openReportsCount no navCounts do layout do admin, sem cache.
