@@ -47,7 +47,7 @@ const PRIVACY = [
   ],
   [
     "Avisar quando chegar",
-    "Quem pede para ser avisado de uma busca informa nome e celular com WhatsApp. Só a equipe da CajuGo vê esses dados, nunca a loja, e eles são apagados quando o aviso é enviado, quando você cancela pelo link ou quando o pedido vence (90 dias, ajustável). Favoritos ficam só no seu aparelho.",
+    "Quem pede para ser avisado de uma busca informa nome e celular com WhatsApp. Só a equipe da CajuGo vê esses dados, nunca a loja, e eles são apagados quando o aviso é enviado, quando você cancela pelo link ou quando o pedido vence (prazo definido nas regras da CajuGo). Favoritos ficam só no seu aparelho.",
   ],
   [
     "Cookies",

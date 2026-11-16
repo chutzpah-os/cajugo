@@ -1,4 +1,5 @@
 import { FUELS, TRANSMISSIONS } from "@/domains/vehicles/service";
+import { plainText } from "@/platform/br/slug";
 import { discoveryPath } from "./discovery-urls";
 import { discoveryFilters, filtersFromQuery, filtersToQuery } from "./filters";
 import { discoveryKeyOf, type ListSource } from "./list-source";
@@ -15,7 +16,11 @@ export function savedSearch(
   source: ListSource,
   query: string,
 ): SavedSearch | null {
-  const filters = { ...filtersFromQuery(query), sort: "relevance" as const };
+  const parsed = filtersFromQuery(query);
+  // Texto sem maiúscula, acento e espaço a mais: a busca da vitrine já ignora isso,
+  // então "Fiat Tóro" e "fiat toro" são a mesma busca (ALR-FR-006).
+  const q = parsed.q ? plainText(parsed.q).replace(/\s+/g, " ") : undefined;
+  const filters = { ...parsed, q, sort: "relevance" as const };
   if (source === null)
     return { query: filtersToQuery(filters), discoveryPath: null };
   if (source.kind !== "discovery") return null;

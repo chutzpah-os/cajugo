@@ -5,6 +5,8 @@ const purgeRateLimits = vi.fn(async () => {});
 vi.mock("@/domains/buyers/service", () => ({ purgeExpired }));
 vi.mock("@/platform/http/rate-limit", () => ({ purgeRateLimits }));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({}) }));
+const revalidateTag = vi.fn();
+vi.mock("next/cache", () => ({ revalidateTag }));
 const { GET } = await import("./route");
 
 const call = (auth?: string) =>
@@ -34,5 +36,7 @@ describe("job diário", () => {
     expect(res.headers.get("cache-control")).toBe("no-store");
     expect((await res.json()).data.expiredAlerts).toBe(2);
     expect(purgeRateLimits).toHaveBeenCalledOnce();
+    // Os vencidos saem também da lista em cache do admin (ALR-SEC-004)
+    expect(revalidateTag).toHaveBeenCalledWith("search-alerts", { expire: 0 });
   });
 });

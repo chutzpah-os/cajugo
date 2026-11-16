@@ -16,3 +16,8 @@ export async function cachedAlertInbox() {
   cacheLife({ stale: 60, revalidate: 60, expire: 3600 });
   return alertInbox(getDb());
 }
+
+/** Contador do menu "Alertas": do mesmo cache da tela. */
+export async function cachedPendingAlerts(): Promise<number> {
+  return (await cachedAlertInbox()).matched.length;
+}

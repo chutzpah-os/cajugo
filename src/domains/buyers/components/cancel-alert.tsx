@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Button, ButtonLink } from "@/ui/button";
-import { cancelSearchAlertAction } from "../actions";
-
-type Outcome = Awaited<ReturnType<typeof cancelSearchAlertAction>>;
+import {
+  cancelSearchAlertAction,
+  type CancelActionOutcome as Outcome,
+} from "../actions";
 
 const MESSAGES: Record<Outcome, string> = {
   canceled: "Aviso cancelado. Não vamos mais mandar mensagem sobre esta busca.",

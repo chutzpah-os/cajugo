@@ -8,7 +8,7 @@ describe("busca guardada no alerta", () => {
         null,
         "q=Fiat+Toro&ordem=menor-preco&cambio=automatico&lixo=1",
       ),
-    ).toEqual({ query: "cambio=automatico&q=Fiat+Toro", discoveryPath: null });
+    ).toEqual({ query: "cambio=automatico&q=fiat+toro", discoveryPath: null });
   });
 
   it("[ALR-FR-001] descoberta: guarda a página; marca fixa sai dos filtros", () => {
@@ -56,5 +56,12 @@ describe("busca guardada no alerta", () => {
     expect(searchLabel({ query: "", discoveryPath: null })).toBe(
       "Qualquer veículo",
     );
+  });
+
+  it("[ALR-FR-006] maiúscula, acento e espaços a mais não fazem outra busca", () => {
+    const a = savedSearch(null, "q=Fiat Tóro");
+    const b = savedSearch(null, "q=  fiat   toro ");
+    expect(a).toEqual(b);
+    expect(a?.query).toBe("q=fiat+toro");
   });
 });

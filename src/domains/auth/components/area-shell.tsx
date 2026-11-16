@@ -12,8 +12,7 @@ import type { Area } from "../permissions";
 import { currentStoreStatus } from "../current";
 import { noticesFor } from "@/domains/notices/service";
 import { NoticeList } from "@/domains/notices/components/notice-list";
-import { cachedAlertInbox } from "@/domains/buyers/current";
-import type { NavItem } from "@/ui/panel-nav";
+import type { AreaNavItem as NavItem } from "../navigation";
 import { can } from "../service";
 import type { Session } from "@/platform/http/session";
 
@@ -24,18 +23,28 @@ const AREA_ROOT: Record<Area, string> = {
   admin: "/admin",
 };
 
-/** Pendências no menu: alertas com veículo para avisar (ALR-FR-003), do mesmo cache da tela. */
-async function withCounts(
+/** Contadores do menu por endereço (ex.: `/admin/alertas` → 2), vindos da rota. */
+export type NavCounts = (session: Session) => Promise<Record<string, number>>;
+
+/** Itens que a pessoa pode abrir, com os contadores que a rota passou. */
+async function visibleNav(
   items: NavItem[] | undefined,
   session: Session,
+  navCounts?: NavCounts,
 ): Promise<NavItem[] | undefined> {
-  if (!items?.some((i) => i.href === "/admin/alertas")) return items;
-  if (!can(session, "alerts.notify"))
-    return items.filter((i) => i.href !== "/admin/alertas");
-  const pending = (await cachedAlertInbox()).matched.length;
-  return items.map((i) =>
-    i.href === "/admin/alertas" ? { ...i, count: pending } : i,
+  if (!items) return items;
+  const allowedItems = items.filter(
+    (i) => !i.permission || can(session, i.permission),
   );
+  const counts = navCounts ? await navCounts(session) : {};
+  return allowedItems.map((item) => {
+    const i: NavItem = {
+      href: item.href,
+      label: item.label,
+      mobile: item.mobile,
+    };
+    return counts[i.href] !== undefined ? { ...i, count: counts[i.href] } : i;
+  });
 }
 
 /**
@@ -45,9 +54,11 @@ async function withCounts(
  */
 export async function AreaShell({
   area,
+  navCounts,
   children,
 }: {
   area: Area;
+  navCounts?: NavCounts;
   children: ReactNode;
 }) {
   const { session, allowed } = await requireArea(area, AREA_ROOT[area]);
@@ -55,7 +66,9 @@ export async function AreaShell({
   if (allowed) await rememberPanel(getDb(), session, area);
   const storeStatus = await currentStoreStatus(session.storeId);
   // Menu só para quem tem a área; sem permissão, nada da área aparece.
-  const nav = allowed ? await withCounts(AREA_NAV[area], session) : undefined;
+  const nav = allowed
+    ? await visibleNav(AREA_NAV[area], session, navCounts)
+    : undefined;
   // Avisos de quem está conectado, em qualquer área (ADR 0007, PIX-FR-013).
   const notices = allowed ? await noticesFor(getDb(), session) : [];
 

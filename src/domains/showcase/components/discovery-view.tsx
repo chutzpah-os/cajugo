@@ -134,7 +134,7 @@ async function ListingDiscovery({
           <NoResults
             filters={filters}
             basePath={page.path}
-            alertSource={{ kind: "discovery", path: page.path }}
+            alert={{ source: { kind: "discovery", path: page.path } }}
           />
         }
       />

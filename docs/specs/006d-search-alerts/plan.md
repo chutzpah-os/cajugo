@@ -21,7 +21,7 @@ Tabela nova `search_alerts` no domínio `buyers`:
 | `src/domains/settings/definitions.ts` | `search_alert_validity_days` (grupo "showcase", 7 a 365 dias) |
 | `src/domains/showcase/` | `firstMatch(db, scope, filters, after)` no `service.ts` (mesma regra e filtros da lista); `NoResults` recebe `source` e mostra o formulário só na vitrine e na descoberta |
 | `src/domains/buyers/` | `service.ts` (novo): `createAlert`, `alertInbox`, `markNotified`, `cancelAlert`, `purgeExpired`, `cancelToken`; `actions.ts`: `createSearchAlertAction`, `markAlertNotifiedAction` (admin), `cancelSearchAlertAction`; `components/`: `AlertForm`, `AlertInbox` |
-| `src/domains/auth/navigation.ts` + `ui/panel-nav.tsx` | item "Alertas" no admin; `NavItem.count` opcional, mostrado como selo; o layout do admin passa o contador |
+| `src/domains/auth/navigation.ts` + `ui/panel-nav.tsx` | item "Alertas" no admin com `permission: "alerts.notify"`; `NavItem.count` opcional, mostrado como selo; o contador vem de `src/app/admin/layout.tsx` (`navCounts`), para `auth` não depender de `buyers` (ajuste do `/verify`) |
 | `src/app/` | `/admin/alertas` (admin e suporte); `/alertas/cancelar/[token]` (público, `noindex`, fora do sitemap); `/api/v1/cron/daily` (D2) |
 | `src/platform/seo/indexing.ts` | `/alertas` no `PRIVATE` do `robots.txt` |
 | Jobs | **primeiro job diário** (D2): `purgeExpired` + `purgeRateLimits`; `vercel.json` com `crons`; `CRON_SECRET` |
@@ -115,6 +115,12 @@ O `ARCHITECTURE.md` §4 previa `search_alerts (id, contact, filters jsonb, activ
 | ALR-SEC-003 | — | `firstMatch` ignora não divulgado e loja suspensa | — |
 | ALR-SEC-004 | — | avisado, cancelado e vencido (após `purgeExpired`) sem nome/celular | — |
 | ALR-SEC-005 | token trocado, outro id, formato inválido | — | link adulterado → "Link inválido" |
+
+## Ajustes do `/verify` (2026-11-16)
+- Schemas em `buyers/schemas.ts`; cancelar com schema estrito; cancelar e vencer gravam `activity_log` (sem dado pessoal).
+- Pedido com trava por celular numa transação (`pg_advisory_xact_lock`): o limite de 5 não estoura em pedidos simultâneos.
+- Busca guardada sem maiúscula, acento e espaço a mais (ALR-FR-006): a busca da vitrine já ignora isso.
+- Avisar e cancelar vencem antes os atrasados; o job diário invalida o cache da lista do admin.
 
 ## Riscos e alternativas descartadas
 - **Custo da leitura:** uma consulta por alerta pendente. Fica em cache de 60 s, e a tela é só do admin. Com milhares de alertas, passa a valer uma tabela de compatíveis alimentada na publicação (descartado agora: acopla `vehicles` a `buyers` e a validade das regras).

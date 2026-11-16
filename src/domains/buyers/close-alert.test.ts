@@ -91,20 +91,28 @@ describe("fechar o alerta", () => {
 
   it("[ALR-FR-004] [ALR-SEC-004] cancelar pelo link: fecha e apaga; de novo, já encerrado", async () => {
     // Act / Assert
-    expect(await cancelAlert(t.db, cancelToken(alertId), NOW)).toBe("canceled");
+    expect(await cancelAlert(t.db, { token: cancelToken(alertId) }, NOW)).toBe(
+      "canceled",
+    );
     expect(await row()).toMatchObject({
       status: "canceled",
       name: null,
       phone: null,
       closedAt: NOW,
     });
-    expect(await cancelAlert(t.db, cancelToken(alertId), NOW)).toBe("closed");
+    expect(await cancelAlert(t.db, { token: cancelToken(alertId) }, NOW)).toBe(
+      "closed",
+    );
   });
 
   it("[ALR-SEC-005] link de outro alerta ou adulterado não cancela", async () => {
     const other = "0192f1e0-0000-7000-8000-0000000000ff";
-    expect(await cancelAlert(t.db, cancelToken(other), NOW)).toBe("invalid");
-    expect(await cancelAlert(t.db, `${alertId}.abc`, NOW)).toBe("invalid");
+    expect(await cancelAlert(t.db, { token: cancelToken(other) }, NOW)).toBe(
+      "invalid",
+    );
+    expect(await cancelAlert(t.db, { token: `${alertId}.abc` }, NOW)).toBe(
+      "invalid",
+    );
     expect((await row()).status).toBe("pending");
   });
 
@@ -137,6 +145,50 @@ describe("fechar o alerta", () => {
       phone: null,
       closedAt: NOW,
     });
+    expect((await row()).status).toBe("pending");
+  });
+
+  it("[ALR-FR-004] [ALR-FR-005] cancelar registra no log sem dado pessoal; vencido conta como encerrado", async () => {
+    // Act
+    expect(await cancelAlert(t.db, { token: cancelToken(alertId) }, NOW)).toBe(
+      "canceled",
+    );
+    const [{ id: old }] = await t.db
+      .insert(searchAlerts)
+      .values({
+        name: "Bia",
+        phone: "5579988887777",
+        query: "q=onix",
+        consentAt: new Date("2026-08-01T00:00:00Z"),
+        createdAt: new Date("2026-08-01T00:00:00Z"),
+      })
+      .returning({ id: searchAlerts.id });
+
+    // Assert
+    expect(await cancelAlert(t.db, { token: cancelToken(old) }, NOW)).toBe(
+      "closed",
+    );
+    expect(
+      await markNotified(t.db, session(["admin"]), { alertId: old }, NOW),
+    ).toBe(false);
+    const logs = await t.db.select().from(activityLog);
+    expect(logs.map((l) => [l.action, l.entityId])).toEqual(
+      expect.arrayContaining([
+        ["search_alert.canceled", alertId],
+        ["search_alert.expired", old],
+      ]),
+    );
+    expect(JSON.stringify(logs)).not.toMatch(/557999|Bia|Ana/);
+  });
+
+  it("[ALR-SEC-005] campo a mais no cancelar é recusado", async () => {
+    expect(
+      await cancelAlert(
+        t.db,
+        { token: cancelToken(alertId), status: "notified" },
+        NOW,
+      ),
+    ).toBe("invalid");
     expect((await row()).status).toBe("pending");
   });
 });

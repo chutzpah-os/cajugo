@@ -20,6 +20,7 @@ import {
   markNotified,
   requestAlert,
   type AlertRequestResult,
+  type CancelOutcome,
 } from "./service";
 import { ALERTS_TAG } from "./tags";
 
@@ -96,10 +97,12 @@ export async function markAlertNotifiedAction(input: {
   }
 }
 
+export type CancelActionOutcome = CancelOutcome | "rate-limited" | "failed";
+
 /** Cancelar pelo link (ALR-FR-004): limite por rede contra tentativa de adivinhar. */
-export async function cancelSearchAlertAction(input: {
-  token: string;
-}): Promise<"canceled" | "closed" | "invalid" | "rate-limited" | "failed"> {
+export async function cancelSearchAlertAction(
+  input: unknown,
+): Promise<CancelActionOutcome> {
   try {
     const db = getDb();
     const { ok } = await consumeRateLimit(
@@ -108,10 +111,7 @@ export async function cancelSearchAlertAction(input: {
       RATE_LIMITS.liveCheck,
     );
     if (!ok) return "rate-limited";
-    const result = await cancelAlert(
-      db,
-      String(input?.token ?? "").slice(0, 200),
-    );
+    const result = await cancelAlert(db, input);
     if (result === "canceled") updateTag(ALERTS_TAG);
     return result;
   } catch (error) {

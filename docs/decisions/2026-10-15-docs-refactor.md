@@ -307,3 +307,6 @@
 
 # 2026-11-16 · 006d/T013
 - O link de cancelar não cancela ao abrir: o WhatsApp abre links para montar a prévia, o que cancelaria o alerta sem a pessoa pedir. Só o toque em "Cancelar aviso" fecha.
+
+# 2026-11-16 · 006d/verify
+- O contador do menu passou a vir da rota (`app/`), que pode usar qualquer domínio: assim `auth` não lê dado de `buyers` fora do `service.ts`. A trava por celular evita que dois pedidos simultâneos passem dos 5 pendentes; o job invalida o cache para o nome e o celular de um vencido não ficarem guardados nele.

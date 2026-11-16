@@ -1,16 +1,13 @@
-import { and, asc, count, eq, gt, isNull, lte } from "drizzle-orm";
-import { z } from "zod";
+import { and, asc, count, eq, gt, isNull, lte, sql } from "drizzle-orm";
 import { authorizeTo } from "@/domains/auth/service";
 import { getSettings } from "@/domains/settings/service";
 import {
   firstMatch,
-  listSourceSchema,
   savedSearch,
   searchLabel,
   type PublicCard,
   type SavedSearch,
 } from "@/domains/showcase/service";
-import { brMobileSchema } from "@/platform/br/phone";
 import { isUniqueViolation } from "@/platform/db/errors";
 import { logActivity } from "@/platform/http/activity-log";
 import {
@@ -23,6 +20,7 @@ import type { Session } from "@/platform/http/session";
 import { appUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
 import { alertIdFromToken, cancelToken } from "./alert-token";
+import { alertRequestSchema, cancelSchema, notifySchema } from "./schemas";
 import { searchAlerts } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 
@@ -44,69 +42,53 @@ export async function createAlert(
   input: { name: string; phone: string; search: SavedSearch },
   now: Date = new Date(),
 ): Promise<CreateAlertResult> {
-  const [{ pending }] = await db
-    .select({ pending: count() })
-    .from(searchAlerts)
-    .where(
-      and(
-        eq(searchAlerts.phone, input.phone),
-        eq(searchAlerts.status, "pending"),
-      ),
-    );
+  const pendingOf = and(
+    eq(searchAlerts.phone, input.phone),
+    eq(searchAlerts.status, "pending"),
+  );
   try {
-    if (pending >= PENDING_PER_PHONE) {
-      // A mesma busca já guardada é "duplicada", não "demais".
-      const [same] = await db
+    return await db.transaction(async (tx) => {
+      // Um pedido por vez para o mesmo celular: o limite de 5 não estoura na corrida.
+      await tx.execute(
+        sql`select pg_advisory_xact_lock(hashtext(${`alert:${input.phone}`}))`,
+      );
+      const [same] = await tx
         .select({ id: searchAlerts.id })
         .from(searchAlerts)
         .where(
           and(
-            eq(searchAlerts.phone, input.phone),
-            eq(searchAlerts.status, "pending"),
+            pendingOf,
             eq(searchAlerts.query, input.search.query),
             input.search.discoveryPath
               ? eq(searchAlerts.discoveryPath, input.search.discoveryPath)
               : isNull(searchAlerts.discoveryPath),
           ),
         );
-      return same
-        ? { ok: true, status: "duplicate" }
-        : { ok: false, error: "too-many" };
-    }
-    const [row] = await db
-      .insert(searchAlerts)
-      .values({
-        name: input.name,
-        phone: input.phone,
-        query: input.search.query,
-        discoveryPath: input.search.discoveryPath,
-        consentAt: now,
-        createdAt: now,
-      })
-      .returning({ id: searchAlerts.id });
-    return { ok: true, status: "created", alertId: row.id };
+      if (same) return { ok: true, status: "duplicate" } as const;
+      const [{ pending }] = await tx
+        .select({ pending: count() })
+        .from(searchAlerts)
+        .where(pendingOf);
+      if (pending >= PENDING_PER_PHONE)
+        return { ok: false, error: "too-many" } as const;
+      const [row] = await tx
+        .insert(searchAlerts)
+        .values({
+          name: input.name,
+          phone: input.phone,
+          query: input.search.query,
+          discoveryPath: input.search.discoveryPath,
+          consentAt: now,
+          createdAt: now,
+        })
+        .returning({ id: searchAlerts.id });
+      return { ok: true, status: "created", alertId: row.id } as const;
+    });
   } catch (error) {
     if (isUniqueViolation(error)) return { ok: true, status: "duplicate" };
     throw error;
   }
 }
-
-const requestSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(2, "Informe seu nome.")
-      .max(80, "Use até 80 caracteres."),
-    phone: brMobileSchema,
-    consent: z.literal(true, {
-      error: "Aceite para receber o aviso pelo WhatsApp.",
-    }),
-    source: listSourceSchema,
-    query: z.string().max(1000),
-    website: z.string().max(200).optional(),
-  })
-  .strict();
 
 export type AlertRequestResult =
   | {
@@ -145,7 +127,7 @@ export async function requestAlert(
   if (typeof honeypot === "string" && honeypot.trim() !== "")
     return { ok: true, status: "created", cancelPath: null };
 
-  const parsed = requestSchema.safeParse(raw);
+  const parsed = alertRequestSchema.safeParse(raw);
   if (!parsed.success)
     return fail(
       "Confira os campos destacados.",
@@ -174,6 +156,16 @@ export async function requestAlert(
 
 const DAY_MS = 86_400_000;
 
+/** Validade das regras vigentes (ALR-FR-005): mudar a regra muda os vencimentos. */
+async function validityMs(db: Db, now: Date): Promise<number> {
+  return (await getSettings(db, now)).search_alert_validity_days * DAY_MS;
+}
+
+/** "Fiat ARGO DRIVE 1.0 2022": o veículo na mensagem e na tela "Alertas". */
+function vehicleTitle(v: PublicCard): string {
+  return [v.make, v.version ?? v.model, v.yearModel].filter(Boolean).join(" ");
+}
+
 export type AlertInbox = {
   /** Com veículo compatível: o admin avisa pelo WhatsApp (ALR-FR-002). */
   matched: {
@@ -181,6 +173,7 @@ export type AlertInbox = {
     name: string;
     label: string;
     vehicle: PublicCard;
+    vehicleTitle: string;
     whatsappUrl: string;
     createdAt: Date;
   }[];
@@ -201,15 +194,14 @@ export async function alertInbox(
   db: Db,
   now: Date = new Date(),
 ): Promise<AlertInbox> {
-  const validityMs =
-    (await getSettings(db, now)).search_alert_validity_days * DAY_MS;
+  const validity = await validityMs(db, now);
   const rows = await db
     .select()
     .from(searchAlerts)
     .where(
       and(
         eq(searchAlerts.status, "pending"),
-        gt(searchAlerts.createdAt, new Date(now.getTime() - validityMs)),
+        gt(searchAlerts.createdAt, new Date(now.getTime() - validity)),
       ),
     )
     .orderBy(asc(searchAlerts.createdAt), asc(searchAlerts.id));
@@ -225,6 +217,7 @@ export async function alertInbox(
         name: a.name,
         label,
         vehicle,
+        vehicleTitle: vehicleTitle(vehicle),
         whatsappUrl: whatsappLink(
           a.phone,
           noticeText(a.id, a.name, label, vehicle),
@@ -236,7 +229,7 @@ export async function alertInbox(
         alertId: a.id,
         label,
         createdAt: a.createdAt,
-        expiresAt: new Date(a.createdAt.getTime() + validityMs),
+        expiresAt: new Date(a.createdAt.getTime() + validity),
       });
   }
   return inbox;
@@ -249,10 +242,7 @@ function noticeText(
   label: string,
   v: PublicCard,
 ): string {
-  const title = [v.make, v.version ?? v.model, v.yearModel]
-    .filter(Boolean)
-    .join(" ");
-  return `Olá, ${name}! Você pediu na CajuGo para avisar quando chegasse: ${label}. Chegou este: ${title}, ${appUrl()}${v.path}\n\nSe não quiser mais este alerta: ${appUrl()}/alertas/cancelar/${cancelToken(alertId)}`;
+  return `Olá, ${name}! Você pediu na CajuGo para avisar quando chegasse: ${label}. Chegou este: ${vehicleTitle(v)}, ${appUrl()}${v.path}\n\nSe não quiser mais este alerta: ${appUrl()}/alertas/cancelar/${cancelToken(alertId)}`;
 }
 
 /** Fechar o alerta apaga o dado pessoal na mesma escrita (ALR-SEC-004). */
@@ -262,8 +252,6 @@ const closed = (status: "notified" | "canceled" | "expired", now: Date) => ({
   phone: null,
   closedAt: now,
 });
-
-const notifySchema = z.object({ alertId: z.uuid() }).strict();
 
 /**
  * "Marcar como avisado" (ALR-FR-003): só admin e suporte (ALR-SEC-001); fecha o
@@ -280,6 +268,8 @@ export async function markNotified(
   if (!parsed.success)
     throw AppError.validation(fieldErrorsFromZod(parsed.error));
   const { alertId } = parsed.data;
+  // Vencido e ainda não limpo pelo job: fecha como vencido, não como avisado.
+  await purgeExpired(db, now);
   return db.transaction(async (tx) => {
     const [row] = await tx
       .update(searchAlerts)
@@ -299,25 +289,39 @@ export async function markNotified(
   });
 }
 
+export type CancelOutcome = "canceled" | "closed" | "invalid";
+
 /**
  * Cancelar pelo link (ALR-FR-004, ALR-SEC-005): só com o link do próprio alerta.
  * `closed` quando ele já foi avisado, cancelado ou venceu.
  */
 export async function cancelAlert(
   db: Db,
-  token: string,
+  input: unknown,
   now: Date = new Date(),
-): Promise<"canceled" | "closed" | "invalid"> {
-  const alertId = alertIdFromToken(token);
+): Promise<CancelOutcome> {
+  const parsed = cancelSchema.safeParse(input);
+  const alertId = parsed.success ? alertIdFromToken(parsed.data.token) : null;
   if (!alertId) return "invalid";
-  const [row] = await db
-    .update(searchAlerts)
-    .set(closed("canceled", now))
-    .where(
-      and(eq(searchAlerts.id, alertId), eq(searchAlerts.status, "pending")),
-    )
-    .returning({ id: searchAlerts.id });
-  if (row) return "canceled";
+  await purgeExpired(db, now);
+  const canceled = await db.transaction(async (tx) => {
+    const [row] = await tx
+      .update(searchAlerts)
+      .set(closed("canceled", now))
+      .where(
+        and(eq(searchAlerts.id, alertId), eq(searchAlerts.status, "pending")),
+      )
+      .returning({ id: searchAlerts.id });
+    if (row)
+      await logActivity(tx, {
+        userId: null,
+        action: "search_alert.canceled",
+        entity: "search_alert",
+        entityId: alertId,
+      });
+    return !!row;
+  });
+  if (canceled) return "canceled";
   const [exists] = await db
     .select({ id: searchAlerts.id })
     .from(searchAlerts)
@@ -333,17 +337,25 @@ export async function purgeExpired(
   db: Db,
   now: Date = new Date(),
 ): Promise<number> {
-  const validityMs =
-    (await getSettings(db, now)).search_alert_validity_days * DAY_MS;
-  const rows = await db
-    .update(searchAlerts)
-    .set(closed("expired", now))
-    .where(
-      and(
-        eq(searchAlerts.status, "pending"),
-        lte(searchAlerts.createdAt, new Date(now.getTime() - validityMs)),
-      ),
-    )
-    .returning({ id: searchAlerts.id });
-  return rows.length;
+  const validity = await validityMs(db, now);
+  return db.transaction(async (tx) => {
+    const rows = await tx
+      .update(searchAlerts)
+      .set(closed("expired", now))
+      .where(
+        and(
+          eq(searchAlerts.status, "pending"),
+          lte(searchAlerts.createdAt, new Date(now.getTime() - validity)),
+        ),
+      )
+      .returning({ id: searchAlerts.id });
+    for (const r of rows)
+      await logActivity(tx, {
+        userId: null,
+        action: "search_alert.expired",
+        entity: "search_alert",
+        entityId: r.id,
+      });
+    return rows.length;
+  });
 }

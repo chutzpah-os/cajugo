@@ -105,18 +105,20 @@ describe("busca sem resultado [12a]", () => {
   });
 
   it("[ALR-FR-001] vitrine e descoberta oferecem Avisar quando chegar; o catálogo da loja, não", () => {
-    const at = (alertSource?: null | { kind: "discovery"; path: string }) =>
+    const at = (alert?: {
+      source: null | { kind: "discovery"; path: string };
+    }) =>
       renderToStaticMarkup(
         <NoResults
           filters={parseFilters({ q: "toro" })}
           basePath="/"
-          alertSource={alertSource}
+          alert={alert}
         />,
       );
-    expect(at(null)).toContain("Avisar quando chegar");
-    expect(at({ kind: "discovery", path: "/carros/fiat" })).toContain(
-      "Avisar quando chegar",
-    );
+    expect(at({ source: null })).toContain("Avisar quando chegar");
+    expect(
+      at({ source: { kind: "discovery", path: "/carros/fiat" } }),
+    ).toContain("Avisar quando chegar");
     expect(at()).not.toContain("Avisar quando chegar");
   });
 

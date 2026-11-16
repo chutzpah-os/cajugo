@@ -115,7 +115,7 @@ describe("pedir alerta de busca", () => {
       expect(row).toMatchObject({
         name: "Ana",
         phone: "5579999990000",
-        query: "cambio=automatico&q=Fiat+Toro",
+        query: "cambio=automatico&q=fiat+toro",
       });
     });
 

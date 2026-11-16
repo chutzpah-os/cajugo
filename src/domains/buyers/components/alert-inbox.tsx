@@ -34,9 +34,6 @@ export function AlertInbox({ inbox }: { inbox: Inbox }) {
         <ul className="grid gap-3 md:grid-cols-2">
           {inbox.matched.map((m) => {
             const v = m.vehicle;
-            const title = [v.make, v.version ?? v.model, v.yearModel]
-              .filter(Boolean)
-              .join(" ");
             return (
               <li key={m.alertId} data-testid="alert-matched" className={card}>
                 <p className="text-sm text-text-2">
@@ -47,7 +44,7 @@ export function AlertInbox({ inbox }: { inbox: Inbox }) {
                   href={v.path}
                   className="flex min-h-11 items-center text-sm font-semibold text-caju-deep underline"
                 >
-                  {title}
+                  {m.vehicleTitle}
                   {v.priceCents !== null && ` · ${brl(v.priceCents)}`}
                 </Link>
                 <a

@@ -673,3 +673,7 @@
 
 # 2026-11-16 · 006d/T014 e2e do Avisar quando chegar
 - `tests/e2e/search-alerts.spec.ts` (390 e 1280 px): pedido na vitrine com fixo e sem consentimento recusados, repetido ("Já estamos de olho") e cancelado pelo link; descoberta com formulário e catálogo sem; link adulterado; admin vê o compatível com WhatsApp e contador, marca como avisado; lojista sem acesso; suporte no desktop. Seed `buyers/testing/e2e-seed.ts` com um alerta compatível ("Argo V0") e um esperando. Build de produção: LCP da busca sem resultado (632 ms, CLS 0).
+
+# 2026-11-16 · 006d/verify ajustes da revisão
+- `auth` deixou de ler o cache de `buyers`: o contador do menu vem do `app/admin/layout.tsx` (`navCounts`) e o item tem `permission`. `buyers/schemas.ts`; cancelar com schema estrito; cancelar e vencer no `activity_log`.
+- Pedido com trava por celular em transação; busca guardada sem maiúscula/acento; avisar e cancelar vencem antes os atrasados; o job invalida o cache do admin; `NoResults` com `alert={{ source }}`; título do veículo e validade num lugar só; termos sem "90 dias" fixo.

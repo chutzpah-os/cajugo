@@ -104,7 +104,7 @@ export async function ShowcaseView({
             <NoResults
               filters={filters}
               basePath={BASE_PATH}
-              alertSource={null}
+              alert={{ source: null }}
             />
           ) : (
             <div className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-5">

@@ -19,17 +19,18 @@ function narrower(f: Filters): Record<string, string> | null {
 }
 
 /**
- * Busca sem resultado [12a] (SHW-FR-012). Com `alertSource` (vitrine ou descoberta),
- * oferece "Avisar quando chegar" (ALR-FR-001); o catálogo da loja não tem alerta.
+ * Busca sem resultado [12a] (SHW-FR-012). Com `alert` (vitrine ou descoberta),
+ * oferece "Avisar quando chegar" (ALR-FR-001); o catálogo da loja não passa `alert`.
  */
 export function NoResults({
   filters,
   basePath,
-  alertSource,
+  alert,
 }: {
   filters: Filters;
   basePath: string;
-  alertSource?: ListSource;
+  /** Lista de onde vem o pedido de alerta: `source: null` é a vitrine. */
+  alert?: { source: ListSource };
 }) {
   const hint = narrower(filters);
   return (
@@ -52,9 +53,9 @@ export function NoResults({
           Buscar só por {hint.marca ?? hint.q}
         </Link>
       )}
-      {alertSource !== undefined && (
+      {alert && (
         <div className="mt-3 w-full border-t border-line pt-4">
-          <AlertForm source={alertSource} query={filtersToQuery(filters)} />
+          <AlertForm source={alert.source} query={filtersToQuery(filters)} />
         </div>
       )}
     </div>
