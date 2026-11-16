@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import { and, asc, eq, gte, inArray, ne, sum } from "drizzle-orm";
+import { and, asc, eq, gte, inArray, ne, sql, sum } from "drizzle-orm";
 import {
   authorizeTo,
   can,
@@ -15,7 +15,12 @@ import {
   PRIVATE_FORMATS,
   privateExtension,
 } from "@/platform/cloudinary/private-files";
-import { searchShowcase, type PublicCard } from "@/domains/showcase/service";
+import {
+  contactTarget,
+  parseRefCode,
+  searchShowcase,
+  type PublicCard,
+} from "@/domains/showcase/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import { brDay } from "@/platform/br/date";
 import { appUrl } from "@/platform/http/urls";
@@ -31,13 +36,19 @@ import {
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
-import { withinPublicFormLimits } from "@/platform/http/rate-limit";
+import { isKnownBot } from "@/platform/http/bots";
+import {
+  consumeRateLimit,
+  RATE_LIMITS,
+  withinPublicFormLimits,
+} from "@/platform/http/rate-limit";
 import type { PrivateFile } from "@/platform/http/private-file";
 import { authorize, type Session } from "@/platform/http/session";
 import {
   addSellerSchema,
   blockSellerSchema,
   partnershipRequestSchema,
+  sellerClickSchema,
   sellerDecisionSchema,
   sellerSignupSchema,
 } from "./schemas";
@@ -717,4 +728,59 @@ export async function requestPartnership(
       ),
     );
   return open?.status === "active" ? "partner" : "pending";
+}
+
+/** Vendedor ativo dono do código; `null` para código fora do formato ou não ativo. */
+async function activeSellerByCode(
+  db: Db,
+  raw: string | null | undefined,
+): Promise<{ sellerId: string; name: string } | null> {
+  const code = parseRefCode(raw);
+  if (!code) return null;
+  const [row] = await db
+    .select({ sellerId: sellers.profileId, name: profiles.name })
+    .from(sellers)
+    .innerJoin(profiles, eq(profiles.id, sellers.profileId))
+    .where(and(eq(sellers.code, code), eq(sellers.status, "active")));
+  return row ?? null;
+}
+
+/**
+ * Abertura do link do vendedor (SEL-FR-010): o aparelho chama uma vez por vendedor e
+ * veículo por dia; aqui, robô, código de vendedor não ativo, veículo fora do ar e mais
+ * de 60 por minuto da rede não contam. Vale com ou sem parceria.
+ */
+export async function recordSellerClick(
+  db: Db,
+  raw: unknown,
+  ctx: { ipHash: string; userAgent: string | null; now?: Date },
+): Promise<void> {
+  const now = ctx.now ?? new Date();
+  const parsed = sellerClickSchema.safeParse(raw);
+  if (!parsed.success || isKnownBot(ctx.userAgent)) return;
+  const { ok } = await consumeRateLimit(
+    db,
+    `seller-click:ip:${ctx.ipHash}`,
+    RATE_LIMITS.liveCheck,
+    now,
+  );
+  if (!ok) return;
+  const seller = await activeSellerByCode(db, parsed.data.code);
+  if (!seller || !(await contactTarget(db, parsed.data.vehicleId))) return;
+  await db
+    .insert(sellerVehicleClicks)
+    .values({
+      sellerId: seller.sellerId,
+      vehicleId: parsed.data.vehicleId,
+      day: brDay(now),
+      clicks: 1,
+    })
+    .onConflictDoUpdate({
+      target: [
+        sellerVehicleClicks.sellerId,
+        sellerVehicleClicks.vehicleId,
+        sellerVehicleClicks.day,
+      ],
+      set: { clicks: sql`${sellerVehicleClicks.clicks} + 1` },
+    });
 }

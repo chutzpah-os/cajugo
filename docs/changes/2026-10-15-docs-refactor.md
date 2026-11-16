@@ -845,3 +845,6 @@
 
 # 2026-11-16 · 008/T010 vitrine do vendedor
 - sellerShowcase: searchShowcase da vitrine + loja de cada veículo, parceria do vendedor da sessão (partner/pending/none), earnCents só em parceira com comissão (commissionFor) e shareUrl com ?ref= em todo veículo. requestPartnership: só vendedor ativo, loja no ar, Pendente sem duplicar, devolve Parceiro se já é.
+
+# 2026-11-16 · 008/T011 cliques do link
+- recordSellerClick + sellerClickAction: soma em seller_vehicle_clicks por vendedor, veículo e dia de São Paulo; robô, código fora do formato ou de vendedor não ativo, veículo fora do ar e mais de 60/min da rede não contam. showcase exporta parseRefCode.

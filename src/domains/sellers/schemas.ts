@@ -83,3 +83,8 @@ export const blockSellerSchema = z
 export const partnershipRequestSchema = z
   .object({ storeId: z.uuid() })
   .strict();
+
+/** Abertura do link do vendedor (SEL-FR-010); o código é conferido no servidor. */
+export const sellerClickSchema = z
+  .object({ vehicleId: z.uuid(), code: z.string().max(40) })
+  .strict();

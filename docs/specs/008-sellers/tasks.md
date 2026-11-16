@@ -78,7 +78,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - o vendedor B não vê a parceria do A.
 
   · _SEL-FR-007, SEL-FR-008, SEL-FR-009, SEL-SEC-004, SEL-SEC-008_
-- [ ] **T011** `recordSellerClick` + `sellerClickAction`:
+- [x] **T011** `recordSellerClick` + `sellerClickAction`:
   - soma por vendedor, veículo e dia;
   - robô, vendedor bloqueado e código falso não contam;
   - limite por rede.
