@@ -6,7 +6,7 @@ status: approved
 # Plano · 006c Ferramentas do comprador: simulador e favoritos
 
 ## Resumo técnico
-Sem banco novo. O **simulador** é um componente de cliente na página do veículo que calcula pela mesma função Price do "a partir de R$ X/mês" (`platform/br/installment.ts`). Os valores das regras [4c] chegam no `vehiclePage`, que já fica em cache com a tag de regras. Os **favoritos** ficam no `localStorage` do aparelho, num domínio novo `favorites`:
+Sem banco novo. O **simulador** é um componente de cliente na página do veículo que calcula pela mesma função Price do "a partir de R$ X/mês" (`platform/br/installment.ts`). Os valores das regras [4c] chegam no `vehiclePage`, que já fica em cache com a tag de regras. Os **favoritos** ficam no `localStorage` do aparelho, no domínio `buyers` (já previsto no ARCHITECTURE §3 para favoritos e alertas):
 - O coração é uma ilha de cliente: o HTML do servidor sai sempre igual, com o coração desmarcado e do mesmo tamanho, então a página continua em cache e sem CLS.
 - [14a] (`/favoritos`) é uma casca estática. A lista vem de uma action pública de leitura, que devolve os cards atuais dos ids guardados e trata como indisponível o que não aparece mais.
 
@@ -17,7 +17,7 @@ Sem banco novo. O **simulador** é um componente de cliente na página do veícu
 | `src/platform/br/installment.ts` | `simulateInstallment` (entrada, financiado, parcela, total); `estimatedInstallment` passa a usá-la |
 | `src/platform/whatsapp/` | sem mudança: `whatsappLink` já é pura e roda no cliente |
 | `src/domains/showcase/` | escopo `{ vehicleIds }` em `publicVisible` (publicado e loja no ar, divulgado ou não: a mesma regra da página do veículo); `favoriteCards(db, ids)`; `vehiclePage` devolve `simulator` (ou `null` sem "Exibir parcela estimada"); `PublicCard` com o coração sobre a foto; página do veículo com "Simular", "Ver parcelas" e coração |
-| `src/domains/favorites/` (novo) | `store.ts` (cliente: ler, gravar, assinar; até 200; chave versionada; JSON validado), `actions.ts` (`favoriteCardsAction`), `components/` (`FavoriteButton`, `FavoritesView`) |
+| `src/domains/buyers/` (previsto no ARCHITECTURE §3) | `favorites.ts` (cliente: ler, gravar, assinar; até 200; chave versionada; JSON validado), `actions.ts` (`favoriteCardsAction`), `components/` (`FavoriteButton`, `FavoritesView`) |
 | `src/domains/auth/components/site-header.tsx` | link ♡ para `/favoritos` (estático, não personaliza o HTML) |
 | `src/app/favoritos/page.tsx` | casca pré-renderizada, `noindex`, fora do sitemap |
 | `src/ui/` | reaproveita `Drawer`, `Chip`, `EmptyState`, `Button`; ícone de coração no próprio botão |
@@ -38,16 +38,16 @@ vehiclePage(...) → { ..., simulator: {
   whatsappNumber; title; url                 // para a mensagem pronta (BUY-FR-003)
 } | null }                                    // null: sem "Exibir parcela estimada" ou sem preço
 
-// domains/favorites/store.ts (cliente; esconde o localStorage)
+// domains/buyers/favorites.ts (cliente; esconde o localStorage)
 useFavorite(id): { saved: boolean; toggle(card: FavoriteSnapshot): "added" | "removed" | "full" }
 useFavorites(): FavoriteEntry[]               // mais recente primeiro
 type FavoriteSnapshot = { id; path; title; priceCents | null }   // o que o aparelho guarda
 type FavoriteEntry = FavoriteSnapshot & { savedAt: string }
 
-// domains/favorites/actions.ts
+// domains/buyers/actions.ts
 favoriteCardsAction({ ids: uuid[] (1..200) }) → { cards: PublicCard[] }   // leitura pública
 ```
-O `localStorage` fica escondido em `store.ts`: chave `cajugo:favorites:v1`; leitura validada por schema (JSON estragado = lista vazia); evento `storage` para outras abas; `useSyncExternalStore` com instantâneo do servidor vazio.
+O `localStorage` fica escondido em `favorites.ts`: chave `cajugo:favorites:v1`; leitura validada por schema (JSON estragado = lista vazia); evento `storage` para outras abas; `useSyncExternalStore` com instantâneo do servidor vazio.
 
 ## Mapa requisito → solução
 | Requisito | Solução |
@@ -80,7 +80,7 @@ Nenhuma mudança no banco. O aparelho guarda:
 | BUY-FR-001 | opções com o valor das regras | `vehiclePage.simulator` nulo sem a opção | abre pelo "Simular" e pelo "Ver parcelas"; sem a opção, não aparece |
 | BUY-FR-002 | `simulateInstallment` (valores conhecidos da Price, taxa 0, entrada 50%) | — | troca para 30%/36x e confere os números |
 | BUY-FR-003 | `simulationMessage` | — | `href` do WhatsApp com o texto |
-| BUY-FR-004 | `store.ts`: adicionar, remover, sem duplicar, JSON estragado | — | coração no card e na página, marcado nas duas; catálogo da loja com veículo não divulgado |
+| BUY-FR-004 | `favorites.ts`: adicionar, remover, sem duplicar, JSON estragado | — | coração no card e na página, marcado nas duas; catálogo da loja com veículo não divulgado |
 | BUY-FR-005 | ordem por `savedAt` | — | ♡ do cabeçalho → 3 favoritos na ordem |
 | BUY-FR-006 | selo "Baixou" | — | favorito com preço guardado maior |
 | BUY-FR-007 | — | `favoriteCards` sem vendido, rascunho e loja suspensa | veículo vendido do seed mostra "Vendido" e leva à página dele |
@@ -107,7 +107,7 @@ Nenhuma mudança no banco. O aparelho guarda:
 ## Ajustes de documento (a fazer na T001, com as decisões)
 - **GLOSSARY:** "Simulador de parcelas" (simulação no aparelho, mesma conta da Parcela estimada); "Favorito" passa a dizer "no aparelho".
 - **API.md §5 (mapa):** `favoriteCardsAction` (A, público, leitura).
-- **ARCHITECTURE §3:** domínio `favorites` (só cliente + leitura via `showcase`).
+- **ARCHITECTURE §3:** `buyers/` com os favoritos no aparelho e a leitura via `showcase`.
 
 ## Conformidade
 - [x] Todo requisito da spec aparece no mapa requisito → solução (8 FR, 4 NFR, 2 SEC)

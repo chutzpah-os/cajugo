@@ -592,3 +592,6 @@
 - Migration `0014`: `make_slug` de Kia e Caoa Chery corrigido; teste compara as correções de `brandName` que mudam o endereço com as migrations.
 - Marca na cidade que nunca existiu junta responde 404; página vazia com descrição "Nenhum … à venda agora" e foto na prévia; `/carros` com foto e fora do sitemap quando vazio; atalhos da vitrine também com filtro sem resultado.
 - Spec 006b `implemented`, PLAN marcado; teste de LCP da descoberta com `DSC-NFR-003`.
+
+# 2026-11-16 · 006c/T001 documentos
+- GLOSSARY com "Simulador de parcelas" e favorito no aparelho; API.md com `/favoritos` e `favoriteCardsAction` (no lugar de `syncFavorites`/`toggleFavorite`, que ficam para a fase 2); ARCHITECTURE `buyers/`; plano e tasks usam `buyers/` em vez do domínio novo `favorites`.

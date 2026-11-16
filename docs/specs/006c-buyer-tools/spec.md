@@ -2,7 +2,7 @@
 id: 006c
 slug: buyer-tools
 title: Ferramentas do comprador (simulador e favoritos)
-status: planned
+status: in-progress
 owner: dono do produto
 created: 2026-11-15
 ---

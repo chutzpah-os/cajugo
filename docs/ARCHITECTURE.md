@@ -72,7 +72,7 @@ src/
 │  │  ├─ schemas.ts        zod: entrada das actions
 │  │  ├─ components/       UI própria do domínio
 │  │  └─ *.test.ts         testes Vitest (IDs de requisito no nome)
-│  └─ auth/ stores/ billing/ (faturas, Pix) leads/ moderation/ sellers/ (Rede Caju) referrals/ (Caju Indica) buyers/ (favoritos, alertas) settings/
+│  └─ auth/ stores/ billing/ (faturas, Pix) leads/ moderation/ sellers/ (Rede Caju) referrals/ (Caju Indica) buyers/ (favoritos no aparelho, alertas) settings/
 ├─ ui/                     componentes base do DESIGN.md (botão, input, chip, selo, toggle, bottom sheet...)
 └─ platform/               infraestrutura comum
    ├─ db/                  cliente e schema do Drizzle

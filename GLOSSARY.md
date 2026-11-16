@@ -137,6 +137,10 @@ Ordem padrão da vitrine: dia da publicação somado a até 7 pontos de anúncio
 Valor mensal calculado com entrada, prazo e taxa configurados pelo Admin; é uma estimativa, não uma simulação de banco.
 _Evite_: financiamento, simulação
 
+**Simulador de parcelas**:
+Tela [14b] em que o comprador troca entrada e prazo e vê parcela, financiado e total, com a mesma conta da Parcela estimada; continua sendo estimativa. Só aparece quando o lojista ativou "Exibir parcela estimada". No código: `simulateInstallment`.
+_Evite_: financiamento
+
 ## Contato e cobrança
 
 **Lead** (`lead`):
@@ -187,7 +191,7 @@ Regras numéricas editáveis pelo admin (chave Pix, prazos, taxas, mínimos). Na
 Período em que um valor de regra (Config) vale: de quando o admin salvou até a próxima alteração. Cálculos (fatura, comissão, recompensa) usam o valor vigente na data do fato. No código: `valid_from`.
 
 **Favorito** e **Alerta de busca**:
-Veículo salvo pelo comprador; pedido "Avisar quando chegar" para uma busca sem resultado.
+Veículo salvo pelo comprador, guardado no aparelho (sem conta no MVP); pedido "Avisar quando chegar" para uma busca sem resultado.
 
 **Senha temporária**:
 Senha gerada pelo Admin para o lojista entrar quando esqueceu a dele; obriga a troca no próximo login.

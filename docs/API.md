@@ -88,7 +88,8 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | página | `/i/{codigo}` — landing do Caju Indica | 8c |
 | A | `createLead(vehicleId, form)` · `trackWhatsappClick(vehicleId)` | 1b |
 | A | `reportVehicle(vehicleId, reason, details)` | 14d |
-| A | `syncFavorites(vehicleIds)` · `toggleFavorite(vehicleId)` (com conta) | 14a |
+| página | `/favoritos` — favoritos guardados no aparelho, `noindex` (006c) | 14a |
+| A | `favoriteCardsAction({ ids })` — leitura pública dos cards atuais dos favoritos (até 200 ids); sincronizar com conta é fase 2 | 14a |
 | A | `createSearchAlert(contact, filters)` | 12a |
 
 ### Auth e cadastros

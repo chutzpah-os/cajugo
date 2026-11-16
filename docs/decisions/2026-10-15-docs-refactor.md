@@ -285,3 +285,6 @@
 
 # 2026-11-15 · 006b/verify
 - A revisão achou correções de marca que mudam o endereço sem migration (Kia, Caoa Chery): o teste-guarda força a próxima correção a vir com o UPDATE, em vez de depender de lembrar. Marca na cidade passa a exigir veículo da marca numa loja da cidade para "já existiu" (D2), para não abrir uma página 200 para cada combinação inventada.
+
+# 2026-11-16 · 006c/T001
+- O ARCHITECTURE já previa `buyers/` para favoritos e alertas; usar ele em vez de criar `favorites` deixa a 006d (alertas) no mesmo domínio.
