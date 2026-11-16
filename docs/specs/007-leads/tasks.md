@@ -35,7 +35,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T005** `showcase.contactTarget(vehicleId)`: devolve loja e divulgação do veículo visível ao público (`publicVisible`), ou `null` fora do ar. Mais `leadFormSchema` (`.strict()`, `z.email`, `brPhoneSchema`, limites).
 
   · _LED-FR-002, LED-SEC-004_
-- [ ] **T006** `contactStore` e `contactLeadAction`:
+- [x] **T006** `contactStore` e `contactLeadAction`:
   - lead `form`/`new` na loja do veículo;
   - origem rebaixada para `store_catalog` quando o veículo não é divulgado;
   - honeypot que finge sucesso;

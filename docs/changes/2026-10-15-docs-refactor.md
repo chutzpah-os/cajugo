@@ -701,3 +701,6 @@
 
 # 2026-11-16 · 007/T005
 - `showcase.contactTarget(vehicleId)`: loja e divulgação de um veículo visível ao público (`publicVisible`), senão `null`. `leads/schemas.ts`: formulário estrito (e-mail, telefone BR fixo ou celular, mensagem ≤ 1.000), clique e visualização.
+
+# 2026-11-16 · 007/T006
+- `leads.contactStore` e `contactLeadAction`: lead `form`/`new` na loja do veículo visível, origem `store_catalog` forçada para não divulgado, honeypot com sucesso falso, limite por IP (5/min, 30/dia), erros por campo.
