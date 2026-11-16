@@ -3,7 +3,8 @@
 import { uuidv7 } from "@/platform/db/uuid";
 import type { ReactNode } from "react";
 import { whatsappClickAction } from "../actions";
-import { browserStorage, claimWhatsappLead, leadOrigin } from "../device";
+import { browserStorage } from "@/platform/browser/marks";
+import { claimWhatsappLead, leadOrigin } from "../device";
 import type { LeadOrigin, LeadVehicle } from "../status";
 
 export type { LeadVehicle } from "../status";

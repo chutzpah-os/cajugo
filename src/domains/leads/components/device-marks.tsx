@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { viewAction } from "../actions";
-import { browserStorage, claimView, markCatalogVisit } from "../device";
+import { browserStorage } from "@/platform/browser/marks";
+import { claimView, markCatalogVisit } from "../device";
 
 /**
  * Conta a visualização da página do veículo (LED-FR-015): depois da hidratação, uma vez

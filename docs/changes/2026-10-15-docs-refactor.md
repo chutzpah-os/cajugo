@@ -752,3 +752,6 @@
 
 # 2026-11-16 · 007b/T002 migration 0017
 - Migration aditiva 0017_reports: enums report_reason e report_status, tabela vehicle_reports (id da tela, FK cascade, índice parcial das abertas, RLS), marca de moderação em vehicles (hidden_reason, hidden_note, hidden_at, hidden_by), notice_kind + vehicle_hidden/vehicle_shown. Aplicada no staging.
+
+# 2026-11-16 · 007b/T003 marcas no aparelho
+- src/platform/browser/marks.ts: claimOncePer, readMark/writeMark, browserStorage. leads/device.ts usa claimOncePer para o WhatsApp; componentes de leads importam browserStorage da plataforma.

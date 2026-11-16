@@ -9,7 +9,8 @@ import { HoneypotField } from "@/ui/honeypot-field";
 import { TextAreaField } from "@/ui/textarea-field";
 import { TextField } from "@/ui/text-field";
 import { contactLeadAction } from "../actions";
-import { browserStorage, leadOrigin } from "../device";
+import { browserStorage } from "@/platform/browser/marks";
+import { leadOrigin } from "../device";
 import type { LeadVehicle } from "../status";
 
 const DEFAULT_MESSAGE =

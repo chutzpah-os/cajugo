@@ -27,7 +27,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   Teste: `vehicle_reports` sem coluna de autor nem de IP.
 
   · _RPT-SEC-006_
-- [ ] **T003** [P] `platform/browser/marks.ts` com `claimOncePer(storage, key, id, now, windowMs)`. `leads/device.ts` passa a usá-lo, e os testes da 007 continuam verdes. Teste de 1 h × 25 h.
+- [x] **T003** [P] `platform/browser/marks.ts` com `claimOncePer(storage, key, id, now, windowMs)`. `leads/device.ts` passa a usá-lo, e os testes da 007 continuam verdes. Teste de 1 h × 25 h.
 
   · _RPT-FR-010_
 - [ ] **T004** [P] `moderation/reasons.ts` e `moderation/schemas.ts`:
