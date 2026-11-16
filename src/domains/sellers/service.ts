@@ -15,7 +15,10 @@ import {
   PRIVATE_FORMATS,
   privateExtension,
 } from "@/platform/cloudinary/private-files";
+import { searchShowcase, type PublicCard } from "@/domains/showcase/service";
+import { LIVE_STATUSES } from "@/domains/stores/service";
 import { brDay } from "@/platform/br/date";
+import { appUrl } from "@/platform/http/urls";
 import {
   partnerships,
   profiles,
@@ -23,6 +26,7 @@ import {
   sellerVehicleClicks,
   stores,
   userRole,
+  vehicles,
 } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
@@ -33,9 +37,11 @@ import { authorize, type Session } from "@/platform/http/session";
 import {
   addSellerSchema,
   blockSellerSchema,
+  partnershipRequestSchema,
   sellerDecisionSchema,
   sellerSignupSchema,
 } from "./schemas";
+import { commissionFor } from "./commission";
 import { codeCandidates, type PartnerState, type SellerStatus } from "./status";
 
 /**
@@ -573,4 +579,142 @@ export async function unblock(
     { status: "active", blockedReason: null },
     "seller.unblocked",
   );
+}
+
+/** O vendedor da sessão, ativo e com código; senão 403 (SEL-FR-002). */
+async function activeSellerOf(db: Db, session: Session | null) {
+  const me = await ownSeller(db, session);
+  if (me.status !== "active" || !me.code) throw AppError.forbidden();
+  return { sellerId: me.profileId, code: me.code };
+}
+
+export type SellerCard = {
+  card: PublicCard;
+  storeId: string;
+  /** Parceria com a loja do veículo: só "partner" ganha comissão (PRD §5.7). */
+  partner: PartnerState | "none";
+  /** "Você ganha R$ X": só em loja parceira com comissão definida (SEL-FR-008). */
+  earnCents: number | null;
+  /** Link do veículo com o código do vendedor (SEL-FR-008). */
+  shareUrl: string;
+};
+
+export type SellerShowcase = {
+  items: SellerCard[];
+  total: number;
+  nextCursor: string | null;
+};
+
+/**
+ * Vitrine do vendedor [7c] (SEL-FR-007, 008, 009, SEL-SEC-004, 008): a mesma busca da
+ * vitrine CajuGo, com a parceria do vendedor da sessão com cada loja, a comissão
+ * calculada aqui e o link de compartilhar em todo veículo.
+ */
+export async function sellerShowcase(
+  db: Db,
+  session: Session | null,
+  input: {
+    filters: Parameters<typeof searchShowcase>[1]["filters"];
+    cursor?: string | null;
+  },
+): Promise<SellerShowcase> {
+  const me = await activeSellerOf(db, session);
+  const page = await searchShowcase(db, {
+    scope: "showcase",
+    filters: input.filters,
+    cursor: input.cursor,
+  });
+  const ids = page.items.map((c) => c.vehicleId);
+  const owners = ids.length
+    ? await db
+        .select({
+          vehicleId: vehicles.id,
+          storeId: vehicles.storeId,
+          commissionType: stores.commissionType,
+          commissionValue: stores.commissionValue,
+        })
+        .from(vehicles)
+        .innerJoin(stores, eq(stores.id, vehicles.storeId))
+        .where(inArray(vehicles.id, ids))
+    : [];
+  const ownerOf = new Map(owners.map((o) => [o.vehicleId, o]));
+  const storeIds = [...new Set(owners.map((o) => o.storeId))];
+  const mine = storeIds.length
+    ? await db
+        .select({ storeId: partnerships.storeId, status: partnerships.status })
+        .from(partnerships)
+        .where(
+          and(
+            eq(partnerships.sellerId, me.sellerId),
+            inArray(partnerships.storeId, storeIds),
+            inArray(partnerships.status, ["active", "pending"]),
+          ),
+        )
+    : [];
+  const partnerOf = new Map(
+    mine.map((p) => [
+      p.storeId,
+      p.status === "active" ? ("partner" as const) : ("pending" as const),
+    ]),
+  );
+  return {
+    total: page.total,
+    nextCursor: page.nextCursor,
+    items: page.items.flatMap((card) => {
+      const owner = ownerOf.get(card.vehicleId);
+      if (!owner) return [];
+      const partner = partnerOf.get(owner.storeId) ?? "none";
+      return [
+        {
+          card,
+          storeId: owner.storeId,
+          partner,
+          earnCents:
+            partner === "partner"
+              ? commissionFor(
+                  { type: owner.commissionType, value: owner.commissionValue },
+                  card.priceCents,
+                )
+              : null,
+          shareUrl: `${appUrl()}${card.path}?ref=${me.code}`,
+        },
+      ];
+    }),
+  };
+}
+
+/**
+ * **Pedir parceria** (SEL-FR-009, SEL-SEC-004): só o vendedor ativo, para uma loja no
+ * ar. Fica Pendente; pedir de novo não duplica (índice único das abertas). Já
+ * parceiro: devolve "partner".
+ */
+export async function requestPartnership(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<PartnerState> {
+  const me = await activeSellerOf(db, session);
+  const { storeId } = parseOrThrow(partnershipRequestSchema, raw);
+  const [store] = await db
+    .select({ id: stores.id })
+    .from(stores)
+    .where(
+      and(eq(stores.id, storeId), inArray(stores.status, [...LIVE_STATUSES])),
+    );
+  if (!store) throw AppError.notFound();
+  await db
+    .insert(partnerships)
+    .values({ sellerId: me.sellerId, storeId, origin: "request" })
+    .onConflictDoNothing();
+  const [open] = await db
+    .select({ status: partnerships.status })
+    .from(partnerships)
+    .where(
+      and(
+        eq(partnerships.sellerId, me.sellerId),
+        eq(partnerships.storeId, storeId),
+        inArray(partnerships.status, ["active", "pending"]),
+      ),
+    );
+  return open?.status === "active" ? "partner" : "pending";
 }

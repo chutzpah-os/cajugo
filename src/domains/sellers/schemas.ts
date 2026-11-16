@@ -78,3 +78,8 @@ export const blockSellerSchema = z
       .max(200, "Use no máximo 200 caracteres."),
   })
   .strict();
+
+/** "Pedir parceria" em [7c] (SEL-FR-009): só a loja; status vem do servidor. */
+export const partnershipRequestSchema = z
+  .object({ storeId: z.uuid() })
+  .strict();

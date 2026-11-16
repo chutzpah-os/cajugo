@@ -842,3 +842,6 @@
 
 # 2026-11-16 · 008/T009 curadoria
 - sellersAdmin (sellers.view: admin e suporte; indicadores, em análise do mais antigo, ativos e bloqueados por nome, CPF completo). approve (sellers.review; exige as duas fotos, gera o código livre), block (motivo 3–200) e unblock, transição só a partir do status esperado, activity_log sem CPF nem Pix.
+
+# 2026-11-16 · 008/T010 vitrine do vendedor
+- sellerShowcase: searchShowcase da vitrine + loja de cada veículo, parceria do vendedor da sessão (partner/pending/none), earnCents só em parceira com comissão (commissionFor) e shareUrl com ?ref= em todo veículo. requestPartnership: só vendedor ativo, loja no ar, Pendente sem duplicar, devolve Parceiro se já é.

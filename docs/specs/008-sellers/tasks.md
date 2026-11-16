@@ -70,7 +70,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - suporte e demais → 403 nas decisões.
 
   · _SEL-FR-003, SEL-FR-004, SEL-FR-005, SEL-SEC-005, SEL-SEC-007_
-- [ ] **T010** `sellerShowcase` e `requestPartnership`:
+- [x] **T010** `sellerShowcase` e `requestPartnership`:
   - cards da vitrine com a parceria e "Você ganha" só em loja parceira com comissão;
   - link de compartilhar;
   - pedido repetido não duplica;
