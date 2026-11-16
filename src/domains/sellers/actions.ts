@@ -20,6 +20,7 @@ import {
   recordSellerClick,
   registerSeller,
   requestPartnership,
+  updatePixKey,
   sellerShowcase,
   type SellerCard,
 } from "./service";
@@ -189,5 +190,20 @@ export async function loadMoreSellerShowcaseAction(input: {
   } catch (error) {
     logger.error("sellers.load_more_failed", { error: errorMessage(error) });
     return null;
+  }
+}
+
+/** Trocar a chave Pix [13c] (SEL-FR-014). */
+export async function updatePixKeyAction(input: {
+  pixType: string;
+  pixKey: string;
+}): Promise<
+  { ok: true } | { ok: false; message?: string; errors: Record<string, string> }
+> {
+  try {
+    await updatePixKey(getDb(), await currentSession(), input);
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, ...stateOf(error, "Não foi possível salvar agora.") };
   }
 }

@@ -32,3 +32,12 @@ export function codeCandidates(name: string, count: number): string[] {
     i === 0 ? base : `${base}${9 + i}`,
   );
 }
+
+/** Tipos de chave Pix na ordem da tela (cadastro [7a] e conta [13c]). */
+export const PIX_TYPE_OPTIONS = [
+  ["cpf", "CPF"],
+  ["email", "E-mail"],
+  ["phone", "Celular"],
+  ["cnpj", "CNPJ"],
+  ["random", "Chave aleatória"],
+] as const;

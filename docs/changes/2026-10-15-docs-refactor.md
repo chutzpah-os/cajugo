@@ -863,3 +863,6 @@
 
 # 2026-11-16 · 008/T016 vitrine do vendedor
 - /rede/vitrine: barra de busca e filtros da vitrine (CatalogToolbar), SellerShowcaseList com 'Você ganha R$ X' na parceira, Copiar link e WhatsApp em todos, Pedir parceria e 'aguardando a loja', Carregar mais. Actions requestPartnershipAction e loadMoreSellerShowcaseAction; whatsappShareLink; showcase exporta filtersFromQuery.
+
+# 2026-11-16 · 008/T017 conta do vendedor
+- /rede/conta [13c]: dados com CPF mascarado e código, chave Pix com Trocar (PixKeyForm + updatePixKeyAction), avisos 'em breve', links (lojas, Caju Indica, termos) e Sair; só vendedor ativo. PIX_TYPE_OPTIONS num lugar só.

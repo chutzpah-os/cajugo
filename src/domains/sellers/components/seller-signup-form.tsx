@@ -7,14 +7,7 @@ import { HoneypotField } from "@/ui/honeypot-field";
 import { SelectField } from "@/ui/select-field";
 import { TextField } from "@/ui/text-field";
 import { registerSellerAction, type SellerSignupState } from "../actions";
-
-const PIX_OPTIONS = [
-  ["cpf", "CPF"],
-  ["email", "E-mail"],
-  ["phone", "Celular"],
-  ["cnpj", "CNPJ"],
-  ["random", "Chave aleatória"],
-] as const;
+import { PIX_TYPE_OPTIONS } from "../status";
 
 const NEXT = encodeURIComponent("/rede/cadastro");
 
@@ -111,7 +104,7 @@ export function SellerSignupForm({ signedIn }: { signedIn: boolean }) {
       <SelectField
         {...field("pixType")}
         label="Tipo da chave Pix"
-        options={PIX_OPTIONS}
+        options={PIX_TYPE_OPTIONS}
       />
       <TextField
         {...field("pixKey")}

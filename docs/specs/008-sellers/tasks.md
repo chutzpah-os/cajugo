@@ -115,7 +115,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   - "Carregar mais".
 
   · _SEL-FR-007, SEL-FR-008, SEL-FR-009, SEL-NFR-003_
-- [ ] **T017** `/rede/conta` [13c]: CPF mascarado, **Trocar** chave Pix, links e os avisos "em breve".
+- [x] **T017** `/rede/conta` [13c]: CPF mascarado, **Trocar** chave Pix, links e os avisos "em breve".
 
   · _SEL-FR-014, SEL-SEC-001_
 - [ ] **T018** `/admin/vendedores` [7h]: indicadores, as três listas, links da frente e do verso, **Aprovar**, **Bloquear** (com motivo, em [6f]) e **Desbloquear**; o suporte vê sem botões.
