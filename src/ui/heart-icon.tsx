@@ -1,6 +1,6 @@
 import { cn } from "./cn";
 
-/** Coração de favoritos (DESIGN.md): contorno; `filled` em caju. */
+/** Coração de favoritos (DESIGN.md §2.4: 22 px, traço 2): contorno; `filled` em caju. */
 export function HeartIcon({
   filled = false,
   className,
@@ -13,7 +13,7 @@ export function HeartIcon({
       aria-hidden
       viewBox="0 0 24 24"
       className={cn(
-        "size-6",
+        "size-[22px]",
         filled ? "fill-caju stroke-caju" : "fill-none stroke-current",
         className,
       )}

@@ -17,7 +17,11 @@ import { FavoriteButton } from "./favorite-button";
 type Load =
   | { state: "loading" }
   | { state: "failed" }
-  | { state: "ready"; cards: Map<string, Card> };
+  | {
+      state: "ready";
+      cards: Map<string, Card>;
+      similar: Record<string, string>;
+    };
 
 const noop = () => () => {};
 /** `false` no servidor e na hidratação: os favoritos só existem no aparelho. */
@@ -29,7 +33,9 @@ const useHydrated = () =>
   );
 
 /** "R$ 4.000" quando não há centavos; senão "R$ 4.000,50". */
-const reais = (cents: number) => brl(cents).replace(/,00$/, "");
+const brlShort = (cents: number) => brl(cents).replace(/,00$/, "");
+
+const loading = <Skeleton className="h-64 w-full rounded-card" />;
 
 /** Baixou desde que favoritou (BUY-FR-006); subiu ou igual, sem selo. */
 export function priceDrop(entry: FavoriteEntry, card: Card): number | null {
@@ -56,6 +62,7 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
           ? {
               state: "ready",
               cards: new Map(r.cards.map((c) => [c.vehicleId, c])),
+              similar: r.similar,
             }
           : { state: "failed" },
       );
@@ -65,7 +72,7 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
     };
   }, [ids, attempt]);
 
-  if (!hydrated) return <Skeleton className="h-64 w-full rounded-card" />;
+  if (!hydrated) return loading;
   if (!entries.length)
     return (
       <EmptyState
@@ -92,8 +99,7 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
         </Button>
       </div>
     );
-  if (load.state === "loading")
-    return <Skeleton className="h-64 w-full rounded-card" />;
+  if (load.state === "loading") return loading;
 
   return (
     <ul
@@ -102,12 +108,19 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
     >
       {entries.map((entry) => {
         const card = load.cards.get(entry.id);
-        if (!card) return <Unavailable key={entry.id} entry={entry} />;
+        if (!card)
+          return (
+            <Unavailable
+              key={entry.id}
+              entry={entry}
+              similarPath={load.similar[entry.id] ?? "/"}
+            />
+          );
         const drop = priceDrop(entry, card);
         return (
           <PublicCard
             key={entry.id}
-            card={drop ? { ...card, badge: `Baixou ${reais(drop)}` } : card}
+            card={drop ? { ...card, badge: `Baixou ${brlShort(drop)}` } : card}
             cloudName={cloudName}
             showStore
           />
@@ -119,9 +132,16 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
 
 /**
  * Saiu da vitrine (vendido, despublicado ou loja fora do ar, BUY-FR-007): só o título
- * que o aparelho guardou e o selo, sem preço nem foto (BUY-SEC-002).
+ * que o aparelho guardou e o selo, sem preço nem foto (BUY-SEC-002); "Ver veículos
+ * parecidos" leva à página de descoberta do modelo.
  */
-function Unavailable({ entry }: { entry: FavoriteEntry }) {
+function Unavailable({
+  entry,
+  similarPath,
+}: {
+  entry: FavoriteEntry;
+  similarPath: string;
+}) {
   return (
     <li
       data-testid="favorite-unavailable"
@@ -134,7 +154,7 @@ function Unavailable({ entry }: { entry: FavoriteEntry }) {
       <Badge tone="neutral">Vendido</Badge>
       <p className="pr-12 font-bold">{entry.title}</p>
       <Link
-        href={entry.path}
+        href={similarPath}
         className="flex min-h-11 items-center text-sm font-semibold text-caju-deep underline"
       >
         Ver veículos parecidos

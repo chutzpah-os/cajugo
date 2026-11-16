@@ -184,10 +184,9 @@ test.describe("ferramentas do comprador (390 px)", () => {
     expect(await page.content()).not.toContain(S.chassis);
     expect(await audit(page), "[14a]").toEqual(CLEAN);
 
+    // Leva à página do modelo (006b), que lista os parecidos (BUY-FR-007)
     await sold.getByRole("link", { name: "Ver veículos parecidos" }).click();
-    await expect(
-      page.getByText("Este veículo já foi vendido").first(),
-    ).toBeVisible();
+    await expect(page).toHaveURL(/\/carros\/bmw\/x1$/);
   });
 
   test("[BUY-FR-008] sem favoritos: estado vazio com convite para a vitrine", async ({

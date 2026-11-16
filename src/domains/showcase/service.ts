@@ -39,7 +39,7 @@ import type { Db } from "@/platform/db/types";
 import type { GateDecision } from "@/platform/http/public-gate";
 import type { Filters, Sort } from "./filters";
 import { discoveryExists, discoverySitemap, knownMakes } from "./discovery";
-import { parseDiscoveryPath } from "./discovery-urls";
+import { discoveryPath, parseDiscoveryPath } from "./discovery-urls";
 import { publicVisible, type Scope } from "./visibility";
 import { idFromVehicleParam, vehiclePath } from "./urls";
 
@@ -339,6 +339,36 @@ export async function favoriteCards(
   if (!ids.length) return [];
   const rows = await baseQuery(db).where(publicVisible({ vehicleIds: ids }));
   return toCards(db, rows);
+}
+
+/**
+ * Para onde leva "Ver veículos parecidos" de um favorito que saiu da vitrine
+ * (BUY-FR-007): a página de descoberta do modelo (ou da marca), que existe enquanto
+ * houver registro dele (D2 da 006b); sem registro, a vitrine. Só endereço, nenhum dado.
+ */
+export async function similarPaths(
+  db: Db,
+  ids: string[],
+): Promise<Record<string, string>> {
+  const out: Record<string, string> = Object.fromEntries(
+    ids.map((id) => [id, "/"]),
+  );
+  if (!ids.length) return out;
+  const rows = await db
+    .select({
+      id: vehicles.id,
+      makeSlug: vehicles.makeSlug,
+      modelSlug: vehicles.modelSlug,
+    })
+    .from(vehicles)
+    .where(inArray(vehicles.id, ids));
+  for (const r of rows)
+    if (r.makeSlug)
+      out[r.id] = discoveryPath({
+        makeSlug: r.makeSlug,
+        modelSlug: r.modelSlug ?? undefined,
+      });
+  return out;
 }
 
 type StoreHours = Extract<StorePage, { kind: "store" }>["hours"];

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { eq } from "drizzle-orm";
 import { stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { favoriteCards } from "./service";
+import { favoriteCards, similarPaths } from "./service";
 import { car, liveStore } from "./testing/fixtures";
 
 describe("cards atuais dos favoritos", () => {
@@ -56,5 +56,47 @@ describe("cards atuais dos favoritos", () => {
 
   it("[BUY-FR-007] lista vazia não consulta nada", async () => {
     expect(await favoriteCards(t.db, [])).toEqual([]);
+  });
+
+  it("[BUY-FR-007] indisponível leva à página do modelo; sem registro, à vitrine", async () => {
+    // Arrange
+    const a = (await liveStore(t.db, "loja-a")).storeId;
+    const b = (await liveStore(t.db, "loja-b")).storeId;
+    const argo = { make: "Fiat", model: "Argo" };
+    const sold = await car(t.db, a, { ...argo, status: "sold" });
+    const draft = await car(t.db, a, { ...argo, status: "draft" });
+    const noModel = await car(t.db, a, {
+      make: "BMW",
+      model: null,
+      modelSlug: null,
+      status: "draft",
+    });
+    const offline = await car(t.db, b, {
+      make: "GM - Chevrolet",
+      model: "ONIX",
+    });
+    await t.db
+      .update(stores)
+      .set({ status: "suspended" })
+      .where(eq(stores.id, b));
+    const gone = "00000000-0000-4000-8000-000000000000";
+
+    // Act
+    const paths = await similarPaths(t.db, [
+      sold.id,
+      draft.id,
+      noModel.id,
+      offline.id,
+      gone,
+    ]);
+
+    // Assert
+    expect(paths).toEqual({
+      [sold.id]: "/carros/fiat/argo",
+      [draft.id]: "/carros/fiat/argo",
+      [noModel.id]: "/carros/bmw",
+      [offline.id]: "/carros/chevrolet/onix",
+      [gone]: "/",
+    });
   });
 });

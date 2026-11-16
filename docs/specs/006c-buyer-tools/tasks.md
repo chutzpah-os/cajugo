@@ -23,4 +23,4 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 
 ## Fase 4 — Fechamento
 - [x] **T010** Playwright (390 e 1280 px, staging): simulador pelos dois botões e sem a opção, números de 30%/36x, link do WhatsApp; coração no card, na página e no catálogo (veículo não divulgado); [14a] com ordem, "Baixou", "Vendido" (veículo vendido do seed) e vazio; painel do lojista sem dado de favorito; HTML sem placa; `audit()`; contra o build de produção: LCP/CLS da vitrine, do veículo e de `/favoritos` · _BUY-FR-001 a BUY-FR-008, BUY-NFR-001 a BUY-NFR-004, BUY-SEC-001, BUY-SEC-002_
-- [ ] **T011** `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_
+- [x] **T011** `/verify`: rastreabilidade verde, spec `implemented`, PLAN, `docs/changes` e `docs/decisions` · _—_

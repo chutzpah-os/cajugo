@@ -88,6 +88,21 @@ describe("favoritos no aparelho", () => {
     }
   });
 
+  it("[BUY-NFR-004] um item estragado sai sozinho, sem apagar os outros", () => {
+    // Arrange
+    const good = { ...car(1), savedAt: "2026-11-16T10:00:00.000Z" };
+    const storage = memoryStorage({
+      [FAVORITES_KEY]: JSON.stringify({ v: 1, items: [good, { id: "x" }] }),
+    });
+    const store = createFavoritesStore(storage);
+
+    // Act
+    store.toggle(car(2));
+
+    // Assert
+    expect(store.list().map((f) => f.id)).toEqual([car(2).id, car(1).id]);
+  });
+
   it("[BUY-NFR-004] até 200 favoritos: o seguinte é recusado", () => {
     // Arrange
     const store = createFavoritesStore(memoryStorage());

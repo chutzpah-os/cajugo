@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const showcase = vi.hoisted(() => ({
   favoriteCards: vi.fn(async (_db: unknown, ids: string[]) =>
-    ids.map((id) => ({ vehicleId: id })),
+    ids.slice(0, 1).map((id) => ({ vehicleId: id })),
+  ),
+  similarPaths: vi.fn(async (_db: unknown, ids: string[]) =>
+    Object.fromEntries(ids.map((id) => [id, "/carros/fiat/argo"])),
   ),
 }));
 vi.mock("@/domains/showcase/service", () => showcase);
@@ -22,8 +25,10 @@ describe("leitura dos favoritos", () => {
 
     // Assert
     expect(result).toEqual({
-      cards: [{ vehicleId: id(1) }, { vehicleId: id(2) }],
+      cards: [{ vehicleId: id(1) }],
+      similar: { [id(2)]: "/carros/fiat/argo" },
     });
+    expect(showcase.similarPaths).toHaveBeenCalledWith({ db: true }, [id(2)]);
     expect(showcase.favoriteCards).toHaveBeenCalledWith({ db: true }, [
       id(1),
       id(2),

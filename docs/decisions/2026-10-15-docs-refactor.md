@@ -297,3 +297,7 @@
 
 # 2026-11-16 · 006c/T010
 - Com a máquina carregada, o toque em "Simular" antes da hidratação se perdia, o que também aconteceria num 4G lento: `commandfor`/`command` abrem o diálogo sem JavaScript, e o `onClick` fica para navegador sem suporte.
+
+# 2026-11-16 · 006c/verify
+- "Ver veículos parecidos" levava à página do veículo, que só mostra parecidos quando ele foi vendido; despublicado ou de loja fora do ar dava 404. Passa a levar à página de descoberta do modelo, que existe enquanto houver registro dele. A leitura devolve só o endereço, nenhum dado do veículo.
+- Um favorito estragado no aparelho apagava a lista inteira no próximo toque; agora só ele sai. `buyers/components/favorites-view` usa o card de `showcase/components`, como o card usa o coração de `buyers`: UI de cliente, sem banco (mesma exceção da T008).

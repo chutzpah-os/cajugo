@@ -624,3 +624,8 @@
 # 2026-11-16 · 006c/T010 e2e das ferramentas do comprador
 - `tests/e2e/buyer-tools.spec.ts` (390 e 1280 px): simulador pelos dois botões, recálculo, mensagem à loja e ausência sem a opção; coração no card, na página e no catálogo, sem POST ao servidor; [14a] com ordem, "Baixou", "Vendido" e vazio; HTML sem placa; `/favoritos` no LCP do build de produção. Seed: veículo completo com a parcela ativada.
 - Botões do simulador abrem e fecham pelo HTML (Invoker Commands), antes do JavaScript; chave das fotos da galeria com a posição (foto repetida gerava aviso de chave duplicada).
+
+# 2026-11-16 · 006c/verify ajustes da revisão
+- `similarPaths`: favorito fora da vitrine leva à página de descoberta do modelo (ou da marca; sem registro, à vitrine); leitura de [14a] devolve `{ cards, similar }`.
+- Favorito estragado no aparelho sai sozinho, sem apagar os outros; aviso de 200 some em 4 s; coração com 22 px (DESIGN §2.4); nomes e esqueleto únicos em [14a].
+- Spec 006c `implemented`, PLAN marcado; plano com D3 revista e o `<dialog>` do simulador no lugar do `Drawer`.

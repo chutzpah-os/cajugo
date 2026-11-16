@@ -53,12 +53,9 @@ function parse(raw: string | null): FavoriteEntry[] {
     const file: unknown = JSON.parse(raw);
     if (typeof file !== "object" || file === null) return EMPTY;
     const { v, items } = file as { v?: unknown; items?: unknown };
-    return v === 1 &&
-      Array.isArray(items) &&
-      items.length <= FAVORITES_LIMIT &&
-      items.every(isEntry)
-      ? items
-      : EMPTY;
+    if (v !== 1 || !Array.isArray(items)) return EMPTY;
+    // Um item estragado sai sozinho: o resto da lista do aparelho continua.
+    return items.filter(isEntry).slice(0, FAVORITES_LIMIT);
   } catch {
     return EMPTY;
   }

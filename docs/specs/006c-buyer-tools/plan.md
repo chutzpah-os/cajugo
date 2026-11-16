@@ -52,13 +52,13 @@ O `localStorage` fica escondido em `favorites.ts`: chave `cajugo:favorites:v1`; 
 ## Mapa requisito → solução
 | Requisito | Solução |
 |---|---|
-| BUY-FR-001 | `vehiclePage.simulator` com as regras [4c]; "Simular" abaixo do preço e "Ver parcelas" na barra fixa abrem o `Drawer`; opções 0/20/30/50% e 24/36/48/60x, mais o valor das regras quando ele não está na lista (D2); sem `simulator`, nenhum dos dois aparece |
+| BUY-FR-001 | `vehiclePage.simulator` com as regras [4c]; "Simular" abaixo do preço e "Ver parcelas" na barra fixa abrem o mesmo `<dialog>` (folha de baixo; no lugar do `Drawer`, que só tem um botão: os dois botões abrem pelo HTML com `commandfor`/`command`, antes do JavaScript, ajuste da T010); opções 0/20/30/50% e 24/36/48/60x, mais o valor das regras quando ele não está na lista (D2); sem `simulator`, nenhum dos dois aparece |
 | BUY-FR-002 | `Simulator` (cliente) recalcula com `simulateInstallment` a cada troca; mostra parcela, entrada, financiado, total e "Estimativa sem análise de crédito" |
 | BUY-FR-003 | `simulationMessage(...)` (puro) + `whatsappLink(whatsappNumber, texto)`: veículo, link, entrada (% e R$), prazo e parcela |
 | BUY-FR-004 | `FavoriteButton` (`aria-pressed`) em `PublicCard` (vitrine, descoberta, catálogo da loja e "Carregar mais") e na página do veículo; `useSyncExternalStore` deixa o estado igual em todas as telas e abas |
 | BUY-FR-005 | ♡ no `SiteHeader` → `/favoritos`; `FavoritesView` ordena por `savedAt` decrescente e chama `favoriteCardsAction` |
 | BUY-FR-006 | `FavoritesView` compara o `priceCents` guardado com o do card atual: menor → "Baixou R$ X" |
-| BUY-FR-007 | id ausente na resposta → card "Vendido" com o título guardado, sem preço nem foto, que leva ao `path` do veículo, onde [12d]/[12g] já mostram veículos parecidos (D3) |
+| BUY-FR-007 | id ausente na resposta → card "Vendido" com o título guardado, sem preço nem foto, que leva à página de descoberta do modelo devolvida por `similarPaths` (D3 revista) |
 | BUY-FR-008 | lista vazia → `EmptyState` com "Ver a vitrine" |
 | BUY-NFR-001 | botão do coração 44×44; `Drawer` já testado em 390/1280; e2e nos dois tamanhos |
 | BUY-NFR-002 | HTML do servidor igual para todos (coração desmarcado, mesmo tamanho); medição LCP/CLS do build de produção da 006/006b continua valendo e ganha `/favoritos` |
@@ -103,6 +103,7 @@ Nenhuma mudança no banco. O aparelho guarda:
 - **D1. Lista de [14a] por action pública de leitura** (`favoriteCardsAction`, até 200 ids validados), como o "Carregar mais", sem cache por pessoa. Recomendo: sem rota nova nem contrato; o custo é uma consulta por visita a [14a].
 - **D2. Opções do simulador:** 0/20/30/50% e 24/36/48/60x, mais o valor das regras quando ele está fora da lista. Recomendo: o simulador começa sempre igual ao "a partir de" do card. Alternativa: só a lista fixa, arredondando as regras para a opção mais perto.
 - **D3. "Vendido" leva à página do próprio veículo**, que já mostra [12d] com parecidos (ou [12g] para loja fora do ar). Recomendo: reaproveita a tela pronta, sem guardar marca e modelo no aparelho. Alternativa: levar à página de descoberta do modelo (006b).
+  - **Revisto no `/verify` (2026-11-16):** só o vendido tinha página com parecidos; despublicado e loja fora do ar davam 404 ou "Catálogo indisponível". Agora a leitura de [14a] devolve, para cada favorito fora da vitrine, a página de descoberta do modelo (ou da marca), que existe enquanto houver registro dele (D2 da 006b); sem registro, a vitrine (`similarPaths`).
 
 ## Ajustes de documento (a fazer na T001, com as decisões)
 - **GLOSSARY:** "Simulador de parcelas" (simulação no aparelho, mesma conta da Parcela estimada); "Favorito" passa a dizer "no aparelho".

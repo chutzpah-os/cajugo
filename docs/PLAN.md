@@ -101,6 +101,7 @@
 - Páginas por marca, modelo e cidade (só com pelo menos 1 veículo) e links internos entre veículo, loja e descoberta (`SEO.md`).
 
 ## 006c · Ferramentas do comprador — telas 14a, 14b
+> ✅ **Implementada** em 2026-11-16 (`docs/specs/006c-buyer-tools/`): simulador [14b] na página do veículo (só com "Exibir parcela estimada"; mesma conta Price do card; mensagem pronta à loja; abre antes do JavaScript); favoritos no aparelho com coração em todo card público e na página do veículo; `/favoritos` [14a] com "Baixou R$ X", "Vendido" levando à página do modelo e estado vazio, `noindex`. Sem migration. LCP 1,3–1,8 s e CLS ≤ 0,003 em 4G no build de produção.
 - Simulador [14b] (Price, valores das regras); favoritos [14a] com selos, no aparelho.
 
 ## 006d · Avisar quando chegar e banner Caju Indica — telas 12a (alerta), 9a
