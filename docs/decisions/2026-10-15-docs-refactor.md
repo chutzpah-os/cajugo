@@ -361,3 +361,6 @@
 
 # 2026-11-16 · 007b/T013 leitura do lojista
 - Os rótulos dos motivos ficam só em moderation/reasons; vehicles devolve a marca crua e a página monta o texto, para vehicles não depender de moderation (que já depende dele).
+
+# 2026-11-16 · 007b/T019 painel do lojista
+- Exceção de tela registrada no ARCHITECTURE §3: o card de vehicles usa os rótulos de moderation/reasons, sem criar dependência de serviço em sentido contrário.

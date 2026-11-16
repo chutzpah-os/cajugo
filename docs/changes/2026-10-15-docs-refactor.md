@@ -800,3 +800,6 @@
 
 # 2026-11-16 · 007b/T018 aba Ocultados
 - /admin/denuncias ganha as abas Denúncias e Ocultados (?aba=ocultados): HiddenList com o motivo, quando foi ocultado e Mostrar de novo (ShowButton).
+
+# 2026-11-16 · 007b/T019 painel do lojista
+- [1c]: selo Oculto e o motivo, sem Divulgar, 'Ver' no lugar de Editar; [6e]: 'Veículo oculto', aviso com o motivo e 'Para revisar, fale com a CajuGo', sem seções nem Divulgar; vender, despublicar e excluir continuam. Legenda 'Oculto da vitrine pela CajuGo'. O aviso no painel vem dos notices.

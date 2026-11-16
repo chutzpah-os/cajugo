@@ -9,6 +9,8 @@ import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { ConfirmSheet } from "@/ui/confirm-sheet";
 import { Toggle } from "@/ui/toggle";
+// Exceção de tela (ARCHITECTURE §3): o motivo do Ocultar com os rótulos da moderação.
+import { hiddenReasonText } from "@/domains/moderation/reasons";
 import { markSoldAction, setShareAction } from "../actions";
 import { STATUS_TONE } from "../captions";
 import type { VehicleCard as Card } from "../service";
@@ -34,6 +36,8 @@ export function VehicleCard({
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
+  // Oculto pela CajuGo (RPT-FR-009): vende e exclui, não edita nem divulga.
+  const hidden = v.status === "hidden";
 
   return (
     <li className="flex flex-col gap-3 rounded-card border border-line bg-surface p-3">
@@ -51,6 +55,11 @@ export function VehicleCard({
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate font-bold">{v.name}</p>
           <Badge tone={STATUS_TONE[v.status]}>{v.statusLabel}</Badge>
+          {hidden && v.moderation && (
+            <p data-testid="hidden-reason" className="text-sm text-caju-deep">
+              Motivo: {hiddenReasonText(v.moderation.reason, v.moderation.note)}
+            </p>
+          )}
           <p className="text-sm text-text-3">
             {[
               v.yearModel,
@@ -64,21 +73,23 @@ export function VehicleCard({
           )}
         </div>
       </div>
-      <Toggle
-        title="Divulgar na CajuGo"
-        caption={v.shareCaption}
-        checked={share}
-        disabled={!v.canShare || busy}
-        onChange={async (e) => {
-          const on = e.target.checked;
-          setShare(on);
-          const r = await setShareAction(v.vehicleId, on);
-          if (!r.ok) {
-            setShare(!on);
-            setError(r.message);
-          } else refresh();
-        }}
-      />
+      {!hidden && (
+        <Toggle
+          title="Divulgar na CajuGo"
+          caption={v.shareCaption}
+          checked={share}
+          disabled={!v.canShare || busy}
+          onChange={async (e) => {
+            const on = e.target.checked;
+            setShare(on);
+            const r = await setShareAction(v.vehicleId, on);
+            if (!r.ok) {
+              setShare(!on);
+              setError(r.message);
+            } else refresh();
+          }}
+        />
+      )}
       <div className="grid grid-cols-2 gap-2">
         {v.canSell ? (
           <Button variant="ghost" onClick={() => setConfirm(true)}>
@@ -90,9 +101,9 @@ export function VehicleCard({
         <Link
           href={`/painel/veiculos/${v.vehicleId}`}
           className="flex min-h-11 items-center justify-center rounded-button border border-field bg-surface text-sm font-bold"
-          aria-label={`Editar ${v.name}`}
+          aria-label={`${hidden ? "Ver" : "Editar"} ${v.name}`}
         >
-          ✎ Editar
+          {hidden ? "Ver" : "✎ Editar"}
         </Link>
       </div>
       {error && (

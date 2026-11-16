@@ -15,6 +15,7 @@ export function shareCaption(v: {
   storeLive: boolean;
 }): string {
   if (v.status === "sold") return "Removido de todos os catálogos";
+  if (v.status === "hidden") return "Oculto da vitrine pela CajuGo";
   if (v.status !== "published") return "Publique para liberar";
   if (!v.storeLive) return "Aparece quando a loja for ativada";
   return v.share ? "Visível na vitrine CajuGo" : "Só no seu catálogo";

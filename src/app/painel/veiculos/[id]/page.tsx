@@ -8,6 +8,7 @@ import { STATUS_TONE } from "@/domains/vehicles/captions";
 import { VehicleActions } from "@/domains/vehicles/components/vehicle-actions";
 import { PerformanceBlock } from "@/domains/leads/components/performance-block";
 import { vehiclePerformance } from "@/domains/leads/service";
+import { hiddenReasonText } from "@/domains/moderation/service";
 import { vehicleSummary } from "@/domains/vehicles/service";
 import { brl } from "@/platform/br/money";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
@@ -60,7 +61,9 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
         >
           ‹
         </Link>
-        <h1 className="text-[22px] font-extrabold">Editar veículo</h1>
+        <h1 className="text-[22px] font-extrabold">
+          {v.status === "hidden" ? "Veículo oculto" : "Editar veículo"}
+        </h1>
       </header>
 
       <div className="flex gap-3 rounded-card border border-line bg-surface p-3">
@@ -99,6 +102,19 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
           </div>
         </div>
       </div>
+
+      {v.status === "hidden" && v.moderation && (
+        <section
+          data-testid="hidden-notice"
+          className="flex flex-col gap-1 rounded-card border border-caju-deep bg-surface p-4"
+        >
+          <p className="font-bold">Oculto da vitrine pela CajuGo</p>
+          <p className="text-sm text-text-2">
+            Motivo: {hiddenReasonText(v.moderation.reason, v.moderation.note)}.
+            Ele continua no seu catálogo. Para revisar, fale com a CajuGo.
+          </p>
+        </section>
+      )}
 
       <PerformanceBlock {...performance} daysOnAir={v.daysOnAir} />
 

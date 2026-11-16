@@ -113,7 +113,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
 - [x] **T018** Aba "Ocultados" (`?aba=ocultados`), com o motivo, quando foi ocultado e **Mostrar de novo**.
 
   · _RPT-FR-008_
-- [ ] **T019** Painel do lojista:
+- [x] **T019** Painel do lojista:
   - selo "Oculto" e o motivo em [1c] e [6e];
   - em [6e], "Para revisar, fale com a CajuGo", sem Editar nem "Divulgar na CajuGo";
   - Vender e Excluir continuam;

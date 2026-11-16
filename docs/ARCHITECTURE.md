@@ -89,7 +89,7 @@ tests/e2e/                 Playwright
 Regras:
 - `app/` não acessa o banco: chama `domains/*`.
 - Um domínio usa outro só pelo `service.ts` dele, nunca pelos arquivos internos.
-  - **Exceção de tela:** a página do veículo (`showcase`) usa componentes de outros domínios que agem sobre ela: o coração dos favoritos (`buyers`, 006c), o formulário de contato e o botão WhatsApp (`leads`, 007) e "Denunciar anúncio" (`moderation`, 007b). Só componente de tela; dado e regra continuam no `service.ts` de cada um.
+  - **Exceção de tela:** a página do veículo (`showcase`) usa componentes de outros domínios que agem sobre ela: o coração dos favoritos (`buyers`, 006c), o formulário de contato e o botão WhatsApp (`leads`, 007) e "Denunciar anúncio" (`moderation`, 007b). O card de Meus veículos (`vehicles`) mostra o motivo do Ocultar com os rótulos de `moderation/reasons.ts` (arquivo sem servidor), porque `moderation` já depende do serviço de `vehicles`. Só componente de tela; dado e regra continuam no `service.ts` de cada um.
 - `ui/` não conhece domínio nem banco.
 - `platform/` não conhece domínio.
 

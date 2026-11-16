@@ -48,6 +48,8 @@ export function VehicleActions({ v }: { v: VehicleSummary }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
   const published = v.status === "published";
+  // Oculto pela CajuGo (RPT-FR-009): vende, despublica e exclui; não divulga.
+  const onAir = published || v.status === "hidden";
 
   const confirm = async () => {
     if (!sheet) return;
@@ -76,25 +78,27 @@ export function VehicleActions({ v }: { v: VehicleSummary }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <section className="rounded-card border border-line bg-surface p-4">
-        <Toggle
-          title="Divulgar na CajuGo"
-          caption={v.shareCaption}
-          checked={share}
-          disabled={!published || busy}
-          onChange={async (e) => {
-            const on = e.target.checked;
-            setShare(on);
-            const r = await setShareAction(v.vehicleId, on);
-            if (!r.ok) {
-              setShare(!on);
-              setError(r.message);
-            } else router.refresh();
-          }}
-        />
-      </section>
+      {v.status !== "hidden" && (
+        <section className="rounded-card border border-line bg-surface p-4">
+          <Toggle
+            title="Divulgar na CajuGo"
+            caption={v.shareCaption}
+            checked={share}
+            disabled={!published || busy}
+            onChange={async (e) => {
+              const on = e.target.checked;
+              setShare(on);
+              const r = await setShareAction(v.vehicleId, on);
+              if (!r.ok) {
+                setShare(!on);
+                setError(r.message);
+              } else router.refresh();
+            }}
+          />
+        </section>
+      )}
       <div className="flex flex-col gap-2">
-        {published && (
+        {onAir && (
           <Button
             variant="dark"
             block
@@ -109,7 +113,7 @@ export function VehicleActions({ v }: { v: VehicleSummary }) {
             Desfazer venda
           </Button>
         )}
-        {published && (
+        {onAir && (
           <Button
             variant="ghost"
             block
