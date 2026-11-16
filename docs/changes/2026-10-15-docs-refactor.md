@@ -791,3 +791,6 @@
 
 # 2026-11-16 · 007b/T015 menu Denúncias
 - Item Denúncias (/admin/denuncias, admin.moderate) no menu do admin, fora da barra do celular (gaveta Mais); contador openReportsCount no navCounts do layout do admin, sem cache.
+
+# 2026-11-16 · 007b/T016 tela Denúncias
+- /admin/denuncias (admin.moderate; Sem permissão para os demais) com ReportQueue: card com foto, nome e link do anúncio, loja, preço, N denúncias, contagem por motivo, descrições e Manter. DecisionButton genérico das decisões; ModeratedVehicle.
