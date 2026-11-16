@@ -2,7 +2,7 @@
 id: 007b
 slug: reports
 title: Denúncias de anúncio
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-16
 ---

@@ -103,7 +103,7 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
         </div>
       </div>
 
-      {v.status === "hidden" && v.moderation && (
+      {v.moderation && (
         <section
           data-testid="hidden-notice"
           className="flex flex-col gap-1 rounded-card border border-caju-deep bg-surface p-4"

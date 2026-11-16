@@ -98,6 +98,20 @@ describe("fila de denúncias [14e]", () => {
     expect(await openReportsCount(t.db, admin)).toBe(2);
   });
 
+  it("[RPT-FR-007] anúncio de loja suspensa entra na fila e no contador do mesmo jeito", async () => {
+    // Arrange
+    const a = await liveStore(t.db, "loja-a", { status: "suspended" });
+    const v = await car(t.db, a.storeId);
+    await report(t.db, v.id);
+    const admin = await personWith(t.db, "admin");
+
+    // Act / Assert
+    expect(await reportQueue(t.db, admin)).toMatchObject([
+      { vehicle: { id: v.id } },
+    ]);
+    expect(await openReportsCount(t.db, admin)).toBe(1);
+  });
+
   it("[RPT-SEC-003] lojista, usuário da loja e vendedor não veem a fila; o contador é 0", async () => {
     // Arrange
     const a = await liveStore(t.db, "loja-a");

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { claimOncePer } from "./marks";
+import { claimOncePer, claimedWithin } from "./marks";
 
 function memory() {
   const data = new Map<string, string>();
@@ -41,6 +41,26 @@ describe("marca uma vez por janela no aparelho", () => {
     expect(
       claimOncePer(store, KEY, A, at("2026-11-17T11:00:00Z"), DAY_MS),
     ).toBe(true);
+  });
+
+  it("[RPT-FR-010] conferir a marca não grava nada: só o envio aceito marca", () => {
+    // Arrange
+    const store = memory();
+
+    // Act / Assert
+    expect(
+      claimedWithin(store, KEY, A, at("2026-11-16T10:00:00Z"), DAY_MS),
+    ).toBe(false);
+    expect(
+      claimedWithin(store, KEY, A, at("2026-11-16T10:00:00Z"), DAY_MS),
+    ).toBe(false);
+    claimOncePer(store, KEY, A, at("2026-11-16T10:00:00Z"), DAY_MS);
+    expect(
+      claimedWithin(store, KEY, A, at("2026-11-16T11:00:00Z"), DAY_MS),
+    ).toBe(true);
+    expect(
+      claimedWithin(store, KEY, A, at("2026-11-17T11:00:00Z"), DAY_MS),
+    ).toBe(false);
   });
 
   it("[RPT-FR-010] chaves diferentes não se misturam", () => {

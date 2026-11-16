@@ -812,3 +812,6 @@
 
 # 2026-11-16 · 007b migration 0017 no prod
 - Migration 0017_reports aplicada no Supabase de produção com autorização do dono; conferido: tabela vehicle_reports, 4 colunas de moderação em vehicles e os avisos vehicle_hidden/vehicle_shown.
+
+# 2026-11-16 · 007b/verify ajustes e fechamento
+- Denúncia marca o aparelho só depois do envio aceito. Cards da equipe lidos direto (loja suspensa na fila, no contador e em Ocultados). Ocultados lista todo veículo com a marca; Mostrar de novo tira a marca e só republica o oculto; [6e] mostra o motivo sempre que há marca. canSell no resumo, shortTitle único, updateTag só quando muda. Spec 007b implemented, PLAN e T022 marcados.

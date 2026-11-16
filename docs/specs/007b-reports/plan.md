@@ -146,6 +146,13 @@ O `ARCHITECTURE.md` §4 previa uma tabela genérica `reports (target_type, targe
 - **Descartado: tabela genérica `reports` com `target_type`.** Sem FK, não há integridade nem limpeza em cascata.
 - **Descartado: contar denúncia repetida pelo IP no servidor.** Várias pessoas atrás do mesmo IP de operadora seriam contadas como uma. Fica a marca no aparelho, como no lead de WhatsApp.
 
+## Ajustes do `/verify` (2026-11-16)
+- **Marca no aparelho só depois do envio aceito:** a denúncia recusada (limite, falha de rede) não marca o aparelho; `claimedWithin` confere sem gravar.
+- **Cards da equipe lidos direto**, sem a regra pública: anúncio de loja suspensa entra na fila e no contador do mesmo jeito, e o oculto de loja suspensa aparece em "Ocultados".
+- **Oculto despublicado:** "Ocultados" lista todo veículo com a marca (oculto, despublicado ou vendido); **Mostrar de novo** tira a marca e só republica o que está oculto. [6e] mostra o motivo sempre que há marca.
+- Filtro e indicador "Publicados" de [1c] contam o oculto (ele continua no ar para a loja). Denúncia de veículo oculto é aceita e entra na fila se ele voltar à vitrine.
+- `canSell` no resumo [6e]; `shortTitle` único (aviso e cards); `updateTag` só quando a decisão muda algo; exceções de tela `showcase` → `moderation` e `vehicles` → `moderation/reasons` no `ARCHITECTURE.md` §3.
+
 ## Decisões (aprovadas em 2026-11-16)
 - **D1. Tabela `vehicle_reports`**, específica, em vez da `reports` genérica do `ARCHITECTURE.md` §4. Ela não tem autor nem IP. **Recomendo:** tem integridade com o veículo e cumpre a RPT-SEC-006. O §4 é atualizado na T001.
 - **D2. Marca de moderação no veículo** (`hidden_reason`, `hidden_note`, `hidden_at`, `hidden_by`). **Recomendo:** é o que faz despublicar e publicar, ou desfazer a venda, voltarem a oculto (RPT-FR-009), e dá o motivo ao lojista.

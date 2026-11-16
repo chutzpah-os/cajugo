@@ -61,7 +61,7 @@ export async function keepReportsAction(raw: unknown): Promise<DecisionResult> {
 export async function hideVehicleAction(raw: unknown): Promise<DecisionResult> {
   try {
     const done = await hide(getDb(), await currentSession(), raw);
-    updateTag(VEHICLES_TAG);
+    if (done) updateTag(VEHICLES_TAG);
     return done
       ? { ok: true }
       : { ok: false, message: "Este anúncio já saiu do ar." };
@@ -74,7 +74,7 @@ export async function hideVehicleAction(raw: unknown): Promise<DecisionResult> {
 export async function showVehicleAction(raw: unknown): Promise<DecisionResult> {
   try {
     const done = await show(getDb(), await currentSession(), raw);
-    updateTag(VEHICLES_TAG);
+    if (done) updateTag(VEHICLES_TAG);
     return done
       ? { ok: true }
       : { ok: false, message: "Este anúncio já não está oculto." };

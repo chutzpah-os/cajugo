@@ -867,6 +867,7 @@ export async function sitemapEntries(
 }
 
 export { publicVisible, type Scope } from "./visibility";
+export { vehiclePath } from "./urls";
 export { savedSearch, searchLabel, type SavedSearch } from "./saved-search";
 export { listSourceSchema, type ListSource } from "./list-source";
 export {

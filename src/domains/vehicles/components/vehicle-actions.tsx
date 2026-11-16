@@ -49,7 +49,7 @@ export function VehicleActions({ v }: { v: VehicleSummary }) {
   const [error, setError] = useState<string>();
   const published = v.status === "published";
   // Oculto pela CajuGo (RPT-FR-009): vende, despublica e exclui; não divulga.
-  const onAir = published || v.status === "hidden";
+  const onAir = v.canSell;
 
   const confirm = async () => {
     if (!sheet) return;

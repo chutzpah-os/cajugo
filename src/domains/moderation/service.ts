@@ -1,10 +1,18 @@
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, ne } from "drizzle-orm";
 import { can, authorizeTo } from "@/domains/auth/service";
-import { brandName } from "@/domains/fipe/service";
 import { notifyStore } from "@/domains/notices/service";
-import { contactTarget, favoriteCards } from "@/domains/showcase/service";
-import { hideVehicle, showVehicle } from "@/domains/vehicles/service";
-import { vehicleReports, vehicles } from "@/platform/db/schema";
+import { contactTarget, vehiclePath } from "@/domains/showcase/service";
+import {
+  hideVehicle,
+  shortTitle,
+  showVehicle,
+} from "@/domains/vehicles/service";
+import {
+  stores,
+  vehiclePhotos,
+  vehicleReports,
+  vehicles,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import {
   AppError,
@@ -15,10 +23,10 @@ import { logActivity } from "@/platform/http/activity-log";
 import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
 import type { Session } from "@/platform/http/session";
-import { hiddenReasonText, REPORT_REASONS, type HideReason } from "./reasons";
+import { hiddenReasonText, REPORT_REASONS, type ReportReason } from "./reasons";
 import { hideSchema, reportSchema, vehicleDecisionSchema } from "./schemas";
 
-export { hiddenReasonText, REASON_LABEL } from "./reasons";
+export { hiddenReasonText } from "./reasons";
 
 export type ReportResult =
   { ok: true } | { ok: false; message: string; errors: FieldError[] };
@@ -74,23 +82,47 @@ export type ModeratedCard = {
   coverPublicId: string | null;
 };
 
-/** Dados de card dos veículos, pela leitura pública (catálogo: publicado ou oculto). */
+/**
+ * Dados de card dos veículos para a equipe: lidos direto, sem a regra pública, para
+ * loja suspensa e veículo despublicado com a marca também aparecerem (RPT-FR-007, 008).
+ */
 async function cardsOf(
   db: Db,
   ids: string[],
 ): Promise<Map<string, ModeratedCard>> {
+  if (!ids.length) return new Map();
+  const rows = await db
+    .select({
+      id: vehicles.id,
+      make: vehicles.make,
+      model: vehicles.model,
+      yearModel: vehicles.yearModel,
+      priceCents: vehicles.priceCents,
+      storeName: stores.name,
+      city: stores.city,
+      state: stores.state,
+      coverPublicId: vehiclePhotos.publicId,
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .leftJoin(
+      vehiclePhotos,
+      and(
+        eq(vehiclePhotos.vehicleId, vehicles.id),
+        eq(vehiclePhotos.position, 0),
+      ),
+    )
+    .where(inArray(vehicles.id, ids));
   return new Map(
-    (await favoriteCards(db, ids)).map((c) => [
-      c.vehicleId,
+    rows.map((r) => [
+      r.id,
       {
-        id: c.vehicleId,
-        title:
-          [c.make && brandName(c.make), c.model].filter(Boolean).join(" ") ||
-          "Veículo",
-        priceCents: c.priceCents,
-        storeName: c.storeName,
-        path: c.path,
-        coverPublicId: c.coverPublicId,
+        id: r.id,
+        title: shortTitle(r),
+        priceCents: r.priceCents,
+        storeName: r.storeName,
+        path: vehiclePath(r),
+        coverPublicId: r.coverPublicId,
       },
     ]),
   );
@@ -100,7 +132,7 @@ export type ReportCard = {
   vehicle: ModeratedCard;
   /** Denúncias abertas do anúncio. */
   open: number;
-  byReason: { reason: HideReason; count: number }[];
+  byReason: { reason: ReportReason; count: number }[];
   /** Descrições escritas, da mais antiga; nunca quem denunciou (RPT-SEC-006). */
   details: string[];
   firstAt: Date;
@@ -299,7 +331,10 @@ export async function hiddenList(
       hiddenAt: vehicles.hiddenAt,
     })
     .from(vehicles)
-    .where(eq(vehicles.status, "hidden"))
+    // Com a marca de moderação: oculto, ou despublicado/vendido pelo lojista (RPT-FR-009).
+    .where(
+      and(isNotNull(vehicles.hiddenReason), ne(vehicles.status, "deleted")),
+    )
     .orderBy(desc(vehicles.hiddenAt), desc(vehicles.id));
   const cards = await cardsOf(
     db,

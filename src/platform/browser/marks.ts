@@ -32,6 +32,31 @@ export function writeMark(
 export const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === "object" && v !== null && !Array.isArray(v);
 
+/** Ids marcados dentro da janela; os vencidos ficam de fora. */
+function recentClaims(
+  storage: KeyValueStorage,
+  key: string,
+  now: Date,
+  windowMs: number,
+): Record<string, number> {
+  const saved = readMark(storage, key);
+  const recent: Record<string, number> = {};
+  if (isRecord(saved))
+    for (const [k, at] of Object.entries(saved))
+      if (typeof at === "number" && now.getTime() - at < windowMs)
+        recent[k] = at;
+  return recent;
+}
+
+/** Este `id` já foi marcado na janela? Só confere, não grava. */
+export const claimedWithin = (
+  storage: KeyValueStorage,
+  key: string,
+  id: string,
+  now: Date,
+  windowMs: number,
+): boolean => id in recentClaims(storage, key, now, windowMs);
+
 /**
  * Pode fazer de novo com este `id`? No máximo uma vez por aparelho a cada `windowMs`
  * (lead de WhatsApp, LED-FR-013; denúncia, RPT-FR-010). Ids vencidos saem da marca.
@@ -43,12 +68,7 @@ export function claimOncePer(
   now: Date,
   windowMs: number,
 ): boolean {
-  const saved = readMark(storage, key);
-  const recent: Record<string, number> = {};
-  if (isRecord(saved))
-    for (const [k, at] of Object.entries(saved))
-      if (typeof at === "number" && now.getTime() - at < windowMs)
-        recent[k] = at;
+  const recent = recentClaims(storage, key, now, windowMs);
   if (id in recent) return false;
   writeMark(storage, key, { ...recent, [id]: now.getTime() });
   return true;

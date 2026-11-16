@@ -4,6 +4,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import { personWith } from "@/domains/billing/testing/fixtures";
 import { noticesFor } from "@/domains/notices/service";
 import { car, liveStore } from "@/domains/showcase/testing/fixtures";
+import { unpublish } from "@/domains/vehicles/service";
 import { vehicleRow } from "@/domains/vehicles/testing/fixtures";
 import { hiddenList, hide, show } from "./service";
 
@@ -71,6 +72,43 @@ describe("Ocultados e Mostrar de novo", () => {
       userId: admin.userId,
       entityId: argo.id,
     });
+  });
+
+  it("[RPT-FR-008] [RPT-FR-009] despublicado com a marca continua em Ocultados; Mostrar de novo tira a marca e ele segue rascunho", async () => {
+    // Arrange
+    const { a, argo, admin } = await hiddenArgo();
+    await unpublish({ db: t.db }, a, argo.id);
+
+    // Act
+    const listed = await hiddenList(t.db, admin);
+    const done = await show(t.db, admin, { vehicleId: argo.id }, NOW);
+
+    // Assert
+    expect(listed.map((c) => c.vehicle.id)).toEqual([argo.id]);
+    expect(done).toBe(true);
+    expect(await vehicleRow(t.db, argo.id)).toMatchObject({
+      status: "draft",
+      hiddenReason: null,
+    });
+  });
+
+  it("[RPT-FR-008] oculto de loja suspensa aparece em Ocultados", async () => {
+    // Arrange
+    const a = await liveStore(t.db, "loja-s");
+    const v = await car(t.db, a.storeId);
+    const admin = await personWith(t.db, "admin");
+    await hide(t.db, admin, { vehicleId: v.id, reason: "scam" }, NOW);
+    const { stores } = await import("@/platform/db/schema");
+    const { eq } = await import("drizzle-orm");
+    await t.db
+      .update(stores)
+      .set({ status: "suspended" })
+      .where(eq(stores.id, a.storeId));
+
+    // Act / Assert
+    expect((await hiddenList(t.db, admin)).map((c) => c.vehicle.id)).toEqual([
+      v.id,
+    ]);
   });
 
   it("[RPT-SEC-003] lojista, usuário da loja e vendedor não veem a aba nem mostram de novo", async () => {

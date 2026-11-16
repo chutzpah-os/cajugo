@@ -115,6 +115,7 @@
 - Dividida no `/clarify` de 2026-11-16: denúncias foram para a 007b.
 
 ## 007b · Denúncias — telas 14d, 14e
+> ✅ **Implementada** em 2026-11-16 (`docs/specs/007b-reports/`): "Denunciar anúncio" [14d] na página do veículo (4 motivos, descrição, honeypot e limite por IP, 1 por aparelho a cada 24 h, sem guardar quem denunciou); fila "Denúncias" [14e] em `/admin/denuncias` com contador no menu, **Manter** e **Ocultar** com motivo, aba "Ocultados" com **Mostrar de novo**; o oculto sai da vitrine, da descoberta e do sitemap (`noindex`) e continua no catálogo; a loja recebe o aviso com o motivo, vende e exclui, não edita nem divulga, e republicar mantém oculto. Migration `0017` no staging e no prod. LCP de [1b] 1,97 s e CLS 0,001 em 4G no build de produção.
 - Denunciar anúncio [14d] (anônimo, rate limit) e fila do admin [14e] (manter / ocultar com motivo).
 
 ## 008 · Rede Caju: vendedor — telas 7a, 7b, 7c, 7d, 13c, 7h

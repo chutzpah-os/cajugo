@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { browserStorage, claimOncePer } from "@/platform/browser/marks";
+import {
+  browserStorage,
+  claimedWithin,
+  claimOncePer,
+} from "@/platform/browser/marks";
 import { uuidv7 } from "@/platform/db/uuid";
 import { HONEYPOT_FIELD } from "@/platform/http/honeypot";
 import { Button } from "@/ui/button";
@@ -60,14 +64,10 @@ export function ReportSheet({ vehicleId }: { vehicleId: string }) {
     const website = String(
       new FormData(e.currentTarget).get(HONEYPOT_FIELD) ?? "",
     );
-    const first = claimOncePer(
-      browserStorage("local"),
-      REPORTED_KEY,
-      vehicleId,
-      new Date(),
-      DAY_MS,
-    );
-    if (!first) return setSent(true);
+    const local = browserStorage("local");
+    // Já denunciado deste aparelho nas últimas 24 h: confirma sem contar de novo.
+    if (claimedWithin(local, REPORTED_KEY, vehicleId, new Date(), DAY_MS))
+      return setSent(true);
     setBusy(true);
     const result = await reportVehicleAction({
       requestId,
@@ -77,7 +77,11 @@ export function ReportSheet({ vehicleId }: { vehicleId: string }) {
       website,
     });
     setBusy(false);
-    if (result.ok) return setSent(true);
+    if (result.ok) {
+      // Só o envio aceito marca o aparelho (RPT-FR-010).
+      claimOncePer(local, REPORTED_KEY, vehicleId, new Date(), DAY_MS);
+      return setSent(true);
+    }
     setNotice(result.message);
     setErrors(
       Object.fromEntries(result.errors.map((x) => [x.field, x.message])),

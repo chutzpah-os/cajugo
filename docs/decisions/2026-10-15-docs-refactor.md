@@ -364,3 +364,6 @@
 
 # 2026-11-16 · 007b/T019 painel do lojista
 - Exceção de tela registrada no ARCHITECTURE §3: o card de vehicles usa os rótulos de moderation/reasons, sem criar dependência de serviço em sentido contrário.
+
+# 2026-11-16 · 007b/verify ajustes e fechamento
+- Revisão em dois eixos: a marca gravada antes da resposta podia engolir uma denúncia recusada, e a leitura pública escondia da equipe anúncios de loja suspensa e o oculto despublicado.

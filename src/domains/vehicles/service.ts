@@ -6,6 +6,7 @@ import {
   eq,
   ilike,
   inArray,
+  isNotNull,
   lt,
   ne,
   or,
@@ -663,6 +664,8 @@ export type VehicleSummary = {
   daysOnAir: number | null;
   /** "Desfazer venda" ainda vale (VEH-FR-013)? */
   canUndoSale: boolean;
+  /** Vender e despublicar: publicado ou oculto pela CajuGo (RPT-FR-009). */
+  canSell: boolean;
   /** Marca do Ocultar da CajuGo (RPT-FR-006); nada das denúncias (RPT-SEC-001). */
   moderation: ModerationMark | null;
 };
@@ -704,6 +707,7 @@ export async function vehicleSummary(
       v.status === "sold" &&
       !!v.soldAt &&
       now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
+    canSell: ON_AIR.includes(v.status),
     moderation: moderationOf(v),
   };
 }
@@ -1103,8 +1107,8 @@ export { BODIES, CONDITIONS, FEATURES, FUELS, TRANSMISSIONS } from "./lists";
 
 export { VEHICLES_TAG } from "./tags";
 
-/** Nome curto no aviso à loja: "Fiat Argo" (marca e modelo, RPT-FR-006). */
-const moderatedTitle = (v: { make: string | null; model: string | null }) =>
+/** Nome curto "Fiat Argo" (marca e modelo): aviso à loja e cards da equipe (007b). */
+export const shortTitle = (v: { make: string | null; model: string | null }) =>
   [v.make && brandName(v.make), v.model].filter(Boolean).join(" ") || "Veículo";
 
 export type ModerationMark = {
@@ -1140,12 +1144,12 @@ export async function hideVehicle(
     })
     .where(and(eq(vehicles.id, vehicleId), eq(vehicles.status, "published")))
     .returning();
-  return v ? { storeId: v.storeId, title: moderatedTitle(v) } : null;
+  return v ? { storeId: v.storeId, title: shortTitle(v) } : null;
 }
 
 /**
- * Mostrar de novo (RPT-FR-008): só admin e suporte; oculto → publicado, sem a marca.
- * `null` quando ele já não estava oculto.
+ * Mostrar de novo (RPT-FR-008): só admin e suporte; tira a marca de moderação. Oculto
+ * volta a publicado; despublicado ou vendido continua como está. `null` sem marca.
  */
 export async function showVehicle(
   db: Db,
@@ -1157,14 +1161,20 @@ export async function showVehicle(
   const [v] = await db
     .update(vehicles)
     .set({
-      status: "published",
+      status: sql`case when ${vehicles.status} = 'hidden' then 'published'::vehicle_status else ${vehicles.status} end`,
       hiddenReason: null,
       hiddenNote: null,
       hiddenAt: null,
       hiddenBy: null,
       updatedAt: now,
     })
-    .where(and(eq(vehicles.id, vehicleId), eq(vehicles.status, "hidden")))
+    .where(
+      and(
+        eq(vehicles.id, vehicleId),
+        isNotNull(vehicles.hiddenReason),
+        ne(vehicles.status, "deleted"),
+      ),
+    )
     .returning();
-  return v ? { storeId: v.storeId, title: moderatedTitle(v) } : null;
+  return v ? { storeId: v.storeId, title: shortTitle(v) } : null;
 }

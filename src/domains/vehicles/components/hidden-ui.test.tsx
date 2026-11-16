@@ -40,6 +40,7 @@ const SUMMARY: VehicleSummary = {
   shareCaption: "Oculto da vitrine pela CajuGo",
   daysOnAir: null,
   canUndoSale: false,
+  canSell: true,
   moderation: MARK,
 };
 
