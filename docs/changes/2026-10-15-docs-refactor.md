@@ -809,3 +809,6 @@
 
 # 2026-11-16 · 007b/T021 LCP/CLS de [1b]
 - e2e de produção: [1b] com Denunciar anúncio no LCP (1,97 s, CLS 0,001) e o diálogo de denúncia no HTML em cache, aberto por Invoker Commands. 15 passaram.
+
+# 2026-11-16 · 007b migration 0017 no prod
+- Migration 0017_reports aplicada no Supabase de produção com autorização do dono; conferido: tabela vehicle_reports, 4 colunas de moderação em vehicles e os avisos vehicle_hidden/vehicle_shown.
