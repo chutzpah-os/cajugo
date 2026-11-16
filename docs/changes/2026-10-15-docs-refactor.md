@@ -806,3 +806,6 @@
 
 # 2026-11-16 · 007b/T020 e2e de denúncias
 - Seed: BMW X1 V1 da vitrine com id fixo (reportedId) e uma denúncia aberta (moderation/testing/e2e-seed.ts). tests/e2e/moderation.spec.ts: denunciar (sem motivo, repetida no mesmo aparelho), fila com contagens e contador no menu (390 e 1280 px), Manter, lojista sem permissão, Ocultar (noindex, fora do sitemap, aviso e [6e] da loja) e Mostrar de novo. Suíte completa: 91 passaram.
+
+# 2026-11-16 · 007b/T021 LCP/CLS de [1b]
+- e2e de produção: [1b] com Denunciar anúncio no LCP (1,97 s, CLS 0,001) e o diálogo de denúncia no HTML em cache, aberto por Invoker Commands. 15 passaram.

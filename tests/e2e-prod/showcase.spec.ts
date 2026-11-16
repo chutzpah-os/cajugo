@@ -75,6 +75,14 @@ test.describe("build de produção · vitrine", () => {
     );
   });
 
+  test("[RPT-NFR-002] Denunciar anúncio já vem no HTML da página do veículo, aberto pelo HTML", async ({
+    request,
+  }) => {
+    const html = await (await request.get(`/v/${S.fullId}`)).text();
+    expect(html).toContain('<dialog id="denunciar"');
+    expect(html).toMatch(/commandfor="denunciar"[^>]*command="show-modal"/);
+  });
+
   for (const [id, name, path] of [
     ["SHW-NFR-003", "vitrine", "/"],
     ["SHW-NFR-003", "catálogo", `/loja/${S.slug}`],
@@ -83,6 +91,7 @@ test.describe("build de produção · vitrine", () => {
     ["BUY-NFR-002", "favoritos", "/favoritos"],
     ["ALR-NFR-002", "busca sem resultado", "/?q=e2e-nada-por-aqui"],
     ["LED-NFR-002", "veículo com formulário e WhatsApp", `/v/${S.fullId}`],
+    ["RPT-NFR-002", "veículo com Denunciar anúncio", `/v/${S.fullId}`],
   ])
     test(`[${id}] ${name}: LCP e CLS em 4G dentro do limite`, async ({
       page,

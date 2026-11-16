@@ -130,7 +130,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - 390 e 1280 px com `audit()`.
 
   · _RPT-FR-001…010, RPT-SEC-001, RPT-SEC-003, RPT-NFR-001, RPT-NFR-003_
-- [ ] **T021** LCP/CLS de [1b] com "Denunciar anúncio" no e2e de produção (`tests/e2e-prod/showcase.spec.ts`).
+- [x] **T021** LCP/CLS de [1b] com "Denunciar anúncio" no e2e de produção (`tests/e2e-prod/showcase.spec.ts`).
 
   · _RPT-NFR-002_
 
