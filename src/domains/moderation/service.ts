@@ -1,9 +1,14 @@
-import { contactTarget } from "@/domains/showcase/service";
-import { vehicleReports } from "@/platform/db/schema";
+import { and, asc, eq } from "drizzle-orm";
+import { can, authorizeTo } from "@/domains/auth/service";
+import { brandName } from "@/domains/fipe/service";
+import { contactTarget, favoriteCards } from "@/domains/showcase/service";
+import { vehicleReports, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { fieldErrorsFromZod, type FieldError } from "@/platform/http/errors";
 import { isHoneypotFilledIn } from "@/platform/http/honeypot";
 import { withinPublicFormLimits } from "@/platform/http/rate-limit";
+import type { Session } from "@/platform/http/session";
+import { REPORT_REASONS, type HideReason } from "./reasons";
 import { reportSchema } from "./schemas";
 
 export type ReportResult =
@@ -48,4 +53,100 @@ export async function reportVehicle(
     })
     .onConflictDoNothing({ target: vehicleReports.id });
   return { ok: true };
+}
+
+export type ReportCard = {
+  vehicle: {
+    id: string;
+    title: string;
+    priceCents: number | null;
+    storeName: string;
+    path: string;
+    coverPublicId: string | null;
+  };
+  /** Denúncias abertas do anúncio. */
+  open: number;
+  byReason: { reason: HideReason; count: number }[];
+  /** Descrições escritas, da mais antiga; nunca quem denunciou (RPT-SEC-006). */
+  details: string[];
+  firstAt: Date;
+  lastAt: Date;
+};
+
+/** Denúncias abertas de anúncios no ar: só elas formam a fila (RPT-FR-002). */
+const openOnAir = and(
+  eq(vehicleReports.status, "open"),
+  eq(vehicles.status, "published"),
+);
+
+/**
+ * Fila "Denúncias" [14e] (RPT-FR-002, RPT-SEC-003): só admin e suporte. Um card por
+ * anúncio publicado com denúncia aberta, da denúncia mais antiga para a mais nova.
+ * Vendido, despublicado ou excluído sai sozinho e volta se for publicado de novo.
+ */
+export async function reportQueue(
+  db: Db,
+  session: Session | null,
+): Promise<ReportCard[]> {
+  authorizeTo(session, "admin.moderate");
+  const rows = await db
+    .select({
+      vehicleId: vehicleReports.vehicleId,
+      reason: vehicleReports.reason,
+      details: vehicleReports.details,
+      createdAt: vehicleReports.createdAt,
+    })
+    .from(vehicleReports)
+    .innerJoin(vehicles, eq(vehicles.id, vehicleReports.vehicleId))
+    .where(openOnAir)
+    .orderBy(asc(vehicleReports.createdAt), asc(vehicleReports.id));
+
+  const grouped = new Map<string, typeof rows>();
+  for (const r of rows)
+    grouped.set(r.vehicleId, [...(grouped.get(r.vehicleId) ?? []), r]);
+  const cards = new Map(
+    (await favoriteCards(db, [...grouped.keys()])).map((c) => [c.vehicleId, c]),
+  );
+
+  return [...grouped].flatMap(([vehicleId, reports]) => {
+    const card = cards.get(vehicleId);
+    if (!card) return [];
+    return [
+      {
+        vehicle: {
+          id: vehicleId,
+          title:
+            [card.make && brandName(card.make), card.model]
+              .filter(Boolean)
+              .join(" ") || "Veículo",
+          priceCents: card.priceCents,
+          storeName: card.storeName,
+          path: card.path,
+          coverPublicId: card.coverPublicId,
+        },
+        open: reports.length,
+        byReason: REPORT_REASONS.flatMap((reason) => {
+          const n = reports.filter((r) => r.reason === reason).length;
+          return n ? [{ reason, count: n }] : [];
+        }),
+        details: reports.flatMap((r) => (r.details ? [r.details] : [])),
+        firstAt: reports[0].createdAt,
+        lastAt: reports[reports.length - 1].createdAt,
+      },
+    ];
+  });
+}
+
+/** Contador de "Denúncias" no menu (RPT-FR-007): anúncios na fila; 0 sem permissão. */
+export async function openReportsCount(
+  db: Db,
+  session: Session | null,
+): Promise<number> {
+  if (!can(session, "admin.moderate")) return 0;
+  const rows = await db
+    .selectDistinct({ id: vehicleReports.vehicleId })
+    .from(vehicleReports)
+    .innerJoin(vehicles, eq(vehicles.id, vehicleReports.vehicleId))
+    .where(openOnAir);
+  return rows.length;
 }

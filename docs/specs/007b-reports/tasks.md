@@ -46,7 +46,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - nada de autor nem IP.
 
   · _RPT-FR-001, RPT-SEC-002, RPT-SEC-006_
-- [ ] **T006** `reportQueue` e `openReportsCount`:
+- [x] **T006** `reportQueue` e `openReportsCount`:
   - agrupa por veículo, com contagem por motivo e descrições, da denúncia mais antiga para a mais nova;
   - só veículos `published`: vendido sai da fila e volta ao desfazer a venda;
   - `admin.moderate` (lojista, usuário da loja e vendedor → 403; contador 0).

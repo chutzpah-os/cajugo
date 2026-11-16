@@ -761,3 +761,6 @@
 
 # 2026-11-16 · 007b/T005 denunciar anúncio
 - moderation/service.ts reportVehicle e actions.ts reportVehicleAction: limite 5/min e 30/dia por hash do IP, honeypot com sucesso falso, requestId como id (on conflict do nothing), veículo visível ao público, sem autor nem IP. withinPublicFormLimits em platform/http/rate-limit (leads, alertas e denúncia).
+
+# 2026-11-16 · 007b/T006 fila de denúncias
+- reportQueue (admin.moderate; um card por anúncio publicado com denúncia aberta, da mais antiga; contagem por motivo, descrições, card público via favoriteCards) e openReportsCount (0 sem permissão). Fixture moderation/testing/fixtures.ts.
