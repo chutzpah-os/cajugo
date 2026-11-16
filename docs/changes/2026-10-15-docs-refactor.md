@@ -595,3 +595,6 @@
 
 # 2026-11-16 · 006c/T001 documentos
 - GLOSSARY com "Simulador de parcelas" e favorito no aparelho; API.md com `/favoritos` e `favoriteCardsAction` (no lugar de `syncFavorites`/`toggleFavorite`, que ficam para a fase 2); ARCHITECTURE `buyers/`; plano e tasks usam `buyers/` em vez do domínio novo `favorites`.
+
+# 2026-11-16 · 006c/T002 simulação Price
+- `simulateInstallment` devolve entrada, financiado, parcela e total; `estimatedInstallment` (card) passa a usá-la, com teste de igualdade para várias entradas e prazos.
