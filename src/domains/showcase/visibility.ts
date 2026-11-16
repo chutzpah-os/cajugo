@@ -16,20 +16,26 @@ export type Scope =
 
 /** O que o público pode ver (SHW-SEC-002, SHW-SEC-003). Regra única de todas as listas. */
 export function publicVisible(scope: Scope): SQL {
-  return and(
-    eq(vehicles.status, "published"),
-    inArray(stores.status, [...LIVE_STATUSES]),
-    scopeWhere(scope),
-  )!;
+  return and(inArray(stores.status, [...LIVE_STATUSES]), scopeWhere(scope))!;
 }
 
-/** Vitrine e descoberta só com divulgados; catálogo e favoritos, divulgados ou não. */
+/**
+ * Vitrine e descoberta: publicados e divulgados. Catálogo e veículos escolhidos
+ * (página, favoritos, contato): publicados, divulgados ou não, e os ocultos pela CajuGo,
+ * que saem só da vitrine (RPT-FR-005).
+ */
 function scopeWhere(scope: Scope): SQL | undefined {
-  const shared = eq(vehicles.shareOnCajugo, true);
-  if (scope === "showcase") return shared;
-  if ("discovery" in scope) return and(shared, discoveryWhere(scope.discovery));
-  if ("storeId" in scope) return eq(vehicles.storeId, scope.storeId);
-  return inArray(vehicles.id, scope.vehicleIds);
+  const onShowcase = and(
+    eq(vehicles.status, "published"),
+    eq(vehicles.shareOnCajugo, true),
+  );
+  const onCatalog = inArray(vehicles.status, ["published", "hidden"]);
+  if (scope === "showcase") return onShowcase;
+  if ("discovery" in scope)
+    return and(onShowcase, discoveryWhere(scope.discovery));
+  if ("storeId" in scope)
+    return and(onCatalog, eq(vehicles.storeId, scope.storeId));
+  return and(onCatalog, inArray(vehicles.id, scope.vehicleIds));
 }
 
 /** Recorte de descoberta: só acrescenta condições à regra da vitrine (DSC-SEC-001). */

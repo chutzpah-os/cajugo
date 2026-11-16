@@ -353,11 +353,18 @@ export async function contactTarget(
   vehicleId: string,
 ): Promise<{ storeId: string; shared: boolean } | null> {
   const [row] = await db
-    .select({ storeId: vehicles.storeId, shared: vehicles.shareOnCajugo })
+    .select({
+      storeId: vehicles.storeId,
+      shared: vehicles.shareOnCajugo,
+      status: vehicles.status,
+    })
     .from(vehicles)
     .innerJoin(stores, eq(stores.id, vehicles.storeId))
     .where(publicVisible({ vehicleIds: [vehicleId] }));
-  return row ?? null;
+  // Oculto pela CajuGo só é visto pelo catálogo: o contato é "Seu catálogo".
+  return row
+    ? { storeId: row.storeId, shared: row.shared && row.status === "published" }
+    : null;
 }
 
 /**
@@ -534,7 +541,10 @@ export type VehiclePage =
       kind: "vehicle";
       vehicleId: string;
       path: string;
+      /** Divulgado na vitrine agora; oculto pela CajuGo abre como do catálogo. */
       shared: boolean;
+      /** `false` no oculto pela CajuGo: fora do Google e do sitemap (007b, D3). */
+      indexable: boolean;
       make: string | null;
       model: string | null;
       version: string | null;
@@ -675,7 +685,8 @@ export async function vehiclePage(
             }
           : null,
     };
-  if (v.status !== "published") return null;
+  if (v.status !== "published" && v.status !== "hidden") return null;
+  const hidden = v.status === "hidden";
 
   const photos = await db
     .select({ publicId: vehiclePhotos.publicId })
@@ -695,7 +706,8 @@ export async function vehiclePage(
     kind: "vehicle",
     vehicleId: v.id,
     path,
-    shared: v.shared,
+    shared: v.shared && !hidden,
+    indexable: !hidden,
     make: v.make,
     model: v.model,
     version: v.version,
@@ -781,7 +793,7 @@ async function vehicleGate(
   if (!v) return "not-found";
   const storeShows =
     v.storeStatus === "suspended" || isStoreLive(v.storeStatus);
-  const hasPage = ["published", "sold", "deleted"].includes(v.status);
+  const hasPage = ["published", "hidden", "sold", "deleted"].includes(v.status);
   if (!storeShows || !hasPage) return "not-found";
   const current = vehiclePath({ ...v, id });
   return requested === current ? "ok" : { redirect: current };

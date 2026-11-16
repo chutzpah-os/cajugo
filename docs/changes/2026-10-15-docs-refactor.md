@@ -770,3 +770,6 @@
 
 # 2026-11-16 · 007b/T008 veículo oculto
 - vehicles: hideVehicle (published → hidden com a marca) e showVehicle (hidden → published, limpa a marca), só admin.moderate. Vender, despublicar e excluir aceitam hidden; publicar e desfazer a venda voltam a hidden enquanto há marca; divulgar e editar o oculto → 409.
+
+# 2026-11-16 · 007b/T009 visibilidade do oculto
+- publicVisible: vitrine e descoberta só publicados e divulgados; catálogo e veículos escolhidos aceitam hidden. vehiclePage abre o oculto como do catálogo (shared false) com indexable false → noindex em /v; gateDecision 200; contactTarget dá shared false ao oculto (lead Seu catálogo). Sitemap segue só published.

@@ -55,7 +55,7 @@ export async function generateMetadata({
       robots: NOT_INDEXED,
     };
   const place = { city: page.store.city, state: page.store.state };
-  return pageMetadata({
+  const meta = pageMetadata({
     title: vehicleTitle({ ...page, ...place }),
     description: vehicleDescription({
       ...page,
@@ -67,6 +67,8 @@ export async function generateMetadata({
       ? imageUrlFor(cloudName(), page.photos[0], IMAGE_WIDTHS.full)
       : undefined,
   });
+  // Oculto pela CajuGo: abre pelo catálogo, mas fora do Google (RPT-FR-005, D3).
+  return page.indexable ? meta : { ...meta, robots: NOT_INDEXED };
 }
 
 /**

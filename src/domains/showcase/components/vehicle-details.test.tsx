@@ -11,6 +11,7 @@ const PAGE: Live = {
   vehicleId: "v1",
   path: "/v/v1-fiat-argo-2022-aracaju-se",
   shared: true,
+  indexable: true,
   make: "Fiat",
   model: "Argo",
   version: "Drive 1.0",

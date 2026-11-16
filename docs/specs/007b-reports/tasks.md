@@ -62,7 +62,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-16.
   - caso loja B.
 
   · _RPT-FR-009_
-- [ ] **T009** Visibilidade:
+- [x] **T009** Visibilidade:
   - `publicVisible`: os escopos da loja e dos veículos escolhidos aceitam `hidden`; vitrine, descoberta, busca e sitemap continuam só `published`;
   - `vehiclePage` trata `hidden` como veículo do catálogo, com `noindex`;
   - `gateDecision` devolve 200.

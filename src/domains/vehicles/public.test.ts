@@ -52,12 +52,13 @@ describe("veículos no catálogo público", () => {
     return a;
   }
 
-  it("[VEH-SEC-004] [VEH-FR-010] só o publicado de loja no ar; loja cadastrada ou suspensa não mostra nada", async () => {
+  it("[VEH-SEC-004] [VEH-FR-010] [RPT-FR-005] só o publicado (e o oculto pela CajuGo) de loja no ar; loja cadastrada ou suspensa não mostra nada", async () => {
     const a = await storeWithEachStatus();
     expect(await catalogOf(a.storeId)).toEqual([]);
 
     await goLive(t.db, a.storeId);
-    expect((await catalogOf(a.storeId)).map((v) => v.version)).toEqual([
+    expect((await catalogOf(a.storeId)).map((v) => v.version).sort()).toEqual([
+      "V hidden",
       "V published",
     ]);
 
