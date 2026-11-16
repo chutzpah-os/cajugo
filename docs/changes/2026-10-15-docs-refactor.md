@@ -773,3 +773,6 @@
 
 # 2026-11-16 · 007b/T009 visibilidade do oculto
 - publicVisible: vitrine e descoberta só publicados e divulgados; catálogo e veículos escolhidos aceitam hidden. vehiclePage abre o oculto como do catálogo (shared false) com indexable false → noindex em /v; gateDecision 200; contactTarget dá shared false ao oculto (lead Seu catálogo). Sitemap segue só published.
+
+# 2026-11-16 · 007b/T010 avisos à loja
+- notices: tipos vehicle_hidden (nome do veículo e motivo em texto, tom de alerta) e vehicle_shown; notifyStore avisa só o dono e os usuários da loja.

@@ -1,8 +1,8 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, arrayOverlaps, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { authorize, type Session } from "@/platform/http/session";
 import { brl } from "@/platform/br/money";
-import { notices, userRole } from "@/platform/db/schema";
+import { notices, profiles, userRole } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { AppError } from "@/platform/http/errors";
 
@@ -13,7 +13,10 @@ import { AppError } from "@/platform/http/errors";
  */
 export type NoticeData =
   | { kind: "payment_confirmed" }
-  | { kind: "payment_rejected"; reason: string; missingCents?: number };
+  | { kind: "payment_rejected"; reason: string; missingCents?: number }
+  /** `vehicle` é o nome do veículo; `reason`, o motivo da CajuGo já em texto (007b). */
+  | { kind: "vehicle_hidden"; vehicle: string; reason: string }
+  | { kind: "vehicle_shown"; vehicle: string };
 
 export type NoticeView = {
   id: string;
@@ -33,6 +36,13 @@ function render(n: NoticeData): Pick<NoticeView, "text" | "tone"> {
         }`,
         tone: "alert",
       };
+    case "vehicle_hidden":
+      return {
+        text: `${n.vehicle} foi ocultado da vitrine: ${n.reason}. Ele continua no seu catálogo. Para revisar, fale com a CajuGo.`,
+        tone: "alert",
+      };
+    case "vehicle_shown":
+      return { text: `${n.vehicle} voltou à vitrine CajuGo.`, tone: "ok" };
   }
 }
 
@@ -45,6 +55,28 @@ export async function notify(
 ): Promise<void> {
   const { kind, ...data } = notice;
   await db.insert(notices).values({ profileId, kind, data, createdAt: at });
+}
+
+/**
+ * Avisa a loja: o dono e os usuários dela, e só eles (RPT-FR-006, RPT-SEC-004). Dentro
+ * da transação de quem gera o evento.
+ */
+export async function notifyStore(
+  db: Db,
+  storeId: string,
+  notice: NoticeData,
+  at: Date = new Date(),
+): Promise<void> {
+  const team = await db
+    .select({ id: profiles.id })
+    .from(profiles)
+    .where(
+      and(
+        eq(profiles.storeId, storeId),
+        arrayOverlaps(profiles.roles, ["store_owner", "store_staff"]),
+      ),
+    );
+  for (const p of team) await notify(db, p.id, notice, at);
 }
 
 /** Avisos não dispensados de quem está conectado, do mais recente ao mais antigo. */

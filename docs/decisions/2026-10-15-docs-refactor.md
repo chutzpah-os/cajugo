@@ -355,3 +355,6 @@
 
 # 2026-11-16 · 007b/T005 denunciar anúncio
 - O mesmo laço de limite por IP estava copiado em leads e buyers e entraria uma terceira vez; foi para a plataforma.
+
+# 2026-11-16 · 007b/T010 avisos à loja
+- O aviso guarda o motivo já em texto, para notices não depender do domínio moderation.
