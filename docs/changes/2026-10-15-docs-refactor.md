@@ -716,3 +716,6 @@
 
 # 2026-11-16 · 007/T010
 - `moveLead` e `moveLeadAction`: próximo status ou Perdido só a partir de status aberto (409 se fechado), troca com `where status = esperado`; lead de outra loja ou id inválido → 404; permissão nova `leads.manage` (dono e usuário da loja).
+
+# 2026-11-16 · 007/T011
+- `vehiclePerformance`: soma de `vehicle_daily_stats.views`, contagem de leads do veículo e dias no ar (publicação até hoje ou até a venda); veículo de outra loja, excluído ou id inválido → 404.

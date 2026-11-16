@@ -73,7 +73,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
   - lead da loja B → not found.
 
   · _LED-FR-008, LED-SEC-001, LED-SEC-005_
-- [ ] **T011** `vehiclePerformance`:
+- [x] **T011** `vehiclePerformance`:
   - soma das visualizações;
   - leads do veículo;
   - dias no ar (até hoje ou até a venda);

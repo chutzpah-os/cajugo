@@ -1,5 +1,6 @@
 import { contactTarget } from "@/domains/showcase/service";
-import { and, count, desc, eq, gt, sql } from "drizzle-orm";
+import { and, count, desc, eq, gt, ne, sql, sum } from "drizzle-orm";
+import { z } from "zod";
 import { authorizeTo, type Permission } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { brDay } from "@/platform/br/date";
@@ -351,4 +352,51 @@ export async function moveLead(
     .returning({ status: leads.status });
   if (!moved) throw AppError.conflict("O lead mudou. Atualize a página.");
   return moved.status;
+}
+
+const DAY_MS = 86_400_000;
+
+/**
+ * "Desempenho do anúncio" em [6e] (LED-FR-012): visualizações somadas, leads do veículo e
+ * dias no ar (da publicação até hoje ou até a venda). Veículo de outra loja, excluído
+ * ou id inválido: 404 (LED-SEC-001).
+ */
+export async function vehiclePerformance(
+  db: Db,
+  session: Session | null,
+  vehicleId: string,
+  now: Date = new Date(),
+): Promise<{ views: number; leads: number; daysLive: number }> {
+  const storeId = storeOf(session, "vehicles.manage");
+  if (!z.uuid().safeParse(vehicleId).success) throw AppError.notFound();
+  const [v] = await db
+    .select({ publishedAt: vehicles.publishedAt, soldAt: vehicles.soldAt })
+    .from(vehicles)
+    .where(
+      and(
+        eq(vehicles.id, vehicleId),
+        eq(vehicles.storeId, storeId),
+        ne(vehicles.status, "deleted"),
+      ),
+    );
+  if (!v) throw AppError.notFound();
+  const [views] = await db
+    .select({ n: sum(vehicleDailyStats.views).mapWith(Number) })
+    .from(vehicleDailyStats)
+    .where(eq(vehicleDailyStats.vehicleId, vehicleId));
+  const [received] = await db
+    .select({ n: count() })
+    .from(leads)
+    .where(and(eq(leads.vehicleId, vehicleId), eq(leads.storeId, storeId)));
+  const end = v.soldAt ?? now;
+  return {
+    views: views?.n ?? 0,
+    leads: received.n,
+    daysLive: v.publishedAt
+      ? Math.max(
+          0,
+          Math.floor((end.getTime() - v.publishedAt.getTime()) / DAY_MS),
+        )
+      : 0,
+  };
 }
