@@ -731,3 +731,6 @@
 
 # 2026-11-16 · 007/T015
 - Menu do painel do lojista (`AREA_NAV.painel`): Veículos · Leads · Minha loja · Conta, cada item com a permissão da tela (usuário da loja vê Veículos e Leads); `app/painel/layout.tsx` passa `navCounts` com os leads novos, sem cache.
+
+# 2026-11-16 · 007/T016
+- `/painel/leads` [3a]: indicadores (Novos, % da vitrine em 30 dias), filtros com contagem (`?status=`), card com sigla, tempo relativo, veículo · preço, selos, mensagem, WhatsApp, Ligar, "→ próximo status" e "Perdido" no menu; card "Contato pelo WhatsApp"; destaque de Novo > 24 h; veículo excluído sem link. `relativeTime` em `platform/br`.
