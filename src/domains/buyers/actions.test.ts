@@ -8,7 +8,10 @@ const showcase = vi.hoisted(() => ({
     Object.fromEntries(ids.map((id) => [id, "/carros/fiat/argo"])),
   ),
 }));
-vi.mock("@/domains/showcase/service", () => showcase);
+vi.mock("@/domains/showcase/service", async (original) => ({
+  ...(await original<object>()),
+  ...showcase,
+}));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({ db: true }) }));
 
 const { favoriteCardsAction } = await import("./actions");

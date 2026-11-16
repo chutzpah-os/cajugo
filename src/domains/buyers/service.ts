@@ -1,6 +1,15 @@
 import { and, count, eq, isNull } from "drizzle-orm";
-import type { SavedSearch } from "@/domains/showcase/service";
+import { z } from "zod";
+import {
+  listSourceSchema,
+  savedSearch,
+  type SavedSearch,
+} from "@/domains/showcase/service";
+import { brMobileSchema } from "@/platform/br/phone";
 import { isUniqueViolation } from "@/platform/db/errors";
+import { fieldErrorsFromZod, type FieldError } from "@/platform/http/errors";
+import { consumeRateLimit, RATE_LIMITS } from "@/platform/http/rate-limit";
+import { cancelToken } from "./alert-token";
 import { searchAlerts } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 
@@ -67,4 +76,85 @@ export async function createAlert(
     if (isUniqueViolation(error)) return { ok: true, status: "duplicate" };
     throw error;
   }
+}
+
+const requestSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(2, "Informe seu nome.")
+      .max(80, "Use até 80 caracteres."),
+    phone: brMobileSchema,
+    consent: z.literal(true, {
+      error: "Aceite para receber o aviso pelo WhatsApp.",
+    }),
+    source: listSourceSchema,
+    query: z.string().max(1000),
+    website: z.string().max(200).optional(),
+  })
+  .strict();
+
+export type AlertRequestResult =
+  | {
+      ok: true;
+      status: "created" | "duplicate";
+      /** Link de cancelar mostrado na confirmação (D3); `null` quando não há o que mostrar. */
+      cancelPath: string | null;
+    }
+  | { ok: false; message: string; errors: FieldError[] };
+
+const fail = (message: string, errors: FieldError[] = []) =>
+  ({ ok: false, message, errors }) as const;
+
+/**
+ * Formulário "Avisar quando chegar" [12a] (ALR-FR-001, ALR-SEC-002): limite por IP
+ * (5/min, 30/dia), honeypot que finge sucesso, schema estrito e só vitrine ou
+ * descoberta. Devolve o link de cancelar para a confirmação.
+ */
+export async function requestAlert(
+  db: Db,
+  raw: unknown,
+  ctx: { ipHash: string; now?: Date },
+): Promise<AlertRequestResult> {
+  const now = ctx.now ?? new Date();
+  for (const rule of [RATE_LIMITS.publicForm, RATE_LIMITS.publicFormDaily]) {
+    const { ok } = await consumeRateLimit(
+      db,
+      `alert:ip:${ctx.ipHash}:${rule.windowSeconds}`,
+      rule,
+      now,
+    );
+    if (!ok)
+      return fail("Muitas tentativas. Aguarde alguns minutos e tente de novo.");
+  }
+  const honeypot = (raw as { website?: unknown } | null)?.website;
+  if (typeof honeypot === "string" && honeypot.trim() !== "")
+    return { ok: true, status: "created", cancelPath: null };
+
+  const parsed = requestSchema.safeParse(raw);
+  if (!parsed.success)
+    return fail(
+      "Confira os campos destacados.",
+      fieldErrorsFromZod(parsed.error),
+    );
+  const search = savedSearch(parsed.data.source, parsed.data.query);
+  if (!search) return fail("Não foi possível guardar o alerta desta página.");
+
+  const r = await createAlert(
+    db,
+    { name: parsed.data.name, phone: parsed.data.phone, search },
+    now,
+  );
+  if (!r.ok)
+    return fail(
+      `Este celular já tem ${PENDING_PER_PHONE} alertas ativos. Cancele um para pedir outro.`,
+    );
+  return r.status === "created"
+    ? {
+        ok: true,
+        status: "created",
+        cancelPath: `/alertas/cancelar/${cancelToken(r.alertId)}`,
+      }
+    : { ok: true, status: "duplicate", cancelPath: null };
 }

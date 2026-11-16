@@ -645,3 +645,6 @@
 # 2026-11-16 · 006d/T005 pedir alerta
 - `showcase.savedSearch(source, query)`: busca normalizada sem a ordenação, com a página de descoberta (marca fixa fora dos filtros); catálogo de loja e página inválida → `null`. `discoveryFilters` saiu do componente para `filters.ts`.
 - `buyers.createAlert`: pendente com nome, celular, busca e hora do consentimento; mesma busca → `duplicate`; 6º pendente do celular → `too-many`. `isUniqueViolation` passou de `billing` para `platform/db/errors.ts`.
+
+# 2026-11-16 · 006d/T006 formulário público do alerta
+- `buyers.requestAlert`: limite por IP (5/min, 30/dia), honeypot que finge sucesso, schema estrito (nome, celular, consentimento, origem, query), só vitrine ou descoberta, mensagens de duplicado e de limite do celular, link de cancelar para a confirmação; `createSearchAlertAction` só lê o IP, chama o serviço e invalida `ALERTS_TAG`.
