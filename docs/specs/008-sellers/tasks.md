@@ -31,7 +31,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   Teste de schema (índices, RLS, CPF único).
 
   · _SEL-SEC-001, SEL-SEC-004_
-- [ ] **T003** [P] `pixKeySchema` em `platform/pix`, tirado de `settings/definitions.ts`; os testes da 002 continuam verdes.
+- [x] **T003** [P] `pixKeySchema` em `platform/pix`, tirado de `settings/definitions.ts`; os testes da 002 continuam verdes.
 
   · _SEL-FR-014_
 - [ ] **T004** [P] `sellers/schemas.ts`, `sellers/status.ts` e `sellers/commission.ts`:

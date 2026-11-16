@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { z } from "zod";
-import { isValidCnpj, isValidCpf } from "@/platform/br/tax-id";
+import { normalizePixKey, pixKeyField, pixTypeField } from "@/platform/pix/key";
 import { settingValues } from "@/platform/db/schema";
 import { bpsToPercent, centsToReais } from "./format";
 
@@ -48,12 +48,12 @@ const money = (minCents: number, maxCents: number) => {
 
 const digits = (s: string) => s.replace(/\D/g, "");
 
-export const PIX_TYPES = ["cpf", "cnpj", "email", "phone", "random"] as const;
+export { PIX_TYPES } from "@/platform/pix/key";
 
 export const pixSchema = z
   .object({
-    type: z.enum(PIX_TYPES, { error: "Escolha o tipo da chave." }),
-    key: z.string().trim().min(1, "Informe a chave Pix.").max(140),
+    type: pixTypeField,
+    key: pixKeyField,
     beneficiary: z
       .string()
       .trim()
@@ -72,40 +72,12 @@ export const pixSchema = z
       .optional(),
   })
   .transform((pix, ctx) => {
-    const fail = (message: string) => {
-      ctx.addIssue({ code: "custom", path: ["key"], message });
+    const r = normalizePixKey(pix.type, pix.key);
+    if ("error" in r) {
+      ctx.addIssue({ code: "custom", path: ["key"], message: r.error });
       return z.NEVER;
-    };
-    switch (pix.type) {
-      case "cpf": {
-        const d = digits(pix.key);
-        if (!isValidCpf(d)) return fail("CPF inválido.");
-        return { ...pix, key: d };
-      }
-      case "cnpj": {
-        const d = digits(pix.key);
-        if (!isValidCnpj(d)) return fail("CNPJ inválido.");
-        return { ...pix, key: d };
-      }
-      case "email": {
-        const email = pix.key.toLowerCase();
-        if (!z.email().safeParse(email).success)
-          return fail("E-mail inválido.");
-        return { ...pix, key: email };
-      }
-      case "phone": {
-        const d = digits(pix.key).replace(/^55(?=\d{10,11}$)/, "");
-        if (!/^\d{10,11}$/.test(d))
-          return fail("Celular inválido: informe DDD e número.");
-        return { ...pix, key: `+55${d}` };
-      }
-      case "random": {
-        const key = pix.key.toLowerCase();
-        if (!z.uuid().safeParse(key).success)
-          return fail("Chave aleatória inválida.");
-        return { ...pix, key };
-      }
     }
+    return { ...pix, key: r.key };
   });
 
 export type Pix = z.output<typeof pixSchema>;

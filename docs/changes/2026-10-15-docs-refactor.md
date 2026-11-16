@@ -821,3 +821,6 @@
 
 # 2026-11-16 · 008/T002 migration 0018
 - Migration aditiva 0018_sellers: enums seller_status, partnership_status, partnership_origin, commission_type; lead_origin + seller; tabelas sellers, partnerships (única aberta por par) e seller_vehicle_clicks (RLS); profiles.cpf (único quando preenchido), pix_key, pix_key_type; stores.commission_*; leads.seller_id. LeadOrigin com seller. Aplicada no staging.
+
+# 2026-11-16 · 008/T003 chave Pix na plataforma
+- src/platform/pix/key.ts: PIX_TYPES, normalizePixKey, pixKeySchema (tipo + chave normalizada). settings/definitions.ts usa a mesma normalização na chave da CajuGo.
