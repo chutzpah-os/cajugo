@@ -651,3 +651,6 @@
 
 # 2026-11-16 · 006d/T007 veículo compatível
 - `showcase.firstMatch(search, after)`: escopo da página de descoberta (ou vitrine) + filtros da busca guardada pela mesma regra da lista, só publicado depois do alerta, o mais antigo primeiro; não divulgado e loja suspensa de fora.
+
+# 2026-11-16 · 006d/T008 alertas do admin
+- `buyers.alertInbox`: pendentes dentro da validade das regras (lida na hora), cada um com o 1º veículo compatível (`firstMatch`) e a mensagem `wa.me` (nome, veículo, link de cancelar); os sem veículo vão para "aguardando", sem nome nem celular. `cachedAlertInbox` em cache de 60 s com as tags de veículos, lojas, regras e alertas. `showcase.searchLabel` dá o rótulo da busca.

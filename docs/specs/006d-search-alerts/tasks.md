@@ -16,7 +16,7 @@ Fatias verticais (`SDD.md` §7, skill `tdd`): cada task de comportamento é um c
 - [x] **T005** `createAlert`: busca normalizada (`filtersToQuery`) e página da descoberta validada; consentimento; `"duplicate"` pelo índice único; até 5 pendentes por celular · _ALR-FR-001, ALR-FR-006, ALR-SEC-002, ALR-SEC-004_
 - [x] **T006** `createSearchAlertAction`: schema `.strict()`, honeypot (finge sucesso), limite por IP (`publicForm`, `publicFormDaily`), mensagens; só vitrine e descoberta (`source` de loja recusado) · _ALR-FR-001, ALR-SEC-002_
 - [x] **T007** `showcase.firstMatch(scope, filters, after)`: mesma regra e filtros da lista, só publicados depois do alerta, mais antigo primeiro; não divulgado e loja suspensa de fora · _ALR-FR-002, ALR-SEC-003_
-- [ ] **T008** `alertInbox` (com veículo / aguardando; vencidos de fora com a validade lida na hora; mensagem `wa.me` com nome, link do veículo e link de cancelar) em cache de 60 s com as tags de veículos, regras e alertas · _ALR-FR-002, ALR-FR-005, ALR-NFR-003_
+- [x] **T008** `alertInbox` (com veículo / aguardando; vencidos de fora com a validade lida na hora; mensagem `wa.me` com nome, link do veículo e link de cancelar) em cache de 60 s com as tags de veículos, regras e alertas · _ALR-FR-002, ALR-FR-005, ALR-NFR-003_
 - [ ] **T009** `markNotified` e `markAlertNotifiedAction` (admin/suporte, `activity_log`, apaga nome e celular); `cancelAlert` e `cancelSearchAlertAction` (`canceled`, `closed`, `invalid`; limite `liveCheck`) · _ALR-FR-003, ALR-FR-004, ALR-SEC-001, ALR-SEC-004, ALR-SEC-005_
 - [ ] **T010** Job diário `/api/v1/cron/daily` conforme `contract.md`: `CRON_SECRET`, `purgeExpired`, `purgeRateLimits`, idempotente; `vercel.json` com `crons`; `.env.example` · _ALR-FR-005, ALR-SEC-004_
 
