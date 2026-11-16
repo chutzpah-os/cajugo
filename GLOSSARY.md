@@ -57,8 +57,11 @@ Escolha do lojista, por veículo, de mostrá-lo também na Vitrine CajuGo.
 _Evite_: impulsionar, destacar, anunciar
 
 **Ocultar** (status `hidden`):
-Ação do Admin (por denúncia ou moderação) que tira o veículo da Vitrine CajuGo e dos links de vendedor, mantendo-o no Catálogo da loja; a loja recebe o motivo.
+Ação do Admin (por denúncia ou moderação) que tira o veículo da Vitrine CajuGo, da descoberta, do sitemap e dos links de vendedor, mantendo-o no Catálogo da loja; a loja recebe o motivo (Já vendido, Preço não real, Fotos de outro carro, Suspeita de golpe ou Outro). O veículo guarda a **marca de moderação**: despublicar e publicar de novo, ou desfazer a venda, o devolvem a oculto. Enquanto oculto, o lojista pode vender e excluir, não editar nem divulgar.
 _Evite_: bloquear, remover, banir
+
+**Mostrar de novo**:
+Ação do Admin, na aba "Ocultados" de [14e], que devolve o veículo oculto à vitrine e limpa a marca de moderação; a loja é avisada.
 
 **Aprovação prévia**:
 Fila em que o admin revisa veículos antes de publicar, quando a regra está ligada. Ações: aprovar ou pedir ajuste.
@@ -160,7 +163,7 @@ Abertura da página do veículo por um aparelho num dia; robôs não contam.
 Bloco da edição do veículo [6e] com Visualizações, Leads e Dias no ar.
 
 **Denúncia** (`report`):
-Aviso sobre um anúncio suspeito (de qualquer pessoa, anônimo para a loja) ou sobre um vendedor (do lojista), revisado pelo admin.
+Aviso sobre um anúncio suspeito (de qualquer pessoa, sem guardar quem denunciou, anônimo para a loja) ou sobre um vendedor (do lojista), revisado pelo admin. Status da denúncia de anúncio (`vehicle_reports`): aberta (`open`), mantida (`kept`, o admin tocou em Manter) ou oculta (`hidden`, o anúncio foi ocultado).
 
 **Plano Catálogo** (`plan`):
 O único plano do MVP: R$ 100/mês, sem fidelidade.

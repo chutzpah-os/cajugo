@@ -87,7 +87,7 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | página | `/v/{id}-{make}-{model}` — detalhe, uma URL só para vitrine e catálogo (a origem do lead vem da marca da aba, 007/D1; guarda `?ref=` do vendedor na 008) | 1b, 12d |
 | página | `/i/{codigo}` — landing do Caju Indica | 8c |
 | A | `contactLeadAction({ requestId, vehicleId, origin, name, email, phone, message })` — honeypot + rate limit · `whatsappClickAction({ requestId, vehicleId, origin })` · `viewAction({ vehicleId })` (007); `requestId` é um uuid v7 gerado na tela e vira o id do lead (idempotência, §2.6) | 1b, 14b |
-| A | `reportVehicle(vehicleId, reason, details)` | 14d |
+| A | `reportVehicleAction({ requestId, vehicleId, reason, details })` — honeypot + rate limit; `requestId` vira o id da denúncia; sem autor nem IP (007b) | 14d |
 | página | `/favoritos` — favoritos guardados no aparelho, `noindex` (006c) | 14a |
 | A | `favoriteCardsAction({ ids })` — leitura pública dos cards atuais dos favoritos (até 200 ids); sincronizar com conta é fase 2 | 14a |
 | A | `createSearchAlertAction({ name, phone, consent, source, query })` — honeypot + rate limit; só vitrine e descoberta (006d) | 12a |
@@ -150,7 +150,8 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | A | `suspendStore` · `reactivateStore` | 4b, 6g |
 | A | `approveVehicle` · `requestVehicleChanges(reason)` | 14c |
 | página | `/admin/alertas` — alertas com veículo compatível e aguardando · A `markAlertNotifiedAction({ alertId })` (006d) | 12a |
-| A | `resolveReport(id, 'keep' \| 'hide' \| 'block', reason)` · `unhideVehicle` | 14e, 7h |
+| página | `/admin/denuncias` — fila de denúncias e aba `?aba=ocultados` (`admin.moderate`, 007b) | 14e |
+| A | `keepReportsAction({ vehicleId })` · `hideVehicleAction({ vehicleId, reason, note })` · `showVehicleAction({ vehicleId })` (007b) · `blockSeller` por denúncia de vendedor (009) | 14e, 6f, 7h |
 | A | `approveSeller` · `blockSeller(reason)` · `unblockSeller` | 7h |
 | A | `markPayoutPaid(payoutId)` · `createCampaignLink(name)` | 8g, 8f |
 | A | `updateSettings(partial)` (todas as regras de `Config`) · `inviteTeamMember` | 4c, 8f |

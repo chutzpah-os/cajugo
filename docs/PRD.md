@@ -154,7 +154,7 @@ Login por **celular com código** (aba "Celular" de [9f], tela [9c]) é **fase 2
 2. Busca, filtra [6d] ou cai em "busca sem resultado" [12a] (sugestões + "Avisar quando chegar").
 3. Abre o veículo [1b]: galeria, preço, ficha, itens, loja; **Simular** [14b]; ♡ favoritar [14a]; **Denunciar** [14d].
 4. Contata a loja por **WhatsApp** ou **formulário** → vira **lead** [3a] com origem "via CajuGo", "Seu catálogo" ou "via vendedor {nome}".
-5. Link antigo de veículo vendido/oculto abre [12d] com parecidos.
+5. Link antigo de veículo vendido abre [12d] com parecidos; o de veículo oculto pela CajuGo abre a página do catálogo, fora do Google.
 
 ### 4.2 Onboarding do lojista
 [5b] Landing → [5c] Cadastro (código Caju Indica opcional, [8d]) → [5d] Pagamento → [6c] chave Pix/QR + **comprovante** → [10a] Em análise (já pode cadastrar rascunhos) → admin confirma em [10b] → [5e] Ativo → [2a] primeiro veículo.
@@ -298,7 +298,9 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - Toggle global "Aprovar veículos antes de publicar" [4c] (padrão: desligado).
 - Fila [14c] com checagens automáticas: nº de fotos (mín. **6**, `Config`), preço vs. FIPE (alerta se > 20% abaixo), placa/chassi informados. Ações: **Aprovar** ou **Pedir ajuste** (loja avisada com o motivo).
 - Qualquer pessoa denuncia anúncio [14d]: já vendido, preço não real, fotos de outro carro, suspeita de golpe. Anônima para a loja.
-- Fila [14e] agrupa denúncias por anúncio: **Manter** (arquiva) ou **Ocultar** (sai da vitrine; loja recebe o motivo).
+- Fila [14e] agrupa denúncias por anúncio: **Manter** (arquiva) ou **Ocultar** (sai da vitrine; loja recebe o motivo). Motivos do Ocultar: os 4 da denúncia ou "Outro" com texto curto.
+- A mesma pessoa (aparelho) conta uma denúncia por anúncio a cada 24 h; a denúncia não guarda quem denunciou. Anúncio que sai do ar sai da fila (volta se for republicado).
+- Veículo oculto: o lojista pode marcar como vendido ou excluir, mas não editar nem divulgar; despublicar e publicar de novo mantém oculto. O admin desfaz com **Mostrar de novo** na aba "Ocultados" de [14e] (loja avisada).
 
 ### 5.13 Outras máquinas de estado
 - **Pagamento:** Aguardando → Comprovante enviado → Confirmado | Recusado → (reenvio) Comprovante enviado.
@@ -434,7 +436,7 @@ Navegação:
 **Regras**
 - Clique em WhatsApp também gera lead (origem + veículo + "via WhatsApp"; sem nome se não informado), no máximo um por aparelho e veículo a cada 24 h, já em "Em contato" (§5.4).
 - Formulário: validação de e-mail e telefone BR; anti-spam (honeypot + rate limit por IP); confirmação "Mensagem enviada. A loja vai responder em breve."
-- Veículo vendido/oculto acessado por link direto: tela [12d] "Este veículo já foi vendido" + parecidos.
+- Veículo vendido acessado por link direto: tela [12d] "Este veículo já foi vendido" + parecidos. Veículo oculto pela CajuGo (§5.12) abre como veículo do catálogo, sem indexação.
 - Final de placa: somente o último dígito; placa completa nunca é exibida.
 
 ### [5a] Menu (substituído por [11a])

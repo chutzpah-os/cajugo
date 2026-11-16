@@ -79,6 +79,7 @@ src/
    ├─ supabase/            cliente de Auth no servidor
    ├─ cloudinary/          assinatura de upload, URLs de variantes
    ├─ seo/                 título, descrição, canônica, JSON-LD, Open Graph, sitemap (docs/SEO.md)
+   ├─ browser/             marcas no aparelho (`claimOncePer`), sem servidor (007b)
    └─ http/                errors (AppError, problem+json, ActionResult), session (authorize), rate-limit,
                            client-ip (hash), honeypot, activity-log, logger
 drizzle/                   migrations SQL geradas pelo Drizzle Kit
@@ -135,7 +136,9 @@ vehicles
   year_manufacture, year_model, mileage_km, transmission, fuel, body, color, doors, engine,
   price_cents, fipe_price_cents, show_installment,
   conditions (jsonb: accepts_trade, single_owner, ipva_paid, licensed, dealer_serviced, factory_warranty, armored),
-  features (text[]), description, contact_whatsapp, share_on_cajugo, share_before_sale, hidden_reason,
+  features (text[]), description, contact_whatsapp, share_on_cajugo, share_before_sale,
+  hidden_reason, hidden_note, hidden_at, hidden_by (marca de moderação do Ocultar, 007b: sobrevive a despublicar,
+  publicar e desfazer a venda; só `Mostrar de novo` limpa),
   commission_override_type, commission_override_value,
   make_slug, model_slug (filtros e descoberta), search_text (marca, modelo e versão, sem acento, feito pela aplicação),
   search (tsvector gerado de search_text, config `simple`; sem a extensão unaccent), rank_score (relevância: dia da publicação + completude),
@@ -158,8 +161,9 @@ leads                    id, store_id, vehicle_id, name, email, phone, message (
                          channel (form|whatsapp), origin (cajugo|store_catalog), status (new|contacting|
                          negotiating|sold|lost; WhatsApp entra em contacting), created_at, updated_at, purged_at
                          (007; seller_id e a origem seller entram na 008/009)
-reports                  id, target_type (vehicle|seller), target_id, reporter_id, reason, details, ip_hash,
-                         status (open|kept|hidden|blocked), decided_by, decided_at, created_at
+vehicle_reports          id (chave do envio, uuid v7 da tela), vehicle_id (cascade), reason (sold|unreal_price|
+                         wrong_photos|scam), details, status (open|kept|hidden), decided_by, decided_at, created_at
+                         (007b; sem autor nem IP; a denúncia de vendedor da 009 terá tabela própria)
 
 # Rede Caju
 sellers                  profile_id (pk), code (unique, usado no ?ref=), city,

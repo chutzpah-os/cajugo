@@ -105,7 +105,8 @@ O navegador não acessa o Supabase, então tudo que ele expõe por padrão é fe
 - Formulário de lead com aviso de privacidade e link para a política.
 - Exclusão de dados a pedido (manual pelo admin no MVP).
 - CPF e chave Pix só quando necessários: vendedor no cadastro; indicador só no primeiro resgate.
-- Denúncia de anúncio é anônima para a loja; o autor (se logado) só é visível ao admin.
+- Denúncia de anúncio não guarda quem denunciou, logado ou não (nem conta, nem contato, nem IP; o hash do IP fica só no rate limit). A loja nunca vê denúncias: só o motivo que a CajuGo escolhe ao ocultar (007b).
+- Marca de denúncia no aparelho (veículo denunciado nas últimas 24 h) fica só no `localStorage`, sem dado pessoal (007b).
 - Retenção: dados da loja 90 dias após cancelamento (PRD §5.1); leads 2 anos.
 - Crie o projeto Supabase na região **São Paulo (`sa-east-1`)** e fixe as functions da Vercel em `gru1` (São Paulo), para ficarem perto do banco. O que rodar fora do Brasil entra na política de privacidade como transferência internacional.
 

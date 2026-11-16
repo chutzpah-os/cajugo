@@ -349,3 +349,6 @@
 
 # 2026-11-16 · 007/verify ajustes da revisão
 - API.md §2.6 pede criação de lead que aguente repetição; a chave no id dispensa coluna e migration nova. A lista de robôs cortava gente real (aparelhos e navegadores dentro de apps), justamente quem abre link compartilhado.
+
+# 2026-11-16 · 007b/T001 documentos
+- D1–D4 aprovadas: tabela própria sem autor nem IP; marca de moderação no veículo para o Ocultar sobreviver a republicar; oculto fora do Google mas vendável pelo catálogo; marca no aparelho compartilhada em platform/browser.

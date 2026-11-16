@@ -746,3 +746,6 @@
 
 # 2026-11-16 · 007/T019 fechamento
 - Spec 007 `implemented`: rastreabilidade verde (24 requisitos com teste), revisão em dois eixos corrigida, migration 0016 no prod. PLAN e T019 marcados.
+
+# 2026-11-16 · 007b/T001 documentos
+- Spec, plano e tasks da 007b; PRD §5.12 e [1b] (oculto abre como veículo do catálogo, noindex). ARCHITECTURE §3 (platform/browser) e §4 (vehicle_reports, marca de moderação em vehicles), API.md §5, SECURITY §8, GLOSSARY (Ocultar, Mostrar de novo, status da denúncia).
