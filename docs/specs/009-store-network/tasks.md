@@ -59,7 +59,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - loja B → 404.
 
   · _RCL-FR-005, RCL-FR-006, RCL-SEC-001, RCL-SEC-005_
-- [ ] **T007** `vehicles.setCommissionOverride`: ajuste no lugar da padrão em "Você ganha"; remover o ajuste; só o lojista; loja B → 404.
+- [x] **T007** `vehicles.setCommissionOverride`: ajuste no lugar da padrão em "Você ganha"; remover o ajuste; só o lojista; loja B → 404.
 
   · _RCL-FR-003, RCL-SEC-001, RCL-SEC-002_
 - [ ] **T008** `saleTerms`:

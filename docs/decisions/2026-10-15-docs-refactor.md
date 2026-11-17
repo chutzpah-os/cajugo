@@ -382,3 +382,6 @@
 
 # 2026-11-16 · 009/T001 documentos
 - D1–D4 aprovadas: Aceitar vendedores começa desligado; slots no VehicleActions; sale_id no veículo; taxa guardada na venda. PRD e PLAN do /clarify ainda aguardam o OK do dono.
+
+# 2026-11-16 · 009/T007 ajuste por veículo
+- Validação e permissão ficam em sellers: se vehicles validasse com os schemas da Rede Caju, importaria sellers, que já depende dele (ciclo).

@@ -34,7 +34,10 @@ import {
   type PublicCard,
 } from "@/domains/showcase/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
-import { shortTitle } from "@/domains/vehicles/service";
+import {
+  shortTitle,
+  writeCommissionOverride,
+} from "@/domains/vehicles/service";
 import { brDay } from "@/platform/br/date";
 import { formatTaxId, maskTaxId } from "@/platform/br/tax-id";
 import { appUrl } from "@/platform/http/urls";
@@ -61,6 +64,7 @@ import type { PrivateFile } from "@/platform/http/private-file";
 import { authorize, type Session } from "@/platform/http/session";
 import {
   addSellerSchema,
+  commissionOverrideSchema,
   attachDocumentSchema,
   documentSideSchema,
   blockSellerSchema,
@@ -693,6 +697,8 @@ export async function sellerShowcase(
           storeId: vehicles.storeId,
           commissionType: stores.commissionType,
           commissionValue: stores.commissionValue,
+          overrideType: vehicles.commissionOverrideType,
+          overrideValue: vehicles.commissionOverrideValue,
           acceptsSellers: stores.acceptsSellers,
         })
         .from(vehicles)
@@ -733,10 +739,7 @@ export async function sellerShowcase(
           partner,
           earnCents:
             partner === "partner"
-              ? commissionFor(
-                  { type: owner.commissionType, value: owner.commissionValue },
-                  card.priceCents,
-                )
+              ? commissionFor(ruleOf(owner), card.priceCents)
               : null,
           shareUrl: `${appUrl()}${card.path}?ref=${me.code}`,
         },
@@ -1181,6 +1184,43 @@ export async function decidePartnership(
       action: rule.action,
       entity: "partnership",
       entityId: partnershipId,
+    });
+  });
+}
+
+/** Regra da comissão do veículo: o ajuste dele, senão a padrão da loja (RCL-FR-003). */
+function ruleOf(v: {
+  overrideType: "pct" | "fixed" | null;
+  overrideValue: number | null;
+  commissionType: "pct" | "fixed" | null;
+  commissionValue: number | null;
+}) {
+  return v.overrideType
+    ? { type: v.overrideType, value: v.overrideValue }
+    : { type: v.commissionType, value: v.commissionValue };
+}
+
+/**
+ * Ajuste da comissão de um veículo [7e] (RCL-FR-003, RCL-SEC-001, 002, 005): só o
+ * lojista, só veículo da própria loja (outra → 404), nos limites da comissão; nulo
+ * remove o ajuste.
+ */
+export async function setVehicleCommission(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<void> {
+  const { userId, storeId } = networkStoreOf(session);
+  const rule = parseOrThrow(commissionOverrideSchema, raw);
+  await db.transaction(async (tx) => {
+    if (!(await writeCommissionOverride(tx, { storeId, ...rule })))
+      throw AppError.notFound();
+    await logActivity(tx, {
+      userId,
+      action: "vehicle.commission_override",
+      entity: "vehicle",
+      entityId: rule.vehicleId,
+      data: { type: rule.type, value: rule.value },
     });
   });
 }

@@ -1178,3 +1178,34 @@ export async function showVehicle(
     .returning();
   return v ? { storeId: v.storeId, title: shortTitle(v) } : null;
 }
+
+/**
+ * Grava o ajuste da comissão do veículo (009, RCL-FR-003): só na loja dada e em veículo
+ * não excluído. Quem chama (Rede Caju) confere a permissão e os limites. `false`
+ * quando o veículo não é da loja.
+ */
+export async function writeCommissionOverride(
+  db: Db,
+  input: {
+    storeId: string;
+    vehicleId: string;
+    type: "pct" | "fixed" | null;
+    value: number | null;
+  },
+): Promise<boolean> {
+  const done = await db
+    .update(vehicles)
+    .set({
+      commissionOverrideType: input.type,
+      commissionOverrideValue: input.value,
+    })
+    .where(
+      and(
+        eq(vehicles.id, input.vehicleId),
+        eq(vehicles.storeId, input.storeId),
+        ne(vehicles.status, "deleted"),
+      ),
+    )
+    .returning({ id: vehicles.id });
+  return done.length > 0;
+}

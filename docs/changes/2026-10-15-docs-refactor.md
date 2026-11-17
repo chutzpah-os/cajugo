@@ -905,3 +905,6 @@
 
 # 2026-11-16 · 009/T006 decisões de parceria
 - decidePartnership (só o lojista): aprovar pending→active, recusar pending→declined (libera pedido novo), encerrar active→ended com ended_at; outra loja → 404, status inesperado → 409; activity_log partnership.approved/declined/ended.
+
+# 2026-11-16 · 009/T007 ajuste por veículo
+- sellers.setVehicleCommission (só o lojista, limites da comissão, activity_log) grava pelo vehicles.writeCommissionOverride (só na loja dada; outra → 404). sellerShowcase usa o ajuste no lugar da padrão (ruleOf); storeNetwork lista os ajustes.
