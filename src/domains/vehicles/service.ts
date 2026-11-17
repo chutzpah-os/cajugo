@@ -1209,3 +1209,42 @@ export async function writeCommissionOverride(
     .returning({ id: vehicles.id });
   return done.length > 0;
 }
+
+/**
+ * Vendido pela Confirmar venda da Rede Caju (009, D3): mesma regra do "Vendido"
+ * (sai de todos os lugares, divulgação guardada), com o id da venda. Dentro da
+ * transação de quem registra a venda. `false` quando o veículo não é da loja ou
+ * não está no ar.
+ */
+export async function sellInTx(
+  tx: Db,
+  input: { storeId: string; vehicleId: string; saleId: string; userId: string },
+  now: Date,
+): Promise<boolean> {
+  const done = await tx
+    .update(vehicles)
+    .set({
+      status: "sold",
+      soldAt: now,
+      shareBeforeSale: sql`${vehicles.shareOnCajugo}`,
+      shareOnCajugo: false,
+      saleId: input.saleId,
+      updatedAt: now,
+    })
+    .where(
+      and(
+        eq(vehicles.id, input.vehicleId),
+        eq(vehicles.storeId, input.storeId),
+        inArray(vehicles.status, ON_AIR),
+      ),
+    )
+    .returning({ id: vehicles.id });
+  if (!done.length) return false;
+  await logActivity(tx, {
+    userId: input.userId,
+    action: "vehicle.sold",
+    entity: "vehicle",
+    entityId: input.vehicleId,
+  });
+  return true;
+}

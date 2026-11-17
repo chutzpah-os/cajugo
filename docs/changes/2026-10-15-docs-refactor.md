@@ -911,3 +911,6 @@
 
 # 2026-11-16 · 009/T008 cálculo da venda
 - saleTerms (sales.confirm: lojista e usuário da loja): comissão (ajuste ou padrão) e taxa CajuGo (cajugo_fee_bps) sobre o valor final, só para parceiro que vale; vendedor sugerido pelo lead mais recente com parceria que vale; lista de parceiros. effectivePartner reaproveita effectivePartners.
+
+# 2026-11-16 · 009/T009 confirmar venda
+- confirmSale (sales.confirm): vendedor do link = sugerido, outro parceiro = parceiro que vale (senão 422 no sellerId), venda da loja sem comissão nem taxa; numa transação grava a venda (comissão A receber ou Paga, fee_bps e fee_cents guardados) e vehicles.sellInTx (sold com sale_id, divulgação guardada); repetir → 409; activity_log sale.confirmed.

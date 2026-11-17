@@ -68,7 +68,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - lista de parceiros que valem.
 
   · _RCL-FR-009, RCL-FR-010, RCL-FR-013_
-- [ ] **T009** `confirmSale` e `vehicles.sellInTx`:
+- [x] **T009** `confirmSale` e `vehicles.sellInTx`:
   - venda com vendedor ("A receber" ou "Paga", taxa guardada);
   - venda da loja sem comissão nem taxa;
   - veículo `sold` com `sale_id`;

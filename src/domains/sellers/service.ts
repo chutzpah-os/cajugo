@@ -37,6 +37,7 @@ import {
 import { getSettings } from "@/domains/settings/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import {
+  sellInTx,
   shortTitle,
   writeCommissionOverride,
 } from "@/domains/vehicles/service";
@@ -67,6 +68,7 @@ import type { PrivateFile } from "@/platform/http/private-file";
 import { authorize, type Session } from "@/platform/http/session";
 import {
   addSellerSchema,
+  confirmSaleSchema,
   commissionOverrideSchema,
   attachDocumentSchema,
   documentSideSchema,
@@ -1309,4 +1311,102 @@ export async function saleTerms(
     feeCents: priced === null ? null : feeFor(priced, feeBps),
     feeBps,
   };
+}
+
+const notPartner = () =>
+  AppError.validation([
+    {
+      field: "sellerId",
+      code: "not_partner",
+      message: "Escolha um parceiro da loja.",
+    },
+  ]);
+
+/**
+ * **Confirmar venda** [7g] (RCL-FR-011, 012, RCL-SEC-001, 002, 003, 005): numa
+ * transação, a venda (comissão e taxa calculadas aqui, taxa guardada, D4) e o veículo
+ * vendido com o id dela. Vendedor do link tem que ser o sugerido; outro parceiro, um
+ * parceiro que vale da loja. Veículo já vendido → 409.
+ */
+export async function confirmSale(
+  deps: { db: Db },
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<{ saleId: string }> {
+  const { userId, storeId } = saleStoreOf(session);
+  const input = parseOrThrow(confirmSaleSchema, raw);
+  const db = deps.db;
+  const v = await saleVehicle(db, storeId, input.vehicleId);
+  if (v.status !== "published" && v.status !== "hidden")
+    throw AppError.conflict("Este veículo já não está à venda.");
+
+  let sellerId: string | null = null;
+  if (input.attribution !== "store") {
+    const terms = await saleTerms(db, session, {
+      vehicleId: v.id,
+      finalPriceCents: input.finalPriceCents,
+      sellerId: input.sellerId ?? null,
+    });
+    const isPartner = terms.partners.some((p) => p.sellerId === input.sellerId);
+    if (!isPartner) throw notPartner();
+    if (
+      input.attribution === "link" &&
+      terms.suggested?.sellerId !== input.sellerId
+    )
+      throw notPartner();
+    sellerId = input.sellerId ?? null;
+  }
+  const { cajugo_fee_bps: feeBps } = await getSettings(db);
+  const commissionCents = sellerId
+    ? (commissionFor(ruleOf(v), input.finalPriceCents) ?? 0)
+    : null;
+  const feeCents = sellerId ? feeFor(input.finalPriceCents, feeBps) : null;
+
+  return db.transaction(async (tx) => {
+    const [sale] = await tx
+      .insert(sales)
+      .values({
+        vehicleId: v.id,
+        storeId,
+        finalPriceCents: input.finalPriceCents,
+        attribution: input.attribution,
+        sellerId,
+        commissionCents,
+        commissionStatus: sellerId
+          ? input.commissionPaid
+            ? "paid"
+            : "to_receive"
+          : null,
+        feeBps: sellerId ? feeBps : null,
+        feeCents,
+        confirmedBy: userId,
+        createdAt: now,
+      })
+      .onConflictDoNothing()
+      .returning({ id: sales.id });
+    if (!sale) throw AppError.conflict("Este veículo já foi vendido.");
+    if (
+      !(await sellInTx(
+        tx,
+        { storeId, vehicleId: v.id, saleId: sale.id, userId },
+        now,
+      ))
+    )
+      throw AppError.conflict("Este veículo já não está à venda.");
+    await logActivity(tx, {
+      userId,
+      action: "sale.confirmed",
+      entity: "sale",
+      entityId: sale.id,
+      data: {
+        vehicleId: v.id,
+        finalPriceCents: input.finalPriceCents,
+        attribution: input.attribution,
+        commissionCents,
+        feeCents,
+      },
+    });
+    return { saleId: sale.id };
+  });
 }
