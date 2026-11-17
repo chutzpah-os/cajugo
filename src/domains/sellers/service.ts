@@ -1476,3 +1476,27 @@ export async function saleOf(
     );
   return sale ? { commissionPaid: sale.status === "paid" } : null;
 }
+
+/** Bloco **Rede Caju** da Conta [3c] (RCL-FR-014): aceita? e pedidos pendentes. */
+export async function networkSummary(
+  db: Db,
+  session: Session | null,
+): Promise<{ acceptsSellers: boolean; pending: number }> {
+  const { storeId } = networkStoreOf(session);
+  const [store] = await db
+    .select({ acceptsSellers: stores.acceptsSellers })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  const [pending] = await db
+    .select({ n: count() })
+    .from(partnerships)
+    .innerJoin(sellers, eq(sellers.profileId, partnerships.sellerId))
+    .where(
+      and(
+        eq(partnerships.storeId, storeId),
+        eq(partnerships.status, "pending"),
+        eq(sellers.status, "active"),
+      ),
+    );
+  return { acceptsSellers: store.acceptsSellers, pending: pending.n };
+}

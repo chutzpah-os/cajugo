@@ -85,7 +85,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - `undoSold` direto com `sale_id` → 409.
 
   · _RCL-FR-015_
-- [ ] **T011** `networkSummary` (aceita? e pedidos pendentes) para o bloco da Conta.
+- [x] **T011** `networkSummary` (aceita? e pedidos pendentes) para o bloco da Conta.
 
   · _RCL-FR-014_
 

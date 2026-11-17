@@ -917,3 +917,6 @@
 
 # 2026-11-16 · 009/T010 desfazer venda
 - undoSale (sales.confirm): comissão paga → 409 com a mensagem do PRD; senão cancela a venda (canceled_at) e vehicles.reopenInTx reabre como estava (7 dias, tira o sale_id); activity_log sale.canceled. vehicles.undoSold recusa com sale_id (blocked na transição). saleOf para [6e].
+
+# 2026-11-16 · 009/T011 resumo da Rede Caju
+- networkSummary (só o lojista): se a loja aceita vendedores e quantos pedidos de vendedor ativo esperam, para o bloco Rede Caju da Conta.
