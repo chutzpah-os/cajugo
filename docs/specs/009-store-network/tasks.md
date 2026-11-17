@@ -112,7 +112,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   "Vendido" em [1c] leva a `[6e]?vender=1`. `UndoSaleButton` com a mensagem da comissão paga.
 
   · _RCL-FR-008, RCL-FR-009, RCL-FR-010, RCL-FR-011, RCL-FR-015, RCL-NFR-002_
-- [ ] **T016** Seed do e2e (loja da vitrine aceitando vendedores, pedido pendente) e `tests/e2e/store-network.spec.ts`:
+- [x] **T016** Seed do e2e (loja da vitrine aceitando vendedores, pedido pendente) e `tests/e2e/store-network.spec.ts`:
   - [7e] com toggle e prévia;
   - aprovar em [7f];
   - link → lead → [7g] com o sugerido;

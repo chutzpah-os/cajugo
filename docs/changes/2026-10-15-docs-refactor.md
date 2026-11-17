@@ -938,3 +938,6 @@
 
 # 2026-11-16 · 009 migration 0019 no prod
 - Migration 0019_store_network aplicada no Supabase de produção com autorização do dono; conferido: tabela sales com RLS, stores.accepts_sellers e as 3 colunas novas de vehicles.
+
+# 2026-11-16 · 009/T016 e2e da Rede Caju do lojista
+- Seed: Citroën C3 V2 com id fixo (saleTestId), segundo vendedor ativo (conta temporary, E2ETADEU) com pedido pendente na loja da vitrine, loja de Recife aceitando vendedores; limpeza apaga as vendas dos vendedores de teste. tests/e2e/store-network.spec.ts: Conta → Comissão com prévia, desligar/religar Aceitar vendedores, aprovar e encerrar parceria, lead pelo link → Confirmar venda com o sugerido → vendido na hora → desfazer, usuário da loja sem permissão, 1280 px. Suíte: 96 passaram, 3 falharam por login instável na rodada longa e passaram isoladas.

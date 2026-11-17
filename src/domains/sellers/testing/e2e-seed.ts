@@ -3,13 +3,18 @@ import {
   leads,
   partnerships,
   profiles,
+  sales,
   sellers,
   sellerVehicleClicks,
   stores,
+  vehicles,
 } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 
-/** Vendedor ativo do e2e (conta `sellerReferrer`), parceiro da loja da vitrine. */
+/**
+ * Vendedor ativo do e2e (conta `sellerReferrer`), parceiro da loja da vitrine; e um
+ * segundo vendedor ativo (conta `temporary`) com pedido de parceria pendente (009).
+ */
 export const E2E_SELLER = {
   code: "E2EVENDE",
   name: "Vera E2E",
@@ -17,6 +22,10 @@ export const E2E_SELLER = {
   pixKey: "vendedor-e2e@cajugo.test",
   /** Comissão da loja da vitrine: 2% (pontos-base). */
   commissionBps: 200,
+  /** Vendedor com pedido pendente na loja da vitrine (009). */
+  pendingName: "Tadeu E2E",
+  pendingCode: "E2ETADEU",
+  pendingCpf: "11144477735",
 } as const;
 
 /**
@@ -36,6 +45,21 @@ export async function removeSellersForTests(
     .from(sellers)
     .where(inArray(sellers.profileId, profileIds));
   await db.transaction(async (tx) => {
+    // Vendas feitas pelos e2e com esses vendedores (009) e a marca no veículo.
+    const sold = await tx
+      .delete(sales)
+      .where(inArray(sales.sellerId, profileIds))
+      .returning({ id: sales.id });
+    if (sold.length)
+      await tx
+        .update(vehicles)
+        .set({ saleId: null })
+        .where(
+          inArray(
+            vehicles.saleId,
+            sold.map((x) => x.id),
+          ),
+        );
     await tx
       .update(leads)
       .set({ sellerId: null })
@@ -58,7 +82,12 @@ export async function removeSellersForTests(
 /** Só testes: o vendedor ativo do e2e, parceiro da loja da vitrine (que aceita vendedores), com comissão de 2%. */
 export async function seedSellers(
   db: Db,
-  ids: { sellerId: string; storeId: string },
+  ids: {
+    sellerId: string;
+    storeId: string;
+    pendingSellerId: string;
+    otherStoreIds: string[];
+  },
 ) {
   const S = E2E_SELLER;
   await db
@@ -92,4 +121,39 @@ export async function seedSellers(
       acceptsSellers: true,
     })
     .where(eq(stores.id, ids.storeId));
+  await seedPendingRequest(db, ids);
+}
+
+/** Só testes: o segundo vendedor, com pedido pendente; e as outras lojas aceitando (009). */
+export async function seedPendingRequest(
+  db: Db,
+  ids: { pendingSellerId: string; storeId: string; otherStoreIds: string[] },
+) {
+  const S = E2E_SELLER;
+  await db
+    .update(profiles)
+    .set({
+      name: S.pendingName,
+      cpf: S.pendingCpf,
+      pixKey: "tadeu-e2e@cajugo.test",
+      pixKeyType: "email",
+    })
+    .where(eq(profiles.id, ids.pendingSellerId));
+  await db.insert(sellers).values({
+    profileId: ids.pendingSellerId,
+    code: S.pendingCode,
+    city: "Aracaju",
+    status: "active",
+    approvedAt: new Date(),
+  });
+  await db.insert(partnerships).values({
+    sellerId: ids.pendingSellerId,
+    storeId: ids.storeId,
+    origin: "request",
+  });
+  if (ids.otherStoreIds.length)
+    await db
+      .update(stores)
+      .set({ acceptsSellers: true })
+      .where(inArray(stores.id, ids.otherStoreIds));
 }

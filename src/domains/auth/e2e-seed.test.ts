@@ -244,10 +244,12 @@ describe("seedE2E", () => {
       }),
     ]);
     // Vendedor ativo e parceria refeitos, não somados (008).
-    expect(await t.db.select().from(sellers)).toEqual([
-      expect.objectContaining({ code: "E2EVENDE", status: "active" }),
-    ]);
-    expect(await t.db.select().from(partnerships)).toHaveLength(1);
+    expect(
+      (await t.db.select().from(sellers)).map((s) => s.code).sort(),
+    ).toEqual(["E2ETADEU", "E2EVENDE"]);
+    expect(
+      (await t.db.select().from(partnerships)).map((p) => p.status).sort(),
+    ).toEqual(["active", "pending"]);
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 });

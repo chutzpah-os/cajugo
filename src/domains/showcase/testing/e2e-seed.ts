@@ -29,6 +29,8 @@ export const E2E_SHOWCASE = {
   soldId: "00000000-0000-4000-8000-00000000e203",
   /** BMW X1 V1 da vitrine, com uma denúncia aberta no seed (007b). */
   reportedId: "00000000-0000-4000-8000-00000000e205",
+  /** Citroën C3 V2 da vitrine, vendido e desfeito pelo e2e da Rede Caju (009). */
+  saleTestId: "00000000-0000-4000-8000-00000000e206",
   suspendedId: "00000000-0000-4000-8000-00000000e204",
 } as const;
 
@@ -102,7 +104,7 @@ export async function seedShowcase(
   db: Db,
   owners: { active: string; suspended: string; recife: string },
   now: Date,
-): Promise<{ storeId: string }> {
+): Promise<{ storeId: string; recifeId: string }> {
   const S = E2E_SHOWCASE;
   const storeId = await ownStore(db, owners.active, {
     name: S.storeName,
@@ -148,7 +150,9 @@ export async function seedShowcase(
           ? { ...v, id: S.hiddenId, shareOnCajugo: false }
           : i === 1
             ? { ...v, id: S.reportedId }
-            : v,
+            : i === 2
+              ? { ...v, id: S.saleTestId }
+              : v,
     ),
     { ...row(storeId, 100, now), id: S.soldId, status: "sold" as const },
     {
@@ -200,5 +204,5 @@ export async function seedShowcase(
     .update(stores)
     .set({ status: "suspended" })
     .where(eq(stores.id, suspendedId));
-  return { storeId };
+  return { storeId, recifeId };
 }

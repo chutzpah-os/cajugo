@@ -210,6 +210,8 @@ export async function seedE2E(
   await seedSellers(deps.db, {
     sellerId: ids.sellerReferrer,
     storeId: showcase.storeId,
+    pendingSellerId: ids.temporary,
+    otherStoreIds: [showcase.recifeId],
   });
 
   return { ids, storeId: store.id };
