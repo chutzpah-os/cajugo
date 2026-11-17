@@ -935,3 +935,6 @@
 
 # 2026-11-16 · deps: next 16.4.6
 - next e eslint-config-next de 16.4.2 para 16.4.6 (pnpm). pnpm audit sem vulnerabilidades; pnpm check e e2e do build de produção verdes.
+
+# 2026-11-16 · 009 migration 0019 no prod
+- Migration 0019_store_network aplicada no Supabase de produção com autorização do dono; conferido: tabela sales com RLS, stores.accepts_sellers e as 3 colunas novas de vehicles.
