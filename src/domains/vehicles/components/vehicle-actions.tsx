@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/ui/button";
 import { ConfirmSheet } from "@/ui/confirm-sheet";
 import { Toggle } from "@/ui/toggle";
@@ -41,7 +41,17 @@ const SHEETS: Record<
 };
 
 /** Divulgação e ações do resumo [6e] (VEH-FR-010, 013, 014), com o diálogo [6f]. */
-export function VehicleActions({ v }: { v: VehicleSummary }) {
+export function VehicleActions({
+  v,
+  sellAction,
+  undoAction,
+}: {
+  v: VehicleSummary;
+  /** Botão de vender de outro fluxo (Confirmar venda da Rede Caju, 009, D2). */
+  sellAction?: ReactNode;
+  /** Botão de desfazer de outro fluxo (venda da Rede Caju, 009, D2). */
+  undoAction?: ReactNode;
+}) {
   const router = useRouter();
   const [share, setShare] = useState(v.shareOnCajugo);
   const [sheet, setSheet] = useState<Kind | null>(null);
@@ -98,21 +108,23 @@ export function VehicleActions({ v }: { v: VehicleSummary }) {
         </section>
       )}
       <div className="flex flex-col gap-2">
-        {onAir && (
-          <Button
-            variant="dark"
-            block
-            disabled={busy}
-            onClick={() => setSheet("sold")}
-          >
-            Marcar como vendido
-          </Button>
-        )}
-        {v.canUndoSale && (
-          <Button variant="dark" block disabled={busy} onClick={undo}>
-            Desfazer venda
-          </Button>
-        )}
+        {onAir &&
+          (sellAction ?? (
+            <Button
+              variant="dark"
+              block
+              disabled={busy}
+              onClick={() => setSheet("sold")}
+            >
+              Marcar como vendido
+            </Button>
+          ))}
+        {v.canUndoSale &&
+          (undoAction ?? (
+            <Button variant="dark" block disabled={busy} onClick={undo}>
+              Desfazer venda
+            </Button>
+          ))}
         {onAir && (
           <Button
             variant="ghost"

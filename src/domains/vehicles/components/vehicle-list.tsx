@@ -14,12 +14,14 @@ export function VehicleList({
   status,
   q,
   cloudName,
+  sellOnPage = false,
 }: {
   initial: Card[];
   nextCursor: string | null;
   status: string;
   q: string;
   cloudName: string;
+  sellOnPage?: boolean;
 }) {
   const list = useLoadMore<Card>({
     initial,
@@ -38,6 +40,7 @@ export function VehicleList({
             key={`${v.vehicleId}-${v.status}-${v.shareOnCajugo}`}
             v={v}
             cloudName={cloudName}
+            sellOnPage={sellOnPage}
             onChanged={list.reload}
           />
         ))}

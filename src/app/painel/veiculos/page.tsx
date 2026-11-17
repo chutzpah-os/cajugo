@@ -7,6 +7,7 @@ import { subscriptionCard } from "@/domains/billing/service";
 import { Onboarding } from "@/domains/stores/components/onboarding";
 import { onboardingStatus } from "@/domains/stores/service";
 import { VehicleList } from "@/domains/vehicles/components/vehicle-list";
+import { storeAcceptsSellers } from "@/domains/sellers/service";
 import { hasPublishedVehicle, listVehicles } from "@/domains/vehicles/service";
 import { brl } from "@/platform/br/money";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
@@ -38,8 +39,10 @@ async function Content({ searchParams }: PageProps<"/painel/veiculos">) {
   const status = typeof sp.status === "string" ? sp.status : "all";
   const q = typeof sp.q === "string" ? sp.q : "";
   const db = getDb();
-  const [list, onboarding, card] = await Promise.all([
+  const [list, network, onboarding, card] = await Promise.all([
     listVehicles({ db }, session, { status, q }),
+    // Rede Caju (009): "Vendido" leva à Confirmar venda em [6e].
+    storeAcceptsSellers(db, session),
     onboardingStatus(db, session, {
       firstVehicle: session.storeId
         ? await hasPublishedVehicle(db, session.storeId)
@@ -146,6 +149,7 @@ async function Content({ searchParams }: PageProps<"/painel/veiculos">) {
           status={status}
           q={q}
           cloudName={cloud}
+          sellOnPage={network}
         />
       ) : q || status !== "all" ? (
         <p className="rounded-card border border-line bg-surface p-4 text-sm text-text-2">

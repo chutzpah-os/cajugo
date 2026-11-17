@@ -9,6 +9,15 @@ import { VehicleActions } from "@/domains/vehicles/components/vehicle-actions";
 import { PerformanceBlock } from "@/domains/leads/components/performance-block";
 import { vehiclePerformance } from "@/domains/leads/service";
 import { hiddenReasonText } from "@/domains/moderation/service";
+import {
+  ConfirmSaleButton,
+  UndoSaleButton,
+} from "@/domains/sellers/components/confirm-sale";
+import {
+  saleOf,
+  saleTerms,
+  storeAcceptsSellers,
+} from "@/domains/sellers/service";
 import { vehicleSummary } from "@/domains/vehicles/service";
 import { brl } from "@/platform/br/money";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
@@ -32,8 +41,12 @@ const SECTIONS = [
   ["divulgacao", "Contato"],
 ] as const;
 
-async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
+async function Content({
+  params,
+  searchParams,
+}: PageProps<"/painel/veiculos/[id]">) {
   const { id } = await params;
+  const { vender } = await searchParams;
   const { session, allowed, home } = await requireStorePage(
     `/painel/veiculos/${id}`,
     "vehicles.manage",
@@ -47,6 +60,18 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
   );
   // Desempenho do anúncio (LED-FR-012): visualizações e leads do domínio `leads`.
   const performance = await vehiclePerformance(getDb(), session, v.vehicleId);
+  // Rede Caju (009): com a loja aceitando vendedores, vender passa pela Confirmar
+  // venda [7g]; venda registrada se desfaz pela venda (slots, D2).
+  const network = await storeAcceptsSellers(getDb(), session);
+  const sale = await saleOf(getDb(), session, v.vehicleId);
+  const terms =
+    network && v.canSell
+      ? await saleTerms(getDb(), session, {
+          vehicleId: v.vehicleId,
+          finalPriceCents: null,
+          sellerId: null,
+        })
+      : null;
   const editable = ["draft", "pending_approval", "published"].includes(
     v.status,
   );
@@ -142,7 +167,22 @@ async function Content({ params }: PageProps<"/painel/veiculos/[id]">) {
         </nav>
       )}
 
-      <VehicleActions key={`${v.status}-${v.shareOnCajugo}`} v={v} />
+      <VehicleActions
+        key={`${v.status}-${v.shareOnCajugo}`}
+        v={v}
+        sellAction={
+          terms ? (
+            <ConfirmSaleButton
+              vehicleId={v.vehicleId}
+              initial={terms}
+              defaultOpen={vender === "1"}
+            />
+          ) : undefined
+        }
+        undoAction={
+          sale ? <UndoSaleButton vehicleId={v.vehicleId} /> : undefined
+        }
+      />
     </section>
   );
 }

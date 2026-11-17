@@ -103,7 +103,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
 - [x] **T014** Bloco **Rede Caju** na `/painel/conta` (Comissão e Vendedores, com o número de pendentes).
 
   · _RCL-FR-014_
-- [ ] **T015** `ConfirmSaleSheet` [7g] e os slots do `VehicleActions` em [6e]:
+- [x] **T015** `ConfirmSaleSheet` [7g] e os slots do `VehicleActions` em [6e]:
   - valor final;
   - quem vendeu;
   - comissão e taxa ao vivo;

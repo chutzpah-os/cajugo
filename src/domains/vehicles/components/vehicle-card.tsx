@@ -22,10 +22,13 @@ export function VehicleCard({
   v,
   cloudName,
   onChanged,
+  sellOnPage = false,
 }: {
   v: Card;
   cloudName: string;
   onChanged?: () => void;
+  /** Loja na Rede Caju: "Vendido" abre a Confirmar venda em [6e] (009). */
+  sellOnPage?: boolean;
 }) {
   const router = useRouter();
   const refresh = () => {
@@ -91,7 +94,14 @@ export function VehicleCard({
         />
       )}
       <div className="grid grid-cols-2 gap-2">
-        {v.canSell ? (
+        {v.canSell && sellOnPage ? (
+          <Link
+            href={`/painel/veiculos/${v.vehicleId}?vender=1`}
+            className="flex min-h-11 items-center justify-center rounded-button border border-field bg-surface text-sm font-bold"
+          >
+            Vendido
+          </Link>
+        ) : v.canSell ? (
           <Button variant="ghost" onClick={() => setConfirm(true)}>
             Vendido
           </Button>

@@ -3,7 +3,7 @@ import { partnerships } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { personWith } from "@/domains/billing/testing/fixtures";
 import { liveStore } from "@/domains/showcase/testing/fixtures";
-import { networkSummary } from "./service";
+import { networkSummary, storeAcceptsSellers } from "./service";
 import { acceptSellers, activeSeller } from "./testing/fixtures";
 
 describe("bloco Rede Caju da Conta", () => {
@@ -41,5 +41,30 @@ describe("bloco Rede Caju da Conta", () => {
     await expect(networkSummary(t.db, staff)).rejects.toMatchObject({
       status: 403,
     });
+  });
+});
+
+describe("Vendido abre a Confirmar venda", () => {
+  let t: Awaited<ReturnType<typeof createTestDb>>;
+
+  beforeEach(async () => {
+    t = await createTestDb();
+  });
+  afterEach(async () => {
+    await t.close();
+  });
+
+  it("[RCL-FR-008] só quando a loja aceita vendedores; vale para o usuário da loja", async () => {
+    // Arrange
+    const a = await liveStore(t.db, "loja-a");
+    const staff = await personWith(t.db, "store_staff", a.storeId);
+
+    // Act
+    const before = await storeAcceptsSellers(t.db, staff);
+    await acceptSellers(t.db, a.storeId);
+
+    // Assert
+    expect(before).toBe(false);
+    expect(await storeAcceptsSellers(t.db, staff)).toBe(true);
   });
 });

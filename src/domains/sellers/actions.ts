@@ -1,6 +1,8 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { headers } from "next/headers";
+import { VEHICLES_TAG } from "@/domains/vehicles/service";
 import { redirect } from "next/navigation";
 import { currentSession, signIn } from "@/domains/auth/service";
 import {
@@ -16,6 +18,10 @@ import { requestAuthProvider } from "@/platform/supabase/next";
 import { filtersFromQuery } from "@/domains/showcase/service";
 import {
   approve,
+  confirmSale,
+  saleTerms,
+  undoSale,
+  type SaleTerms,
   decidePartnership,
   setNetworkRules,
   setVehicleCommission,
@@ -305,4 +311,42 @@ export async function decidePartnershipAction(
     await decidePartnership(getDb(), session, input);
     return true;
   }, "");
+}
+
+/** Cálculo ao vivo de [7g] (RCL-FR-010): `null` em entrada inválida ou falha. */
+export async function saleTermsAction(
+  input: unknown,
+): Promise<SaleTerms | null> {
+  try {
+    return await saleTerms(getDb(), await currentSession(), input);
+  } catch (error) {
+    if (!(error instanceof AppError))
+      logger.error("sellers.sale_terms_failed", { error: errorMessage(error) });
+    return null;
+  }
+}
+
+/** **Confirmar venda** [7g] (RCL-FR-011, 012, RCL-NFR-002): o vendido sai do cache na hora. */
+export async function confirmSaleAction(input: unknown): Promise<FormResult> {
+  try {
+    await confirmSale({ db: getDb() }, await currentSession(), input);
+    updateTag(VEHICLES_TAG);
+    return { ok: true };
+  } catch (error) {
+    return {
+      ok: false,
+      ...stateOf(error, "Não foi possível confirmar agora."),
+    };
+  }
+}
+
+/** **Desfazer venda** da Rede Caju (RCL-FR-015): o veículo volta ao cache na hora. */
+export async function undoSaleAction(input: unknown): Promise<DecisionResult> {
+  const session = await currentSession();
+  const r = await decisionResult(async () => {
+    await undoSale({ db: getDb() }, session, input);
+    return true;
+  }, "");
+  if (r.ok) updateTag(VEHICLES_TAG);
+  return r;
 }

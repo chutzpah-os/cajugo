@@ -1525,3 +1525,19 @@ export async function networkSummary(
     );
   return { acceptsSellers: store.acceptsSellers, pending: pending.n };
 }
+
+/**
+ * A loja da sessão aceita vendedores? Decide se "Vendido" abre a Confirmar venda [7g]
+ * (RCL-FR-008); vale para quem confirma venda (lojista e usuário da loja).
+ */
+export async function storeAcceptsSellers(
+  db: Db,
+  session: Session | null,
+): Promise<boolean> {
+  const { storeId } = saleStoreOf(session);
+  const [store] = await db
+    .select({ acceptsSellers: stores.acceptsSellers })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  return !!store?.acceptsSellers;
+}

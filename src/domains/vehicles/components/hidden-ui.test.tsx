@@ -80,3 +80,19 @@ describe("veículo oculto no painel", () => {
     expect(html).not.toMatch(/denúncia/i);
   });
 });
+
+describe("slots da Rede Caju em [6e]", () => {
+  it("[RCL-FR-008] com a loja na Rede Caju, o botão de vender vem da Confirmar venda", () => {
+    // Act
+    const html = renderToStaticMarkup(
+      <VehicleActions
+        v={{ ...SUMMARY, status: "published", moderation: null }}
+        sellAction={<button>Confirmar venda RC</button>}
+      />,
+    );
+
+    // Assert
+    expect(html).toContain("Confirmar venda RC");
+    expect(html).not.toContain("Marcar como vendido");
+  });
+});
