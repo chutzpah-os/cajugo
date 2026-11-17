@@ -124,6 +124,6 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   · _RCL-FR-001…015, RCL-SEC-002, RCL-NFR-001, RCL-NFR-002_
 
 ## Fase 4 — Fechamento
-- [ ] **T017** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0019` no prod só com a sua autorização.
+- [x] **T017** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0019` no prod só com a sua autorização.
 
   · _—_

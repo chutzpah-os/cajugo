@@ -388,3 +388,6 @@
 
 # 2026-11-16 · deps: next 16.4.6
 - Vulnerabilidade moderada do Next >=16.3.0 <=16.4.4 (vazamento entre root params com 'use cache' chamado por unstable_cache()), corrigida na 16.4.5; upgrade autorizado pelo dono, feito direto pelo pnpm em vez do modo --agent sugerido pelo next dev.
+
+# 2026-11-16 · 009/verify ajustes e fechamento
+- Revisão em dois eixos: o 'Vendido' simples só era bloqueado na tela (RCL-FR-008), a tela e a venda divergiam sem comissão definida e a parceria era conferida fora da transação.

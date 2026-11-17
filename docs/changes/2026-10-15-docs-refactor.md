@@ -941,3 +941,6 @@
 
 # 2026-11-16 · 009/T016 e2e da Rede Caju do lojista
 - Seed: Citroën C3 V2 com id fixo (saleTestId), segundo vendedor ativo (conta temporary, E2ETADEU) com pedido pendente na loja da vitrine, loja de Recife aceitando vendedores; limpeza apaga as vendas dos vendedores de teste. tests/e2e/store-network.spec.ts: Conta → Comissão com prévia, desligar/religar Aceitar vendedores, aprovar e encerrar parceria, lead pelo link → Confirmar venda com o sugerido → vendido na hora → desfazer, usuário da loja sem permissão, 1280 px. Suíte: 96 passaram, 3 falharam por login instável na rodada longa e passaram isoladas.
+
+# 2026-11-16 · 009/verify ajustes e fechamento
+- markSold recusa com a loja aceitando vendedores (stores.storeAcceptsSellers); confirmSale confere parceria e vendedor sugerido dentro da transação (suggestedSeller) e sem recalcular por saleTerms; comissão sem regra = R$ 0 na tela e na venda; parceiro bloqueado sem celular nem Pix em [7f]; bloco Rede Caju da Conta só com sellers.manage; e2e da 009 independente da chave Pix trocada pela 008. Spec 009 implemented, PLAN e T017 marcados.

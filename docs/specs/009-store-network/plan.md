@@ -146,6 +146,14 @@ A migration é aditiva. O índice único parcial garante uma venda ativa por ve�
 - **Descartado: componente de `sellers` dentro de `vehicles`.** Os slots montados na página evitam uma nova exceção de tela.
 - **Descartado: uma venda para todo vendido.** Loja sem Rede Caju segue com o vendido simples (RCL-FR-008); a fatura (011) só precisa das vendas com taxa.
 
+## Ajustes do `/implement` e do `/verify` (2026-11-17)
+- **Ajuste por veículo:** a permissão e os limites ficam em `sellers.setVehicleCommission`; `vehicles.writeCommissionOverride` só grava na loja dada (validar em `vehicles` com os schemas da Rede Caju criaria um ciclo `vehicles` → `sellers`).
+- **"Vendido" simples recusado no servidor** quando a loja aceita vendedores (`vehicles.markSold` → 409 "Confirme a venda pela Rede Caju."), não só escondido na tela (RCL-FR-008).
+- **Confirmar venda:** parceria e vendedor sugerido conferidos dentro da transação; sem regra de comissão, a comissão é R$ 0 na tela e na venda (a loja pode aceitar vendedores sem definir comissão).
+- **Parceiro bloqueado pela CajuGo:** aparece em [7f] com o selo, sem celular nem chave Pix (RCL-SEC-004).
+- Conta mostra o bloco Rede Caju só para quem tem `sellers.manage`; `storeAcceptsSellers` (lojista e usuário da loja) decide o caminho do "Vendido".
+- Fica como está: "Desfazer venda" também vale para a venda da loja; sugestão de vendedor ignora leads de ex-parceiros; `vehicles.sellInTx`/`reopenInTx`/`writeCommissionOverride` sem autorização própria (quem chama confere, documentado).
+
 ## Decisões (aprovadas em 2026-11-17)
 - **D1. `accepts_sellers` começa desligado** em todas as lojas, inclusive as que já existem. **Recomendo:** é a leitura do PRD ([7e] é um toggle que a loja liga). Muda o comportamento que a 008 tinha (toda loja aceitava pedidos). No prod ainda não há vendedores ativos.
 - **D2. Slots no `VehicleActions`:** a página [6e] entrega os botões de vender e de desfazer da Rede Caju, e [1c] leva a `[6e]?vender=1`. **Recomendo:** evita que `vehicles` importe componentes de `sellers`.

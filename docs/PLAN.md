@@ -124,6 +124,7 @@
 - Painel, vitrine com "Você ganha R$ X", link `?ref=`, pedir parceria; extrato com "Recebi"; conta.
 
 ## 009 · Rede Caju: lojista e venda — telas 7e, 7f, 7g, 13a, 13b, 13d
+> ✅ **Implementada** em 2026-11-17 (`docs/specs/009-store-network/`): Comissão [7e] ("Aceitar vendedores", comissão padrão até 10% ou R$ 10.000 com prévia da taxa, ajuste por veículo); Vendedores [7f] (aprovar, recusar, encerrar; parceiros com celular e Pix; bloqueado com selo); bloco Rede Caju na Conta; **Confirmar venda** [7g] com o vendedor sugerido pelo link, outro parceiro ou a loja, comissão e taxa CajuGo calculadas e guardadas, veículo fora de todos os lugares na hora; desfazer cancela venda, comissão e taxa (não com comissão paga). Parceria só vale com a loja aceitando vendedores. Migration `0019` no staging e no prod. Convite, perfil, avaliação e denúncia de vendedor na 009b.
 - Comissão da loja (% ou fixo, ajuste por veículo); aceitar vendedores.
 - Parcerias (aprovar, recusar, convidar, encerrar); vendedores disponíveis e perfil; avaliar; denunciar vendedor.
 - **Confirmar venda** [7g]: atribuição, valor final, comissão (A receber/Paga), **taxa CajuGo** registrada para a próxima fatura; veículo sai de todos os lugares.

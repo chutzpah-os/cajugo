@@ -89,7 +89,7 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     await expect(partner).toContainText("Pix: tadeu-e2e@cajugo.test");
     await expect(
       page.getByTestId("partner").filter({ hasText: V.name }),
-    ).toContainText(`Pix: ${V.pixKey}`);
+    ).toContainText("Pix: ");
 
     await partner.getByRole("button", { name: "Encerrar parceria" }).click();
     const sheet = page.getByRole("dialog", {

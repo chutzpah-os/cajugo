@@ -16,7 +16,11 @@ import type { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { saoPauloMonthStart } from "@/domains/billing/service";
 import { brandName, identify, reference } from "@/domains/fipe/service";
-import { storeIsLive, vehicleDefaults } from "@/domains/stores/service";
+import {
+  storeAcceptsSellers,
+  storeIsLive,
+  vehicleDefaults,
+} from "@/domains/stores/service";
 import { parsePlate } from "@/platform/br/plate";
 import { plainText, slugify } from "@/platform/br/slug";
 import type { FipeClient } from "@/platform/fipe/client";
@@ -766,12 +770,16 @@ async function transition(
 }
 
 /** Vendido (VEH-FR-013): sai de todos os lugares; a divulgação é guardada e desligada. */
-export const markSold = (
+export async function markSold(
   deps: VehicleDeps,
   session: Session | null,
   vehicleId: string,
-) =>
-  transition(deps, session, vehicleId, {
+) {
+  // Loja na Rede Caju: a venda passa pela Confirmar venda [7g], que registra a
+  // comissão e a taxa (RCL-FR-008).
+  if (await storeAcceptsSellers(deps.db, storeOf(session).storeId))
+    throw AppError.conflict("Confirme a venda pela Rede Caju.");
+  return transition(deps, session, vehicleId, {
     from: ON_AIR,
     set: (v, now) => ({
       status: "sold",
@@ -782,6 +790,7 @@ export const markSold = (
     action: "vehicle.sold",
     conflict: "Só um veículo publicado pode ser marcado como vendido.",
   });
+}
 
 /** Desfazer venda em até 7 dias: volta publicado, com a divulgação de antes. */
 export const undoSold = (

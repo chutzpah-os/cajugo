@@ -1121,8 +1121,9 @@ export async function storeNetwork(
       partnershipId: p.partnershipId,
       sellerName: p.sellerName,
       city: p.city,
-      phone: p.phone,
-      pixKey: p.pixKey,
+      // Bloqueado pela CajuGo: parceria suspensa, sem celular nem Pix (RCL-SEC-004).
+      phone: p.status === "blocked" ? null : p.phone,
+      pixKey: p.status === "blocked" ? null : p.pixKey,
       sales: p.sales,
       blocked: p.status === "blocked",
     })),
@@ -1318,23 +1319,18 @@ export async function saleTerms(
   const v = await saleVehicle(db, storeId, input.vehicleId);
   const partners = await effectivePartners(db, storeId);
   const ids = partners.map((p) => p.sellerId);
-  const [last] = ids.length
-    ? await db
-        .select({ sellerId: leads.sellerId })
-        .from(leads)
-        .where(and(eq(leads.vehicleId, v.id), inArray(leads.sellerId, ids)))
-        .orderBy(desc(leads.createdAt), desc(leads.id))
-        .limit(1)
-    : [];
+  const suggested = await suggestedSeller(db, v.id, partners);
   const { cajugo_fee_bps: feeBps } = await getSettings(db);
   const priced =
     input.finalPriceCents && input.sellerId && ids.includes(input.sellerId)
       ? input.finalPriceCents
       : null;
   return {
-    suggested: partners.find((p) => p.sellerId === last?.sellerId) ?? null,
+    suggested,
     partners,
-    commissionCents: priced === null ? null : commissionFor(ruleOf(v), priced),
+    // Sem regra de comissão definida, a comissão é R$ 0 (a tela e a venda batem).
+    commissionCents:
+      priced === null ? null : (commissionFor(ruleOf(v), priced) ?? 0),
     feeCents: priced === null ? null : feeFor(priced, feeBps),
     feeBps,
   };
@@ -1363,34 +1359,29 @@ export async function confirmSale(
 ): Promise<{ saleId: string }> {
   const { userId, storeId } = saleStoreOf(session);
   const input = parseOrThrow(confirmSaleSchema, raw);
-  const db = deps.db;
-  const v = await saleVehicle(db, storeId, input.vehicleId);
-  if (v.status !== "published" && v.status !== "hidden")
-    throw AppError.conflict("Este veículo já não está à venda.");
-
-  let sellerId: string | null = null;
-  if (input.attribution !== "store") {
-    const terms = await saleTerms(db, session, {
-      vehicleId: v.id,
-      finalPriceCents: input.finalPriceCents,
-      sellerId: input.sellerId ?? null,
-    });
-    const isPartner = terms.partners.some((p) => p.sellerId === input.sellerId);
-    if (!isPartner) throw notPartner();
-    if (
-      input.attribution === "link" &&
-      terms.suggested?.sellerId !== input.sellerId
-    )
-      throw notPartner();
-    sellerId = input.sellerId ?? null;
-  }
-  const { cajugo_fee_bps: feeBps } = await getSettings(db);
-  const commissionCents = sellerId
-    ? (commissionFor(ruleOf(v), input.finalPriceCents) ?? 0)
-    : null;
-  const feeCents = sellerId ? feeFor(input.finalPriceCents, feeBps) : null;
-
-  return db.transaction(async (tx) => {
+  const { cajugo_fee_bps: feeBps } = await getSettings(deps.db);
+  // Parceria e vendedor sugerido conferidos dentro da transação: parceria encerrada
+  // no mesmo instante não recebe comissão.
+  return deps.db.transaction(async (tx) => {
+    const v = await saleVehicle(tx, storeId, input.vehicleId);
+    if (v.status !== "published" && v.status !== "hidden")
+      throw AppError.conflict("Este veículo já não está à venda.");
+    let sellerId: string | null = null;
+    if (input.attribution !== "store") {
+      const partners = await effectivePartners(tx, storeId);
+      if (!partners.some((p) => p.sellerId === input.sellerId))
+        throw notPartner();
+      if (
+        input.attribution === "link" &&
+        (await suggestedSeller(tx, v.id, partners))?.sellerId !== input.sellerId
+      )
+        throw notPartner();
+      sellerId = input.sellerId ?? null;
+    }
+    const commissionCents = sellerId
+      ? (commissionFor(ruleOf(v), input.finalPriceCents) ?? 0)
+      : null;
+    const feeCents = sellerId ? feeFor(input.finalPriceCents, feeBps) : null;
     const [sale] = await tx
       .insert(sales)
       .values({
@@ -1540,4 +1531,21 @@ export async function storeAcceptsSellers(
     .from(stores)
     .where(eq(stores.id, storeId));
   return !!store?.acceptsSellers;
+}
+
+/** Vendedor do lead mais recente do veículo entre os parceiros que valem (RCL-FR-013). */
+async function suggestedSeller(
+  db: Db,
+  vehicleId: string,
+  partners: { sellerId: string; name: string }[],
+) {
+  const ids = partners.map((p) => p.sellerId);
+  if (!ids.length) return null;
+  const [last] = await db
+    .select({ sellerId: leads.sellerId })
+    .from(leads)
+    .where(and(eq(leads.vehicleId, vehicleId), inArray(leads.sellerId, ids)))
+    .orderBy(desc(leads.createdAt), desc(leads.id))
+    .limit(1);
+  return partners.find((p) => p.sellerId === last?.sellerId) ?? null;
 }

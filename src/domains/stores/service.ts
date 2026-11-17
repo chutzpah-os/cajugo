@@ -617,6 +617,18 @@ export async function storeIsLive(db: Db, storeId: string): Promise<boolean> {
   return !!s && isStoreLive(s.status);
 }
 
+/** A loja aceita vendedores da Rede Caju? (009: vender passa pela Confirmar venda) */
+export async function storeAcceptsSellers(
+  db: Db,
+  storeId: string,
+): Promise<boolean> {
+  const [s] = await db
+    .select({ accepts: stores.acceptsSellers })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  return !!s?.accepts;
+}
+
 /** Status em que a loja está "no ar" para o público (PRD §5.5). */
 export const LIVE_STATUSES = [
   "active",

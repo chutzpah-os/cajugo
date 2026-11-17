@@ -2,7 +2,7 @@
 id: 009
 slug: store-network
 title: Rede Caju · lojista e venda
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-17
 ---
