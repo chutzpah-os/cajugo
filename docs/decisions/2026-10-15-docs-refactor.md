@@ -379,3 +379,6 @@
 
 # 2026-11-16 · 008/verify ajustes e fechamento
 - Revisão em dois eixos: CPF completo chegava ao suporte (SECURITY §8), a conta podia trocar o CPF já guardado e três actions não validavam a entrada com schema (API.md §2).
+
+# 2026-11-16 · 009/T001 documentos
+- D1–D4 aprovadas: Aceitar vendedores começa desligado; slots no VehicleActions; sale_id no veículo; taxa guardada na venda. PRD e PLAN do /clarify ainda aguardam o OK do dono.

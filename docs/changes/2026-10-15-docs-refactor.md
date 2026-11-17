@@ -887,3 +887,6 @@
 
 # 2026-11-16 · 008/verify ajustes e fechamento
 - Suporte vê o CPF mascarado em [7h] (formatTaxId só para o admin); conta que já tem CPF mantém o mesmo ao virar vendedor; schemas strict nas actions das fotos e do Carregar mais; [13c] com links do próprio documento e Trocar senha; colunas da foto e estado da parceria num lugar só; exceção de tela da página do veículo no ARCHITECTURE §3. Spec 008 implemented, PLAN e T022 marcados.
+
+# 2026-11-16 · 009/T001 documentos
+- Spec, plano e tasks da 009. ARCHITECTURE §4 (accepts_sellers desligado, ajuste e sale_id em vehicles, sales com taxa guardada e canceled_at), API.md §5 (actions de [7e], [7f], [7g]; convite, avaliação e denúncia na 009b), GLOSSARY (Parceria que vale, Status da comissão).

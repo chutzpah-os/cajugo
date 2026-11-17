@@ -126,9 +126,11 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | A | `moveLeadAction({ leadId, to: "next" \| "lost" })` — `leads.manage` (dono e usuário da loja) (007) | 3a |
 | A | `updateStore(form)` · `changeSlug(slug)` | 3b |
 | A | `cancelSubscription(reason?)` · `undoCancel` | 12h |
-| A | `updateCommission({ acceptsSellers, type, value })` · `setVehicleCommission(vehicleId, ...)` | 7e |
-| A | `respondPartnership(id, accept)` · `inviteSeller(sellerId)` · `endPartnership(id)` | 7f, 13a, 13b |
-| A | `reviewSeller(sellerId, rating, text)` · `reportSeller(sellerId, reason, details)` | 13b, 13d |
+| página | `/painel/rede/comissao` · `/painel/rede/vendedores` (009) | 7e, 7f |
+| A | `setNetworkRulesAction({ acceptsSellers, commissionType, commissionValue })` · `setCommissionOverrideAction({ vehicleId, type, value })` — `sellers.manage` (009) | 7e |
+| A | `decidePartnershipAction({ partnershipId, decision: "approve" \| "decline" \| "end" })` — `sellers.manage` (009) · `inviteSeller(sellerId)` (009b) | 7f, 13a |
+| A | `saleTermsAction({ vehicleId, finalPriceCents, sellerId })` · `confirmSaleAction({ vehicleId, finalPriceCents, attribution, sellerId, commissionPaid })` · `undoSaleAction({ vehicleId })` — `sales.confirm` (009) | 7g |
+| A | `reviewSeller(sellerId, rating, text)` · `reportSeller(sellerId, reason, details)` (009b) | 13b, 13d |
 
 ### Vendedor (Rede Caju)
 | Tipo | Rota / ação | Tela |

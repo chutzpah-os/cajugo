@@ -114,7 +114,7 @@ stores ✅ (+ colunas novas)
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),
   billing_day, next_due_at, activated_at (1ª ativação), past_due_since, cancel_at, active_until, slug_reserved_until,
   slug_changed_at (troca no máximo 1× a cada 30 dias),
-  accepts_sellers (bool, 009), commission_type (pct|fixed), commission_value (bps ou centavos; colunas na 008, tela [7e] na 009),
+  accepts_sellers (bool, começa desligado; 009), commission_type (pct|fixed), commission_value (bps ou centavos; colunas na 008, tela [7e] na 009),
   created_at, updated_at                       # indicação usada: em referrals.referred_store_id
 store_slug_redirects     old_slug (pk), store_id, expires_at
 
@@ -140,7 +140,8 @@ vehicles
   features (text[]), description, contact_whatsapp, share_on_cajugo, share_before_sale,
   hidden_reason, hidden_note, hidden_at, hidden_by (marca de moderação do Ocultar, 007b: sobrevive a despublicar,
   publicar e desfazer a venda; só `Mostrar de novo` limpa),
-  commission_override_type, commission_override_value,
+  commission_override_type, commission_override_value (ajuste da comissão no lugar da padrão, 009),
+  sale_id (venda ativa da Rede Caju; com ela, o desfazer simples é recusado, 009),
   make_slug, model_slug (filtros e descoberta), search_text (marca, modelo e versão, sem acento, feito pela aplicação),
   search (tsvector gerado de search_text, config `simple`; sem a extensão unaccent), rank_score (relevância: dia da publicação + completude),
   published_at, sold_at, deleted_at (excluído: guardado 90 dias), created_at, updated_at   # spec 005
@@ -175,9 +176,10 @@ partnerships             id, seller_id, store_id, origin (request|invite),
                          status (pending|active|declined|ended), created_at, updated_at, ended_at
                          # única aberta por vendedor e loja; bloqueio do vendedor não muda a parceria (008)
 seller_vehicle_clicks    seller_id + vehicle_id + day (pk, dia em São Paulo), clicks (1 por aparelho por dia, sem robôs, 008)
-sales                    id, vehicle_id, store_id, final_price_cents, seller_id,
-                         attribution (link|other_partner|store), commission_cents,
-                         commission_status (in_review|to_receive|paid), cajugo_fee_cents, invoice_id, confirmed_at
+sales                    id, vehicle_id, store_id, final_price_cents, seller_id (nulo na venda da loja),
+                         attribution (link|other_partner|store), commission_cents, commission_status (to_receive|paid;
+                         "em análise" é da fase 2), fee_bps + fee_cents (taxa CajuGo guardada na confirmação),
+                         invoice_id (011), confirmed_by, created_at, canceled_at (desfazer)   # 009; 1 ativa por veículo
 seller_reviews           id, seller_id, store_id, rating (1–5), text, created_at
 
 # Caju Indica
