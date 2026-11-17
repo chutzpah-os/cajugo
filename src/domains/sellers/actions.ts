@@ -16,6 +16,8 @@ import { requestAuthProvider } from "@/platform/supabase/next";
 import { filtersFromQuery } from "@/domains/showcase/service";
 import {
   approve,
+  setNetworkRules,
+  setVehicleCommission,
   attachDocument,
   block,
   unblock,
@@ -263,4 +265,32 @@ export async function unblockSellerAction(input: {
     () => unblock(getDb(), session, input),
     "Este vendedor já não está bloqueado.",
   );
+}
+
+export type FormResult =
+  | { ok: true }
+  | { ok: false; message?: string; errors: Record<string, string> };
+
+/** "Aceitar vendedores" e comissão padrão [7e] (RCL-FR-001, 002): só o lojista. */
+export async function setNetworkRulesAction(
+  input: unknown,
+): Promise<FormResult> {
+  try {
+    await setNetworkRules(getDb(), await currentSession(), input);
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, ...stateOf(error, "Não foi possível salvar agora.") };
+  }
+}
+
+/** Ajuste da comissão de um veículo [7e] (RCL-FR-003): só o lojista. */
+export async function setCommissionOverrideAction(
+  input: unknown,
+): Promise<FormResult> {
+  try {
+    await setVehicleCommission(getDb(), await currentSession(), input);
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, ...stateOf(error, "Não foi possível salvar agora.") };
+  }
 }

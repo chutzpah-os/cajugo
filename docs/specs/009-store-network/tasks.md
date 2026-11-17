@@ -90,7 +90,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   · _RCL-FR-014_
 
 ## Fase 3 — Telas
-- [ ] **T012** `/painel/rede/comissao` [7e]:
+- [x] **T012** `/painel/rede/comissao` [7e]:
   - toggle "Aceitar vendedores";
   - tipo e valor com a prévia (comissão e taxa);
   - informativo da taxa;

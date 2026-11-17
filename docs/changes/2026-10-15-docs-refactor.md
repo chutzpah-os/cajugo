@@ -920,3 +920,6 @@
 
 # 2026-11-16 · 009/T011 resumo da Rede Caju
 - networkSummary (só o lojista): se a loja aceita vendedores e quantos pedidos de vendedor ativo esperam, para o bloco Rede Caju da Conta.
+
+# 2026-11-16 · 009/T012 tela de comissão
+- /painel/rede/comissao [7e] (só o lojista): CommissionForm (Aceitar vendedores, tipo e valor com a prévia de comissão e taxa num carro de R$ 60.000, informativo da taxa) e VehicleOverrides (ajustes com Remover, adicionar por veículo). Actions setNetworkRulesAction e setCommissionOverrideAction; commissionFromText/ToText; storeNetwork traz feeBps e os veículos no ar.

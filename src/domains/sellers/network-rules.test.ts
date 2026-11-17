@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { fieldErrorsFromZod } from "@/platform/http/errors";
-import { feeFor } from "./commission";
+import { commissionFromText, commissionToText, feeFor } from "./commission";
 import {
   commissionOverrideSchema,
   confirmSaleSchema,
@@ -108,5 +108,14 @@ describe("regras da loja na Rede Caju", () => {
     // Act / Assert
     expect(feeFor(5_800_000, 100)).toBe(58_000);
     expect(feeFor(6_000_000, 150)).toBe(90_000);
+  });
+
+  it("[RCL-FR-002] converte o texto da tela: % em pontos-base e reais em centavos", () => {
+    // Act / Assert
+    expect(commissionFromText("pct", "2,5")).toBe(250);
+    expect(commissionFromText("fixed", "1.500,00")).toBe(150_000);
+    expect(commissionFromText("pct", "")).toBeNaN();
+    expect(commissionToText("pct", 250)).toBe("2,5");
+    expect(commissionToText("fixed", 150_000)).toBe("1.500,00");
   });
 });

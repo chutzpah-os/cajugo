@@ -971,6 +971,10 @@ function networkStoreOf(session: Session | null) {
 
 export type StoreNetwork = {
   acceptsSellers: boolean;
+  /** Taxa CajuGo das regras, para a prévia de [7e] (RCL-FR-002). */
+  feeBps: number;
+  /** Veículos no ar da loja, para o ajuste por veículo (RCL-FR-003). */
+  vehicleOptions: { vehicleId: string; title: string }[];
   commission: { type: "pct" | "fixed"; value: number } | null;
   overrides: {
     vehicleId: string;
@@ -1031,6 +1035,22 @@ export async function storeNetwork(
       ),
     )
     .orderBy(asc(vehicles.make), asc(vehicles.model));
+  const options = await db
+    .select({
+      vehicleId: vehicles.id,
+      make: vehicles.make,
+      model: vehicles.model,
+      version: vehicles.version,
+    })
+    .from(vehicles)
+    .where(
+      and(
+        eq(vehicles.storeId, storeId),
+        inArray(vehicles.status, ["published", "hidden"]),
+      ),
+    )
+    .orderBy(asc(vehicles.make), asc(vehicles.model), asc(vehicles.version));
+  const { cajugo_fee_bps: feeBps } = await getSettings(db);
   const pending = await db
     .select({
       partnershipId: partnerships.id,
@@ -1075,6 +1095,11 @@ export async function storeNetwork(
     .orderBy(asc(profiles.name));
   return {
     acceptsSellers: store.acceptsSellers,
+    feeBps,
+    vehicleOptions: options.map((o) => ({
+      vehicleId: o.vehicleId,
+      title: [shortTitle(o), o.version].filter(Boolean).join(" · "),
+    })),
     commission:
       store.type && store.value !== null
         ? { type: store.type, value: store.value }
