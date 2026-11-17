@@ -53,7 +53,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - loja B.
 
   · _RCL-FR-001, RCL-FR-002, RCL-FR-004, RCL-FR-006, RCL-FR-007, RCL-SEC-001, RCL-SEC-002, RCL-SEC-004_
-- [ ] **T006** `decidePartnership`:
+- [x] **T006** `decidePartnership`:
   - aprovar, recusar (pedir de novo depois) e encerrar;
   - `activity_log` sem CPF nem Pix;
   - loja B → 404.

@@ -902,3 +902,6 @@
 
 # 2026-11-16 · 009/T005 Rede Caju da loja
 - storeNetwork (sellers.manage, só o lojista): aceita vendedores, comissão padrão, ajustes por veículo, pedidos pendentes de vendedor ativo do mais antigo, parceiros com celular, Pix, vendas e selo de bloqueado, sem CPF. setNetworkRules grava as regras com activity_log.
+
+# 2026-11-16 · 009/T006 decisões de parceria
+- decidePartnership (só o lojista): aprovar pending→active, recusar pending→declined (libera pedido novo), encerrar active→ended com ended_at; outra loja → 404, status inesperado → 409; activity_log partnership.approved/declined/ended.

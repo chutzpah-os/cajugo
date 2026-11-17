@@ -65,6 +65,7 @@ import {
   documentSideSchema,
   blockSellerSchema,
   networkRulesSchema,
+  partnershipDecisionSchema,
   partnershipRequestSchema,
   pixUpdateSchema,
   sellerClickSchema,
@@ -1127,6 +1128,59 @@ export async function setNetworkRules(
       entity: "store",
       entityId: storeId,
       data: rules,
+    });
+  });
+}
+
+const DECISIONS = {
+  approve: { from: "pending", to: "active", action: "partnership.approved" },
+  decline: { from: "pending", to: "declined", action: "partnership.declined" },
+  end: { from: "active", to: "ended", action: "partnership.ended" },
+} as const;
+
+/**
+ * **Aprovar**, **Recusar** e **Encerrar parceria** [7f] (RCL-FR-005, 006, RCL-SEC-001,
+ * 005): só o lojista, só parceria da própria loja (outra → 404), só a partir do status
+ * esperado (senão 409). Recusar e encerrar liberam um pedido novo.
+ */
+export async function decidePartnership(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<void> {
+  const { userId, storeId } = networkStoreOf(session);
+  const { partnershipId, decision } = parseOrThrow(
+    partnershipDecisionSchema,
+    raw,
+  );
+  const rule = DECISIONS[decision];
+  await db.transaction(async (tx) => {
+    const [row] = await tx
+      .select({ status: partnerships.status })
+      .from(partnerships)
+      .where(
+        and(
+          eq(partnerships.id, partnershipId),
+          eq(partnerships.storeId, storeId),
+        ),
+      )
+      .for("update");
+    if (!row) throw AppError.notFound();
+    if (row.status !== rule.from)
+      throw AppError.conflict("Esta parceria já mudou. Atualize a página.");
+    await tx
+      .update(partnerships)
+      .set({
+        status: rule.to,
+        ...(decision === "end" ? { endedAt: now } : {}),
+      })
+      .where(eq(partnerships.id, partnershipId));
+    await logActivity(tx, {
+      userId,
+      action: rule.action,
+      entity: "partnership",
+      entityId: partnershipId,
     });
   });
 }
