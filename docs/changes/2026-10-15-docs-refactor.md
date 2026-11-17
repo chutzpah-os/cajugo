@@ -932,3 +932,6 @@
 
 # 2026-11-16 · 009/T015 Confirmar venda
 - ConfirmSaleButton [7g] (valor final, quem vendeu com o sugerido, outro parceiro ou a loja, comissão e taxa do servidor ao vivo, Já paguei) e UndoSaleButton; actions saleTermsAction, confirmSaleAction e undoSaleAction (updateTag). VehicleActions com os slots sellAction e undoAction (D2); [6e] monta a venda com storeAcceptsSellers, saleOf e saleTerms e abre com ?vender=1; em [1c], Vendido leva a [6e] quando a loja aceita vendedores.
+
+# 2026-11-16 · deps: next 16.4.6
+- next e eslint-config-next de 16.4.2 para 16.4.6 (pnpm). pnpm audit sem vulnerabilidades; pnpm check e e2e do build de produção verdes.

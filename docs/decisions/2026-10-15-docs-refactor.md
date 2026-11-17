@@ -385,3 +385,6 @@
 
 # 2026-11-16 · 009/T007 ajuste por veículo
 - Validação e permissão ficam em sellers: se vehicles validasse com os schemas da Rede Caju, importaria sellers, que já depende dele (ciclo).
+
+# 2026-11-16 · deps: next 16.4.6
+- Vulnerabilidade moderada do Next >=16.3.0 <=16.4.4 (vazamento entre root params com 'use cache' chamado por unstable_cache()), corrigida na 16.4.5; upgrade autorizado pelo dono, feito direto pelo pnpm em vez do modo --agent sugerido pelo next dev.
