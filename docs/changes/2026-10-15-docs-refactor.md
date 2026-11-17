@@ -893,3 +893,6 @@
 
 # 2026-11-16 · 009/T002 migration 0019
 - Migration aditiva 0019_store_network: stores.accepts_sellers (padrão false), vehicles.commission_override_* e sale_id, enums sale_attribution e commission_status, tabela sales (uma ativa por veículo, índices por loja e por vendedor, RLS). Aplicada no staging.
+
+# 2026-11-16 · 009/T003 regras da venda
+- sellers/schemas: networkRulesSchema e commissionOverrideSchema (até 10% ou R$ 10.000, nulo remove), partnershipDecisionSchema, confirmSaleSchema (strict, só o valor final como número) e saleTermsSchema; commission.feeFor (bps sobre o valor final).

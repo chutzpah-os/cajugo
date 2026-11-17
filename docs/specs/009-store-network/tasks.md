@@ -26,7 +26,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   Teste de schema.
 
   · _RCL-SEC-003_
-- [ ] **T003** [P] Schemas:
+- [x] **T003** [P] Schemas:
   - `networkRulesSchema` (até 10% e R$ 10.000);
   - `commissionOverrideSchema`;
   - `partnershipDecisionSchema`;

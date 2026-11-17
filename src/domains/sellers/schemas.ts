@@ -109,3 +109,92 @@ export const attachDocumentSchema = z
 export const sellerShowcasePageSchema = z
   .object({ query: z.string().max(500), cursor: z.string().max(300) })
   .strict();
+
+/** Limites da comissão (RCL-FR-002): 10% e R$ 10.000. */
+const MAX_PCT_BPS = 1000;
+const MAX_FIXED_CENTS = 1_000_000;
+
+/** Tipo e valor da comissão, conferidos juntos pelos limites de cada tipo. */
+function checkCommission(
+  v: { type: "pct" | "fixed" | null; value: number | null },
+  ctx: z.RefinementCtx,
+  path: string,
+) {
+  if (v.type === null && v.value === null) return;
+  if (v.type === null || v.value === null) {
+    ctx.addIssue({
+      code: "custom",
+      path: [path],
+      message: "Informe a comissão.",
+    });
+    return;
+  }
+  const over =
+    v.type === "pct" ? v.value > MAX_PCT_BPS : v.value > MAX_FIXED_CENTS;
+  if (over)
+    ctx.addIssue({
+      code: "custom",
+      path: [path],
+      message: v.type === "pct" ? "Use até 10%." : "Use até R$ 10.000.",
+    });
+}
+
+const commissionType = z.enum(["pct", "fixed"]).nullable();
+const commissionValue = z
+  .number({ error: "Informe a comissão." })
+  .int()
+  .min(0, "Informe a comissão.")
+  .nullable();
+
+/** "Aceitar vendedores" e a comissão padrão da loja [7e] (RCL-FR-001, 002). */
+export const networkRulesSchema = z
+  .object({ acceptsSellers: z.boolean(), commissionType, commissionValue })
+  .strict()
+  .superRefine((v, ctx) =>
+    checkCommission(
+      { type: v.commissionType, value: v.commissionValue },
+      ctx,
+      "commissionValue",
+    ),
+  );
+
+/** Ajuste da comissão de um veículo [7e] (RCL-FR-003); nulo remove o ajuste. */
+export const commissionOverrideSchema = z
+  .object({ vehicleId: z.uuid(), type: commissionType, value: commissionValue })
+  .strict()
+  .superRefine((v, ctx) => checkCommission(v, ctx, "value"));
+
+/** Aprovar, recusar ou encerrar uma parceria [7f] (RCL-FR-005, 006). */
+export const partnershipDecisionSchema = z
+  .object({
+    partnershipId: z.uuid(),
+    decision: z.enum(["approve", "decline", "end"]),
+  })
+  .strict();
+
+/**
+ * Confirmar venda [7g] (RCL-FR-009, 011, 012, RCL-SEC-003): o valor final é o único
+ * número da tela; comissão, taxa e status saem do servidor.
+ */
+export const confirmSaleSchema = z
+  .object({
+    vehicleId: z.uuid(),
+    finalPriceCents: z
+      .number({ error: "Informe o valor final." })
+      .int()
+      .min(1, "Informe o valor final.")
+      .max(100_000_000, "Confira o valor final."),
+    attribution: z.enum(["link", "other_partner", "store"]),
+    sellerId: z.uuid().nullable().optional(),
+    commissionPaid: z.boolean(),
+  })
+  .strict();
+
+/** Cálculo ao vivo de [7g] (RCL-FR-010): valor e vendedor ainda podem faltar. */
+export const saleTermsSchema = z
+  .object({
+    vehicleId: z.uuid(),
+    finalPriceCents: z.number().int().min(0).max(100_000_000).nullable(),
+    sellerId: z.uuid().nullable(),
+  })
+  .strict();

@@ -13,3 +13,7 @@ export function commissionFor(
     ? null
     : Math.round((priceCents * rule.value) / 10_000);
 }
+
+/** Taxa CajuGo (PRD §5.7): pontos-base das regras sobre o valor final. */
+export const feeFor = (finalPriceCents: number, bps: number): number =>
+  Math.round((finalPriceCents * bps) / 10_000);
