@@ -97,7 +97,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - ajustes por veículo (adicionar e remover).
 
   · _RCL-FR-001, RCL-FR-002, RCL-FR-003, RCL-NFR-001_
-- [ ] **T013** `/painel/rede/vendedores` [7f]: pedidos com **Aprovar** e **Recusar**; parceiros com celular, Pix, vendas, selo de bloqueado e **Encerrar parceria** (confirmação).
+- [x] **T013** `/painel/rede/vendedores` [7f]: pedidos com **Aprovar** e **Recusar**; parceiros com celular, Pix, vendas, selo de bloqueado e **Encerrar parceria** (confirmação).
 
   · _RCL-FR-004, RCL-FR-005, RCL-FR-006, RCL-FR-007_
 - [ ] **T014** Bloco **Rede Caju** na `/painel/conta` (Comissão e Vendedores, com o número de pendentes).

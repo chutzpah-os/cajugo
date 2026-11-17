@@ -16,6 +16,7 @@ import { requestAuthProvider } from "@/platform/supabase/next";
 import { filtersFromQuery } from "@/domains/showcase/service";
 import {
   approve,
+  decidePartnership,
   setNetworkRules,
   setVehicleCommission,
   attachDocument,
@@ -293,4 +294,15 @@ export async function setCommissionOverrideAction(
   } catch (error) {
     return { ok: false, ...stateOf(error, "Não foi possível salvar agora.") };
   }
+}
+
+/** Aprovar, Recusar e Encerrar parceria [7f] (RCL-FR-005, 006): só o lojista. */
+export async function decidePartnershipAction(
+  input: unknown,
+): Promise<DecisionResult> {
+  const session = await currentSession();
+  return decisionResult(async () => {
+    await decidePartnership(getDb(), session, input);
+    return true;
+  }, "");
 }
