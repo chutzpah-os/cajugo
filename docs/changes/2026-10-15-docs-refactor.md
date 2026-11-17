@@ -926,3 +926,6 @@
 
 # 2026-11-16 · 009/T013 tela de vendedores
 - /painel/rede/vendedores [7f] (só o lojista): PartnersView com pedidos (Aprovar, Recusar) e parceiros (celular, Pix, vendas, selo Bloqueado pela CajuGo, Encerrar parceria com confirmação); aviso quando a loja não aceita vendedores. decidePartnershipAction.
+
+# 2026-11-16 · 009/T014 bloco Rede Caju na Conta
+- /painel/conta ganha o NetworkBlock (aceita vendedores?, Comissão e Vendedores com o número de pedidos pendentes); o resto da Conta segue provisório até a 011.
