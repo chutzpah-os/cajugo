@@ -899,3 +899,6 @@
 
 # 2026-11-16 · 009/T004 parceria que vale
 - effectivePartner (vendedor ativo, parceria ativa, loja aceitando vendedores) em sellerForLead; sellerShowcase devolve closed sem 'Você ganha' para loja que não aceita; requestPartnership recusa (409); vitrine do vendedor mostra 'Esta loja não aceita vendedores' desabilitado. Testes da 008 e seed do e2e com a loja aceitando vendedores (fixture acceptSellers).
+
+# 2026-11-16 · 009/T005 Rede Caju da loja
+- storeNetwork (sellers.manage, só o lojista): aceita vendedores, comissão padrão, ajustes por veículo, pedidos pendentes de vendedor ativo do mais antigo, parceiros com celular, Pix, vendas e selo de bloqueado, sem CPF. setNetworkRules grava as regras com activity_log.

@@ -45,7 +45,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - testes da 008 com a loja aceitando (fixture).
 
   · _RCL-FR-001, RCL-FR-005_
-- [ ] **T005** `storeNetwork` e `setNetworkRules`:
+- [x] **T005** `storeNetwork` e `setNetworkRules`:
   - "Aceitar vendedores" e comissão padrão;
   - pedidos pendentes do mais antigo, só de vendedor ativo;
   - parceiros com celular, Pix, vendas e "Bloqueado pela CajuGo";

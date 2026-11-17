@@ -1,5 +1,17 @@
 import type { z } from "zod";
-import { and, asc, eq, gte, inArray, ne, sql, sum } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  eq,
+  gte,
+  inArray,
+  isNotNull,
+  isNull,
+  ne,
+  sql,
+  sum,
+} from "drizzle-orm";
 import {
   authorizeTo,
   can,
@@ -22,12 +34,14 @@ import {
   type PublicCard,
 } from "@/domains/showcase/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
+import { shortTitle } from "@/domains/vehicles/service";
 import { brDay } from "@/platform/br/date";
 import { formatTaxId, maskTaxId } from "@/platform/br/tax-id";
 import { appUrl } from "@/platform/http/urls";
 import {
   partnerships,
   profiles,
+  sales,
   sellers,
   sellerVehicleClicks,
   stores,
@@ -50,6 +64,7 @@ import {
   attachDocumentSchema,
   documentSideSchema,
   blockSellerSchema,
+  networkRulesSchema,
   partnershipRequestSchema,
   pixUpdateSchema,
   sellerClickSchema,
@@ -945,4 +960,173 @@ export async function sellerDocuments(
     front: !!me.documentFrontPublicId,
     back: !!me.documentBackPublicId,
   };
+}
+
+/** Loja da sessão de quem cuida da Rede Caju (só o lojista, RCL-SEC-002). */
+function networkStoreOf(session: Session | null) {
+  const s = authorizeTo(session, "sellers.manage");
+  if (!s.storeId) throw AppError.forbidden();
+  return { userId: s.userId, storeId: s.storeId };
+}
+
+export type StoreNetwork = {
+  acceptsSellers: boolean;
+  commission: { type: "pct" | "fixed"; value: number } | null;
+  overrides: {
+    vehicleId: string;
+    title: string;
+    type: "pct" | "fixed";
+    value: number;
+  }[];
+  pending: {
+    partnershipId: string;
+    sellerName: string;
+    city: string;
+    requestedAt: Date;
+  }[];
+  /** Celular e chave Pix para pagar a comissão; nunca o CPF (RCL-SEC-004). */
+  partners: {
+    partnershipId: string;
+    sellerName: string;
+    city: string;
+    phone: string | null;
+    pixKey: string | null;
+    sales: number;
+    blocked: boolean;
+  }[];
+};
+
+/**
+ * Rede Caju da loja [7e] [7f] (RCL-FR-001..007, RCL-SEC-001, 002, 004): regras,
+ * ajustes por veículo, pedidos pendentes (só de vendedor ativo, do mais antigo) e
+ * parceiros ativos, sempre da loja da sessão.
+ */
+export async function storeNetwork(
+  db: Db,
+  session: Session | null,
+): Promise<StoreNetwork> {
+  const { storeId } = networkStoreOf(session);
+  const [store] = await db
+    .select({
+      acceptsSellers: stores.acceptsSellers,
+      type: stores.commissionType,
+      value: stores.commissionValue,
+    })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  const overrides = await db
+    .select({
+      vehicleId: vehicles.id,
+      make: vehicles.make,
+      model: vehicles.model,
+      type: vehicles.commissionOverrideType,
+      value: vehicles.commissionOverrideValue,
+    })
+    .from(vehicles)
+    .where(
+      and(
+        eq(vehicles.storeId, storeId),
+        ne(vehicles.status, "deleted"),
+        isNotNull(vehicles.commissionOverrideType),
+      ),
+    )
+    .orderBy(asc(vehicles.make), asc(vehicles.model));
+  const pending = await db
+    .select({
+      partnershipId: partnerships.id,
+      sellerName: profiles.name,
+      city: sellers.city,
+      requestedAt: partnerships.createdAt,
+    })
+    .from(partnerships)
+    .innerJoin(sellers, eq(sellers.profileId, partnerships.sellerId))
+    .innerJoin(profiles, eq(profiles.id, sellers.profileId))
+    .where(
+      and(
+        eq(partnerships.storeId, storeId),
+        eq(partnerships.status, "pending"),
+        eq(sellers.status, "active"),
+      ),
+    )
+    .orderBy(asc(partnerships.createdAt), asc(partnerships.id));
+  const salesBySeller = db
+    .select({ sellerId: sales.sellerId, n: count().as("n") })
+    .from(sales)
+    .where(and(eq(sales.storeId, storeId), isNull(sales.canceledAt)))
+    .groupBy(sales.sellerId)
+    .as("sales_by_seller");
+  const partners = await db
+    .select({
+      partnershipId: partnerships.id,
+      sellerName: profiles.name,
+      city: sellers.city,
+      phone: profiles.phone,
+      pixKey: profiles.pixKey,
+      sales: sql<number>`coalesce(${salesBySeller.n}, 0)`.mapWith(Number),
+      status: sellers.status,
+    })
+    .from(partnerships)
+    .innerJoin(sellers, eq(sellers.profileId, partnerships.sellerId))
+    .innerJoin(profiles, eq(profiles.id, sellers.profileId))
+    .leftJoin(salesBySeller, eq(salesBySeller.sellerId, partnerships.sellerId))
+    .where(
+      and(eq(partnerships.storeId, storeId), eq(partnerships.status, "active")),
+    )
+    .orderBy(asc(profiles.name));
+  return {
+    acceptsSellers: store.acceptsSellers,
+    commission:
+      store.type && store.value !== null
+        ? { type: store.type, value: store.value }
+        : null,
+    overrides: overrides.flatMap((o) =>
+      o.type && o.value !== null
+        ? [
+            {
+              vehicleId: o.vehicleId,
+              title: shortTitle(o),
+              type: o.type,
+              value: o.value,
+            },
+          ]
+        : [],
+    ),
+    pending,
+    partners: partners.map((p) => ({
+      partnershipId: p.partnershipId,
+      sellerName: p.sellerName,
+      city: p.city,
+      phone: p.phone,
+      pixKey: p.pixKey,
+      sales: p.sales,
+      blocked: p.status === "blocked",
+    })),
+  };
+}
+
+/** "Aceitar vendedores" e a comissão padrão [7e] (RCL-FR-001, 002, RCL-SEC-005). */
+export async function setNetworkRules(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<void> {
+  const { userId, storeId } = networkStoreOf(session);
+  const rules = parseOrThrow(networkRulesSchema, raw);
+  await db.transaction(async (tx) => {
+    await tx
+      .update(stores)
+      .set({
+        acceptsSellers: rules.acceptsSellers,
+        commissionType: rules.commissionType,
+        commissionValue: rules.commissionValue,
+      })
+      .where(eq(stores.id, storeId));
+    await logActivity(tx, {
+      userId,
+      action: "store.network_rules",
+      entity: "store",
+      entityId: storeId,
+      data: rules,
+    });
+  });
 }
