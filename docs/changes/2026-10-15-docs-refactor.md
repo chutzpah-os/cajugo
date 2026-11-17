@@ -908,3 +908,6 @@
 
 # 2026-11-16 · 009/T007 ajuste por veículo
 - sellers.setVehicleCommission (só o lojista, limites da comissão, activity_log) grava pelo vehicles.writeCommissionOverride (só na loja dada; outra → 404). sellerShowcase usa o ajuste no lugar da padrão (ruleOf); storeNetwork lista os ajustes.
+
+# 2026-11-16 · 009/T008 cálculo da venda
+- saleTerms (sales.confirm: lojista e usuário da loja): comissão (ajuste ou padrão) e taxa CajuGo (cajugo_fee_bps) sobre o valor final, só para parceiro que vale; vendedor sugerido pelo lead mais recente com parceria que vale; lista de parceiros. effectivePartner reaproveita effectivePartners.

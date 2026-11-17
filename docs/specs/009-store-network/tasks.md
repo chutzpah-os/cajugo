@@ -62,7 +62,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
 - [x] **T007** `vehicles.setCommissionOverride`: ajuste no lugar da padrão em "Você ganha"; remover o ajuste; só o lojista; loja B → 404.
 
   · _RCL-FR-003, RCL-SEC-001, RCL-SEC-002_
-- [ ] **T008** `saleTerms`:
+- [x] **T008** `saleTerms`:
   - comissão (ajuste ou padrão) e taxa sobre o valor final;
   - vendedor sugerido pelo lead mais recente com parceria que vale;
   - lista de parceiros que valem.

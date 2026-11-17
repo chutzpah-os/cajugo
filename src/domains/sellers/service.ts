@@ -3,6 +3,7 @@ import {
   and,
   asc,
   count,
+  desc,
   eq,
   gte,
   inArray,
@@ -33,6 +34,7 @@ import {
   searchShowcase,
   type PublicCard,
 } from "@/domains/showcase/service";
+import { getSettings } from "@/domains/settings/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import {
   shortTitle,
@@ -42,6 +44,7 @@ import { brDay } from "@/platform/br/date";
 import { formatTaxId, maskTaxId } from "@/platform/br/tax-id";
 import { appUrl } from "@/platform/http/urls";
 import {
+  leads,
   partnerships,
   profiles,
   sales,
@@ -69,6 +72,7 @@ import {
   documentSideSchema,
   blockSellerSchema,
   networkRulesSchema,
+  saleTermsSchema,
   partnershipDecisionSchema,
   partnershipRequestSchema,
   pixUpdateSchema,
@@ -76,7 +80,7 @@ import {
   sellerDecisionSchema,
   sellerSignupSchema,
 } from "./schemas";
-import { commissionFor } from "./commission";
+import { commissionFor, feeFor } from "./commission";
 import { codeCandidates, type PartnerState, type SellerStatus } from "./status";
 
 /**
@@ -866,21 +870,9 @@ async function effectivePartner(
   sellerId: string,
   storeId: string,
 ): Promise<boolean> {
-  const [row] = await db
-    .select({ id: partnerships.id })
-    .from(partnerships)
-    .innerJoin(stores, eq(stores.id, partnerships.storeId))
-    .innerJoin(sellers, eq(sellers.profileId, partnerships.sellerId))
-    .where(
-      and(
-        eq(partnerships.sellerId, sellerId),
-        eq(partnerships.storeId, storeId),
-        eq(partnerships.status, "active"),
-        eq(stores.acceptsSellers, true),
-        eq(sellers.status, "active"),
-      ),
-    );
-  return !!row;
+  return (await effectivePartners(db, storeId)).some(
+    (p) => p.sellerId === sellerId,
+  );
 }
 
 export type SellerAccount = {
@@ -1223,4 +1215,98 @@ export async function setVehicleCommission(
       data: { type: rule.type, value: rule.value },
     });
   });
+}
+
+/** Loja da sessão de quem confirma venda (lojista e usuário da loja, RCL-SEC-002). */
+function saleStoreOf(session: Session | null) {
+  const s = authorizeTo(session, "sales.confirm");
+  if (!s.storeId) throw AppError.forbidden();
+  return { userId: s.userId, storeId: s.storeId };
+}
+
+/** Veículo à venda da loja (publicado ou oculto), com a regra da comissão; senão 404. */
+async function saleVehicle(db: Db, storeId: string, vehicleId: string) {
+  const [v] = await db
+    .select({
+      id: vehicles.id,
+      status: vehicles.status,
+      overrideType: vehicles.commissionOverrideType,
+      overrideValue: vehicles.commissionOverrideValue,
+      commissionType: stores.commissionType,
+      commissionValue: stores.commissionValue,
+      acceptsSellers: stores.acceptsSellers,
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(and(eq(vehicles.id, vehicleId), eq(vehicles.storeId, storeId)));
+  if (!v || v.status === "deleted") throw AppError.notFound();
+  return v;
+}
+
+/** Parceiros que valem da loja (GLOSSARY), por nome. */
+async function effectivePartners(
+  db: Db,
+  storeId: string,
+): Promise<{ sellerId: string; name: string }[]> {
+  return db
+    .select({ sellerId: sellers.profileId, name: profiles.name })
+    .from(partnerships)
+    .innerJoin(stores, eq(stores.id, partnerships.storeId))
+    .innerJoin(sellers, eq(sellers.profileId, partnerships.sellerId))
+    .innerJoin(profiles, eq(profiles.id, sellers.profileId))
+    .where(
+      and(
+        eq(partnerships.storeId, storeId),
+        eq(partnerships.status, "active"),
+        eq(stores.acceptsSellers, true),
+        eq(sellers.status, "active"),
+      ),
+    )
+    .orderBy(asc(profiles.name));
+}
+
+export type SaleTerms = {
+  /** Vendedor do lead mais recente do veículo com parceria que vale (RCL-FR-013). */
+  suggested: { sellerId: string; name: string } | null;
+  partners: { sellerId: string; name: string }[];
+  commissionCents: number | null;
+  feeCents: number | null;
+  feeBps: number;
+};
+
+/**
+ * Cálculo ao vivo de **Confirmar venda** [7g] (RCL-FR-009, 010, 013): comissão (ajuste
+ * do veículo ou padrão da loja) e taxa CajuGo sobre o valor final, só para vendedor que
+ * é parceiro que vale; o vendedor sugerido e a lista de parceiros.
+ */
+export async function saleTerms(
+  db: Db,
+  session: Session | null,
+  raw: unknown,
+): Promise<SaleTerms> {
+  const { storeId } = saleStoreOf(session);
+  const input = parseOrThrow(saleTermsSchema, raw);
+  const v = await saleVehicle(db, storeId, input.vehicleId);
+  const partners = await effectivePartners(db, storeId);
+  const ids = partners.map((p) => p.sellerId);
+  const [last] = ids.length
+    ? await db
+        .select({ sellerId: leads.sellerId })
+        .from(leads)
+        .where(and(eq(leads.vehicleId, v.id), inArray(leads.sellerId, ids)))
+        .orderBy(desc(leads.createdAt), desc(leads.id))
+        .limit(1)
+    : [];
+  const { cajugo_fee_bps: feeBps } = await getSettings(db);
+  const priced =
+    input.finalPriceCents && input.sellerId && ids.includes(input.sellerId)
+      ? input.finalPriceCents
+      : null;
+  return {
+    suggested: partners.find((p) => p.sellerId === last?.sellerId) ?? null,
+    partners,
+    commissionCents: priced === null ? null : commissionFor(ruleOf(v), priced),
+    feeCents: priced === null ? null : feeFor(priced, feeBps),
+    feeBps,
+  };
 }
