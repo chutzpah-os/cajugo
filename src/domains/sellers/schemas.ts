@@ -198,3 +198,6 @@ export const saleTermsSchema = z
     sellerId: z.uuid().nullable(),
   })
   .strict();
+
+/** Desfazer venda da Rede Caju (RCL-FR-015). */
+export const saleUndoSchema = z.object({ vehicleId: z.uuid() }).strict();

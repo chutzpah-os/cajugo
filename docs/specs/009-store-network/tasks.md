@@ -79,7 +79,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - `activity_log`.
 
   · _RCL-FR-011, RCL-FR-012, RCL-SEC-001, RCL-SEC-002, RCL-SEC-003, RCL-SEC-005_
-- [ ] **T010** `undoSale` e `vehicles.reopenInTx`:
+- [x] **T010** `undoSale` e `vehicles.reopenInTx`:
   - desfazer cancela a venda, a comissão e a taxa e reabre o veículo (7 dias);
   - comissão paga → 409;
   - `undoSold` direto com `sale_id` → 409.

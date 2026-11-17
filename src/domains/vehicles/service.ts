@@ -729,6 +729,8 @@ async function transition(
     action: string;
     conflict: string;
     allowed?: (v: typeof vehicles.$inferSelect, now: Date) => boolean;
+    /** Motivo próprio para recusar antes da regra geral (409). */
+    blocked?: (v: typeof vehicles.$inferSelect) => string | null;
   },
 ): Promise<void> {
   const { userId, storeId, vehicle } = await ownVehicle(
@@ -743,6 +745,8 @@ async function transition(
       .from(vehicles)
       .where(and(eq(vehicles.id, vehicle.id), eq(vehicles.storeId, storeId)))
       .for("update");
+    const blocked = rule.blocked?.(v);
+    if (blocked) throw AppError.conflict(blocked);
     if (
       !rule.from.includes(v.status) ||
       (rule.allowed && !rule.allowed(v, now))
@@ -787,18 +791,31 @@ export const undoSold = (
 ) =>
   transition(deps, session, vehicleId, {
     from: ["sold"],
-    allowed: (v, now) =>
-      !!v.soldAt &&
-      now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS,
-    set: (v) => ({
-      status: onAirStatus(v),
-      soldAt: null,
-      shareOnCajugo: v.shareBeforeSale ?? v.shareOnCajugo,
-      shareBeforeSale: null,
-    }),
+    allowed: withinUndo,
+    // Venda da Rede Caju: desfaz pela venda, que cancela comissão e taxa (009, D3).
+    blocked: (v) => (v.saleId ? "Desfaça pela venda da Rede Caju." : null),
+    set: reopened,
     action: "vehicle.sale_undone",
-    conflict: `A venda só pode ser desfeita em até ${UNDO_SALE_DAYS} dias.`,
+    conflict: UNDO_TOO_LATE,
   });
+
+const UNDO_TOO_LATE = `A venda só pode ser desfeita em até ${UNDO_SALE_DAYS} dias.`;
+
+function withinUndo(v: typeof vehicles.$inferSelect, now: Date) {
+  return (
+    !!v.soldAt && now.getTime() - v.soldAt.getTime() <= UNDO_SALE_DAYS * DAY_MS
+  );
+}
+
+/** Volta como estava antes da venda (VEH-FR-013): divulgação de antes; oculto, se marcado. */
+function reopened(v: typeof vehicles.$inferSelect) {
+  return {
+    status: onAirStatus(v),
+    soldAt: null,
+    shareOnCajugo: v.shareBeforeSale ?? v.shareOnCajugo,
+    shareBeforeSale: null,
+  };
+}
 
 /** Despublicar (VEH-FR-014): volta a rascunho e sai do catálogo. */
 export const unpublish = (
@@ -1247,4 +1264,39 @@ export async function sellInTx(
     entityId: input.vehicleId,
   });
   return true;
+}
+
+/**
+ * Desfaz o vendido de uma venda da Rede Caju (009, RCL-FR-015): mesma regra dos 7 dias
+ * e do "como estava", e tira o id da venda. Dentro da transação de quem cancela a
+ * venda; fora do prazo ou veículo que não é da loja → 409/404.
+ */
+export async function reopenInTx(
+  tx: Db,
+  input: { storeId: string; vehicleId: string; userId: string },
+  now: Date,
+): Promise<void> {
+  const [v] = await tx
+    .select()
+    .from(vehicles)
+    .where(
+      and(
+        eq(vehicles.id, input.vehicleId),
+        eq(vehicles.storeId, input.storeId),
+      ),
+    )
+    .for("update");
+  if (!v) throw AppError.notFound();
+  if (v.status !== "sold" || !withinUndo(v, now))
+    throw AppError.conflict(UNDO_TOO_LATE);
+  await tx
+    .update(vehicles)
+    .set({ ...reopened(v), saleId: null, updatedAt: now })
+    .where(eq(vehicles.id, v.id));
+  await logActivity(tx, {
+    userId: input.userId,
+    action: "vehicle.sale_undone",
+    entity: "vehicle",
+    entityId: v.id,
+  });
 }

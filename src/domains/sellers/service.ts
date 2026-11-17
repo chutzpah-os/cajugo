@@ -37,6 +37,7 @@ import {
 import { getSettings } from "@/domains/settings/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import {
+  reopenInTx,
   sellInTx,
   shortTitle,
   writeCommissionOverride,
@@ -77,6 +78,7 @@ import {
   saleTermsSchema,
   partnershipDecisionSchema,
   partnershipRequestSchema,
+  saleUndoSchema,
   pixUpdateSchema,
   sellerClickSchema,
   sellerDecisionSchema,
@@ -1409,4 +1411,68 @@ export async function confirmSale(
     });
     return { saleId: sale.id };
   });
+}
+
+/**
+ * **Desfazer venda** da Rede Caju (RCL-FR-015, RCL-SEC-001): cancela a venda, a comissão
+ * e a taxa e reabre o veículo (até 7 dias). Comissão já paga → 409; venda de outra loja
+ * ou inexistente → 404.
+ */
+export async function undoSale(
+  deps: { db: Db },
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<void> {
+  const { userId, storeId } = saleStoreOf(session);
+  const { vehicleId } = parseOrThrow(saleUndoSchema, raw);
+  await deps.db.transaction(async (tx) => {
+    const [sale] = await tx
+      .select({ id: sales.id, status: sales.commissionStatus })
+      .from(sales)
+      .where(
+        and(
+          eq(sales.vehicleId, vehicleId),
+          eq(sales.storeId, storeId),
+          isNull(sales.canceledAt),
+        ),
+      )
+      .for("update");
+    if (!sale) throw AppError.notFound();
+    if (sale.status === "paid")
+      throw AppError.conflict(
+        "A comissão já foi paga. Para desfazer, fale com a CajuGo.",
+      );
+    await tx
+      .update(sales)
+      .set({ canceledAt: now })
+      .where(eq(sales.id, sale.id));
+    await reopenInTx(tx, { storeId, vehicleId, userId }, now);
+    await logActivity(tx, {
+      userId,
+      action: "sale.canceled",
+      entity: "sale",
+      entityId: sale.id,
+    });
+  });
+}
+
+/** Venda ativa do veículo para [6e]: com ela, o desfazer é pela venda (RCL-FR-015). */
+export async function saleOf(
+  db: Db,
+  session: Session | null,
+  vehicleId: string,
+): Promise<{ commissionPaid: boolean } | null> {
+  const { storeId } = saleStoreOf(session);
+  const [sale] = await db
+    .select({ status: sales.commissionStatus })
+    .from(sales)
+    .where(
+      and(
+        eq(sales.vehicleId, vehicleId),
+        eq(sales.storeId, storeId),
+        isNull(sales.canceledAt),
+      ),
+    );
+  return sale ? { commissionPaid: sale.status === "paid" } : null;
 }

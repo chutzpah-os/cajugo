@@ -914,3 +914,6 @@
 
 # 2026-11-16 · 009/T009 confirmar venda
 - confirmSale (sales.confirm): vendedor do link = sugerido, outro parceiro = parceiro que vale (senão 422 no sellerId), venda da loja sem comissão nem taxa; numa transação grava a venda (comissão A receber ou Paga, fee_bps e fee_cents guardados) e vehicles.sellInTx (sold com sale_id, divulgação guardada); repetir → 409; activity_log sale.confirmed.
+
+# 2026-11-16 · 009/T010 desfazer venda
+- undoSale (sales.confirm): comissão paga → 409 com a mensagem do PRD; senão cancela a venda (canceled_at) e vehicles.reopenInTx reabre como estava (7 dias, tira o sale_id); activity_log sale.canceled. vehicles.undoSold recusa com sale_id (blocked na transição). saleOf para [6e].
