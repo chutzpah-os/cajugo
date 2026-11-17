@@ -43,6 +43,7 @@ describe("vitrine do vendedor [7c]", () => {
           card({ partner: "partner", earnCents: 120_000 }, "a"),
           card({}, "b"),
           card({ partner: "pending" }, "c"),
+          card({ partner: "closed" }, "d"),
         ]}
         nextCursor={null}
         query=""
@@ -53,7 +54,8 @@ describe("vitrine do vendedor [7c]", () => {
     // Assert
     expect(html.match(/Você ganha/g)).toHaveLength(1);
     expect(html).toContain("1.200,00");
-    expect(html.match(/Copiar link/g)).toHaveLength(3);
+    expect(html.match(/Copiar link/g)).toHaveLength(4);
+    expect(html).toMatch(/disabled="">Esta loja não aceita vendedores/);
     expect(html).toContain('data-url="https://cajugo.test/v/a-carro?ref=ANA"');
     expect(html.match(/Pedir parceria/g)).toHaveLength(1);
     expect(html).toContain("aguardando a loja");

@@ -65,7 +65,7 @@ function SellerVehicle({
   busy,
 }: {
   item: SellerCard;
-  partner: PartnerState | "none";
+  partner: PartnerState | "none" | "closed";
   cloudName: string;
   onRequest: () => void;
   busy: boolean;
@@ -119,6 +119,11 @@ function SellerVehicle({
             onClick={onRequest}
           >
             Pedir parceria
+          </Button>
+        )}
+        {partner === "closed" && (
+          <Button variant="outline" size="sm" className="min-h-11" disabled>
+            Esta loja não aceita vendedores
           </Button>
         )}
         {partner === "pending" && (

@@ -633,8 +633,11 @@ async function activeSellerOf(db: Db, session: Session | null) {
 export type SellerCard = {
   card: PublicCard;
   storeId: string;
-  /** Parceria com a loja do veículo: só "partner" ganha comissão (PRD §5.7). */
-  partner: PartnerState | "none";
+  /**
+   * Parceria com a loja do veículo: só "partner" ganha comissão (PRD §5.7); "closed"
+   * quando a loja não aceita vendedores (RCL-FR-001).
+   */
+  partner: PartnerState | "none" | "closed";
   /** "Você ganha R$ X": só em loja parceira com comissão definida (SEL-FR-008). */
   earnCents: number | null;
   /** Link do veículo com o código do vendedor (SEL-FR-008). */
@@ -674,6 +677,7 @@ export async function sellerShowcase(
           storeId: vehicles.storeId,
           commissionType: stores.commissionType,
           commissionValue: stores.commissionValue,
+          acceptsSellers: stores.acceptsSellers,
         })
         .from(vehicles)
         .innerJoin(stores, eq(stores.id, vehicles.storeId))
@@ -702,7 +706,10 @@ export async function sellerShowcase(
     items: page.items.flatMap((card) => {
       const owner = ownerOf.get(card.vehicleId);
       if (!owner) return [];
-      const partner = partnerOf.get(owner.storeId) ?? "none";
+      // Loja que não aceita vendedores suspende a parceria (RCL-FR-001).
+      const partner = !owner.acceptsSellers
+        ? ("closed" as const)
+        : (partnerOf.get(owner.storeId) ?? "none");
       return [
         {
           card,
@@ -735,12 +742,14 @@ export async function requestPartnership(
   const me = await activeSellerOf(db, session);
   const { storeId } = parseOrThrow(partnershipRequestSchema, raw);
   const [store] = await db
-    .select({ id: stores.id })
+    .select({ id: stores.id, acceptsSellers: stores.acceptsSellers })
     .from(stores)
     .where(
       and(eq(stores.id, storeId), inArray(stores.status, [...LIVE_STATUSES])),
     );
   if (!store) throw AppError.notFound();
+  if (!store.acceptsSellers)
+    throw AppError.conflict("Esta loja não aceita vendedores.");
   await db
     .insert(partnerships)
     .values({ sellerId: me.sellerId, storeId, origin: "request" })
@@ -825,17 +834,34 @@ export async function sellerForLead(
 ): Promise<{ sellerId: string; name: string } | null> {
   const seller = await activeSellerByCode(db, code);
   if (!seller) return null;
-  const [partner] = await db
+  return (await effectivePartner(db, seller.sellerId, storeId)) ? seller : null;
+}
+
+/**
+ * **Parceria que vale** (GLOSSARY, RCL-FR-001, 005): vendedor ativo, parceria ativa e a
+ * loja aceitando vendedores. Bloquear o vendedor ou desligar "Aceitar vendedores"
+ * suspende sem mudar a parceria.
+ */
+async function effectivePartner(
+  db: Db,
+  sellerId: string,
+  storeId: string,
+): Promise<boolean> {
+  const [row] = await db
     .select({ id: partnerships.id })
     .from(partnerships)
+    .innerJoin(stores, eq(stores.id, partnerships.storeId))
+    .innerJoin(sellers, eq(sellers.profileId, partnerships.sellerId))
     .where(
       and(
-        eq(partnerships.sellerId, seller.sellerId),
+        eq(partnerships.sellerId, sellerId),
         eq(partnerships.storeId, storeId),
         eq(partnerships.status, "active"),
+        eq(stores.acceptsSellers, true),
+        eq(sellers.status, "active"),
       ),
     );
-  return partner ? seller : null;
+  return !!row;
 }
 
 export type SellerAccount = {

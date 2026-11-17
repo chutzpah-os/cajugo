@@ -52,3 +52,21 @@ export async function sellerRow(db: Db, id: string) {
     .where(eq(sellers.profileId, id));
   return row;
 }
+
+/** Só testes: a loja liga "Aceitar vendedores" e, opcionalmente, a comissão padrão. */
+export async function acceptSellers(
+  db: Db,
+  storeId: string,
+  commission?: { type: "pct" | "fixed"; value: number },
+) {
+  const { stores } = await import("@/platform/db/schema");
+  await db
+    .update(stores)
+    .set({
+      acceptsSellers: true,
+      ...(commission
+        ? { commissionType: commission.type, commissionValue: commission.value }
+        : {}),
+    })
+    .where(eq(stores.id, storeId));
+}

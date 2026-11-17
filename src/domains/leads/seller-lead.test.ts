@@ -3,7 +3,10 @@ import { leads, partnerships } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { uuidv7 } from "@/platform/db/uuid";
 import { car, liveStore } from "@/domains/showcase/testing/fixtures";
-import { activeSeller } from "@/domains/sellers/testing/fixtures";
+import {
+  acceptSellers,
+  activeSeller,
+} from "@/domains/sellers/testing/fixtures";
 import { contactStore, leadsBoard, recordWhatsappClick } from "./service";
 
 const NOW = new Date("2026-11-16T10:00:00Z");
@@ -30,6 +33,7 @@ describe("lead pelo link do vendedor", () => {
 
   async function setup() {
     const a = await liveStore(t.db, "loja-a");
+    await acceptSellers(t.db, a.storeId);
     const v = await car(t.db, a.storeId);
     const bia = await activeSeller(t.db, "BIA", { name: "Bia Lima" });
     await t.db.insert(partnerships).values({

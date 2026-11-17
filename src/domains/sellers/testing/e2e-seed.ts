@@ -55,7 +55,7 @@ export async function removeSellersForTests(
   return rows.flatMap((r) => [r.front, r.back]).filter((x): x is string => !!x);
 }
 
-/** Só testes: o vendedor ativo do e2e, parceiro da loja da vitrine, com comissão de 2%. */
+/** Só testes: o vendedor ativo do e2e, parceiro da loja da vitrine (que aceita vendedores), com comissão de 2%. */
 export async function seedSellers(
   db: Db,
   ids: { sellerId: string; storeId: string },
@@ -86,6 +86,10 @@ export async function seedSellers(
   });
   await db
     .update(stores)
-    .set({ commissionType: "pct", commissionValue: S.commissionBps })
+    .set({
+      commissionType: "pct",
+      commissionValue: S.commissionBps,
+      acceptsSellers: true,
+    })
     .where(eq(stores.id, ids.storeId));
 }

@@ -896,3 +896,6 @@
 
 # 2026-11-16 · 009/T003 regras da venda
 - sellers/schemas: networkRulesSchema e commissionOverrideSchema (até 10% ou R$ 10.000, nulo remove), partnershipDecisionSchema, confirmSaleSchema (strict, só o valor final como número) e saleTermsSchema; commission.feeFor (bps sobre o valor final).
+
+# 2026-11-16 · 009/T004 parceria que vale
+- effectivePartner (vendedor ativo, parceria ativa, loja aceitando vendedores) em sellerForLead; sellerShowcase devolve closed sem 'Você ganha' para loja que não aceita; requestPartnership recusa (409); vitrine do vendedor mostra 'Esta loja não aceita vendedores' desabilitado. Testes da 008 e seed do e2e com a loja aceitando vendedores (fixture acceptSellers).

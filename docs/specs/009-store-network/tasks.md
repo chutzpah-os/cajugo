@@ -37,7 +37,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   · _RCL-FR-002, RCL-FR-003, RCL-SEC-003_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T004** Parceria que vale (`effectivePartner`) e o lado do vendedor:
+- [x] **T004** Parceria que vale (`effectivePartner`) e o lado do vendedor:
   - `requestPartnership` recusa loja que não aceita;
   - `sellerShowcase` devolve `closed` e esconde "Você ganha";
   - `sellerForLead` não marca;

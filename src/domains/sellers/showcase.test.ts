@@ -5,7 +5,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import { parseFilters } from "@/domains/showcase/service";
 import { car, liveStore } from "@/domains/showcase/testing/fixtures";
 import { requestPartnership, sellerHome, sellerShowcase } from "./service";
-import { activeSeller, seller } from "./testing/fixtures";
+import { acceptSellers, activeSeller, seller } from "./testing/fixtures";
 
 describe("vitrine do vendedor [7c]", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -24,9 +24,14 @@ describe("vitrine do vendedor [7c]", () => {
   async function setup() {
     const a = await liveStore(t.db, "loja-a");
     const b = await liveStore(t.db, "loja-b");
+    await acceptSellers(t.db, b.storeId);
     await t.db
       .update(stores)
-      .set({ commissionType: "pct", commissionValue: 200 })
+      .set({
+        commissionType: "pct",
+        commissionValue: 200,
+        acceptsSellers: true,
+      })
       .where(eq(stores.id, a.storeId));
     const argo = await car(t.db, a.storeId, {
       make: "Fiat",
