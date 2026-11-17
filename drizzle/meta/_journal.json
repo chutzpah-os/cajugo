@@ -134,6 +134,13 @@
       "when": 1794842152614,
       "tag": "0018_sellers",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794888680033,
+      "tag": "0019_store_network",
+      "breakpoints": true
     }
   ]
 }

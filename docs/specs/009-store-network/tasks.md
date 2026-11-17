@@ -17,7 +17,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-17.
   - GLOSSARY (Parceria que vale, status da comissão).
 
   · _—_
-- [ ] **T002** Migration `0019`, aditiva:
+- [x] **T002** Migration `0019`, aditiva:
   - `stores.accepts_sellers` (padrão `false`);
   - `vehicles.commission_override_*` e `sale_id`;
   - enums `sale_attribution` e `commission_status`;

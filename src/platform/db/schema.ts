@@ -143,6 +143,8 @@ export const stores = pgTable(
      */
     commissionType: commissionType("commission_type"),
     commissionValue: integer("commission_value"),
+    /** "Aceitar vendedores independentes" [7e] (009, D1): começa desligado. */
+    acceptsSellers: boolean("accepts_sellers").notNull().default(false),
     status: storeStatus("status").notNull().default("registered"),
     /** Última troca de endereço do catálogo: no máximo 1 a cada 30 dias (STO-FR-013). */
     slugChangedAt: timestamp("slug_changed_at", { withTimezone: true }),
@@ -463,6 +465,11 @@ export const vehicles = pgTable(
     hiddenNote: text("hidden_note"),
     hiddenAt: timestamp("hidden_at", { withTimezone: true }),
     hiddenBy: uuid("hidden_by").references(() => profiles.id),
+    /** Ajuste da comissão deste veículo, no lugar da padrão da loja (009). */
+    commissionOverrideType: commissionType("commission_override_type"),
+    commissionOverrideValue: integer("commission_override_value"),
+    /** Venda ativa da Rede Caju (009, D3): com ela, o desfazer simples é recusado. */
+    saleId: uuid("sale_id"),
     publishedAt: timestamp("published_at", { withTimezone: true }),
     soldAt: timestamp("sold_at", { withTimezone: true }),
     /** Excluído: guardado 90 dias para o admin (VEH-FR-014). */
@@ -810,4 +817,54 @@ export const sellerVehicleClicks = pgTable(
     clicks: integer("clicks").notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.sellerId, t.vehicleId, t.day] })],
+).enableRLS();
+
+/** Quem vendeu na Confirmar venda [7g] (009). */
+export const saleAttribution = pgEnum("sale_attribution", [
+  "link",
+  "other_partner",
+  "store",
+]);
+/** Status da comissão (GLOSSARY): "em análise" é da fase 2. */
+export const commissionStatus = pgEnum("commission_status", [
+  "to_receive",
+  "paid",
+]);
+
+/**
+ * Venda da Rede Caju (spec 009): valor final, atribuição, comissão e taxa CajuGo
+ * guardadas na confirmação (D4). Uma ativa por veículo; desfazer preenche
+ * `canceled_at`. A fatura (011) preenche `invoice_id`.
+ */
+export const sales = pgTable(
+  "sales",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    vehicleId: uuid("vehicle_id")
+      .notNull()
+      .references(() => vehicles.id, { onDelete: "cascade" }),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    finalPriceCents: integer("final_price_cents").notNull(),
+    attribution: saleAttribution("attribution").notNull(),
+    sellerId: uuid("seller_id").references(() => sellers.profileId),
+    commissionCents: integer("commission_cents"),
+    commissionStatus: commissionStatus("commission_status"),
+    feeBps: integer("fee_bps"),
+    feeCents: integer("fee_cents"),
+    invoiceId: uuid("invoice_id"),
+    confirmedBy: uuid("confirmed_by")
+      .notNull()
+      .references(() => profiles.id),
+    ...timestamps,
+    canceledAt: timestamp("canceled_at", { withTimezone: true }),
+  },
+  (t) => [
+    uniqueIndex("sales_vehicle_active")
+      .on(t.vehicleId)
+      .where(sql`${t.canceledAt} is null`),
+    index("sales_store_created").on(t.storeId, t.createdAt),
+    index("sales_seller_created").on(t.sellerId, t.createdAt),
+  ],
 ).enableRLS();

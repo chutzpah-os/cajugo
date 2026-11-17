@@ -890,3 +890,6 @@
 
 # 2026-11-16 · 009/T001 documentos
 - Spec, plano e tasks da 009. ARCHITECTURE §4 (accepts_sellers desligado, ajuste e sale_id em vehicles, sales com taxa guardada e canceled_at), API.md §5 (actions de [7e], [7f], [7g]; convite, avaliação e denúncia na 009b), GLOSSARY (Parceria que vale, Status da comissão).
+
+# 2026-11-16 · 009/T002 migration 0019
+- Migration aditiva 0019_store_network: stores.accepts_sellers (padrão false), vehicles.commission_override_* e sale_id, enums sale_attribution e commission_status, tabela sales (uma ativa por veículo, índices por loja e por vendedor, RLS). Aplicada no staging.
