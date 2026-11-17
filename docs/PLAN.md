@@ -119,6 +119,7 @@
 - Denunciar anúncio [14d] (anônimo, rate limit) e fila do admin [14e] (manter / ocultar com motivo).
 
 ## 008 · Rede Caju: vendedor — telas 7a, 7b, 7c, 7d, 13c, 7h
+> ✅ **Implementada** em 2026-11-16 (`docs/specs/008-sellers/`): cadastro do vendedor [7a] (conta nova ou papel na mesma conta; CPF único, chave Pix, honeypot e limite por IP) com a foto do documento privada; curadoria do admin [7h] (suporte só vê; aprovar gera o código, bloquear com motivo, desbloquear); área do vendedor com status ou painel [7b], vitrine [7c] com "Você ganha R$ X", link `?ref=` e "Pedir parceria"; clique do link 1 por aparelho a cada 24 h; lead "via vendedor {nome}" quando o vendedor é parceiro; conta [13c] com CPF mascarado e troca da chave Pix. Extrato e "Recebi" na 008b. Migration `0018` no staging e no prod. LCP de [1b] pelo link 1,96 s e CLS 0,001.
 - Cadastro do vendedor (CPF, chave Pix, documentos privados) → em análise → admin aprova/bloqueia [7h].
 - Painel, vitrine com "Você ganha R$ X", link `?ref=`, pedir parceria; extrato com "Recebi"; conta.
 

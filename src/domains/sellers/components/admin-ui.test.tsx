@@ -13,7 +13,7 @@ vi.mock("../actions", () => ({
 const base = {
   city: "Aracaju",
   phone: "5579999990000",
-  cpf: "52998224725",
+  cpf: "529.982.247-25",
   code: null,
   blockedReason: null,
   createdAt: new Date("2026-11-10T12:00:00Z"),

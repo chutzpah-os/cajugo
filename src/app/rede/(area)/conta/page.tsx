@@ -35,6 +35,24 @@ async function Content() {
           CPF {acc.cpf}
         </p>
         <p className="text-sm text-text-2">Seu código: {acc.code}</p>
+        <div className="flex flex-wrap gap-x-4">
+          <a
+            href={`/api/v1/sellers/${session.userId}/document/front`}
+            target="_blank"
+            rel="noopener"
+            className="flex min-h-11 items-center text-sm font-bold text-caju-deep underline"
+          >
+            Documento (frente)
+          </a>
+          <a
+            href={`/api/v1/sellers/${session.userId}/document/back`}
+            target="_blank"
+            rel="noopener"
+            className="flex min-h-11 items-center text-sm font-bold text-caju-deep underline"
+          >
+            Documento (verso)
+          </a>
+        </div>
       </section>
       <section className="flex flex-col gap-2 rounded-card border border-line bg-surface p-4">
         <h2 className="text-[17px] font-extrabold">Chave Pix</h2>
@@ -54,6 +72,11 @@ async function Content() {
         className="rounded-card border border-line bg-surface"
       >
         <ul className="divide-y divide-line-2">
+          <li>
+            <Link href="/conta/senha" className={row}>
+              Trocar senha <span aria-hidden>›</span>
+            </Link>
+          </li>
           <li>
             <Link href="/rede" className={row}>
               Lojas parceiras <span aria-hidden>›</span>

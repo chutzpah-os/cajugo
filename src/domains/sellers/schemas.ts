@@ -94,3 +94,18 @@ export const pixUpdateSchema = z
   .object({ ...pixFields })
   .strict()
   .transform(withPix);
+
+/** Lado da foto do documento (SEL-FR-001). */
+export const documentSideSchema = z
+  .object({ side: z.enum(["front", "back"]) })
+  .strict();
+
+/** Foto enviada com a assinatura: o nome é conferido no serviço (SEL-SEC-009). */
+export const attachDocumentSchema = z
+  .object({ side: z.enum(["front", "back"]), publicId: z.string().max(300) })
+  .strict();
+
+/** Próxima página da vitrine do vendedor (SEL-NFR-003). */
+export const sellerShowcasePageSchema = z
+  .object({ query: z.string().max(500), cursor: z.string().max(300) })
+  .strict();

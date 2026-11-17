@@ -30,7 +30,7 @@ describe("fotos do documento do vendedor", () => {
     side: "front" | "back",
     file = IMAGE,
   ) {
-    const signed = await documentUpload(deps(), s, side);
+    const signed = await documentUpload(deps(), s, { side });
     cloudinary.simulateUpload(signed, file);
     const publicId = `${signed.fields.folder}/${signed.fields.public_id}`;
     await attachDocument(deps(), s, { side, publicId });
@@ -42,7 +42,7 @@ describe("fotos do documento do vendedor", () => {
     const ana = await seller(t.db);
 
     // Act
-    const signed = await documentUpload(deps(), ana, "front");
+    const signed = await documentUpload(deps(), ana, { side: "front" });
     const front = await send(ana, "front");
     const back = await send(ana, "back", { ...IMAGE, format: "pdf" });
 
@@ -78,7 +78,7 @@ describe("fotos do documento do vendedor", () => {
     // Arrange
     const ana = await seller(t.db);
     const beto = await seller(t.db);
-    const signed = await documentUpload(deps(), ana, "front");
+    const signed = await documentUpload(deps(), ana, { side: "front" });
     cloudinary.simulateUpload(signed, IMAGE);
     const publicId = `${signed.fields.folder}/${signed.fields.public_id}`;
 
@@ -138,7 +138,9 @@ describe("fotos do documento do vendedor", () => {
     const ativo = await seller(t.db, { status: "active", code: "ANA" });
 
     // Act / Assert
-    await expect(documentUpload(deps(), ativo, "front")).rejects.toMatchObject({
+    await expect(
+      documentUpload(deps(), ativo, { side: "front" }),
+    ).rejects.toMatchObject({
       status: 409,
     });
   });

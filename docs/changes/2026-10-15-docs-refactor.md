@@ -884,3 +884,6 @@
 
 # 2026-11-16 · 008 migration 0018 no prod
 - Migration 0018_sellers aplicada no Supabase de produção com autorização do dono; conferido: sellers, partnerships e seller_vehicle_clicks com RLS, 6 colunas novas (profiles, stores, leads) e lead_origin com seller.
+
+# 2026-11-16 · 008/verify ajustes e fechamento
+- Suporte vê o CPF mascarado em [7h] (formatTaxId só para o admin); conta que já tem CPF mantém o mesmo ao virar vendedor; schemas strict nas actions das fotos e do Carregar mais; [13c] com links do próprio documento e Trocar senha; colunas da foto e estado da parceria num lugar só; exceção de tela da página do veículo no ARCHITECTURE §3. Spec 008 implemented, PLAN e T022 marcados.

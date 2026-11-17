@@ -140,6 +140,6 @@ Decisões D1–D6 do plano aprovadas em 2026-11-16.
   · _SEL-NFR-002_
 
 ## Fase 4 — Fechamento
-- [ ] **T022** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0018` no prod só com a sua autorização.
+- [x] **T022** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0018` no prod só com a sua autorização.
 
   · _—_

@@ -27,6 +27,7 @@ import {
   sellerShowcase,
   type SellerCard,
 } from "./service";
+import { sellerShowcasePageSchema } from "./schemas";
 import type { PartnerState } from "./status";
 
 const ipHash = async () => hashIp(clientIp(await headers()));
@@ -101,9 +102,9 @@ export async function registerSellerAction(
 }
 
 /** Assinatura para enviar a foto do documento (SEL-FR-001, SEL-SEC-009). */
-export async function sellerDocumentUploadAction(
-  side: "front" | "back",
-): Promise<
+export async function sellerDocumentUploadAction(input: {
+  side: "front" | "back";
+}): Promise<
   { ok: true; upload: SignedUpload } | { ok: false; message: string }
 > {
   try {
@@ -112,7 +113,7 @@ export async function sellerDocumentUploadAction(
       upload: await documentUpload(
         { db: getDb(), cloudinary: getCloudinary() },
         await currentSession(),
-        side,
+        input,
       ),
     };
   } catch (error) {
@@ -178,14 +179,15 @@ export async function requestPartnershipAction(input: {
 }
 
 /** Próxima página da vitrine do vendedor (SEL-NFR-003); `null` em falha. */
-export async function loadMoreSellerShowcaseAction(input: {
-  query: string;
-  cursor: string;
-}): Promise<{ items: SellerCard[]; nextCursor: string | null } | null> {
+export async function loadMoreSellerShowcaseAction(
+  input: unknown,
+): Promise<{ items: SellerCard[]; nextCursor: string | null } | null> {
+  const parsed = sellerShowcasePageSchema.safeParse(input);
+  if (!parsed.success) return null;
   try {
     const page = await sellerShowcase(getDb(), await currentSession(), {
-      filters: filtersFromQuery(String(input.query).slice(0, 500)),
-      cursor: String(input.cursor).slice(0, 300),
+      filters: filtersFromQuery(parsed.data.query),
+      cursor: parsed.data.cursor,
     });
     return { items: page.items, nextCursor: page.nextCursor };
   } catch (error) {
@@ -213,7 +215,7 @@ export type DecisionResult =
   | { ok: true }
   | { ok: false; message: string; errors?: Record<string, string> };
 
-async function decide(
+async function decisionResult(
   run: () => Promise<boolean>,
   stale: string,
 ): Promise<DecisionResult> {
@@ -234,7 +236,7 @@ export async function approveSellerAction(input: {
   sellerId: string;
 }): Promise<DecisionResult> {
   const session = await currentSession();
-  return decide(
+  return decisionResult(
     () => approve(getDb(), session, input),
     "Este cadastro já foi analisado.",
   );
@@ -246,7 +248,7 @@ export async function blockSellerAction(input: {
   reason: string;
 }): Promise<DecisionResult> {
   const session = await currentSession();
-  return decide(
+  return decisionResult(
     () => block(getDb(), session, input),
     "Este vendedor já não está ativo.",
   );
@@ -257,7 +259,7 @@ export async function unblockSellerAction(input: {
   sellerId: string;
 }): Promise<DecisionResult> {
   const session = await currentSession();
-  return decide(
+  return decisionResult(
     () => unblock(getDb(), session, input),
     "Este vendedor já não está bloqueado.",
   );

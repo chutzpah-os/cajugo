@@ -178,6 +178,27 @@ describe("cadastro do vendedor (quem já tem conta)", () => {
     ]);
   });
 
+  it("[SEL-FR-016] conta que já tem CPF (indicador que resgatou) mantém o mesmo CPF", async () => {
+    // Arrange
+    const ref = await personWith(t.db, "referrer");
+    await t.db
+      .update(profiles)
+      .set({ cpf: "11144477735" })
+      .where(eq(profiles.id, ref.userId));
+
+    // Act / Assert
+    await expect(registerSeller(deps(), ref, ADD, ctx)).rejects.toMatchObject({
+      errors: [expect.objectContaining({ field: "cpf" })],
+    });
+    const same = await registerSeller(
+      deps(),
+      ref,
+      { ...ADD, cpf: "111.444.777-35" },
+      ctx,
+    );
+    expect(same.userId).toBe(ref.userId);
+  });
+
   it("[SEL-FR-016] conta que já é vendedor ou da equipe não cadastra de novo", async () => {
     // Arrange
     const owner = await storeOwner(t.db, "loja-a", "caio@x.com");

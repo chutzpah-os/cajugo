@@ -5,9 +5,6 @@ import type { AdminSeller, SellersAdmin } from "../service";
 import { SELLER_STATUS_LABEL } from "../status";
 import { ApproveButton, BlockButton, UnblockButton } from "./seller-decisions";
 
-const cpfText = (cpf: string | null) =>
-  cpf ? cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4") : "—";
-
 function Card({
   s,
   canDecide,
@@ -37,7 +34,7 @@ function Card({
         {s.city} · {s.phone ? formatBrPhone(s.phone) : "sem celular"}
       </p>
       <p className="text-sm text-text-2">
-        CPF {cpfText(s.cpf)} · cadastro em {brDate.format(s.createdAt)}
+        CPF {s.cpf ?? "—"} · cadastro em {brDate.format(s.createdAt)}
       </p>
       {s.code && <p className="text-sm text-text-2">Código {s.code}</p>}
       {s.blockedReason && (

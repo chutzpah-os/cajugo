@@ -50,3 +50,10 @@ export function maskTaxId(type: TaxIdType, digits: string): string {
     ? `${digits.slice(0, 3)}.***.***-${digits.slice(9)}`
     : `${digits.slice(0, 2)}.***.***/${digits.slice(8, 12)}-${digits.slice(12)}`;
 }
+
+/** Documento completo com a pontuação: só para quem pode ver inteiro (equipe). */
+export function formatTaxId(type: TaxIdType, digits: string): string {
+  return type === "cpf"
+    ? digits.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
+    : digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5");
+}

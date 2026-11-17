@@ -134,7 +134,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | Tipo | Rota / ação | Tela |
 |---|---|---|
 | página | `/rede` (status ou painel) · `/rede/vitrine` · `/rede/extrato` (008b) · `/rede/conta` | 7b, 7c, 7d, 13c |
-| A | `requestPartnershipAction({ storeId })` (008) | 7c |
+| A | `requestPartnershipAction({ storeId })` · `loadMoreSellerShowcaseAction({ query, cursor })` (008) | 7c |
 | — | link do veículo: `/v/{id}?ref={code}` (montado por função única) | 7c |
 | A | `sellerClickAction({ vehicleId, code })` — pública, 1 por aparelho por dia, sem robôs (008) | 1b |
 | A | `markCommissionReceived(saleId)` (008b) | 7d |

@@ -376,3 +376,6 @@
 
 # 2026-11-16 · 008/T016 vitrine do vendedor
 - O botão desabilitado 'Esta loja não aceita vendedores' fica para a 009, que cria a escolha da loja; até lá o serviço não produz esse estado.
+
+# 2026-11-16 · 008/verify ajustes e fechamento
+- Revisão em dois eixos: CPF completo chegava ao suporte (SECURITY §8), a conta podia trocar o CPF já guardado e três actions não validavam a entrada com schema (API.md §2).

@@ -23,7 +23,7 @@ import {
 } from "@/domains/showcase/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import { brDay } from "@/platform/br/date";
-import { maskTaxId } from "@/platform/br/tax-id";
+import { formatTaxId, maskTaxId } from "@/platform/br/tax-id";
 import { appUrl } from "@/platform/http/urls";
 import {
   partnerships,
@@ -47,6 +47,8 @@ import type { PrivateFile } from "@/platform/http/private-file";
 import { authorize, type Session } from "@/platform/http/session";
 import {
   addSellerSchema,
+  attachDocumentSchema,
+  documentSideSchema,
   blockSellerSchema,
   partnershipRequestSchema,
   pixUpdateSchema,
@@ -127,10 +129,7 @@ export async function registerSeller(
   if (ctx.honeypotFilled) return { userId: null };
   if (session) return addSellerToAccount(deps.db, session, input);
 
-  const parsed = sellerSignupSchema.safeParse(input);
-  if (!parsed.success)
-    throw AppError.validation(fieldErrorsFromZod(parsed.error));
-  const data = parsed.data;
+  const data = parseOrThrow(sellerSignupSchema, input);
 
   const [existing] = await deps.db
     .select({ id: profiles.id })
@@ -181,11 +180,20 @@ async function addSellerToAccount(
     throw AppError.forbidden();
   if (session.roles.includes("seller"))
     throw AppError.conflict("Sua conta já é de vendedor.");
-  const parsed = addSellerSchema.safeParse(input);
-  if (!parsed.success)
-    throw AppError.validation(fieldErrorsFromZod(parsed.error));
-  await assertCpfFree(db, parsed.data.cpf, session.userId);
-  await db.transaction((tx) => createSeller(tx, session.userId, parsed.data));
+  const data = parseOrThrow(addSellerSchema, input);
+  // CPF já da conta (indicador que resgatou, 010) não é trocado por outro.
+  const [own] = await db
+    .select({ cpf: profiles.cpf })
+    .from(profiles)
+    .where(eq(profiles.id, session.userId));
+  if (own?.cpf && own.cpf !== data.cpf)
+    throw fieldError(
+      "cpf",
+      "cpf_mismatch",
+      "Use o CPF já cadastrado na sua conta.",
+    );
+  await assertCpfFree(db, data.cpf, session.userId);
+  await db.transaction((tx) => createSeller(tx, session.userId, data));
   return { userId: session.userId };
 }
 
@@ -213,6 +221,18 @@ const sideOf = (raw: unknown): DocumentSide => {
   return raw as DocumentSide;
 };
 
+/** Colunas da foto de cada lado (frente e verso andam juntas). */
+const DOCUMENT_COLUMNS = {
+  front: { publicId: "documentFrontPublicId", format: "documentFrontFormat" },
+  back: { publicId: "documentBackPublicId", format: "documentBackFormat" },
+} as const;
+
+type SellerRow = typeof sellers.$inferSelect;
+const documentOf = (row: SellerRow, side: DocumentSide) => ({
+  publicId: row[DOCUMENT_COLUMNS[side].publicId],
+  format: row[DOCUMENT_COLUMNS[side].format],
+});
+
 /**
  * Assinatura para o navegador enviar a foto do documento direto ao Cloudinary,
  * privada (`authenticated`), na pasta do vendedor da sessão e com nome gerado aqui
@@ -221,14 +241,15 @@ const sideOf = (raw: unknown): DocumentSide => {
 export async function documentUpload(
   deps: FileDeps,
   session: Session | null,
-  side: unknown,
+  raw: unknown,
 ): Promise<SignedUpload> {
   const me = await ownSeller(deps.db, session);
+  const { side } = parseOrThrow(documentSideSchema, raw);
   if (me.status !== "in_review")
     throw AppError.conflict("O cadastro já foi analisado.");
   return deps.cloudinary.signUpload({
     folder: documentFolder(me.profileId),
-    publicId: `${documentName(sideOf(side))}${crypto.randomUUID()}`,
+    publicId: `${documentName(side)}${crypto.randomUUID()}`,
     allowedFormats: PRIVATE_FORMATS,
     type: "authenticated",
   });
@@ -242,17 +263,19 @@ export async function documentUpload(
 export async function attachDocument(
   deps: FileDeps,
   session: Session | null,
-  input: { side: unknown; publicId: unknown },
+  raw: unknown,
 ): Promise<void> {
   const me = await ownSeller(deps.db, session);
   if (me.status !== "in_review")
     throw AppError.conflict("O cadastro já foi analisado.");
-  const side = sideOf(input.side);
+  const parsed = attachDocumentSchema.safeParse(raw);
+  // Lado ou nome fora do formato: o arquivo não é deste vendedor (SEL-SEC-009).
+  if (!parsed.success) throw AppError.notFound();
+  const { side, publicId } = parsed.data;
   const prefix = deps.cloudinary.fullPublicId(
     documentFolder(me.profileId),
     documentName(side),
   );
-  const publicId = typeof input.publicId === "string" ? input.publicId : "";
   if (!publicId.startsWith(prefix) || !UUID.test(publicId.slice(prefix.length)))
     throw AppError.notFound();
   const { format } = await checkPrivateUpload(
@@ -261,15 +284,11 @@ export async function attachDocument(
     side,
     "Não encontramos a foto enviada. Tente de novo.",
   );
-  const previous =
-    side === "front" ? me.documentFrontPublicId : me.documentBackPublicId;
+  const previous = documentOf(me, side).publicId;
+  const cols = DOCUMENT_COLUMNS[side];
   await deps.db
     .update(sellers)
-    .set(
-      side === "front"
-        ? { documentFrontPublicId: publicId, documentFrontFormat: format }
-        : { documentBackPublicId: publicId, documentBackFormat: format },
-    )
+    .set({ [cols.publicId]: publicId, [cols.format]: format })
     .where(eq(sellers.profileId, me.profileId));
   if (previous && previous !== publicId)
     await deps.cloudinary.destroy(previous, "authenticated");
@@ -295,10 +314,9 @@ export async function documentFile(
     .select()
     .from(sellers)
     .where(eq(sellers.profileId, sellerId));
-  const publicId =
-    which === "front" ? row?.documentFrontPublicId : row?.documentBackPublicId;
-  const format =
-    which === "front" ? row?.documentFrontFormat : row?.documentBackFormat;
+  const { publicId, format } = row
+    ? documentOf(row, which)
+    : { publicId: null, format: null };
   if (!publicId || !format) throw AppError.notFound();
   const file = await deps.cloudinary.fetchPrivate(publicId, format);
   if (!file) throw AppError.notFound();
@@ -307,6 +325,10 @@ export async function documentFile(
     filename: `documento-${which}.${privateExtension(format)}`,
   };
 }
+
+/** Parceria aberta como o vendedor vê: ativa é "Parceiro"; pendente, "Pendente". */
+const partnerState = (status: "pending" | "active" | "declined" | "ended") =>
+  status === "active" ? ("partner" as const) : ("pending" as const);
 
 export type SellerHome =
   | {
@@ -372,7 +394,7 @@ export async function sellerHome(
     stores: rows.map((r) => ({
       storeId: r.storeId,
       name: r.name,
-      status: r.status === "active" ? "partner" : "pending",
+      status: partnerState(r.status),
     })),
   };
 }
@@ -405,7 +427,14 @@ export async function sellersAdmin(
   db: Db,
   session: Session | null,
 ): Promise<SellersAdmin> {
-  authorizeTo(session, "sellers.view");
+  const viewer = authorizeTo(session, "sellers.view");
+  // CPF completo só para o admin; o suporte vê mascarado (SECURITY §8, SEL-SEC-001).
+  const cpfFor = (cpf: string | null) =>
+    !cpf
+      ? null
+      : can(viewer, "sellers.review")
+        ? formatTaxId("cpf", cpf)
+        : maskTaxId("cpf", cpf);
   const rows = await db
     .select({
       sellerId: sellers.profileId,
@@ -431,7 +460,7 @@ export async function sellersAdmin(
         name: r.name,
         city: r.city,
         phone: r.phone,
-        cpf: r.cpf,
+        cpf: cpfFor(r.cpf),
         code: r.code,
         blockedReason: r.blockedReason,
         createdAt: r.createdAt,
@@ -665,10 +694,7 @@ export async function sellerShowcase(
         )
     : [];
   const partnerOf = new Map(
-    mine.map((p) => [
-      p.storeId,
-      p.status === "active" ? ("partner" as const) : ("pending" as const),
-    ]),
+    mine.map((p) => [p.storeId, partnerState(p.status)]),
   );
   return {
     total: page.total,
@@ -729,7 +755,7 @@ export async function requestPartnership(
         inArray(partnerships.status, ["active", "pending"]),
       ),
     );
-  return open?.status === "active" ? "partner" : "pending";
+  return open ? partnerState(open.status) : "pending";
 }
 
 /** Vendedor ativo dono do código; `null` para código fora do formato ou não ativo. */

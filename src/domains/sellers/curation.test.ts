@@ -55,11 +55,26 @@ describe("curadoria dos vendedores [7h]", () => {
       name: "Antigo",
       city: "Aracaju",
       phone: "5579999990000",
-      cpf: expect.stringMatching(/^\d{11}$/),
+      cpf: expect.stringMatching(/^\d{3}\.\*\*\*\.\*\*\*-\d{2}$/),
       hasDocuments: false,
     });
     expect(view.active.map((s) => s.name)).toEqual(["Ativo"]);
     expect(view.blocked[0]).toMatchObject({ name: "Bloq", blockedReason: "x" });
+  });
+
+  it("[SEL-SEC-001] o suporte vê o CPF mascarado; só o admin vê completo", async () => {
+    // Arrange
+    await seller(t.db, { name: "Ana" });
+    const support = await personWith(t.db, "support");
+    const admin = await personWith(t.db, "admin");
+
+    // Act
+    const bySupport = (await sellersAdmin(t.db, support)).inReview[0].cpf;
+    const byAdmin = (await sellersAdmin(t.db, admin)).inReview[0].cpf;
+
+    // Assert
+    expect(bySupport).toMatch(/^\d{3}\.\*\*\*\.\*\*\*-\d{2}$/);
+    expect(byAdmin).toMatch(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/);
   });
 
   it("[SEL-FR-004] aprovar gera o código; sem as duas fotos não aprova", async () => {

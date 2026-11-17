@@ -36,7 +36,7 @@ export function DocumentForm({ sent }: { sent: Record<Side, boolean> }) {
     setBusy(side);
     setError(null);
     try {
-      const signed = await sellerDocumentUploadAction(side);
+      const signed = await sellerDocumentUploadAction({ side });
       if (!signed.ok) throw new Error(signed.message);
       const publicId = await uploadSigned(
         signed.upload,

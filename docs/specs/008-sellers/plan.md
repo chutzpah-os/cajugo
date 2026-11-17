@@ -183,6 +183,14 @@ O e2e apaga contas de teste: as tabelas novas entram na limpeza do seed (`remove
 - **Descartado: guardar o vendedor no lead pelo navegador.** O cookie `httpOnly` do proxy já existe e não expõe o código a scripts.
 - **Descartado: comissão só na 009.** Sem ela, "Você ganha" (SEL-FR-008) não tem como ser testado nem mostrado; a coluna entra agora e a tela, na 009.
 
+## Ajustes do `/verify` (2026-11-16)
+- **CPF completo só para o admin:** em [7h], o suporte vê o CPF mascarado (`SECURITY.md` §8); `formatTaxId` na plataforma.
+- **Conta que já tem CPF** (indicador que resgatou, 010) vira vendedor com o mesmo CPF; outro é recusado no campo.
+- **Schemas `.strict()`** nas actions das fotos (`{ side }`, `{ side, publicId }`) e no "Carregar mais" da vitrine do vendedor.
+- **Conta [13c]:** links para a frente e o verso do próprio documento e "Trocar senha"; os dados pessoais aparecem na própria conta (não há tela de edição no MVP).
+- Colunas da foto por lado e o estado da parceria num lugar só; exceção de tela da página do veículo com o contador de cliques (`sellers`) no `ARCHITECTURE.md` §3.
+- Fica como está: o clique conta 1 por aparelho a cada 24 h (marca no aparelho, como a visualização da 007), com o limite de 60/min por rede no servidor; o botão "Esta loja não aceita vendedores" chega com a escolha da loja na 009; pedido pendente de vendedor bloqueado continua guardado (a 009 filtra na lista da loja).
+
 ## Decisões (aprovadas em 2026-11-16)
 - **D1. Cadastro em dois passos:** dados e conta primeiro; fotos do documento já logado, no passo seguinte. **Recomendo:** o upload privado assinado exige dono, e é como o comprovante da 004. Sem as fotos, o cadastro aparece como "faltando documento" e não pode ser aprovado.
 - **D2. Comissão da loja no banco já na 008** (`stores.commission_type`, `commission_value`), sem tela; a 009 cria [7e]. **Recomendo:** é o que permite "Você ganha R$ X" (SEL-FR-008) e o teste dele.
