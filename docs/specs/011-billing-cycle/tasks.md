@@ -93,7 +93,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - lojista, vendedor → 403.
 
   · _SUB-FR-006, SUB-FR-011, SUB-FR-012, SUB-SEC-003_
-- [ ] **T012** `suspendStore` e `reactivateStore` (`stores.suspend`, só admin):
+- [x] **T012** `suspendStore` e `reactivateStore` (`stores.suspend`, só admin):
   - suspender só `past_due`;
   - reativar só `suspended`, com motivo de 3 a 200, volta a `past_due` com `past_due_since = agora` e a fatura aberta;
   - avisos, `updateTag`, registro com o admin e o motivo;

@@ -977,3 +977,6 @@
 
 # 2026-11-23 · Assinaturas do admin, serviço [011/T011]
 - subscriptionsView: MRR, contagens, plano, filtros, linha por status (em dia, atraso, em análise, suspensa), wa.me de cobrança e 'Vencem em 3 dias'; permissão subscriptions.view (admin e suporte).
+
+# 2026-11-23 · Suspender e reativar pelo admin [011/T012]
+- suspendStore (só em atraso) e reactivateStore (só suspensa, motivo 3–200; volta em atraso com a tolerância contada de novo, ou ativa sem fatura vencida), com avisos, registro e as actions com updateTag.

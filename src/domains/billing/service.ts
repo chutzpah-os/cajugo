@@ -1069,8 +1069,10 @@ export async function removeBillingForTests(
 export { saoPauloMonthStart } from "./due-date";
 export { refundSaleFee, runBillingCycle } from "./cycle";
 export {
+  reactivateStore,
   SUBSCRIPTION_FILTERS,
   subscriptionsView,
+  suspendStore,
   type SubscriptionFilter,
   type SubscriptionItem,
   type SubscriptionsView,

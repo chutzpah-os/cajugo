@@ -7,8 +7,11 @@ import { invoices, payments, profiles, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import type { Session } from "@/platform/http/session";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { BILLED_STATUSES } from "./cycle";
-import { daysLate, dueSoon } from "./cycle-dates";
+import { moveSubscription } from "@/domains/stores/service";
+import { logActivity } from "@/platform/http/activity-log";
+import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
+import { BILLED_STATUSES, notifyStatusChange } from "./cycle";
+import { daysLate, dueSoon, isOverdue } from "./cycle-dates";
 import { mrrCents } from "./invoice-math";
 
 /** Assinaturas do admin [4b] (spec 011): admin e suporte veem; só o admin decide. */
@@ -209,4 +212,114 @@ export async function subscriptionsView(
     items,
     dueSoon: dueSoonList,
   };
+}
+
+const suspendSchema = z.object({ storeId: z.uuid() }).strict();
+const reactivateSchema = z
+  .object({
+    storeId: z.uuid(),
+    reason: z
+      .string()
+      .trim()
+      .min(3, "Informe o motivo.")
+      .max(200, "Use no máximo 200 caracteres."),
+  })
+  .strict();
+
+function parse<T>(schema: z.ZodType<T>, raw: unknown): T {
+  const parsed = schema.safeParse(raw);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  return parsed.data;
+}
+
+async function storeStatus(db: Db, storeId: string) {
+  const [store] = await db
+    .select({ status: stores.status })
+    .from(stores)
+    .where(eq(stores.id, storeId))
+    .for("update");
+  if (!store) throw AppError.notFound();
+  return store.status;
+}
+
+/** **Suspender** [4b] (SUB-FR-013): só o admin, só loja em atraso. */
+export async function suspendStore(
+  deps: { db: Db; now?: () => Date },
+  session: Session | null,
+  raw: unknown,
+): Promise<void> {
+  const admin = authorizeTo(session, "stores.suspend");
+  const { storeId } = parse(suspendSchema, raw);
+  const now = deps.now?.() ?? new Date();
+  await deps.db.transaction(async (tx) => {
+    await storeStatus(tx, storeId);
+    const [row] = await tx
+      .select({ since: stores.pastDueSince })
+      .from(stores)
+      .where(eq(stores.id, storeId));
+    if (
+      !(await moveSubscription(
+        tx,
+        storeId,
+        ["past_due"],
+        "suspended",
+        row.since,
+      ))
+    )
+      throw AppError.conflict("Só uma loja em atraso pode ser suspensa.");
+    await notifyStatusChange(tx, storeId, "store_suspended", now);
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "store.suspended",
+      entity: "store",
+      entityId: storeId,
+      data: { by: "admin" },
+    });
+  });
+}
+
+/**
+ * **Reativar** [4b] (SUB-FR-013): só o admin, só loja suspensa, com motivo. Sem
+ * pagamento, volta a em atraso e a tolerância conta de novo a partir de agora; sem
+ * fatura vencida em aberto, volta a ativa.
+ */
+export async function reactivateStore(
+  deps: { db: Db; now?: () => Date },
+  session: Session | null,
+  raw: unknown,
+): Promise<void> {
+  const admin = authorizeTo(session, "stores.suspend");
+  const { storeId, reason } = parse(reactivateSchema, raw);
+  const now = deps.now?.() ?? new Date();
+  await deps.db.transaction(async (tx) => {
+    if ((await storeStatus(tx, storeId)) !== "suspended")
+      throw AppError.conflict("Só uma loja suspensa pode ser reativada.");
+    const open = await tx
+      .select({ dueAt: invoices.dueAt })
+      .from(invoices)
+      .where(
+        and(
+          eq(invoices.storeId, storeId),
+          eq(invoices.kind, "monthly"),
+          eq(invoices.status, "open"),
+        ),
+      );
+    const late = open.some((i) => isOverdue(i.dueAt, now));
+    await moveSubscription(
+      tx,
+      storeId,
+      ["suspended"],
+      late ? "past_due" : "active",
+      late ? now : null,
+    );
+    await notifyStatusChange(tx, storeId, "store_reactivated", now, true);
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "store.reactivated",
+      entity: "store",
+      entityId: storeId,
+      data: { by: "admin", reason, to: late ? "past_due" : "active" },
+    });
+  });
 }

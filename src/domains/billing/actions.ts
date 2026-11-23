@@ -17,8 +17,10 @@ import {
   findStoresToCharge,
   receiptUpload,
   registerManualPayment,
+  reactivateStore,
   rejectPayment,
   startCheckout,
+  suspendStore,
   submitReceipt,
   type StoreHit,
 } from "./service";
@@ -179,6 +181,35 @@ export async function manualPaymentAction(input: {
     );
     updateTag(STORES_TAG);
     return { ok: true, whatsappUrl };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/** **Suspender** [4b] (SUB-FR-013): a loja sai do ar já na próxima visita. */
+export async function suspendStoreAction(input: {
+  storeId: string;
+}): Promise<ReviewResult> {
+  try {
+    await suspendStore({ db: getDb() }, await currentSession(), input);
+    updateTag(STORES_TAG);
+    updateTag(VEHICLES_TAG);
+    return { ok: true };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/** **Reativar** com motivo [4b] (SUB-FR-013): a loja volta ao ar. */
+export async function reactivateStoreAction(input: {
+  storeId: string;
+  reason: string;
+}): Promise<ReviewResult> {
+  try {
+    await reactivateStore({ db: getDb() }, await currentSession(), input);
+    updateTag(STORES_TAG);
+    updateTag(VEHICLES_TAG);
+    return { ok: true };
   } catch (error) {
     return reviewError(error);
   }
