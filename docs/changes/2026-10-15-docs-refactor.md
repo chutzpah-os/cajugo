@@ -989,3 +989,6 @@
 
 # 2026-11-23 · Fatura do mês e Pix da mensal [011/T015]
 - /painel/fatura [10c] com as faturas abertas, total a pagar e Pagar com Pix; /painel/fatura/pix [6c] com o total em aberto; PixPayment compartilhado com o Pix da 1ª mensalidade.
+
+# 2026-11-23 · Conta do lojista [011/T016]
+- /painel/conta [3c] completa: Plano Catálogo, status, valor, próxima cobrança, Como pagar (chave Pix e WhatsApp), fatura do mês, faturas anteriores e o bloco Rede Caju.
