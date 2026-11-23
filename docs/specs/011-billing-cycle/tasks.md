@@ -28,7 +28,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   Teste de schema.
 
   · _—_
-- [ ] **T003** [P] Funções puras com testes unitários:
+- [x] **T003** [P] Funções puras com testes unitários:
   - total da fatura (mensalidade + taxas − créditos até o subtotal, nunca negativo, sobra do crédito para a próxima);
   - quitação da mais antiga (faturas inteiras, sobra, valor menor que a mais antiga recusado);
   - MRR.

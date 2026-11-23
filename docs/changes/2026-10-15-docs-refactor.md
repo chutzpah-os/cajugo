@@ -950,3 +950,6 @@
 
 # 2026-11-23 · Migration 0020 do ciclo de cobrança [011/T002]
 - billing_credits (crédito da loja), stores.past_due_since, avisos invoice_due/store_suspended/store_reactivated e índice invoices_open_due; aditiva.
+
+# 2026-11-23 · Contas da fatura mensal [011/T003]
+- invoice-math.ts: total (mensalidade + taxas − créditos até o subtotal), quitação da mais antiga e MRR, com testes unitários.
