@@ -968,3 +968,6 @@
 
 # 2026-11-23 · Fatura e Conta do lojista [011/T008]
 - invoiceView (faturas abertas da mais antiga, taxas por veículo, total em aberto) e accountView (plano, status, próxima cobrança, Como pagar, fatura do mês e anteriores); só o dono.
+
+# 2026-11-23 · Comprovante da fatura mensal [011/T009]
+- pixView/receiptUpload/submitReceipt cobram o total das faturas mensais abertas (pagamento ligado à mais antiga); a loja não muda de status ao enviar nem ao ser recusada; fila mostra 'Mensalidade mm/aaaa' com o total esperado.

@@ -46,6 +46,7 @@ import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { storeUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
+import { openMonthly, periodLabel } from "./account";
 import { firstDueDate, saoPauloMonthStart } from "./due-date";
 import {
   confirmPaymentSchema,
@@ -92,6 +93,44 @@ async function openFirstInvoice(db: Db, storeId: string) {
       ),
     );
   return invoice ?? null;
+}
+
+type Invoice = typeof invoices.$inferSelect;
+
+/**
+ * O que a loja paga agora: a 1ª mensalidade ou, depois dela, as faturas mensais
+ * abertas (011): o total delas, com o pagamento ligado à mais antiga (SUB-FR-016).
+ */
+async function payable(
+  db: Db,
+  storeId: string,
+): Promise<{ invoice: Invoice; amountCents: number; first: boolean } | null> {
+  const first = await openFirstInvoice(db, storeId);
+  if (first)
+    return { invoice: first, amountCents: first.totalCents, first: true };
+  const open = await openMonthly(db, storeId);
+  if (!open.length) return null;
+  return {
+    invoice: open[0],
+    amountCents: open.reduce((sum, i) => sum + i.totalCents, 0),
+    first: false,
+  };
+}
+
+/** Valor esperado de um pagamento: a 1ª ou o total mensal em aberto da loja. */
+async function expectedFor(db: Db, invoice: Invoice): Promise<number> {
+  if (invoice.kind === "first") return invoice.totalCents;
+  const open = await openMonthly(db, invoice.storeId);
+  return open.reduce((sum, i) => sum + i.totalCents, 0) || invoice.totalCents;
+}
+
+async function hasReceiptInReview(db: Db, storeId: string) {
+  const [row] = await db
+    .select({ id: payments.id })
+    .from(payments)
+    .where(and(eq(payments.storeId, storeId), eq(payments.status, "submitted")))
+    .limit(1);
+  return !!row;
 }
 
 export type CheckoutView = {
@@ -269,13 +308,13 @@ export async function pixView(
   session: Session | null,
 ): Promise<PixView | null> {
   const { storeId } = ownerOf(session);
-  const invoice = await openFirstInvoice(deps.db, storeId);
-  if (!invoice) return null;
+  const due = await payable(deps.db, storeId);
+  if (!due) return null;
   const settings = await getSettings(deps.db, clock(deps));
   if (!pixReady(settings.pix)) throw AppError.conflict(UNAVAILABLE);
   const { key, beneficiary, city } = settings.pix;
   return {
-    amountCents: invoice.totalCents,
+    amountCents: due.amountCents,
     key,
     beneficiary,
     city,
@@ -283,7 +322,7 @@ export async function pixView(
       key,
       name: beneficiary,
       city,
-      amountCents: invoice.totalCents,
+      amountCents: due.amountCents,
     }),
     reviewBusinessDays: settings.review_business_days,
   };
@@ -306,11 +345,11 @@ export async function receiptUpload(
     .select({ status: stores.status })
     .from(stores)
     .where(eq(stores.id, storeId));
-  if (
-    store?.status !== "registered" ||
-    !(await openFirstInvoice(deps.db, storeId))
-  )
+  const due = await payable(deps.db, storeId);
+  if (!store || !due || (due.first && store.status !== "registered"))
     throw AppError.conflict("Não há pagamento aguardando comprovante.");
+  if (!due.first && (await hasReceiptInReview(deps.db, storeId)))
+    throw AppError.conflict(IN_REVIEW);
   return deps.cloudinary.signUpload({
     folder: receiptFolder(storeId),
     publicId: `receipt-${crypto.randomUUID()}`,
@@ -357,9 +396,16 @@ export async function submitReceipt(
   const now = clock(deps);
   try {
     await deps.db.transaction(async (tx) => {
-      const invoice = await openFirstInvoice(tx, storeId);
-      if (!invoice || !(await markPaymentReview(tx, storeId)))
+      const due = await payable(tx, storeId);
+      if (!due) throw AppError.conflict(IN_REVIEW);
+      // Só a 1ª mensalidade muda a loja; na mensal ela segue como está (SUB-FR-003).
+      if (
+        due.first
+          ? !(await markPaymentReview(tx, storeId))
+          : await hasReceiptInReview(tx, storeId)
+      )
         throw AppError.conflict(IN_REVIEW);
+      const { invoice } = due;
       const [payment] = await tx
         .insert(payments)
         .values({
@@ -382,7 +428,7 @@ export async function submitReceipt(
         data: {
           invoiceId: invoice.id,
           paidCents,
-          expectedCents: invoice.totalCents,
+          expectedCents: due.amountCents,
         },
       });
     });
@@ -440,6 +486,8 @@ export async function reviewQueue(
       storeName: stores.name,
       storeSlug: stores.slug,
       kind: invoices.kind,
+      period: invoices.period,
+      storeId: payments.storeId,
       paidCents: payments.paidCents,
       amountCents: payments.amountCents,
       expectedCents: invoices.totalCents,
@@ -461,17 +509,32 @@ export async function reviewQueue(
       ),
     );
   const settings = await getSettings(deps.db, now);
+  // Mensal: o esperado é o total em aberto da loja (SUB-FR-016).
+  const monthlyExpected = new Map<string, number>();
+  for (const r of rows)
+    if (r.kind === "monthly" && !monthlyExpected.has(r.storeId))
+      monthlyExpected.set(
+        r.storeId,
+        (await openMonthly(deps.db, r.storeId)).reduce(
+          (sum, i) => sum + i.totalCents,
+          0,
+        ) || r.expectedCents,
+      );
   return {
     items: rows.map((r) => {
       const paid = r.paidCents ?? r.amountCents;
+      const expectedCents = monthlyExpected.get(r.storeId) ?? r.expectedCents;
       return {
         paymentId: r.paymentId,
         storeName: r.storeName,
         storeSlug: r.storeSlug,
-        reference: REFERENCE[r.kind],
+        reference:
+          r.kind === "monthly"
+            ? `${REFERENCE.monthly} ${periodLabel(r.period)}`
+            : REFERENCE.first,
         paidCents: paid,
-        expectedCents: r.expectedCents,
-        differs: paid !== r.expectedCents,
+        expectedCents,
+        differs: paid !== expectedCents,
         submittedAt: r.submittedAt,
         format: r.format,
       };
@@ -624,8 +687,10 @@ export async function rejectPayment(
       .select()
       .from(invoices)
       .where(eq(invoices.id, payment.invoiceId));
+    // Na mensal a loja segue no status em que estava (SUB-FR-005).
     if (invoice.kind === "first") await backToRegistered(tx, payment.storeId);
-    const missing = invoice.totalCents - payment.amountCents;
+    const expectedCents = await expectedFor(tx, invoice);
+    const missing = expectedCents - payment.amountCents;
     const [store] = await tx
       .select({ ownerId: stores.ownerId })
       .from(stores)
@@ -652,7 +717,7 @@ export async function rejectPayment(
         reason,
         paidCents: payment.paidCents,
         amountCents: payment.amountCents,
-        expectedCents: invoice.totalCents,
+        expectedCents,
       },
     });
   });

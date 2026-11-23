@@ -70,7 +70,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - usuário da loja → 403; loja B → 404.
 
   · _SUB-FR-002, SUB-FR-010, SUB-SEC-001, SUB-SEC-003_
-- [ ] **T009** Comprovante da fatura mensal (`pixView`, `receiptUpload`, `submitReceipt`, `rejectPayment`):
+- [x] **T009** Comprovante da fatura mensal (`pixView`, `receiptUpload`, `submitReceipt`, `rejectPayment`):
   - cobra o total em aberto;
   - referência "Mensalidade mm/aaaa" na fila;
   - a loja não muda de status ao enviar nem ao ser recusada (só a 1ª mensalidade muda);
