@@ -397,3 +397,6 @@
 
 # 2026-11-23 · Migration 0020 do ciclo de cobrança [011/T002]
 - past_due_since estava só no ARCHITECTURE; a tolerância precisa de um começo que a reativação do admin reinicia.
+
+# 2026-11-23 · Taxa de venda desfeita [011/T007]
+- D1: dependência num sentido só (sellers → billing); a fatura não copia as vendas.

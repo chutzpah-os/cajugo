@@ -315,6 +315,62 @@ export async function suspendOverdue(db: Db, now: Date): Promise<number> {
   return suspended;
 }
 
+/**
+ * Venda desfeita (SUB-FR-014), na transação de `sellers.undoSale`: sem fatura, nada;
+ * com a fatura aberta, a taxa sai e o total é recalculado (o crédito que passar do
+ * novo subtotal volta a ficar disponível); com a fatura paga, vira crédito.
+ */
+export async function refundSaleFee(
+  tx: Db,
+  saleId: string,
+  now: Date,
+): Promise<void> {
+  const [sale] = await tx
+    .select({
+      storeId: sales.storeId,
+      feeCents: sales.feeCents,
+      invoiceId: sales.invoiceId,
+    })
+    .from(sales)
+    .where(eq(sales.id, saleId));
+  if (!sale?.invoiceId || !sale.feeCents) return;
+  const [invoice] = await tx
+    .select()
+    .from(invoices)
+    .where(eq(invoices.id, sale.invoiceId))
+    .for("update");
+  if (invoice.status !== "open") {
+    await tx.insert(billingCredits).values({
+      storeId: sale.storeId,
+      kind: "fee_refund",
+      sourceId: saleId,
+      amountCents: sale.feeCents,
+    });
+    return;
+  }
+  const feesCents = invoice.feesCents - sale.feeCents;
+  const subtotal = invoice.membershipCents + feesCents;
+  const creditCents = Math.min(invoice.creditCents, subtotal);
+  if (invoice.creditCents > creditCents)
+    await tx.insert(billingCredits).values({
+      storeId: sale.storeId,
+      kind: "fee_refund",
+      sourceId: saleId,
+      amountCents: invoice.creditCents - creditCents,
+    });
+  const totalCents = subtotal - creditCents;
+  await tx
+    .update(invoices)
+    .set({
+      feesCents,
+      creditCents,
+      totalCents,
+      ...(totalCents === 0 ? { status: "paid" as const, paidAt: now } : {}),
+    })
+    .where(eq(invoices.id, invoice.id));
+  await tx.update(sales).set({ invoiceId: null }).where(eq(sales.id, saleId));
+}
+
 /** Job diário: cada etapa do ciclo (contrato do cron, D6). */
 export async function runBillingCycle(
   db: Db,

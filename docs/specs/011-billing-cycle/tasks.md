@@ -58,7 +58,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - rodar 2× não repete.
 
   · _SUB-FR-007, SUB-FR-008, SUB-FR-015, SUB-NFR-002, SUB-NFR-003, SUB-SEC-004_
-- [ ] **T007** `billing.refundSaleFee` chamado por `sellers.undoSale` na mesma transação:
+- [x] **T007** `billing.refundSaleFee` chamado por `sellers.undoSale` na mesma transação:
   - venda não faturada: nada;
   - fatura aberta: a taxa sai e o total é recalculado;
   - fatura paga: crédito `fee_refund` na próxima.

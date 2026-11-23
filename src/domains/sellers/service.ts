@@ -34,6 +34,7 @@ import {
   searchShowcase,
   type PublicCard,
 } from "@/domains/showcase/service";
+import { refundSaleFee } from "@/domains/billing/service";
 import { getSettings } from "@/domains/settings/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import {
@@ -1463,6 +1464,8 @@ export async function undoSale(
       .update(sales)
       .set({ canceledAt: now })
       .where(eq(sales.id, sale.id));
+    // A taxa CajuGo sai da fatura aberta ou vira crédito (011, SUB-FR-014).
+    await refundSaleFee(tx, sale.id, now);
     await reopenInTx(tx, { storeId, vehicleId, userId }, now);
     await logActivity(tx, {
       userId,

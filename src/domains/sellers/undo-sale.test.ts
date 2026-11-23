@@ -1,6 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
-import { activityLog, partnerships, sales } from "@/platform/db/schema";
+import {
+  activityLog,
+  invoices,
+  partnerships,
+  sales,
+  stores,
+} from "@/platform/db/schema";
+import { runBillingCycle } from "@/domains/billing/service";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { car, liveStore } from "@/domains/showcase/testing/fixtures";
 import { undoSold } from "@/domains/vehicles/service";
@@ -113,5 +120,25 @@ describe("Desfazer venda da Rede Caju", () => {
       .from(sales)
       .where(eq(sales.vehicleId, argo.id));
     expect(row.canceledAt).toBeNull();
+  });
+
+  it("[SUB-FR-014] desfazer tira a taxa CajuGo da fatura ainda aberta", async () => {
+    // Arrange
+    const { a, argo } = await sold();
+    await t.db
+      .update(stores)
+      .set({ billingDay: 20, nextDueAt: new Date("2026-11-20T03:00:00Z") })
+      .where(eq(stores.id, a.storeId));
+    await runBillingCycle(t.db, later(1));
+    const [opened] = await t.db.select().from(invoices);
+
+    // Act
+    await undoSale({ db: t.db }, a, { vehicleId: argo.id }, later(2));
+
+    // Assert
+    const [invoice] = await t.db.select().from(invoices);
+    expect(opened.feesCents).toBeGreaterThan(0);
+    expect(invoice.feesCents).toBe(0);
+    expect(invoice.totalCents).toBe(invoice.membershipCents);
   });
 });

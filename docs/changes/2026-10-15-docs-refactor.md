@@ -962,3 +962,6 @@
 
 # 2026-11-23 · Atraso e suspensão no job diário [011/T006]
 - Loja ativa com fatura vencida → em atraso desde o dia seguinte; após a tolerância → suspensa, com aviso ao lojista e aos admins; cron devolve opened/pastDue/suspended e invalida o cache público ao suspender.
+
+# 2026-11-23 · Taxa de venda desfeita [011/T007]
+- billing.refundSaleFee na transação de sellers.undoSale: sem fatura nada; fatura aberta tira a taxa e recalcula; fatura paga vira crédito fee_refund.
