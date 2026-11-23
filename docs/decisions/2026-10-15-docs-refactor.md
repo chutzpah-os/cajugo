@@ -403,3 +403,6 @@
 
 # 2026-11-23 · Alerta da fatura no painel [011/T014]
 - Slot como o navCounts: auth não passa a depender de billing.
+
+# 2026-11-23 · Fatura do mês e Pix da mensal [011/T015]
+- /lojistas/pagamento só existe para a loja recém-cadastrada; a mensal ganha o próprio endereço no painel.

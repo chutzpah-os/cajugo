@@ -986,3 +986,6 @@
 
 # 2026-11-23 · Alerta da fatura no painel [011/T014]
 - billingAlert + BillingAlertBanner: vence em 3 dias, em atraso há N dias e loja suspensa [12f], com Pagar agora; AreaLayout ganha o slot banner (a rota do painel monta), no lugar do aviso fixo de suspensa.
+
+# 2026-11-23 · Fatura do mês e Pix da mensal [011/T015]
+- /painel/fatura [10c] com as faturas abertas, total a pagar e Pagar com Pix; /painel/fatura/pix [6c] com o total em aberto; PixPayment compartilhado com o Pix da 1ª mensalidade.

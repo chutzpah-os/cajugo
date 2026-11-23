@@ -112,7 +112,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - **Pagar agora** → [6c].
 
   · _SUB-FR-006, SUB-FR-007, SUB-FR-009, SUB-NFR-001_
-- [ ] **T015** `/painel/fatura` [10c] e [6c] da mensal: mensalidade, taxas, crédito, total, vencimento, status; **Pagar com Pix** com o total em aberto.
+- [x] **T015** `/painel/fatura` [10c] e [6c] da mensal: mensalidade, taxas, crédito, total, vencimento, status; **Pagar com Pix** com o total em aberto.
 
   · _SUB-FR-002, SUB-FR-003, SUB-FR-016, SUB-NFR-001_
 - [ ] **T016** `/painel/conta` [3c] completa (plano, status, valor, próxima cobrança, Como pagar, fatura do mês, anteriores) com o bloco Rede Caju da 009.
