@@ -1,10 +1,35 @@
-import { and, asc, eq, gt, inArray, isNotNull, isNull, lte } from "drizzle-orm";
+import {
+  and,
+  arrayContains,
+  asc,
+  eq,
+  gt,
+  inArray,
+  isNotNull,
+  isNull,
+  lte,
+  min,
+} from "drizzle-orm";
+import { moveSubscription } from "@/domains/stores/service";
 import { notify } from "@/domains/notices/service";
 import { getSettings } from "@/domains/settings/service";
-import { billingCredits, invoices, sales, stores } from "@/platform/db/schema";
+import {
+  billingCredits,
+  invoices,
+  profiles,
+  sales,
+  stores,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
-import { invoicePeriod, opensInvoice, OPEN_DAYS_BEFORE } from "./cycle-dates";
+import {
+  invoicePeriod,
+  isOverdue,
+  opensInvoice,
+  OPEN_DAYS_BEFORE,
+  pastDueStart,
+  suspensionDue,
+} from "./cycle-dates";
 import { nextDueAfter } from "./due-date";
 import { invoiceTotals } from "./invoice-math";
 
@@ -189,11 +214,114 @@ async function applyCredits(
   });
 }
 
+/** Vencimento da fatura aberta mais antiga de cada loja `status`. */
+async function oldestOpenDue(db: Db, status: "active" | "past_due") {
+  return db
+    .select({ storeId: stores.id, dueAt: min(invoices.dueAt) })
+    .from(stores)
+    .innerJoin(invoices, eq(invoices.storeId, stores.id))
+    .where(
+      and(
+        eq(stores.status, status),
+        eq(invoices.kind, "monthly"),
+        eq(invoices.status, "open"),
+      ),
+    )
+    .groupBy(stores.id);
+}
+
+/** Fatura vencida sem pagamento: ativa → em atraso desde o dia seguinte (SUB-FR-007). */
+export async function markPastDue(db: Db, now: Date): Promise<number> {
+  let marked = 0;
+  for (const { storeId, dueAt } of await oldestOpenDue(db, "active")) {
+    if (!dueAt || !isOverdue(dueAt, now)) continue;
+    const since = pastDueStart(dueAt);
+    await db.transaction(async (tx) => {
+      if (!(await moveSubscription(tx, storeId, ["active"], "past_due", since)))
+        return;
+      marked++;
+      await logActivity(tx, {
+        userId: null,
+        action: "store.past_due",
+        entity: "store",
+        entityId: storeId,
+        data: { since: since.toISOString() },
+      });
+    });
+  }
+  return marked;
+}
+
+/** Avisa o lojista e os admins de uma suspensão ou reativação (SUB-FR-015). */
+export async function notifyStatusChange(
+  tx: Db,
+  storeId: string,
+  kind: "store_suspended" | "store_reactivated",
+  now: Date,
+  byAdmin = false,
+) {
+  const [store] = await tx
+    .select({ name: stores.name, ownerId: stores.ownerId })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  await notify(
+    tx,
+    store.ownerId,
+    kind === "store_reactivated" && byAdmin
+      ? { kind, byAdmin: true }
+      : { kind },
+    now,
+  );
+  const admins = await tx
+    .select({ id: profiles.id })
+    .from(profiles)
+    .where(arrayContains(profiles.roles, ["admin"]));
+  for (const admin of admins)
+    await notify(tx, admin.id, { kind, store: store.name }, now);
+}
+
+/** Em atraso além da tolerância das regras → suspensa (SUB-FR-008). */
+export async function suspendOverdue(db: Db, now: Date): Promise<number> {
+  const { past_due_tolerance_days: tolerance } = await getSettings(db, now);
+  const late = await db
+    .select({ id: stores.id, since: stores.pastDueSince })
+    .from(stores)
+    .where(and(eq(stores.status, "past_due"), isNotNull(stores.pastDueSince)));
+  let suspended = 0;
+  for (const store of late) {
+    if (!suspensionDue(store.since!, tolerance, now)) continue;
+    await db.transaction(async (tx) => {
+      if (
+        !(await moveSubscription(
+          tx,
+          store.id,
+          ["past_due"],
+          "suspended",
+          store.since,
+        ))
+      )
+        return;
+      suspended++;
+      await notifyStatusChange(tx, store.id, "store_suspended", now);
+      await logActivity(tx, {
+        userId: null,
+        action: "store.suspended",
+        entity: "store",
+        entityId: store.id,
+        data: { by: "system", toleranceDays: tolerance },
+      });
+    });
+  }
+  return suspended;
+}
+
 /** Job diário: cada etapa do ciclo (contrato do cron, D6). */
 export async function runBillingCycle(
   db: Db,
   now: Date,
 ): Promise<{ opened: number; pastDue: number; suspended: number }> {
   const opened = await openDueInvoices(db, now);
-  return { opened, pastDue: 0, suspended: 0 };
+  const pastDue = await markPastDue(db, now);
+  const suspended = await suspendOverdue(db, now);
+  return { opened, pastDue, suspended };
 }

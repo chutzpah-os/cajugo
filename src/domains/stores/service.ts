@@ -567,6 +567,27 @@ export async function backToRegistered(db: Db, storeId: string) {
   return done.length > 0;
 }
 
+type StoreStatus = (typeof stores.$inferSelect)["status"];
+
+/**
+ * Troca de status da assinatura (011) a partir do status esperado: atraso, suspensão
+ * e reativação. `false` quando a loja já não estava em `from` (corrida ou repetição).
+ */
+export async function moveSubscription(
+  db: Db,
+  storeId: string,
+  from: StoreStatus[],
+  to: StoreStatus,
+  pastDueSince: Date | null,
+): Promise<boolean> {
+  const done = await db
+    .update(stores)
+    .set({ status: to, pastDueSince })
+    .where(and(eq(stores.id, storeId), inArray(stores.status, from)))
+    .returning({ id: stores.id });
+  return done.length > 0;
+}
+
 /**
  * 1º pagamento confirmado (PIX-FR-009, PIX-FR-011): loja ativa, dia e próximo
  * vencimento, data da ativação; o endereço deixa de ser só reservado.

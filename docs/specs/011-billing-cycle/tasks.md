@@ -49,7 +49,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - rodar 2× não repete.
 
   · _SUB-FR-001, SUB-FR-006, SUB-FR-014, SUB-NFR-002, SUB-SEC-004_
-- [ ] **T006** `runBillingCycle`, atraso e suspensão:
+- [x] **T006** `runBillingCycle`, atraso e suspensão:
   - `active → past_due` no dia seguinte ao vencimento (`past_due_since`);
   - `past_due → suspended` depois da tolerância;
   - avisos `store_suspended` ao lojista e aos admins;

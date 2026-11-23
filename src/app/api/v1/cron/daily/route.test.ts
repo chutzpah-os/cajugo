@@ -6,6 +6,12 @@ vi.mock("@/domains/buyers/service", () => ({ purgeExpired }));
 vi.mock("@/platform/http/rate-limit", () => ({ purgeRateLimits }));
 const purgeOldLeads = vi.fn(async () => 3);
 vi.mock("@/domains/leads/service", () => ({ purgeOldLeads }));
+const runBillingCycle = vi.fn(async () => ({
+  opened: 4,
+  pastDue: 2,
+  suspended: 1,
+}));
+vi.mock("@/domains/billing/service", () => ({ runBillingCycle }));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({}) }));
 const revalidateTag = vi.fn();
 vi.mock("next/cache", () => ({ revalidateTag }));
@@ -56,5 +62,51 @@ describe("job diário › leads", () => {
     expect(res.status).toBe(200);
     expect(purgeOldLeads).toHaveBeenCalledOnce();
     expect((await res.json()).data.purgedLeads).toBe(3);
+  });
+});
+
+describe("job diário › ciclo de cobrança", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.clearAllMocks();
+  });
+
+  it("[SUB-NFR-002] [SUB-NFR-003] roda o ciclo, devolve os números e tira a loja suspensa do ar", async () => {
+    // Arrange
+    vi.stubEnv("CRON_SECRET", "segredo-do-cron");
+
+    // Act
+    const res = await call("Bearer segredo-do-cron");
+
+    // Assert
+    expect(res.status).toBe(200);
+    expect((await res.json()).data).toMatchObject({
+      opened: 4,
+      pastDue: 2,
+      suspended: 1,
+    });
+    expect(revalidateTag).toHaveBeenCalledWith("stores", { expire: 0 });
+    expect(revalidateTag).toHaveBeenCalledWith("vehicles", { expire: 0 });
+  });
+
+  it("[SUB-NFR-003] sem suspensão, o cache público fica como está", async () => {
+    vi.stubEnv("CRON_SECRET", "segredo-do-cron");
+    runBillingCycle.mockResolvedValueOnce({
+      opened: 1,
+      pastDue: 0,
+      suspended: 0,
+    });
+
+    await call("Bearer segredo-do-cron");
+
+    expect(revalidateTag).not.toHaveBeenCalledWith("stores", { expire: 0 });
+  });
+
+  it("[SUB-NFR-002] sem o segredo, o ciclo não roda", async () => {
+    vi.stubEnv("CRON_SECRET", "segredo-do-cron");
+
+    await call("Bearer errado");
+
+    expect(runBillingCycle).not.toHaveBeenCalled();
   });
 });

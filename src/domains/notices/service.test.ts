@@ -90,4 +90,42 @@ describe("avisos no painel", () => {
       status: 404,
     });
   });
+
+  it("[SUB-FR-006] [SUB-FR-015] frases do ciclo de cobrança para o lojista e para o admin", async () => {
+    // Arrange
+    const a = await person("a@x.com");
+    const at = (m: number) => new Date(Date.UTC(2026, 11, 7, 10, m));
+    await notify(
+      t.db,
+      a.userId,
+      { kind: "invoice_due", due: "10/12", totalCents: 60000 },
+      at(0),
+    );
+    await notify(t.db, a.userId, { kind: "store_suspended" }, at(1));
+    await notify(t.db, a.userId, { kind: "store_reactivated" }, at(2));
+    await notify(
+      t.db,
+      a.userId,
+      { kind: "store_reactivated", byAdmin: true },
+      at(3),
+    );
+    await notify(
+      t.db,
+      a.userId,
+      { kind: "store_suspended", store: "Loja A" },
+      at(4),
+    );
+
+    // Act
+    const texts = (await noticesFor(t.db, a)).map((n) => n.text).reverse();
+
+    // Assert
+    expect(texts).toEqual([
+      "Sua fatura vence em 10/12 · R$ 600,00.",
+      "Sua loja foi suspensa por falta de pagamento.",
+      "Pagamento confirmado. Sua loja está no ar.",
+      "Sua loja voltou ao ar. A fatura continua em aberto.",
+      "A loja Loja A foi suspensa por falta de pagamento.",
+    ]);
+  });
 });

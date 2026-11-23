@@ -959,3 +959,6 @@
 
 # 2026-11-23 · Abertura da fatura mensal [011/T005]
 - runBillingCycle abre a fatura 3 dias antes (mensalidade, taxas não faturadas, créditos até o total), liga as vendas, avança next_due_at, avisa o lojista e registra; idempotente.
+
+# 2026-11-23 · Atraso e suspensão no job diário [011/T006]
+- Loja ativa com fatura vencida → em atraso desde o dia seguinte; após a tolerância → suspensa, com aviso ao lojista e aos admins; cron devolve opened/pastDue/suspended e invalida o cache público ao suspender.
