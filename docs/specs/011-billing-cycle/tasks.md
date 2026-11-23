@@ -34,7 +34,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - MRR.
 
   · _SUB-FR-001, SUB-FR-011, SUB-FR-016, SUB-FR-017_
-- [ ] **T004** [P] Datas do ciclo em São Paulo (com `due-date.ts`): janela de abertura (3 dias antes), atraso no dia seguinte ao vencimento, suspensão depois da tolerância, dias de atraso; fim de mês. Testes unitários.
+- [x] **T004** [P] Datas do ciclo em São Paulo (com `due-date.ts`): janela de abertura (3 dias antes), atraso no dia seguinte ao vencimento, suspensão depois da tolerância, dias de atraso; fim de mês. Testes unitários.
 
   · _SUB-FR-001, SUB-FR-007, SUB-FR-008_
 

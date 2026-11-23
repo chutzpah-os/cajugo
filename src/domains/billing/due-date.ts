@@ -27,7 +27,7 @@ const daysInMonth = (y: number, m: number) =>
   new Date(Date.UTC(y, m, 0)).getUTCDate();
 
 /** Meia-noite de `y-m-d` em São Paulo, com o fuso daquela data. */
-function saoPauloMidnight(y: number, m: number, d: number): Date {
+export function saoPauloMidnight(y: number, m: number, d: number): Date {
   const guess = new Date(Date.UTC(y, m - 1, d, 12));
   const offset = new Intl.DateTimeFormat("en-US", {
     timeZone: ZONE,

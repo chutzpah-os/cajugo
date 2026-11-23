@@ -953,3 +953,6 @@
 
 # 2026-11-23 · Contas da fatura mensal [011/T003]
 - invoice-math.ts: total (mensalidade + taxas − créditos até o subtotal), quitação da mais antiga e MRR, com testes unitários.
+
+# 2026-11-23 · Datas do ciclo de cobrança [011/T004]
+- cycle-dates.ts: abertura 3 dias antes, vencendo, atraso no dia seguinte, dias de atraso e suspensão após a tolerância, pelo dia em São Paulo.
