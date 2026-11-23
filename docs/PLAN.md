@@ -143,6 +143,9 @@
 - Jobs diários: vencimentos em 3 dias (lista + `wa.me`), `past_due`, suspensão após tolerância, reativação na confirmação, cancelamento no fim do período, arquivamento após retenção, liberação de slug.
 - Cancelar [12h] com desfazer; Assinaturas do admin [4b]; Conta do lojista [3c].
 
+## 011b · Cancelamento e fim da assinatura — telas 12h, 4b (Editar plano)
+- Cancelar [12h] com motivo e desfazer até o fim do período; fim do período (cancelada), arquivamento em 90 dias, liberação do endereço sem 1º pagamento em 7 dias, Editar plano com aviso de 30 dias. Dividida da 011 no `/clarify` de 2026-11-23.
+
 ## 012 · Admin: painel, lojas e equipe — telas 4a, 1d, 6g, 4c, 15b, 15c
 - Painel com KPIs e "Precisa de atenção" (comprovantes, vencimentos, atrasos, vendedores em análise, aprovações, denúncias, resgates, alertas de busca).
 - Lojas, usuários, detalhe da loja (senha temporária, suspender/reativar), equipe CajuGo, logs de atividade.

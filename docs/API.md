@@ -109,8 +109,9 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 |---|---|---|
 | A | `saveTaxId(document)` | 5d |
 | A | assinatura de upload privado (§4.2) · `submitReceipt(invoiceId, publicId, amountCents)` → loja `payment_review` | 6c, 12e |
-| A | `confirmPayment(paymentId)` — **admin**: fatura paga, loja ativa/reativada, recompensas do Caju Indica | 10b |
-| A | `rejectPayment(paymentId, reason)` — **admin** | 10b |
+| A | `confirmPayment(paymentId)` — **admin**: quita as faturas abertas da mais antiga para a mais nova, sobra vira crédito, loja ativa/reativada (011), recompensas do Caju Indica | 10b |
+| A | `rejectPayment(paymentId, reason)` — **admin**; na fatura mensal a loja não muda de status (011) | 10b |
+| página | `/painel/fatura` — faturas abertas (mais antiga primeiro), taxas e **Pagar com Pix** (`billing.manage`, 011) | 10c |
 | A | `registerManualPayment(storeId, {...})` — **admin**, exceção sem comprovante | 6g |
 
 Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/webhooks/payments`.
@@ -153,7 +154,8 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | Tipo | Rota / ação | Tela |
 |---|---|---|
 | A | `createStore` (dono com senha temporária) · `updateStore` · `setTemporaryPassword` | 1d, 6g |
-| A | `suspendStore` · `reactivateStore` | 4b, 6g |
+| página | `/admin/assinaturas` — MRR, contagens e filtros (`?filtro=`); admin e suporte veem (`subscriptions.view`), só o admin decide (011) | 4b |
+| A | `suspendStoreAction({ storeId })` · `reactivateStoreAction({ storeId, reason })` — `stores.suspend` (só admin, 011) | 4b, 6g |
 | A | `approveVehicle` · `requestVehicleChanges(reason)` | 14c |
 | página | `/admin/alertas` — alertas com veículo compatível e aguardando · A `markAlertNotifiedAction({ alertId })` (006d) | 12a |
 | página | `/admin/denuncias` — fila de denúncias e aba `?aba=ocultados` (`admin.moderate`, 007b) | 14e |
@@ -166,7 +168,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Interno
 | Tipo | Rota | Uso |
 |---|---|---|
-| R | `GET /api/v1/cron/daily` (protegido por `CRON_SECRET`; contrato em `docs/specs/006d-search-alerts/contract.md`) | jobs de `ARCHITECTURE.md` §6 |
+| R | `GET /api/v1/cron/daily` (protegido por `CRON_SECRET`; contrato em `docs/specs/006d-search-alerts/contract.md`; ciclo de cobrança da 011) | jobs de `ARCHITECTURE.md` §6 |
 
 ---
 

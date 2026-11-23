@@ -944,3 +944,6 @@
 
 # 2026-11-16 · 009/verify ajustes e fechamento
 - markSold recusa com a loja aceitando vendedores (stores.storeAcceptsSellers); confirmSale confere parceria e vendedor sugerido dentro da transação (suggestedSeller) e sem recalcular por saleTerms; comissão sem regra = R$ 0 na tela e na venda; parceiro bloqueado sem celular nem Pix em [7f]; bloco Rede Caju da Conta só com sellers.manage; e2e da 009 independente da chave Pix trocada pela 008. Spec 009 implemented, PLAN e T017 marcados.
+
+# 2026-11-23 · 011 · spec, plano, tasks e documentos [011/T001]
+- Spec 011 (fatura mensal, atraso e suspensão) clarificada, plano aprovado e tasks; PRD §5.1/§5.6, PLAN (011b), ARCHITECTURE (billing_credits, ciclo no job diário), API.md, contrato do cron e GLOSSARY.

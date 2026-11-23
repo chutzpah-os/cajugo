@@ -391,3 +391,6 @@
 
 # 2026-11-16 · 009/verify ajustes e fechamento
 - Revisão em dois eixos: o 'Vendido' simples só era bloqueado na tela (RCL-FR-008), a tela e a venda divergiam sem comissão definida e a parceria era conferida fora da transação.
+
+# 2026-11-23 · 011 · spec, plano, tasks e documentos [011/T001]
+- Fecha o ciclo da assinatura que a 004 deixou na 1ª mensalidade; créditos numa tabela só e quitação da mais antiga (D2, D3).

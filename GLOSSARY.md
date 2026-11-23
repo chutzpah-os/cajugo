@@ -121,8 +121,8 @@ Indicação descartada por autoindicação (mesmo e-mail, celular, CPF ou CNPJ d
 **Recompensa** (`reward`):
 Valor mensal gerado por uma indicação ativa (R$ 30), creditado a quem indicou.
 
-**Crédito** (Caju Indica):
-Recompensa do lojista, abatida na fatura dele.
+**Crédito** (`billing_credits`):
+Valor a favor da loja, abatido na próxima fatura: recompensa do Caju Indica, sobra de um pagamento maior que a fatura ou taxa CajuGo de venda desfeita depois da fatura paga. A fatura nunca fica negativa; o que passar fica para a seguinte.
 
 **Saldo** e **Resgate** (`payout`):
 Recompensa de vendedor ou indicador acumulada; resgatada por Pix a partir de R$ 50, paga pelo admin.
@@ -207,6 +207,12 @@ _Evite_: contrato, mensalidade (para a assinatura em si)
 **Fatura** (`invoice`):
 Cobrança de um mês: mensalidade + taxas CajuGo − crédito Caju Indica.
 _Evite_: boleto, conta
+
+**Fatura mensal** (`monthly`):
+Aberta pelo job 3 dias antes do vencimento, uma por mês (`period` AAAA-MM). Com atraso de mais de um mês, cada mês tem a sua; o pagamento quita da mais antiga para a mais nova, e só fatura inteira.
+
+**Em atraso** (`past_due`) e **Suspensa** (`suspended`):
+Em atraso: a fatura venceu sem pagamento confirmado; a loja continua no ar. Suspensa: passou a tolerância das regras (ou o admin suspendeu); catálogo e veículos saem do ar para o público, o painel continua aberto. Volta a ativa quando todas as faturas vencidas são pagas.
 
 **Status da loja**:
 `cadastrada`, `pagamento_em_analise`, `ativa`, `em_atraso`, `suspensa`, `cancelamento_agendado`, `cancelada`, `arquivada` (código: `registered`, `payment_review`, `active`, `past_due`, `suspended`, `cancel_scheduled`, `canceled`, `archived`).

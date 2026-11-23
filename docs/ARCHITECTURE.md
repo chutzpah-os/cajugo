@@ -128,6 +128,10 @@ payments                 id, invoice_id, store_id, paid_cents (informado pelo lo
                          # no máximo 1 `submitted` por fatura (índice único parcial)
 notices                  id, profile_id (quem vê), kind, data (jsonb, sem dado pessoal), created_at, dismissed_at
                          # avisos no painel (ADR 0007); cada spec acrescenta os seus `kind`
+billing_credits          id, store_id, kind (overpayment|fee_refund|referral), amount_cents, source_id (pagamento ou venda),
+                         applied_invoice_id (nulo = disponível), created_at
+                         # 011: sobra de pagamento, taxa de venda desfeita com a fatura paga e, na 010, Caju Indica;
+                         # abatido na abertura da fatura; a fatura nunca fica negativa
 
 # Veículos
 vehicles
@@ -226,9 +230,12 @@ O catálogo da loja usa a mesma base sem a condição de `share_on_cajugo`. Com 
 ISR com `revalidateTag('vehicles')` e `revalidateTag('store:<slug>')`, chamados nas actions que alteram veículo, loja ou assinatura. Cumpre o "≤ 60 s" do PRD §5.5.
 
 ## 6. Jobs (Vercel Cron, diário)
-- **Vencimentos em 3 dias:** monta a lista para o admin avisar por `wa.me` e mostra o alerta no painel do lojista.
-- **Fatura mensal:** gera a fatura de cada loja ativa (mensalidade + taxas CajuGo das vendas via vendedor do período − crédito Caju Indica disponível).
-- **Atraso e suspensão:** `active` com vencimento passado e sem pagamento confirmado → `past_due`; após `past_due_tolerance_days` → `suspended`.
+- **Ciclo de cobrança** (`runBillingCycle`, 011), em datas de São Paulo:
+  - **fatura mensal:** 3 dias antes de `next_due_at`, abre a fatura de cada loja `active`, `past_due` ou `suspended` (mensalidade vigente + taxas CajuGo das vendas ainda não faturadas − créditos de `billing_credits`), liga as vendas (`sales.invoice_id`), avança `next_due_at` e avisa o lojista ("vence em dd/mm"); uma por período (`invoices_store_period`);
+  - **atraso:** fatura aberta vencida → loja `active` → `past_due` (`past_due_since`);
+  - **suspensão:** `past_due_since` + `past_due_tolerance_days` → `suspended`, avisa o lojista e os admins e invalida o cache público.
+  
+  A lista "Vencem em 3 dias" do admin [4b] é consulta, não job. A reativação acontece na confirmação do pagamento.
 - **Cancelamento e retenção:** `cancel_scheduled` → `canceled` no fim do período; `canceled` há mais de `retention_days` → `archived` (e expira o crédito Caju Indica).
 - **Slugs** reservados sem 1º pagamento confirmado há 7 dias são liberados.
 - **Limpeza** de `rate_limits` antigos (`purgeRateLimits`).

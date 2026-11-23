@@ -187,7 +187,7 @@ Painel [4a] com pendências → Pagamentos Pix [10b] → Lojas [1d]/[6g] → Ass
 - A loja só fica **ativa** após o admin confirmar o 1º comprovante. Antes disso o lojista já pode cadastrar veículos como **rascunho** [10a].
 - Aviso de vencimento 3 dias antes: no painel do lojista e na lista do admin, com botão `wa.me` para o admin avisar.
 - **Tolerância de atraso: 5 dias** (`Config`, a confirmar). Depois, a loja fica **suspensa**: catálogo e veículos ocultos ao público [12g, sem expor o motivo]; dados preservados; edição permitida; painel com alerta e botão de pagar [12f].
-- Reativação automática quando o admin confirmar o pagamento.
+- Reativação automática quando o admin confirmar o pagamento de todas as faturas em aberto. O admin pode reativar por exceção (acordo), informando o motivo: a fatura continua aberta e a loja volta a ficar em atraso.
 - **Cancelamento** [12h]: sem multa; loja no ar até o fim do período pago; depois os veículos saem do ar; dados guardados 90 dias para reativar; crédito Caju Indica não usado expira; pode desfazer até o fim do período.
 - Slug reservado no cadastro; liberado se não houver 1º pagamento confirmado em 7 dias.
 
@@ -252,7 +252,7 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - Prazo de conferência: **1 dia útil** (`Config`, a confirmar).
 - O lojista informa o **valor pago** ao enviar o comprovante; o admin pode corrigi-lo conforme o extrato ao conferir (o histórico guarda os dois).
 - **Registro sem comprovante** (exceção, ex.: dinheiro): o admin registra o pagamento em [10b], buscando a loja (atalho em [6g]); fica no log de auditoria.
-- **Fatura mensal** [10c] = mensalidade + taxas CajuGo de vendas via vendedor do período − crédito Caju Indica.
+- **Fatura mensal** [10c] = mensalidade + taxas CajuGo de vendas via vendedor do período − crédito Caju Indica. Abre 3 dias antes do vencimento (junto do aviso). Atraso de mais de um mês: uma fatura por mês, e o comprovante quita da mais antiga para a mais nova. A fatura só fica paga com o total; sobra vira crédito na próxima. Venda desfeita com a taxa já faturada: sai da fatura aberta ou, se ela já foi paga, vira crédito na próxima (spec 011).
 - Recibo e nota fiscal: fora do sistema no MVP.
 
 ### 5.7 Rede Caju
