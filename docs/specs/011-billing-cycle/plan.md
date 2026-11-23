@@ -161,3 +161,6 @@ O e2e controla a data pelo seed: o seed põe o vencimento da loja de teste no pa
 - **`stores.past_due_since`** não existia no banco (só no ARCHITECTURE): entrou na migration `0020` (T002).
 - **D5:** o `store-access` já liberava o painel inteiro para `past_due` e `suspended` (001); a T013 só acrescentou os testes de acesso e de edição com a loja suspensa.
 - **Reativar sem fatura vencida** em aberto devolve a loja a `active` (não a `past_due`), para não ficar presa em atraso sem nada a pagar.
+- **e2e sem a rota do cron:** o `.env.local` não tem `CRON_SECRET`, então o seed roda o `runBillingCycle` real só na loja de teste da fatura (`scope.storeIds`, para não mexer nas outras lojas do staging); a rota do cron fica coberta pelo teste dela (Vitest).
+- **[6c] da mensal em `/painel/fatura/pix`:** `/lojistas/pagamento` é só da loja recém-cadastrada (`store-access`); as duas telas usam o mesmo `PixPayment`.
+- **Alerta do painel por slot (`banner`)** no `AreaLayout`, como o `navCounts`: `auth` não passa a depender de `billing`.

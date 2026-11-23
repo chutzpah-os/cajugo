@@ -28,6 +28,7 @@ import {
   removeE2ESignups,
   resetStoreForTests,
 } from "@/domains/stores/service";
+import { seedBilling } from "@/domains/billing/testing/e2e-seed";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -46,6 +47,7 @@ export const E2E_ACCOUNTS = {
   showcaseOwner: { email: "e2e-vitrine@cajugo.test", roles: ["store_owner"] },
   suspendedOwner: { email: "e2e-suspensa@cajugo.test", roles: ["store_owner"] },
   recifeOwner: { email: "e2e-recife@cajugo.test", roles: ["store_owner"] },
+  billingOwner: { email: "e2e-fatura@cajugo.test", roles: ["store_owner"] },
 } as const satisfies Record<string, { email: string; roles: Role[] }>;
 
 const E2E_STORE_SLUG = "e2e-loja";
@@ -213,6 +215,9 @@ export async function seedE2E(
     pendingSellerId: ids.temporary,
     otherStoreIds: [showcase.recifeId],
   });
+
+  // Loja suspensa pelo ciclo de cobrança real, com a fatura de R$ 600 aberta (011).
+  await seedBilling(deps.db, ids.billingOwner, now);
 
   return { ids, storeId: store.id };
 }

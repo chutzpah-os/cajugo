@@ -127,7 +127,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   [10b] mostra "Mensalidade mm/aaaa" e a mensagem do 422.
 
   · _SUB-FR-003, SUB-FR-011, SUB-FR-012, SUB-FR-013, SUB-FR-017, SUB-NFR-001_
-- [ ] **T018** Seed do e2e (loja de teste com vencimento no passado e uma venda com taxa) e `tests/e2e/billing-cycle.spec.ts`:
+- [x] **T018** Seed do e2e (loja de teste com vencimento no passado e uma venda com taxa) e `tests/e2e/billing-cycle.spec.ts`:
   - ciclo pela rota do cron;
   - [10c] e Conta;
   - painel com o alerta e [12f], editando um veículo;

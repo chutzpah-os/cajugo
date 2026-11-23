@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  invoices,
   leads,
   profiles,
   settingValues,
@@ -15,6 +16,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { E2E_ACCOUNTS, E2E_PIX, seedE2E } from "./e2e-seed";
 import { E2E_SHOWCASE } from "@/domains/showcase/testing/e2e-seed";
+import { E2E_BILLING } from "@/domains/billing/testing/e2e-seed";
 import { getSettings } from "@/domains/settings/service";
 import { registerStore } from "@/domains/stores/service";
 import { signIn } from "./service";
@@ -231,10 +233,11 @@ describe("seedE2E", () => {
     // Act
     await seedE2E(withCloud(), "senha-e2e-1");
 
-    // Assert: 45 no ar, 1 vendido, 1 da loja suspensa, 3 de Recife e o excluído
-    // dos leads (007); os 7 leads e a denúncia (007b) são refeitos, não somados
+    // Assert: 45 no ar, 1 vendido, 1 da loja suspensa, 3 de Recife, o excluído
+    // dos leads (007) e os 2 da loja da fatura (011); os 7 leads e a denúncia
+    // (007b) são refeitos, não somados
     expect(await t.db.select().from(vehicles)).toHaveLength(
-      E2E_SHOWCASE.total + 6,
+      E2E_SHOWCASE.total + 8,
     );
     expect(await t.db.select().from(leads)).toHaveLength(7);
     expect(await t.db.select().from(vehicleReports)).toEqual([
@@ -251,5 +254,31 @@ describe("seedE2E", () => {
       (await t.db.select().from(partnerships)).map((p) => p.status).sort(),
     ).toEqual(["active", "pending"]);
     expect(destroy).not.toHaveBeenCalledWith("sample");
+  });
+
+  it("[SUB-FR-008] loja da fatura suspensa pelo ciclo real, com R$ 600 em aberto; refeita a cada seed", async () => {
+    // Arrange
+    await seedE2E(deps(), "senha-e2e-1");
+
+    // Act
+    const { ids } = await seedE2E(deps(), "senha-e2e-1");
+
+    // Assert
+    const [store] = await t.db
+      .select()
+      .from(stores)
+      .where(eq(stores.ownerId, ids.billingOwner));
+    expect(store).toMatchObject({
+      slug: E2E_BILLING.slug,
+      status: "suspended",
+    });
+    const rows = await t.db
+      .select()
+      .from(invoices)
+      .where(eq(invoices.storeId, store.id));
+    expect(rows.map((r) => [r.kind, r.status, r.totalCents]).sort()).toEqual([
+      ["first", "paid", 10_000],
+      ["monthly", "open", 60_000],
+    ]);
   });
 });

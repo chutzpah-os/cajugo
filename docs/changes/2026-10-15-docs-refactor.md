@@ -995,3 +995,6 @@
 
 # 2026-11-23 · Assinaturas do admin, tela [011/T017]
 - /admin/assinaturas [4b]: MRR, contagens, plano, Vencem em 3 dias, filtros na URL e cards por status com wa.me, Conferir, Suspender (ConfirmSheet) e Reativar (motivo); suporte sem os botões.
+
+# 2026-11-23 · e2e do ciclo de cobrança [011/T018]
+- Conta e loja 'Fatura E2E' no seed, suspensa pelo runBillingCycle real (restrito à loja); billing-cycle.spec: alerta [12f], edição, [10c], [6c], [3c], [12g] sem dados, [4b] suporte/admin, Reativar/Suspender, comprovante e confirmação.

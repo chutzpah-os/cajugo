@@ -406,3 +406,6 @@
 
 # 2026-11-23 · Fatura do mês e Pix da mensal [011/T015]
 - /lojistas/pagamento só existe para a loja recém-cadastrada; a mensal ganha o próprio endereço no painel.
+
+# 2026-11-23 · e2e do ciclo de cobrança [011/T018]
+- Sem CRON_SECRET local, o seed roda o ciclo real restrito à loja de teste; a migration 0020 foi aplicada no staging.

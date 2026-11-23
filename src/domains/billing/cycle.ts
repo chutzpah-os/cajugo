@@ -50,7 +50,17 @@ const brDay = new Intl.DateTimeFormat("pt-BR", {
 });
 
 /** Abre as faturas que chegaram à janela (SUB-FR-001, SUB-FR-006, SUB-FR-014). */
-export async function openDueInvoices(db: Db, now: Date): Promise<number> {
+/** Só o seed dos e2e: o ciclo restrito a estas lojas (o staging tem outras). */
+export type CycleScope = { storeIds?: string[] };
+
+const inScope = (scope: CycleScope) =>
+  scope.storeIds ? inArray(stores.id, scope.storeIds) : undefined;
+
+export async function openDueInvoices(
+  db: Db,
+  now: Date,
+  scope: CycleScope = {},
+): Promise<number> {
   // Filtro largo no banco; a regra exata é a data em São Paulo.
   const horizon = new Date(now.getTime() + (OPEN_DAYS_BEFORE + 1) * DAY_MS);
   const candidates = await db
@@ -59,6 +69,7 @@ export async function openDueInvoices(db: Db, now: Date): Promise<number> {
     .where(
       and(
         inArray(stores.status, [...BILLED_STATUSES]),
+        inScope(scope),
         isNotNull(stores.nextDueAt),
         lte(stores.nextDueAt, horizon),
       ),
@@ -215,7 +226,11 @@ async function applyCredits(
 }
 
 /** Vencimento da fatura aberta mais antiga de cada loja `status`. */
-async function oldestOpenDue(db: Db, status: "active" | "past_due") {
+async function oldestOpenDue(
+  db: Db,
+  status: "active" | "past_due",
+  scope: CycleScope,
+) {
   return db
     .select({ storeId: stores.id, dueAt: min(invoices.dueAt) })
     .from(stores)
@@ -223,6 +238,7 @@ async function oldestOpenDue(db: Db, status: "active" | "past_due") {
     .where(
       and(
         eq(stores.status, status),
+        inScope(scope),
         eq(invoices.kind, "monthly"),
         eq(invoices.status, "open"),
       ),
@@ -231,9 +247,13 @@ async function oldestOpenDue(db: Db, status: "active" | "past_due") {
 }
 
 /** Fatura vencida sem pagamento: ativa → em atraso desde o dia seguinte (SUB-FR-007). */
-export async function markPastDue(db: Db, now: Date): Promise<number> {
+export async function markPastDue(
+  db: Db,
+  now: Date,
+  scope: CycleScope = {},
+): Promise<number> {
   let marked = 0;
-  for (const { storeId, dueAt } of await oldestOpenDue(db, "active")) {
+  for (const { storeId, dueAt } of await oldestOpenDue(db, "active", scope)) {
     if (!dueAt || !isOverdue(dueAt, now)) continue;
     const since = pastDueStart(dueAt);
     await db.transaction(async (tx) => {
@@ -281,12 +301,22 @@ export async function notifyStatusChange(
 }
 
 /** Em atraso além da tolerância das regras → suspensa (SUB-FR-008). */
-export async function suspendOverdue(db: Db, now: Date): Promise<number> {
+export async function suspendOverdue(
+  db: Db,
+  now: Date,
+  scope: CycleScope = {},
+): Promise<number> {
   const { past_due_tolerance_days: tolerance } = await getSettings(db, now);
   const late = await db
     .select({ id: stores.id, since: stores.pastDueSince })
     .from(stores)
-    .where(and(eq(stores.status, "past_due"), isNotNull(stores.pastDueSince)));
+    .where(
+      and(
+        eq(stores.status, "past_due"),
+        isNotNull(stores.pastDueSince),
+        inScope(scope),
+      ),
+    );
   let suspended = 0;
   for (const store of late) {
     if (!suspensionDue(store.since!, tolerance, now)) continue;
@@ -375,9 +405,10 @@ export async function refundSaleFee(
 export async function runBillingCycle(
   db: Db,
   now: Date,
+  scope: CycleScope = {},
 ): Promise<{ opened: number; pastDue: number; suspended: number }> {
-  const opened = await openDueInvoices(db, now);
-  const pastDue = await markPastDue(db, now);
-  const suspended = await suspendOverdue(db, now);
+  const opened = await openDueInvoices(db, now, scope);
+  const pastDue = await markPastDue(db, now, scope);
+  const suspended = await suspendOverdue(db, now, scope);
   return { opened, pastDue, suspended };
 }

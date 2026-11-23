@@ -103,3 +103,35 @@ describe("ciclo de cobrança: atraso e suspensão", () => {
     expect(kinds.filter((k) => k === "store_suspended")).toHaveLength(1);
   });
 });
+
+describe("ciclo de cobrança restrito (seed dos e2e)", () => {
+  let t: Awaited<ReturnType<typeof createTestDb>>;
+
+  beforeEach(async () => {
+    t = await createTestDb();
+  });
+  afterEach(() => t.close());
+
+  it("[SUB-NFR-002] com lojas escolhidas, as outras ficam como estão", async () => {
+    // Arrange
+    const a = await payingStore(t.db, "loja-a", {
+      billingDay: 10,
+      nextDueAt: DUE,
+    });
+    const b = await payingStore(t.db, "loja-b", {
+      billingDay: 10,
+      nextDueAt: DUE,
+    });
+
+    // Act
+    const result = await runBillingCycle(t.db, on("16"), {
+      storeIds: [a.storeId],
+    });
+
+    // Assert
+    expect(result).toEqual({ opened: 1, pastDue: 1, suspended: 1 });
+    expect((await storeRow(t.db, a.storeId)).status).toBe("suspended");
+    expect((await storeRow(t.db, b.storeId)).status).toBe("active");
+    expect(await t.db.select().from(invoices)).toHaveLength(1);
+  });
+});

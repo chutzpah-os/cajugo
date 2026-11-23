@@ -42,7 +42,7 @@ const MODELS = [
   ["Citroën", "C3"],
 ] as const;
 
-function row(storeId: string, i: number, now: Date) {
+export function row(storeId: string, i: number, now: Date) {
   const [make, model] = MODELS[i % MODELS.length];
   const version = `${model} V${i}`;
   return {
@@ -71,7 +71,7 @@ function row(storeId: string, i: number, now: Date) {
   };
 }
 
-async function ownStore(
+export async function ownStore(
   db: Db,
   ownerId: string,
   set: { name: string; slug: string; status: "active" | "suspended" },
