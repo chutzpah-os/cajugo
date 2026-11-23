@@ -120,4 +120,19 @@ describe("ações do admin", () => {
     ] as const)
       expect(can(sessionWith(role), "payments.view")).toBe(false);
   });
+
+  it("[SUB-SEC-003] suporte e admin veem as assinaturas; só o admin suspende e reativa", () => {
+    expect(can(sessionWith("support"), "subscriptions.view")).toBe(true);
+    expect(can(sessionWith("admin"), "subscriptions.view")).toBe(true);
+    expect(can(sessionWith("support"), "stores.suspend")).toBe(false);
+    for (const role of [
+      "store_owner",
+      "store_staff",
+      "seller",
+      "referrer",
+    ] as const) {
+      expect(can(sessionWith(role), "subscriptions.view")).toBe(false);
+      expect(can(sessionWith(role), "stores.suspend")).toBe(false);
+    }
+  });
 });

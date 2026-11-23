@@ -974,3 +974,6 @@
 
 # 2026-11-23 · Confirmação da fatura mensal [011/T010]
 - confirmPayment quita as faturas mensais da mais antiga, sobra vira crédito, valor menor que a mais antiga → 422; sem fatura vencida, em atraso/suspensa → ativa, com avisos e registro.
+
+# 2026-11-23 · Assinaturas do admin, serviço [011/T011]
+- subscriptionsView: MRR, contagens, plano, filtros, linha por status (em dia, atraso, em análise, suspensa), wa.me de cobrança e 'Vencem em 3 dias'; permissão subscriptions.view (admin e suporte).

@@ -85,7 +85,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - aviso `store_reactivated`, `updateTag` e `payment.confirmed` no registro.
 
   · _SUB-FR-004, SUB-FR-015, SUB-FR-016, SUB-FR-017, SUB-NFR-003, SUB-SEC-004_
-- [ ] **T011** `subscriptionsView` (`subscriptions.view`, admin e suporte):
+- [x] **T011** `subscriptionsView` (`subscriptions.view`, admin e suporte):
   - MRR e as contagens Em dia, Atrasadas e Suspensas;
   - filtros;
   - linha por status (próxima cobrança, dias de atraso e valor, comprovante enviado, fora do ar);

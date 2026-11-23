@@ -39,6 +39,8 @@ export const PERMISSIONS = {
   "payments.review": ["admin"],
   /** Ver a fila de comprovantes e abrir os arquivos (PIX-SEC-003). */
   "payments.view": ["admin", "support"],
+  /** Ver as assinaturas [4b] e avisar pelo `wa.me` (011). */
+  "subscriptions.view": ["admin", "support"],
   /** Suspender ou reativar loja. */
   "stores.suspend": ["admin"],
   /** Ver os vendedores [7h] e as fotos do documento (008). */
