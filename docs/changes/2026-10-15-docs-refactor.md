@@ -947,3 +947,6 @@
 
 # 2026-11-23 · 011 · spec, plano, tasks e documentos [011/T001]
 - Spec 011 (fatura mensal, atraso e suspensão) clarificada, plano aprovado e tasks; PRD §5.1/§5.6, PLAN (011b), ARCHITECTURE (billing_credits, ciclo no job diário), API.md, contrato do cron e GLOSSARY.
+
+# 2026-11-23 · Migration 0020 do ciclo de cobrança [011/T002]
+- billing_credits (crédito da loja), stores.past_due_since, avisos invoice_due/store_suspended/store_reactivated e índice invoices_open_due; aditiva.

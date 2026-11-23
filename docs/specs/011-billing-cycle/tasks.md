@@ -18,7 +18,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - GLOSSARY (Fatura mensal, Em atraso, Suspensa, Crédito).
 
   · _—_
-- [ ] **T002** Migration `0020`, aditiva:
+- [x] **T002** Migration `0020`, aditiva:
   - `stores.past_due_since` (estava só no ARCHITECTURE);
   - enum `credit_kind`;
   - tabela `billing_credits` (índice dos créditos não aplicados);

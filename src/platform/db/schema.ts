@@ -159,6 +159,8 @@ export const stores = pgTable(
     /** Dia do vencimento (1–31), fixado na 1ª confirmação (PIX-FR-009). */
     billingDay: smallint("billing_day"),
     nextDueAt: timestamp("next_due_at", { withTimezone: true }),
+    /** Começo do atraso (011): a tolerância conta daqui; a reativação do admin reinicia. */
+    pastDueSince: timestamp("past_due_since", { withTimezone: true }),
     /** Primeira ativação (onboarding [5e]). */
     activatedAt: timestamp("activated_at", { withTimezone: true }),
     ...timestamps,
@@ -303,6 +305,37 @@ export const invoices = pgTable(
       .where(sql`${t.kind} = 'first'`),
     uniqueIndex("invoices_store_period").on(t.storeId, t.period),
     index("invoices_store_status").on(t.storeId, t.status),
+    // Ciclo de cobrança (011): faturas abertas por vencimento.
+    index("invoices_open_due").on(t.status, t.dueAt),
+  ],
+).enableRLS();
+
+/** Crédito da loja (011, GLOSSARY): abatido na próxima fatura. */
+export const creditKind = pgEnum("credit_kind", [
+  "overpayment",
+  "fee_refund",
+  "referral",
+]);
+
+export const billingCredits = pgTable(
+  "billing_credits",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id),
+    kind: creditKind("kind").notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    /** Pagamento (sobra) ou venda (taxa devolvida) de origem. */
+    sourceId: uuid("source_id"),
+    /** Nulo enquanto disponível; a fatura em que foi abatido. */
+    appliedInvoiceId: uuid("applied_invoice_id").references(() => invoices.id),
+    ...timestamps,
+  },
+  (t) => [
+    index("billing_credits_store_open")
+      .on(t.storeId)
+      .where(sql`${t.appliedInvoiceId} is null`),
   ],
 ).enableRLS();
 
@@ -368,6 +401,9 @@ export const noticeKind = pgEnum("notice_kind", [
   "payment_rejected",
   "vehicle_hidden",
   "vehicle_shown",
+  "invoice_due",
+  "store_suspended",
+  "store_reactivated",
 ]);
 
 export const notices = pgTable(

@@ -27,7 +27,13 @@ import type {
   SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
 import { brCode } from "@/platform/pix/br-code";
-import { invoices, notices, payments, stores } from "@/platform/db/schema";
+import {
+  billingCredits,
+  invoices,
+  notices,
+  payments,
+  stores,
+} from "@/platform/db/schema";
 import { isUniqueViolation } from "@/platform/db/errors";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
@@ -868,6 +874,9 @@ export async function removeBillingForTests(
       await tx
         .delete(payments)
         .where(inArray(payments.storeId, input.storeIds));
+      await tx
+        .delete(billingCredits)
+        .where(inArray(billingCredits.storeId, input.storeIds));
       await tx
         .delete(invoices)
         .where(inArray(invoices.storeId, input.storeIds));

@@ -394,3 +394,6 @@
 
 # 2026-11-23 · 011 · spec, plano, tasks e documentos [011/T001]
 - Fecha o ciclo da assinatura que a 004 deixou na 1ª mensalidade; créditos numa tabela só e quitação da mais antiga (D2, D3).
+
+# 2026-11-23 · Migration 0020 do ciclo de cobrança [011/T002]
+- past_due_since estava só no ARCHITECTURE; a tolerância precisa de um começo que a reativação do admin reinicia.

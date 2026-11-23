@@ -1,5 +1,13 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { invoices, payments, profiles, stores } from "./schema";
+import { eq } from "drizzle-orm";
+import {
+  billingCredits,
+  invoices,
+  notices,
+  payments,
+  profiles,
+  stores,
+} from "./schema";
 import { createTestDb } from "./testing/test-db";
 import { uuidv7 } from "./uuid";
 
@@ -82,5 +90,41 @@ describe("faturas e pagamentos no banco", () => {
     await confirmed();
 
     await expect(confirmed()).rejects.toThrow();
+  });
+
+  it("[SUB-FR-017] [SUB-FR-014] crédito da loja nasce disponível e guarda a fatura em que foi abatido", async () => {
+    const [{ id: invoiceId }] = await firstInvoice();
+
+    const [credit] = await t.db
+      .insert(billingCredits)
+      .values({ storeId, kind: "overpayment", amountCents: 5000 })
+      .returning();
+    await t.db
+      .update(billingCredits)
+      .set({ appliedInvoiceId: invoiceId })
+      .where(eq(billingCredits.id, credit.id));
+
+    const [row] = await t.db.select().from(billingCredits);
+    expect(credit.appliedInvoiceId).toBeNull();
+    expect(row.appliedInvoiceId).toBe(invoiceId);
+  });
+
+  it("[SUB-FR-007] [SUB-FR-015] loja guarda desde quando está em atraso; avisos do ciclo existem", async () => {
+    const since = new Date("2026-12-11T03:00:00Z");
+
+    await t.db
+      .update(stores)
+      .set({ status: "past_due", pastDueSince: since })
+      .where(eq(stores.id, storeId));
+    for (const kind of [
+      "invoice_due",
+      "store_suspended",
+      "store_reactivated",
+    ] as const)
+      await t.db.insert(notices).values({ profileId: ownerId, kind, data: {} });
+
+    const [store] = await t.db.select().from(stores);
+    expect(store.pastDueSince).toEqual(since);
+    expect(await t.db.select().from(notices)).toHaveLength(3);
   });
 });
