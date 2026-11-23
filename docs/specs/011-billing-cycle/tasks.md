@@ -78,7 +78,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - loja B → 404.
 
   · _SUB-FR-003, SUB-FR-005, SUB-SEC-001, SUB-SEC-002_
-- [ ] **T010** `confirmPayment` da fatura mensal:
+- [x] **T010** `confirmPayment` da fatura mensal:
   - quita da mais antiga para a mais nova (D3); a sobra vira crédito `overpayment`;
   - valor menor que a fatura mais antiga → 422;
   - sem fatura vencida aberta, `past_due`/`suspended` → `active`;

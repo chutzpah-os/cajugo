@@ -19,6 +19,7 @@ import {
   activateFirstTime,
   backToRegistered,
   markPaymentReview,
+  moveSubscription,
 } from "@/domains/stores/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
@@ -47,6 +48,9 @@ import type { Session } from "@/platform/http/session";
 import { storeUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
 import { openMonthly, periodLabel } from "./account";
+import { notifyStatusChange } from "./cycle";
+import { isOverdue } from "./cycle-dates";
+import { settleOldestFirst } from "./invoice-math";
 import { firstDueDate, saoPauloMonthStart } from "./due-date";
 import {
   confirmPaymentSchema,
@@ -625,6 +629,8 @@ export async function confirmPayment(
       .select()
       .from(invoices)
       .where(eq(invoices.id, payment.invoiceId));
+    if (invoice.kind === "monthly")
+      return settleMonthly(tx, payment, admin.userId, now);
     await logActivity(tx, {
       userId: admin.userId,
       action: "payment.confirmed",
@@ -641,6 +647,112 @@ export async function confirmPayment(
     });
     return settleInvoice(tx, invoice, now);
   });
+}
+
+const BELOW_OLDEST =
+  "Valor menor que a fatura mais antiga. Recuse informando o valor faltante.";
+
+/**
+ * Pagamento confirmado de fatura mensal (SUB-FR-004, 016, 017; D3): quita as faturas
+ * abertas inteiras, da mais antiga para a mais nova; a sobra vira crédito; sem fatura
+ * vencida em aberto, a loja em atraso ou suspensa volta a ativa.
+ */
+async function settleMonthly(
+  tx: Db,
+  payment: typeof payments.$inferSelect,
+  adminId: string,
+  now: Date,
+): Promise<{ whatsappUrl: string }> {
+  const open = await tx
+    .select()
+    .from(invoices)
+    .where(
+      and(
+        eq(invoices.storeId, payment.storeId),
+        eq(invoices.kind, "monthly"),
+        eq(invoices.status, "open"),
+      ),
+    )
+    .orderBy(asc(invoices.dueAt))
+    .for("update");
+  const result = settleOldestFirst(payment.amountCents, open);
+  if (!result)
+    throw AppError.validation([
+      { field: "amountCents", code: "too_small", message: BELOW_OLDEST },
+    ]);
+  if (result.paid.length)
+    await tx
+      .update(invoices)
+      .set({ status: "paid", paidAt: now })
+      .where(inArray(invoices.id, result.paid));
+  if (result.surplusCents)
+    await tx.insert(billingCredits).values({
+      storeId: payment.storeId,
+      kind: "overpayment",
+      sourceId: payment.id,
+      amountCents: result.surplusCents,
+    });
+  await logActivity(tx, {
+    userId: adminId,
+    action: "payment.confirmed",
+    entity: "payment",
+    entityId: payment.id,
+    data: {
+      storeId: payment.storeId,
+      reference: REFERENCE.monthly,
+      paidCents: payment.paidCents,
+      amountCents: payment.amountCents,
+      paidInvoices: result.paid.length,
+      creditCents: result.surplusCents,
+    },
+  });
+
+  const [store] = await tx
+    .select({
+      name: stores.name,
+      slug: stores.slug,
+      whatsapp: stores.whatsapp,
+      ownerId: stores.ownerId,
+      status: stores.status,
+      nextDueAt: stores.nextDueAt,
+    })
+    .from(stores)
+    .where(eq(stores.id, payment.storeId));
+  const stillLate = open.some(
+    (i) => !result.paid.includes(i.id) && isOverdue(i.dueAt, now),
+  );
+  const wasSuspended = store.status === "suspended";
+  const back =
+    !stillLate &&
+    (await moveSubscription(
+      tx,
+      payment.storeId,
+      ["past_due", "suspended"],
+      "active",
+      null,
+    ));
+  if (back && wasSuspended) {
+    await notifyStatusChange(tx, payment.storeId, "store_reactivated", now);
+    await logActivity(tx, {
+      userId: adminId,
+      action: "store.reactivated",
+      entity: "store",
+      entityId: payment.storeId,
+      data: { by: "payment", paymentId: payment.id },
+    });
+  } else await notify(tx, store.ownerId, { kind: "payment_confirmed" }, now);
+
+  const next = store.nextDueAt
+    ? ` Próximo vencimento: ${brDate.format(store.nextDueAt)}.`
+    : "";
+  return {
+    whatsappUrl: whatsappLink(
+      store.whatsapp,
+      back
+        ? `Olá, ${store.name}! Seu pagamento foi confirmado e a sua loja está no ar na CajuGo: ${storeUrl(store.slug)}.${next}`
+        : `Olá, ${store.name}! Recebemos o seu pagamento na CajuGo.${next}`,
+    ),
+  };
 }
 
 /** Pagamento que não está em análise: já conferido (409) ou inexistente (404). */

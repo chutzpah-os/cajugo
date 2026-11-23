@@ -971,3 +971,6 @@
 
 # 2026-11-23 · Comprovante da fatura mensal [011/T009]
 - pixView/receiptUpload/submitReceipt cobram o total das faturas mensais abertas (pagamento ligado à mais antiga); a loja não muda de status ao enviar nem ao ser recusada; fila mostra 'Mensalidade mm/aaaa' com o total esperado.
+
+# 2026-11-23 · Confirmação da fatura mensal [011/T010]
+- confirmPayment quita as faturas mensais da mais antiga, sobra vira crédito, valor menor que a mais antiga → 422; sem fatura vencida, em atraso/suspensa → ativa, com avisos e registro.

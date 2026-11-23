@@ -3,6 +3,7 @@
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { STORES_TAG } from "@/domains/stores/service";
+import { VEHICLES_TAG } from "@/domains/vehicles/tags";
 import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
@@ -125,7 +126,9 @@ export async function confirmPaymentAction(input: {
       await currentSession(),
       input,
     );
+    // A loja reativada volta ao ar com os veículos (SUB-NFR-003).
     updateTag(STORES_TAG);
+    updateTag(VEHICLES_TAG);
     return { ok: true, whatsappUrl };
   } catch (error) {
     return reviewError(error);
