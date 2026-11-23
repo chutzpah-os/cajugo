@@ -64,7 +64,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - fatura paga: crédito `fee_refund` na próxima.
 
   · _SUB-FR-014_
-- [ ] **T008** `invoiceView` e `accountView`:
+- [x] **T008** `invoiceView` e `accountView`:
   - faturas abertas da mais antiga, com as taxas (veículo, data, valor) e o total em aberto;
   - plano, status, próxima cobrança, Como pagar (chave Pix e WhatsApp das regras), faturas anteriores;
   - usuário da loja → 403; loja B → 404.

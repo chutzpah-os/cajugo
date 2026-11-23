@@ -965,3 +965,6 @@
 
 # 2026-11-23 · Taxa de venda desfeita [011/T007]
 - billing.refundSaleFee na transação de sellers.undoSale: sem fatura nada; fatura aberta tira a taxa e recalcula; fatura paga vira crédito fee_refund.
+
+# 2026-11-23 · Fatura e Conta do lojista [011/T008]
+- invoiceView (faturas abertas da mais antiga, taxas por veículo, total em aberto) e accountView (plano, status, próxima cobrança, Como pagar, fatura do mês e anteriores); só o dono.

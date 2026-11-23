@@ -891,6 +891,13 @@ export async function removeBillingForTests(
 
 export { saoPauloMonthStart } from "./due-date";
 export { refundSaleFee, runBillingCycle } from "./cycle";
+export {
+  accountView,
+  invoiceView,
+  type AccountView,
+  type InvoiceCard,
+  type InvoiceView,
+} from "./account";
 
 const SUBSCRIPTION_LABEL: Record<string, string> = {
   registered: "Aguardando pagamento",
