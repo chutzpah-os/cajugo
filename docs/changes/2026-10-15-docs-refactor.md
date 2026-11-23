@@ -992,3 +992,6 @@
 
 # 2026-11-23 · Conta do lojista [011/T016]
 - /painel/conta [3c] completa: Plano Catálogo, status, valor, próxima cobrança, Como pagar (chave Pix e WhatsApp), fatura do mês, faturas anteriores e o bloco Rede Caju.
+
+# 2026-11-23 · Assinaturas do admin, tela [011/T017]
+- /admin/assinaturas [4b]: MRR, contagens, plano, Vencem em 3 dias, filtros na URL e cards por status com wa.me, Conferir, Suspender (ConfirmSheet) e Reativar (motivo); suporte sem os botões.

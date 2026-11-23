@@ -118,7 +118,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
 - [x] **T016** `/painel/conta` [3c] completa (plano, status, valor, próxima cobrança, Como pagar, fatura do mês, anteriores) com o bloco Rede Caju da 009.
 
   · _SUB-FR-010, SUB-NFR-001_
-- [ ] **T017** `/admin/assinaturas` [4b]:
+- [x] **T017** `/admin/assinaturas` [4b]:
   - MRR, contagens, card do plano, filtros na URL;
   - cards com a linha do status, `wa.me` com a mensagem pronta, **Conferir** → [10b];
   - **Suspender** (ConfirmSheet) e **Reativar** (motivo);
