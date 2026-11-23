@@ -16,7 +16,12 @@ export type NoticeData =
   | { kind: "payment_rejected"; reason: string; missingCents?: number }
   /** `vehicle` é o nome do veículo; `reason`, o motivo da CajuGo já em texto (007b). */
   | { kind: "vehicle_hidden"; vehicle: string; reason: string }
-  | { kind: "vehicle_shown"; vehicle: string };
+  | { kind: "vehicle_shown"; vehicle: string }
+  /** Fatura mensal aberta (011): `due` já em dd/mm. */
+  | { kind: "invoice_due"; due: string; totalCents: number }
+  /** Sem `store`: o lojista; com `store` (nome da loja): os admins (011). */
+  | { kind: "store_suspended"; store?: string }
+  | { kind: "store_reactivated"; store?: string; byAdmin?: boolean };
 
 export type NoticeView = {
   id: string;
@@ -43,6 +48,27 @@ function render(n: NoticeData): Pick<NoticeView, "text" | "tone"> {
       };
     case "vehicle_shown":
       return { text: `${n.vehicle} voltou à vitrine CajuGo.`, tone: "ok" };
+    case "invoice_due":
+      return {
+        text: `Sua fatura vence em ${n.due} · ${brl(n.totalCents)}.`,
+        tone: "alert",
+      };
+    case "store_suspended":
+      return {
+        text: n.store
+          ? `A loja ${n.store} foi suspensa por falta de pagamento.`
+          : "Sua loja foi suspensa por falta de pagamento.",
+        tone: "alert",
+      };
+    case "store_reactivated":
+      if (n.store)
+        return { text: `A loja ${n.store} foi reativada.`, tone: "ok" };
+      return {
+        text: n.byAdmin
+          ? "Sua loja voltou ao ar. A fatura continua em aberto."
+          : "Pagamento confirmado. Sua loja está no ar.",
+        tone: "ok",
+      };
   }
 }
 

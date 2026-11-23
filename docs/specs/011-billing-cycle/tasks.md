@@ -39,7 +39,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   · _SUB-FR-001, SUB-FR-007, SUB-FR-008_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T005** `runBillingCycle`, abertura:
+- [x] **T005** `runBillingCycle`, abertura:
   - fatura `monthly` 3 dias antes com a mensalidade das regras;
   - taxas das vendas não faturadas e não desfeitas, ligadas por `sales.invoice_id`;
   - créditos aplicados; total 0 nasce paga;

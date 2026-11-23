@@ -81,3 +81,28 @@ export async function storeRow(db: Db, storeId: string) {
   const [s] = await db.select().from(stores).where(eq(stores.id, storeId));
   return s;
 }
+
+/** Só testes: loja ativa com dia de cobrança e próximo vencimento (spec 011). */
+export async function payingStore(
+  db: Db,
+  slug: string,
+  input: {
+    billingDay: number;
+    nextDueAt: Date;
+    status?: "active" | "past_due" | "suspended";
+    pastDueSince?: Date;
+  },
+) {
+  const owner = await storeOwner(db, slug, `${slug}@x.com`);
+  await db
+    .update(stores)
+    .set({
+      status: input.status ?? "active",
+      billingDay: input.billingDay,
+      nextDueAt: input.nextDueAt,
+      pastDueSince: input.pastDueSince ?? null,
+      activatedAt: new Date("2026-01-01"),
+    })
+    .where(eq(stores.id, owner.storeId));
+  return owner;
+}

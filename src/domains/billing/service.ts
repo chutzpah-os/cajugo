@@ -890,6 +890,7 @@ export async function removeBillingForTests(
 }
 
 export { saoPauloMonthStart } from "./due-date";
+export { runBillingCycle } from "./cycle";
 
 const SUBSCRIPTION_LABEL: Record<string, string> = {
   registered: "Aguardando pagamento",

@@ -956,3 +956,6 @@
 
 # 2026-11-23 · Datas do ciclo de cobrança [011/T004]
 - cycle-dates.ts: abertura 3 dias antes, vencendo, atraso no dia seguinte, dias de atraso e suspensão após a tolerância, pelo dia em São Paulo.
+
+# 2026-11-23 · Abertura da fatura mensal [011/T005]
+- runBillingCycle abre a fatura 3 dias antes (mensalidade, taxas não faturadas, créditos até o total), liga as vendas, avança next_due_at, avisa o lojista e registra; idempotente.
