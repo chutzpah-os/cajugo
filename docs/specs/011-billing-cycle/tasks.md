@@ -100,7 +100,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   - suporte, usuário da loja e vendedor → 403; loja inexistente → 404.
 
   · _SUB-FR-013, SUB-FR-015, SUB-NFR-003, SUB-SEC-003, SUB-SEC-004_
-- [ ] **T013** `store-access` (D5): loja `past_due` e `suspended` têm o painel inteiro (edição permitida); testes de acesso da 001/004 atualizados.
+- [x] **T013** `store-access` (D5): loja `past_due` e `suspended` têm o painel inteiro (edição permitida); testes de acesso da 001/004 atualizados.
 
   · _SUB-FR-008, SUB-FR-009_
 

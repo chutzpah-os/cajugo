@@ -156,3 +156,8 @@ O e2e controla a data pelo seed: o seed põe o vencimento da loja de teste no pa
 - [x] Consultas novas com índice (faturas abertas por vencimento, créditos não aplicados)
 - [x] Migration aditiva; nenhuma dependência nova
 - [x] D1–D6 aprovadas em 2026-11-23; D5 muda a regra de acesso do painel e D6 muda o contrato do cron
+
+## Ajustes do /implement
+- **`stores.past_due_since`** não existia no banco (só no ARCHITECTURE): entrou na migration `0020` (T002).
+- **D5:** o `store-access` já liberava o painel inteiro para `past_due` e `suspended` (001); a T013 só acrescentou os testes de acesso e de edição com a loja suspensa.
+- **Reativar sem fatura vencida** em aberto devolve a loja a `active` (não a `past_due`), para não ficar presa em atraso sem nada a pagar.

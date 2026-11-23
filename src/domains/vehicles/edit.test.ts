@@ -1,6 +1,11 @@
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { activityLog, vehicleHistory, vehicles } from "@/platform/db/schema";
+import {
+  activityLog,
+  stores,
+  vehicleHistory,
+  vehicles,
+} from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import {
   refreshFipeReference,
@@ -147,5 +152,24 @@ describe("editar veículo publicado [6e]", () => {
     await expect(vehicleForm(t.db, a, "abc")).rejects.toMatchObject({
       status: 404,
     });
+  });
+
+  it("[SUB-FR-008] [SUB-FR-009] loja suspensa continua editando: os dados ficam guardados", async () => {
+    // Arrange
+    const { a, vehicleId } = await published();
+    await t.db
+      .update(stores)
+      .set({ status: "suspended" })
+      .where(eq(stores.id, a.storeId));
+
+    // Act
+    await saveDraft(deps(), a, { vehicleId, priceCents: 7000000 });
+
+    // Assert
+    const [v] = await t.db
+      .select()
+      .from(vehicles)
+      .where(eq(vehicles.id, vehicleId));
+    expect(v).toMatchObject({ priceCents: 7000000, status: "published" });
   });
 });

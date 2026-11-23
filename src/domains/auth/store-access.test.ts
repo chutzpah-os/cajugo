@@ -86,4 +86,15 @@ describe("storeAccess", () => {
       redirectTo: "/painel/veiculos",
     });
   });
+
+  it("[SUB-FR-009] loja em atraso ou suspensa: o lojista abre o painel inteiro, a fatura, o pagamento e a edição", () => {
+    for (const status of ["past_due", "suspended"] satisfies StoreStatus[])
+      for (const path of [
+        "/painel/fatura",
+        "/painel/pagamento",
+        "/painel/conta",
+        "/painel/veiculos/0190a1b2-c3d4-7e5f-8a9b-0c1d2e3f4a5b",
+      ])
+        expect(storeAccess(owner, status, path)).toEqual({ ok: true });
+  });
 });

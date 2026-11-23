@@ -980,3 +980,6 @@
 
 # 2026-11-23 · Suspender e reativar pelo admin [011/T012]
 - suspendStore (só em atraso) e reactivateStore (só suspensa, motivo 3–200; volta em atraso com a tolerância contada de novo, ou ativa sem fatura vencida), com avisos, registro e as actions com updateTag.
+
+# 2026-11-23 · Painel da loja suspensa [011/T013]
+- Testes de que a loja em atraso ou suspensa abre o painel inteiro (fatura, pagamento, edição) e edita veículo; o store-access já liberava (D5).
