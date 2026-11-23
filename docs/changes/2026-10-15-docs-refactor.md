@@ -983,3 +983,6 @@
 
 # 2026-11-23 · Painel da loja suspensa [011/T013]
 - Testes de que a loja em atraso ou suspensa abre o painel inteiro (fatura, pagamento, edição) e edita veículo; o store-access já liberava (D5).
+
+# 2026-11-23 · Alerta da fatura no painel [011/T014]
+- billingAlert + BillingAlertBanner: vence em 3 dias, em atraso há N dias e loja suspensa [12f], com Pagar agora; AreaLayout ganha o slot banner (a rota do painel monta), no lugar do aviso fixo de suspensa.

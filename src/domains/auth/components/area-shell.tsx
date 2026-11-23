@@ -1,5 +1,4 @@
 import { getDb } from "@/platform/db/client";
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/ui/logo";
 import { PanelNav } from "@/ui/panel-nav";
@@ -9,7 +8,6 @@ import { rememberPanel } from "../service";
 import { PANEL_LABEL } from "../labels";
 import { AREA_NAV } from "../navigation";
 import type { Area } from "../permissions";
-import { currentStoreStatus } from "../current";
 import { noticesFor } from "@/domains/notices/service";
 import { NoticeList } from "@/domains/notices/components/notice-list";
 import type { AreaNavItem as NavItem } from "../navigation";
@@ -25,6 +23,9 @@ const AREA_ROOT: Record<Area, string> = {
 
 /** Contadores do menu por endereço (ex.: `/admin/alertas` → 2), vindos da rota. */
 export type NavCounts = (session: Session) => Promise<Record<string, number>>;
+
+/** Alerta no topo da área, montado pela rota (ex.: fatura do lojista, 011). */
+export type Banner = (session: Session) => Promise<ReactNode>;
 
 /** Itens que a pessoa pode abrir, com os contadores que a rota passou. */
 async function visibleNav(
@@ -49,28 +50,30 @@ async function visibleNav(
 
 /**
  * Moldura das áreas logadas: sessão, papel da área, menu, troca de painel, sair
- * avisos do painel (PIX-FR-013) e o alerta de loja suspensa (AUT-FR-005, 007, 009). A página sempre
+ * avisos do painel (PIX-FR-013) e o alerta que a rota passar (fatura, 011). A página sempre
  * renderiza e checa a própria permissão (AUT-FR-012).
  */
 export async function AreaShell({
   area,
   navCounts,
+  banner: renderBanner,
   children,
 }: {
   area: Area;
   navCounts?: NavCounts;
+  banner?: Banner;
   children: ReactNode;
 }) {
   const { session, allowed } = await requireArea(area, AREA_ROOT[area]);
   // Abrir a área pelo endereço também conta como último painel (AUT-FR-006).
   if (allowed) await rememberPanel(getDb(), session, area);
-  const storeStatus = await currentStoreStatus(session.storeId);
   // Menu só para quem tem a área; sem permissão, nada da área aparece.
   const nav = allowed
     ? await visibleNav(AREA_NAV[area], session, navCounts)
     : undefined;
   // Avisos de quem está conectado, em qualquer área (ADR 0007, PIX-FR-013).
   const notices = allowed ? await noticesFor(getDb(), session) : [];
+  const banner = allowed && renderBanner ? await renderBanner(session) : null;
 
   return (
     <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pb-6 md:max-w-5xl lg:max-w-6xl">
@@ -115,26 +118,7 @@ export async function AreaShell({
 
       <NoticeList notices={notices} />
 
-      {area === "painel" && allowed && storeStatus === "suspended" && (
-        <div
-          role="alert"
-          className="mt-3 rounded-card bg-warn-soft p-4 text-sm text-warn"
-        >
-          <strong className="block">
-            Loja suspensa por falta de pagamento
-          </strong>
-          Seus veículos não aparecem para o público até o pagamento ser
-          confirmado.
-          {session.roles.includes("store_owner") && (
-            <Link
-              href="/painel/conta"
-              className="mt-2 block font-bold underline underline-offset-2"
-            >
-              Pagar agora
-            </Link>
-          )}
-        </div>
-      )}
+      {banner}
 
       <div className="flex flex-1 gap-8 lg:pt-4">
         {nav && <PanelNav items={nav} />}

@@ -1079,7 +1079,9 @@ export {
 } from "./subscriptions";
 export {
   accountView,
+  billingAlert,
   invoiceView,
+  type BillingAlert,
   type AccountView,
   type InvoiceCard,
   type InvoiceView,

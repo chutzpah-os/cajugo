@@ -105,7 +105,7 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   · _SUB-FR-008, SUB-FR-009_
 
 ## Fase 3 — Telas
-- [ ] **T014** Alerta da fatura no layout do painel:
+- [x] **T014** Alerta da fatura no layout do painel:
   - "Sua fatura vence em dd/mm · R$ X";
   - "Fatura em atraso há N dias";
   - [12f] "Loja suspensa · N dias de atraso · R$ X";

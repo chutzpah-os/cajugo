@@ -1,13 +1,19 @@
 import { and, asc, desc, eq, inArray, ne } from "drizzle-orm";
-import { authorizeTo } from "@/domains/auth/service";
+import { authorizeTo, can } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { getSettings } from "@/domains/settings/service";
-import { invoices, sales, stores, vehicles } from "@/platform/db/schema";
+import {
+  invoices,
+  payments,
+  sales,
+  stores,
+  vehicles,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { AppError } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { daysLate, isOverdue } from "./cycle-dates";
+import { daysLate, dueSoon, isOverdue } from "./cycle-dates";
 
 /**
  * Fatura [10c] e Conta [3c] do lojista (spec 011): só o dono (`billing.manage`), com
@@ -219,4 +225,54 @@ export async function accountView(
         };
       }),
   };
+}
+
+export type BillingAlert =
+  | { kind: "due"; dueAt: Date; totalCents: number }
+  | { kind: "late"; days: number; totalCents: number }
+  | { kind: "suspended"; days: number; totalCents: number; canPay: boolean };
+
+/**
+ * Alerta da fatura no topo do painel (SUB-FR-006, 007, 009): vence em até 3 dias, em
+ * atraso ou loja suspensa [12f]. Valor e "Pagar agora" só para o dono; o usuário da
+ * loja vê só que ela está suspensa. Comprovante em análise: sem cobrança de novo.
+ */
+export async function billingAlert(
+  deps: Deps,
+  session: Session | null,
+): Promise<BillingAlert | null> {
+  if (!session?.storeId) return null;
+  const now = deps.now?.() ?? new Date();
+  const [store] = await deps.db
+    .select({ status: stores.status })
+    .from(stores)
+    .where(eq(stores.id, session.storeId));
+  if (!store) return null;
+  const owner = can(session, "billing.manage");
+  if (!owner)
+    return store.status === "suspended"
+      ? { kind: "suspended", days: 0, totalCents: 0, canPay: false }
+      : null;
+  const open = await openMonthly(deps.db, session.storeId);
+  const totalCents = open.reduce((sum, i) => sum + i.totalCents, 0);
+  const days = open[0] ? daysLate(open[0].dueAt, now) : 0;
+  if (store.status === "suspended")
+    return { kind: "suspended", days, totalCents, canPay: true };
+  if (!open.length) return null;
+  const [inReview] = await deps.db
+    .select({ id: payments.id })
+    .from(payments)
+    .where(
+      and(
+        eq(payments.storeId, session.storeId),
+        eq(payments.status, "submitted"),
+      ),
+    )
+    .limit(1);
+  if (inReview) return null;
+  if (store.status === "past_due" || isOverdue(open[0].dueAt, now))
+    return { kind: "late", days, totalCents };
+  if (dueSoon(open[0].dueAt, now))
+    return { kind: "due", dueAt: open[0].dueAt, totalCents };
+  return null;
 }

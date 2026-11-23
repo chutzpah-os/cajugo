@@ -400,3 +400,6 @@
 
 # 2026-11-23 · Taxa de venda desfeita [011/T007]
 - D1: dependência num sentido só (sellers → billing); a fatura não copia as vendas.
+
+# 2026-11-23 · Alerta da fatura no painel [011/T014]
+- Slot como o navCounts: auth não passa a depender de billing.
