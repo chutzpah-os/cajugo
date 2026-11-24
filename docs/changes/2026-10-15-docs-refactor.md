@@ -1055,3 +1055,6 @@
 
 # 2026-11-24 · Painel e indicações do Caju Indica [010/T007]
 - referralPanel (código no 1º acesso, link pela função única referralUrl, regras; programa desligado sem código) e referralsList (filtros, status calculados, rendeu, meses que faltam, só o nome da loja).
+
+# 2026-11-24 · Saldo e crédito [010/T008]
+- balanceView (saldo de recompensas, mínimo, progresso, movimentações) e billing.creditView (crédito disponível, demonstrativo mensalidade − crédito, movimentações com a fatura em que foi abatido).

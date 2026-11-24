@@ -1,4 +1,4 @@
-import { eq, sum } from "drizzle-orm";
+import { and, desc, eq, sum } from "drizzle-orm";
 import { z } from "zod";
 import { getSettings } from "@/domains/settings/service";
 import {
@@ -149,5 +149,52 @@ export async function referralsList(
       paused: count("paused"),
     },
     items: wanted ? all.filter((i) => i.status === wanted) : all,
+  };
+}
+
+export type BalanceView = {
+  balanceCents: number;
+  minCents: number;
+  /** De 0 a 1, até o resgate mínimo. */
+  progress: number;
+  movements: { store: string; amountCents: number; date: Date }[];
+};
+
+/**
+ * Saldo do vendedor e do indicador [9d] (IND-FR-010, SEC-001): a soma das recompensas
+ * em saldo de quem está conectado (os resgates descontam na 010b).
+ */
+export async function balanceView(
+  db: Db,
+  session: Session | null,
+): Promise<BalanceView> {
+  const s = authorize(session, ["seller", "referrer"]);
+  const mine = and(
+    eq(referralRewards.beneficiaryId, s.userId),
+    eq(referralRewards.target, "balance"),
+  );
+  const [total] = await db
+    .select({ cents: sum(referralRewards.amountCents).mapWith(Number) })
+    .from(referralRewards)
+    .where(mine);
+  const movements = await db
+    .select({
+      store: stores.name,
+      amountCents: referralRewards.amountCents,
+      date: referralRewards.createdAt,
+    })
+    .from(referralRewards)
+    .innerJoin(referrals, eq(referrals.id, referralRewards.referralId))
+    .innerJoin(stores, eq(stores.id, referrals.referredStoreId))
+    .where(mine)
+    .orderBy(desc(referralRewards.createdAt))
+    .limit(20);
+  const { payout_min_cents: minCents } = await getSettings(db);
+  const balanceCents = total?.cents ?? 0;
+  return {
+    balanceCents,
+    minCents,
+    progress: minCents ? Math.min(1, balanceCents / minCents) : 1,
+    movements,
   };
 }

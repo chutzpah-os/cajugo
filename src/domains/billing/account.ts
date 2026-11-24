@@ -3,6 +3,7 @@ import { authorizeTo, can } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { getSettings } from "@/domains/settings/service";
 import {
+  billingCredits,
   invoices,
   payments,
   sales,
@@ -307,4 +308,68 @@ export async function billingAlert(
   if (dueSoon(open[0].dueAt, now))
     return { kind: "due", dueAt: open[0].dueAt, totalCents };
   return null;
+}
+
+const CREDIT_LABEL: Record<string, string> = {
+  referral: "Indicação",
+  overpayment: "Sobra de pagamento",
+  fee_refund: "Taxa devolvida",
+};
+
+export type CreditView = {
+  availableCents: number;
+  /** Demonstrativo da próxima fatura: mensalidade − crédito (até a mensalidade). */
+  nextInvoice: {
+    membershipCents: number;
+    creditCents: number;
+    totalCents: number;
+  };
+  movements: {
+    label: string;
+    amountCents: number;
+    date: Date;
+    /** "mm/aaaa" da fatura em que foi abatido; nulo se ainda disponível. */
+    appliedIn: string | null;
+  }[];
+};
+
+/** Crédito do lojista [8e] (IND-FR-009, SEC-001): só a loja da sessão, só o dono. */
+export async function creditView(
+  deps: Deps,
+  session: Session | null,
+): Promise<CreditView> {
+  const storeId = storeOf(session);
+  const now = deps.now?.() ?? new Date();
+  const rows = await deps.db
+    .select({
+      kind: billingCredits.kind,
+      amountCents: billingCredits.amountCents,
+      date: billingCredits.createdAt,
+      applied: billingCredits.appliedInvoiceId,
+      period: invoices.period,
+    })
+    .from(billingCredits)
+    .leftJoin(invoices, eq(invoices.id, billingCredits.appliedInvoiceId))
+    .where(eq(billingCredits.storeId, storeId))
+    .orderBy(desc(billingCredits.createdAt))
+    .limit(50);
+  const availableCents = rows
+    .filter((r) => !r.applied)
+    .reduce((sum, r) => sum + r.amountCents, 0);
+  const { membership_cents: membershipCents } = await getSettings(deps.db, now);
+  const creditCents = Math.min(availableCents, membershipCents);
+  return {
+    availableCents,
+    nextInvoice: {
+      membershipCents,
+      creditCents,
+      totalCents: membershipCents - creditCents,
+    },
+    movements: rows.map((r) => ({
+      label: CREDIT_LABEL[r.kind],
+      amountCents: r.amountCents,
+      date: r.date,
+      appliedIn: r.applied ? periodLabel(r.period) : null,
+    })),
+  };
 }

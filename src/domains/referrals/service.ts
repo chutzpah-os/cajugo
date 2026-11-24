@@ -254,6 +254,8 @@ export async function removeReferralData(
 
 export { rewardPaidInvoices, type ReferralCredit } from "./rewards";
 export {
+  balanceView,
+  type BalanceView,
   REFERRAL_FILTERS,
   referralPanel,
   referralsList,

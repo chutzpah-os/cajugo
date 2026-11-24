@@ -1065,6 +1065,8 @@ export {
 export {
   accountView,
   billingAlert,
+  creditView,
+  type CreditView,
   invoiceView,
   type BillingAlert,
   type AccountView,
