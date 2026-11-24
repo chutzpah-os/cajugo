@@ -404,6 +404,9 @@ export const noticeKind = pgEnum("notice_kind", [
   "invoice_due",
   "store_suspended",
   "store_reactivated",
+  "sale_confirmed",
+  "commission_received",
+  "commission_unreceived",
 ]);
 
 export const notices = pgTable(
@@ -890,6 +893,10 @@ export const sales = pgTable(
     feeBps: integer("fee_bps"),
     feeCents: integer("fee_cents"),
     invoiceId: uuid("invoice_id"),
+    /** "Recebi" do vendedor (008b): o desfazer vale por 24 h; nulo se a loja marcou paga. */
+    commissionReceivedAt: timestamp("commission_received_at", {
+      withTimezone: true,
+    }),
     confirmedBy: uuid("confirmed_by")
       .notNull()
       .references(() => profiles.id),

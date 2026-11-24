@@ -1004,3 +1004,6 @@
 
 # 2026-11-23 · 008b · spec, plano, tasks e documentos [008b/T001]
 - Spec 008b (extrato do vendedor) clarificada, plano aprovado e tasks; PRD §5.7/§5.13/[7d]/§9, ARCHITECTURE (sales.commission_received_at), API.md e GLOSSARY.
+
+# 2026-11-23 · Migration 0021 do extrato [008b/T002]
+- sales.commission_received_at e avisos sale_confirmed, commission_received, commission_unreceived; só acrescenta.

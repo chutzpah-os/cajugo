@@ -17,7 +17,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   - GLOSSARY (Desfazer de 24 h no status da comissão).
 
   · _—_
-- [ ] **T002** Migration `0021`, só acrescenta:
+- [x] **T002** Migration `0021`, só acrescenta:
   - `sales.commission_received_at`;
   - `notice_kind` + `sale_confirmed`, `commission_received`, `commission_unreceived`.
 

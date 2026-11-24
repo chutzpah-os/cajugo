@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
-import { sales, stores } from "@/platform/db/schema";
+import { notices, sales, stores } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { car, liveStore } from "@/domains/showcase/testing/fixtures";
 
@@ -39,5 +39,37 @@ describe("tabela de vendas da Rede Caju", () => {
       .from(stores)
       .where(eq(stores.id, a.storeId));
     expect(store.accepts).toBe(false);
+  });
+
+  it("[EXT-FR-009] [EXT-FR-010] a venda guarda quando o vendedor marcou o Recebi; avisos do extrato existem", async () => {
+    // Arrange
+    const a = await liveStore(t.db, "loja-a");
+    const v = await car(t.db, a.storeId);
+    const at = new Date("2026-11-23T12:00:00Z");
+
+    // Act
+    const [row] = await t.db
+      .insert(sales)
+      .values({
+        vehicleId: v.id,
+        storeId: a.storeId,
+        finalPriceCents: 5_800_000,
+        attribution: "store",
+        confirmedBy: a.userId,
+        commissionReceivedAt: at,
+      })
+      .returning();
+    for (const kind of [
+      "sale_confirmed",
+      "commission_received",
+      "commission_unreceived",
+    ] as const)
+      await t.db
+        .insert(notices)
+        .values({ profileId: a.userId, kind, data: {} });
+
+    // Assert
+    expect(row.commissionReceivedAt).toEqual(at);
+    expect(await t.db.select().from(notices)).toHaveLength(3);
   });
 });
