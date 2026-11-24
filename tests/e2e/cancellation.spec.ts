@@ -20,13 +20,13 @@ test.describe("cancelamento da assinatura (011b)", () => {
     // [12h]: consequências e o motivo opcional
     await page.getByTestId("cancel-subscription").click();
     const sheet = page.getByRole("dialog");
-    await expect(sheet.getByText(/Sua loja fica no ar até/)).toBeVisible();
+    await expect(
+      sheet.getByText(/ficam no ar até .*Não há multa/),
+    ).toBeVisible();
     await expect(sheet.getByText(/guardados por 90 dias/)).toBeVisible();
     await expect(sheet.getByText(/Você pode desfazer até/)).toBeVisible();
     expect(await audit(page), "[12h] 390").toEqual(CLEAN);
-    await sheet
-      .getByLabel("Motivo (opcional)")
-      .selectOption("Vou parar de vender");
+    await sheet.getByText("Vou parar de vender").click();
     await sheet.getByRole("button", { name: "Cancelar assinatura" }).click();
 
     // Conta e painel: o fim agendado com Desfazer
@@ -59,9 +59,7 @@ test.describe("cancelamento da assinatura (011b)", () => {
     await page.waitForURL(/\/painel\/conta$/);
     await page.getByTestId("cancel-subscription").click();
     const sheet = page.getByRole("dialog");
-    await sheet
-      .getByLabel("Motivo (opcional)")
-      .selectOption("Vou parar de vender");
+    await sheet.getByText("Vou parar de vender").click();
     await sheet.getByRole("button", { name: "Cancelar assinatura" }).click();
     await expect(
       page.getByRole("heading", { name: /Sua assinatura termina em/ }),

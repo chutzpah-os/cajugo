@@ -139,7 +139,7 @@ export function StatementList({
         open={!!confirming}
         title="Recebeu a comissão?"
         confirmLabel="Sim, recebi"
-        confirmVariant="primary"
+        kind="sold"
         busy={busy}
         onClose={() => setConfirming(null)}
         onConfirm={() => confirming && save(confirming.saleId, true)}

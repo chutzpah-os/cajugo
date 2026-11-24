@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { Button } from "@/ui/button";
-import { ConfirmSheet } from "@/ui/confirm-sheet";
+import { ConfirmSheet, type ConfirmKind } from "@/ui/confirm-sheet";
 import { Toggle } from "@/ui/toggle";
 import {
   markSoldAction,
@@ -18,25 +18,25 @@ type Kind = "sold" | "unpublish" | "remove";
 
 const SHEETS: Record<
   Kind,
-  { title: string; text: string; confirm: string; variant: "dark" | "primary" }
+  { title: string; text: string; confirm: string; kind: ConfirmKind }
 > = {
   sold: {
     title: "Marcar como vendido?",
     text: "Sai do seu catálogo, da vitrine CajuGo e dos links de vendedor na hora. Dá para desfazer em até 7 dias.",
     confirm: "Marcar como vendido",
-    variant: "dark",
+    kind: "sold",
   },
   unpublish: {
     title: "Despublicar veículo?",
     text: "Ele volta a ser rascunho e sai do seu catálogo e da vitrine CajuGo.",
     confirm: "Despublicar",
-    variant: "dark",
+    kind: "hide",
   },
   remove: {
     title: "Excluir veículo?",
     text: "Ele some da sua lista e de todas as páginas públicas. Você não poderá recuperá-lo depois.",
     confirm: "Excluir veículo",
-    variant: "primary",
+    kind: "cancel",
   },
 };
 
@@ -153,7 +153,7 @@ export function VehicleActions({
         open={sheet !== null}
         title={sheet ? SHEETS[sheet].title : ""}
         confirmLabel={sheet ? SHEETS[sheet].confirm : ""}
-        confirmVariant={sheet ? SHEETS[sheet].variant : "dark"}
+        kind={sheet ? SHEETS[sheet].kind : "neutral"}
         busy={busy}
         onClose={() => setSheet(null)}
         onConfirm={confirm}

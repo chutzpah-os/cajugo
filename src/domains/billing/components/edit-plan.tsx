@@ -39,7 +39,7 @@ export function EditPlanButton({ earliest }: { earliest: string }) {
         open={open}
         title="Editar plano"
         confirmLabel="Salvar"
-        confirmVariant="primary"
+        confirmVariant="dark"
         busy={busy}
         onClose={() => setOpen(false)}
         onConfirm={async () => {

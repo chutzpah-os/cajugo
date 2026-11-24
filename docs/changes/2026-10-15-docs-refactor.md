@@ -1124,3 +1124,6 @@
 
 # 2026-11-24 · 012/T001 base visual
 - Specs 012 (fidelidade ao design) e 012b (admin), plano e tasks da 012; src/ui: icons (SVG próprio), Badge do tamanho do texto, Kpi, Initials/Avatar, KeyValue, SectionCard, SettingsList, StoreCard, DataTable, DarkHeader/LightHeader/BackHeader.
+
+# 2026-11-24 · 012/T002 confirmações [6f]
+- ConfirmSheet com alça, ícone de 48 px por tipo, título 20/800 e botões empilhados (danger só em suspender/cancelar); RadioOptions; SheetNote; [12h] e Suspender com os textos do DESIGN.md §6; Button danger/soft/xs.

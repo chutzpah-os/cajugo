@@ -4,8 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { brl } from "@/platform/br/money";
 import { Button } from "@/ui/button";
-import { ConfirmSheet } from "@/ui/confirm-sheet";
-import { SelectField } from "@/ui/select-field";
+import { ConfirmSheet, SheetNote } from "@/ui/confirm-sheet";
+import { RadioOptions } from "@/ui/radio-options";
 import {
   cancelSubscriptionAction,
   resubscribeAction,
@@ -62,14 +62,20 @@ export function UndoCancelButton() {
 
 type Cancel = NonNullable<AccountView["cancel"]>;
 
-/** Texto de [12h] (CAN-FR-001): o que acontece ao cancelar. */
+/** Texto do efeito em [12h] (DESIGN.md §6, "Confirmar cancelamento"). */
+export function cancelEffect(
+  c: Extract<Cancel, { kind: "available" }>,
+): string {
+  return c.until
+    ? `Seu catálogo e seus veículos na vitrine ficam no ar até ${brDate.format(c.until)}, fim do mês já pago. Depois disso saem do ar. Não há multa.`
+    : "Como a fatura está em aberto, seu catálogo e seus veículos na vitrine saem do ar agora, e as faturas em aberto são canceladas. Não há multa.";
+}
+
+/** Nota de [12h] (CAN-FR-001): retenção, crédito e desfazer. */
 export function cancelConsequences(
   c: Extract<Cancel, { kind: "available" }>,
 ): string[] {
   return [
-    c.until
-      ? `Sua loja fica no ar até ${brDate.format(c.until)}, o fim do período pago. Depois, catálogo e veículos saem do ar.`
-      : "Como a fatura está em aberto, a loja sai do ar agora e as faturas em aberto são canceladas.",
     `Seus dados ficam guardados por ${c.retentionDays} dias: dá para reassinar e voltar com tudo.`,
     c.creditCents
       ? `O crédito não usado (${brl(c.creditCents)}) expira.`
@@ -152,8 +158,10 @@ export function CancelSubscription({
       <ConfirmSheet
         open={open}
         title="Cancelar assinatura?"
+        kind="cancel"
         confirmLabel="Cancelar assinatura"
-        confirmVariant="primary"
+        cancelLabel="Manter assinatura"
+        confirmVariant="danger"
         busy={r.busy}
         onClose={() => setOpen(false)}
         onConfirm={async () => {
@@ -164,25 +172,25 @@ export function CancelSubscription({
         }}
         extra={
           <>
-            <ul className="flex list-disc flex-col gap-1 pl-5 text-sm text-text-2">
-              {cancelConsequences(cancel).map((line) => (
-                <li key={line}>{line}</li>
-              ))}
-            </ul>
-            <SelectField
-              id="cancel-reason"
+            <RadioOptions
               name="reason"
-              label="Motivo (opcional)"
-              placeholder="Prefiro não dizer"
+              legend="Por que você está cancelando? (opcional)"
               options={reasons.map((x) => [x, x] as const)}
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={setReason}
             />
+            <SheetNote>
+              <ul className="flex list-disc flex-col gap-1 pl-4">
+                {cancelConsequences(cancel).map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </SheetNote>
             <Alert message={r.message} />
           </>
         }
       >
-        Sem multa. Você continua com acesso à Conta.
+        {cancelEffect(cancel)}
       </ConfirmSheet>
     </>
   );

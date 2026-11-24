@@ -34,11 +34,15 @@ describe("cancelamento na Conta [3c] e [12h]", () => {
 
     const t = text(html);
     expect(t).toContain("Cancelar assinatura");
-    expect(t).toContain("Sua loja fica no ar até 10/12/2026");
+    expect(t).toContain(
+      "Seu catálogo e seus veículos na vitrine ficam no ar até 10/12/2026, fim do mês já pago. Depois disso saem do ar. Não há multa.",
+    );
+    expect(t).toContain("Manter assinatura");
     expect(t).toContain("guardados por 90 dias");
     expect(t).toContain("O crédito não usado (R$ 30,00) expira.");
     expect(t).toContain("Você pode desfazer até 10/12/2026.");
-    expect(t).toContain("Motivo (opcional)");
+    expect(t).toContain("Por que você está cancelando? (opcional)");
+    expect(html).toContain('type="radio"');
     expect(t).toContain("Vou parar de vender");
   });
 
@@ -57,7 +61,7 @@ describe("cancelamento na Conta [3c] e [12h]", () => {
       ),
     );
 
-    expect(t).toContain("a loja sai do ar agora");
+    expect(t).toContain("saem do ar agora");
     expect(t).not.toContain("Você pode desfazer");
   });
 

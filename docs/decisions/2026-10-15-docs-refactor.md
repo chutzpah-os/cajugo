@@ -475,3 +475,6 @@
 
 # 2026-11-24 · 012/T001 base visual
 - O dono do produto pediu o design seguido à risca; a base do DESIGN.md §3 vem antes das telas.
+
+# 2026-11-24 · 012/T002 confirmações [6f]
+- Fidelidade ao [6f] do design.

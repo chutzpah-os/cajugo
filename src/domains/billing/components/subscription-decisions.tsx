@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/ui/button";
-import { ConfirmSheet } from "@/ui/confirm-sheet";
+import { ConfirmSheet, SheetNote } from "@/ui/confirm-sheet";
 import { TextField } from "@/ui/text-field";
 import {
   reactivateStoreAction,
@@ -61,17 +61,28 @@ export function SuspendButton({
         open={open}
         title={`Suspender ${name}?`}
         confirmLabel="Suspender loja"
-        confirmVariant="primary"
+        kind="suspend"
+        confirmVariant="danger"
         busy={d.busy}
         onClose={() => setOpen(false)}
         onConfirm={async () => {
           const r = await d.run(() => suspendStoreAction({ storeId }));
           if (r.ok) setOpen(false);
         }}
-        extra={<Alert message={d.message} />}
+        extra={
+          <>
+            {amount && (
+              <SheetNote>
+                Assinatura em atraso há {days} {days === 1 ? "dia" : "dias"} ·{" "}
+                {amount}
+              </SheetNote>
+            )}
+            <Alert message={d.message} />
+          </>
+        }
       >
-        Em atraso há {days} {days === 1 ? "dia" : "dias"} · {amount}. O catálogo
-        e os veículos saem do ar; o lojista vê o alerta e pode pagar.
+        O catálogo da loja e os veículos dela na vitrine CajuGo saem do ar. O
+        lojista vê um alerta no painel e pode pagar para reativar.
       </ConfirmSheet>
     </>
   );
@@ -102,7 +113,6 @@ export function ReactivateButton({
         open={open}
         title={`Reativar ${name}?`}
         confirmLabel="Reativar"
-        confirmVariant="primary"
         busy={d.busy}
         onClose={() => setOpen(false)}
         onConfirm={async () => {

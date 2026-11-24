@@ -61,4 +61,43 @@ describe("componentes de veículos", () => {
     expect(html).toContain("Sai do catálogo e da vitrine na hora.");
     expect(html).toContain(">Voltar</button>");
   });
+
+  it("[DSG-FR-011] [6f]: alça, ícone de 48 px na cor do tipo e confirmar em cima, contorno embaixo", () => {
+    const sold = renderToStaticMarkup(
+      <ConfirmSheet
+        open={false}
+        kind="sold"
+        title="Marcar BMW 420i como vendido?"
+        confirmLabel="Marcar como vendido"
+        onConfirm={() => {}}
+        onClose={() => {}}
+      >
+        O veículo sai do seu catálogo.
+      </ConfirmSheet>,
+    );
+    const cancel = renderToStaticMarkup(
+      <ConfirmSheet
+        open={false}
+        kind="cancel"
+        confirmVariant="danger"
+        cancelLabel="Manter assinatura"
+        title="Cancelar assinatura?"
+        confirmLabel="Cancelar assinatura"
+        onConfirm={() => {}}
+        onClose={() => {}}
+      >
+        Não há multa.
+      </ConfirmSheet>,
+    );
+
+    expect(sold).toContain("bg-ok-soft");
+    expect(sold).toContain("size-12");
+    expect(sold).toContain("w-10 rounded-full bg-field");
+    expect(sold.indexOf("Marcar como vendido")).toBeLessThan(
+      sold.indexOf(">Voltar<"),
+    );
+    expect(cancel).toContain("bg-caju-soft");
+    expect(cancel).toContain("bg-caju-deep");
+    expect(cancel).toContain(">Manter assinatura<");
+  });
 });

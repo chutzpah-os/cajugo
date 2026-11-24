@@ -8,11 +8,17 @@ const variants = {
   outline: "border-[1.5px] border-ink bg-transparent text-ink",
   whatsapp: "bg-whatsapp text-white",
   ghost: "border border-field bg-surface text-ink",
+  /** Ação que tira algo do ar por pagamento (suspender, cancelar; [6f]). */
+  danger: "bg-caju-deep text-white",
+  /** Contorno claro do "Voltar" das confirmações [6f]. */
+  soft: "border-[1.5px] border-field bg-surface text-ink",
 } as const;
 
 const sizes = {
   md: "h-[50px] px-5 text-[15px]",
   sm: "h-10 px-3.5 text-sm",
+  /** Botão pequeno do card (34–40 px, raio 9, 12/700; DESIGN.md §3). */
+  xs: "h-[34px] rounded-[9px] px-2.5 text-xs",
 } as const;
 
 type Style = {

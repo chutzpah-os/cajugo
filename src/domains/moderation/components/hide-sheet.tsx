@@ -51,7 +51,7 @@ export function HideSheet({ vehicleId }: { vehicleId: string }) {
         open={open}
         title="Ocultar veículo"
         confirmLabel="Ocultar da vitrine"
-        confirmVariant="primary"
+        kind="hide"
         busy={busy}
         onConfirm={confirm}
         onClose={() => setOpen(false)}

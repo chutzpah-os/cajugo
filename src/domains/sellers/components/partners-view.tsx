@@ -133,7 +133,7 @@ export function PartnersView({
         open={ending !== null}
         title={`Encerrar parceria com ${ending?.name ?? ""}?`}
         confirmLabel="Encerrar parceria"
-        confirmVariant="primary"
+        confirmVariant="dark"
         busy={busy !== null}
         onClose={() => setEnding(null)}
         onConfirm={async () => {

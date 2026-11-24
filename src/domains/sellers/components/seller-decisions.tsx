@@ -106,7 +106,7 @@ export function BlockButton({
         open={open}
         title={`Bloquear ${name}?`}
         confirmLabel="Bloquear"
-        confirmVariant="primary"
+        confirmVariant="dark"
         busy={d.busy}
         onClose={() => setOpen(false)}
         onConfirm={async () => {
