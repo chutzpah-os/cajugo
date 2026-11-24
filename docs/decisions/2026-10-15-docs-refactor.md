@@ -496,3 +496,6 @@
 
 # 2026-11-24 · 012/T007-T009 Leads, Minha loja, Conta e página da loja
 - Fidelidade às capturas do Turno 03 e [1a] modo lojista; pedidos do dono (filtro Vendido, Vendidos no mês).
+
+# 2026-11-24 · 012 Leads com Perdido e espaço do botão flutuante
+- Pedido do dono (a conta dos filtros não fechava); o último card ficava embaixo do botão flutuante.

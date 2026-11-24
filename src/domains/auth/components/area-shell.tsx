@@ -101,7 +101,7 @@ export async function AreaShell({
           footer={<AccountMenu {...account} variant="sidebar" />}
         />
       )}
-      <div className="relative mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pb-28 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pt-6 lg:pb-10">
+      <div className="relative mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pb-44 md:max-w-3xl lg:max-w-6xl lg:px-8 lg:pt-6 lg:pb-10">
         <div className="absolute top-[22px] right-4 z-10 lg:hidden">
           <AccountMenu
             {...account}

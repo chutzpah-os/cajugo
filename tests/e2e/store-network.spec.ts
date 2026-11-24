@@ -121,8 +121,6 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     const sell = page
       .locator(`a[href="/painel/veiculos/${S.saleTestId}?vender=1"]`)
       .first();
-    // Fora da barra fixa e do "+ Novo veículo".
-    await sell.evaluate((el) => el.scrollIntoView({ block: "center" }));
     await sell.click();
     const sheet = page.getByRole("dialog", { name: "Confirmar venda" });
     await expect(sheet).toBeVisible();

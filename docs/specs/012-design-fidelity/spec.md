@@ -70,7 +70,7 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
   - o tipo marcado vale para todos os subtipos, e os subtipos aparecem embaixo do tipo marcado;
   - com mais de 5 linhas, a lista rola dentro do grupo.
 
-- **DSG-FR-019** (pedido do dono do produto, 2026-11-24) Leads [3a] tem também o filtro **Vendido**, com a contagem, depois de Negociando.
+- **DSG-FR-019** (pedido do dono do produto, 2026-11-24) Leads [3a] tem também os filtros **Vendido** e **Perdido**, com a contagem, depois de Negociando: a soma dos chips bate com Todos.
 
 ## Requisitos não funcionais
 - **DSG-NFR-001** Para cada tela desta spec, fica registrada a comparação lado a lado (captura do design × tela entregue) em 390 px e, quando há versão desktop, em 1280 px, sem nenhuma diferença de estrutura, ordem ou componente que não esteja justificada por escrito.

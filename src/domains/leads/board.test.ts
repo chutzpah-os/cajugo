@@ -212,7 +212,14 @@ describe("tela Leads", () => {
     // Assert
     expect(board).toEqual({
       cards: [],
-      counts: { all: 0, new: 0, contacting: 0, negotiating: 0, sold: 0 },
+      counts: {
+        all: 0,
+        new: 0,
+        contacting: 0,
+        negotiating: 0,
+        sold: 0,
+        lost: 0,
+      },
       newCount: 0,
       cajugoShare: null,
     });

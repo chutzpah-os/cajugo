@@ -36,7 +36,7 @@ const board = (
   over: Partial<LeadsBoard> = {},
 ): LeadsBoard => ({
   cards,
-  counts: { all: 4, new: 2, contacting: 1, negotiating: 1, sold: 0 },
+  counts: { all: 4, new: 2, contacting: 1, negotiating: 1, sold: 0, lost: 0 },
   newCount: 2,
   cajugoShare: 75,
   ...over,
@@ -58,10 +58,11 @@ describe("tela Leads", () => {
     expect(html).toContain('href="/painel/leads?status=negotiating"');
   });
 
-  it("[DSG-FR-019] chip Vendido nos filtros de Leads", () => {
+  it("[DSG-FR-019] chips Vendido e Perdido nos filtros: a soma bate com Todos", () => {
     const html = render(board([card()]));
 
     expect(html).toContain('href="/painel/leads?status=sold"');
+    expect(html).toContain('href="/painel/leads?status=lost"');
     expect(html).toMatch(/Vendido<span[^>]*>0<\/span>/);
   });
 
@@ -139,7 +140,14 @@ describe("tela Leads", () => {
     // Act
     const html = render(
       board([], {
-        counts: { all: 0, new: 0, contacting: 0, negotiating: 0, sold: 0 },
+        counts: {
+          all: 0,
+          new: 0,
+          contacting: 0,
+          negotiating: 0,
+          sold: 0,
+          lost: 0,
+        },
         newCount: 0,
         cajugoShare: null,
       }),

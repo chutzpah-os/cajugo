@@ -1145,3 +1145,6 @@
 
 # 2026-11-24 · 012/T007-T009 Leads, Minha loja, Conta e página da loja
 - Leads [3a] com cabeçalho escuro, chips (com Vendido), card do design e ações; Minha loja [3b] com capa, logo sobreposto e card do QR; Conta [3c] com perfil, card escuro da assinatura, Faturas, Sair e Cancelar por último; página da loja com a identidade no cabeçalho; seed com vendidos no mês; toggle desligado no vendido; scroll-padding no celular.
+
+# 2026-11-24 · 012 Leads com Perdido e espaço do botão flutuante
+- Chip Perdido em Leads (a soma dos chips bate com Todos); espaço livre no fim das telas do painel no celular, acima do + Novo veículo e da barra fixa.
