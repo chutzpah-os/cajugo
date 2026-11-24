@@ -156,7 +156,10 @@
 > ✅ **Implementada** em 2026-11-24 (`docs/specs/011b-cancellation/`): Cancelar assinatura [12h] na Conta com motivo, no ar até o próximo vencimento e **Desfazer** até lá (aviso no painel); em atraso ou suspensa, cancelada na hora com as faturas abertas canceladas; o job encerra o período (crédito expira, parcerias encerradas, fora do ar), arquiva em 90 dias (apaga loja, veículos sem venda, fotos, comprovantes, leads e a conta de login sem outro papel; perfil anônimo; ficam nome, faturas e pagamentos) e dá endereço provisório a quem não pagou em 7 dias; Reassinar com nova 1ª mensalidade; loja cancelada com 404 "Esta loja não está mais na CajuGo"; [4b] com Cancelamento agendado, Canceladas e **Editar plano** (vigência futura, aviso de 30 dias, lista de `wa.me`). Migration `0023` no staging; no prod, pendente de autorização.
 - Cancelar [12h] com motivo e desfazer até o fim do período; fim do período (cancelada), arquivamento em 90 dias, liberação do endereço sem 1º pagamento em 7 dias, Editar plano com aviso de 30 dias. Dividida da 011 no `/clarify` de 2026-11-23.
 
-## 012 · Admin: painel, lojas e equipe — telas 4a, 1d, 6g, 4c, 15b, 15c
+## 012 · Fidelidade ao design nas telas já entregues — todas as telas de 001 a 011b, 15b
+- Pedido do dono do produto (2026-11-24): seguir o design de forma fiel. Comparação lado a lado com as capturas de `docs/design/telas/` em 390 e 1280 px; cabeçalho escuro com KPIs, sidebar escura no desktop, card de loja com sigla, selos, tabela de veículos [15b], card escuro da assinatura em [3c]. Sem mudar regra de negócio. Spec em `docs/specs/012-design-fidelity/` (draft).
+
+## 012b · Admin: painel, lojas, usuários e detalhe da loja — telas 4a, 1d, 6g, 4c (equipe e logs), 15c
 - Painel com KPIs e "Precisa de atenção" (comprovantes, vencimentos, atrasos, vendedores em análise, aprovações, denúncias, resgates, alertas de busca).
 - Lojas, usuários, detalhe da loja (senha temporária, suspender/reativar), equipe CajuGo, logs de atividade.
 - Desktop: painel do lojista [15b] e admin [15c] com sidebar e filas inline.

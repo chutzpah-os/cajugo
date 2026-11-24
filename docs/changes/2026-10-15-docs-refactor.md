@@ -1121,3 +1121,6 @@
 
 # 2026-11-24 · 011b/T014 verificação
 - Rastreabilidade: todos os CAN-FR/NFR/SEC com teste; e2e 113 + store-network isolado verde; build de produção com 404 real e o texto da loja cancelada. Cancelar em atraso com comprovante em análise → 409. Spec implemented e PLAN atualizado. Migration 0023 no prod pendente de autorização.
+
+# 2026-11-24 · 012/T001 base visual
+- Specs 012 (fidelidade ao design) e 012b (admin), plano e tasks da 012; src/ui: icons (SVG próprio), Badge do tamanho do texto, Kpi, Initials/Avatar, KeyValue, SectionCard, SettingsList, StoreCard, DataTable, DarkHeader/LightHeader/BackHeader.

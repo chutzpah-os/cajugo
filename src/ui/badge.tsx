@@ -15,16 +15,26 @@ export type BadgeTone = keyof typeof tones;
 /** Selo de status: sempre com texto, nunca só cor (DESIGN.md §7). */
 export function Badge({
   tone,
+  size = "md",
+  className,
   children,
 }: {
   tone: BadgeTone;
+  /** `sm`: selo dentro de card (10 px); `md`: cabeçalho e telas (11 px). */
+  size?: "sm" | "md";
+  className?: string;
   children: ReactNode;
 }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-badge px-2 py-1 text-[11px] leading-none font-bold tracking-[0.03em] uppercase",
+        // Largura do texto, nunca esticado pelo container (DSG-FR-013).
+        "inline-flex w-fit flex-none items-center rounded-badge leading-none font-bold tracking-[0.03em] whitespace-nowrap uppercase",
+        size === "sm"
+          ? "px-[7px] py-[4px] text-[10px]"
+          : "px-2 py-[5px] text-[11px]",
         tones[tone],
+        className,
       )}
     >
       {children}

@@ -472,3 +472,6 @@
 
 # 2026-11-24 · 011b/T014 verificação
 - Achado na revisão: cancelar na hora com um pagamento por conferir deixaria o comprovante sem fatura aberta.
+
+# 2026-11-24 · 012/T001 base visual
+- O dono do produto pediu o design seguido à risca; a base do DESIGN.md §3 vem antes das telas.
