@@ -91,6 +91,6 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   · _IND-FR-001…017, IND-NFR-001_
 
 ## Fase 4 — Fechamento
-- [ ] **T015** Verificação: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0022` no prod só com a sua autorização.
+- [x] **T015** Verificação: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0022` no prod só com a sua autorização.
 
   · _—_

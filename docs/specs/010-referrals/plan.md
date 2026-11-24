@@ -164,3 +164,4 @@ Seed do e2e:
 - **T011:** a vitrine recebe o banner por slot (`promo`, `promoFooter`) montado na rota, como o `banner` do painel: `showcase` não depende de `referrals`. `/i/{codigo}` virou página em cache por código (`'use cache'` com `SETTINGS_TAG`).
 - **`referralUrl(code)`** em `platform/http/urls.ts` é a única função que monta o link de indicação (Minha loja e o painel).
 - **`rememberPanel`** prefere o papel principal da área: com `/indica` aberta ao vendedor (D4), quem é vendedor e indicador continua lembrando o painel do indicador.
+- **Verificação:** os 14 FR e 4 SEC com teste (integração, componente e e2e), todos passando; a IND-NFR-002 (banner em cache, renovado em até 60 s) sem teste automático (aviso). O e2e do cadastro pelo link (003) passou a clicar em **Quero meu catálogo** na landing.

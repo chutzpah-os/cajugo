@@ -79,7 +79,9 @@ test.describe("cadastro do lojista e Minha loja", () => {
     page,
   }) => {
     const stamp = Date.now().toString(36);
+    // O link abre a landing [8c] (010) e leva ao cadastro com o código.
     await page.goto("/i/lojista10");
+    await page.getByRole("link", { name: "Quero meu catálogo" }).click();
     await expect(page).toHaveURL(/\/lojistas\/cadastro\?codigo=LOJISTA10$/);
     await expect(page.getByLabel("Código de indicação")).toHaveValue(
       "LOJISTA10",

@@ -134,10 +134,14 @@
 - Extrato com filtros (Todas · A receber · Em análise · Pagas) e **Recebi**; "a receber", vendas do mês e últimas vendas no painel [7b]. Dividida da 008 no `/clarify` de 2026-11-16: depende da Confirmar venda [7g] da 009.
 
 ## 010 · Caju Indica — telas 8a–8g, 9a, 9b, 9d, 9e
+> ✅ **Implementada** em 2026-11-24 (`docs/specs/010-referrals/`): landing do link [8c] (`noindex`), cadastro do indicador [9b], [8a]/[9d] com código e link (um por pessoa, também para o vendedor), indicações [8b] com status calculados, recompensa nas primeiras mensalidades da loja indicada (uma por fatura, mesmo paga com atraso), crédito do lojista [8e] abatido na fatura, saldo do vendedor e do indicador, banner e rodapé na vitrine [9a], regras do programa nos códigos. Migration `0022` no staging (prod com autorização). Resgate, [8g] e campanhas na 010b.
 - Banner e rodapé "Indique uma loja e ganhe" na vitrine [9a] (vindo da 006d), com a recompensa das regras e oculto com o programa desligado.
 - Código/link pessoal, landing [8c], aplicação no cadastro (vem da 003), indicações e status.
 - Recompensas creditadas na confirmação do pagamento da indicada (até 3 meses, pausa em atraso); crédito do lojista; saldo e resgate Pix ≥ mínimo; admin marca Pix pago; regras e links de campanha [8f].
 - Antifraude: autoindicação, CPF único por resgate.
+
+## 009b · Rede Caju: convite, perfil, avaliação e denúncia — telas 13a, 13b, 13d
+- Vendedores disponíveis e convite [13a]; perfil do vendedor com vendas, lojas, nota e avaliações [13b] (lojista avalia); denunciar vendedor [13d] com análise do admin (motivos do PRD §5.7). Ficou de fora da 009 e não tinha seção no PLAN (incluída em 2026-11-24).
 
 ## 010b · Caju Indica: resgate, admin e campanhas — telas 9e, 8g, 8f (links)
 - Resgate por Pix [9e] com CPF único e chave Pix no primeiro resgate; indicações e pagamentos do admin [8g] com **Marcar Pix pago** e `wa.me`; links de campanha [8f] sem recompensa. Dividida da 010 no `/clarify` de 2026-11-23.

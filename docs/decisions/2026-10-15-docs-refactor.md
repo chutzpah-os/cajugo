@@ -427,3 +427,6 @@
 
 # 2026-11-24 · Landing do link e banner na vitrine [010/T011]
 - Slot na vitrine para showcase não depender de referrals.
+
+# 2026-11-24 · Fechamento da 010 [010/verify]
+- A 009b (13a, 13b, 13d) não tinha seção no PLAN; entrou entre a 010 e a 010b.

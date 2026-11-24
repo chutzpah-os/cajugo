@@ -2,7 +2,7 @@
 id: 010
 slug: referrals
 title: Caju Indica · indicação, recompensa e saldo
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-23
 ---

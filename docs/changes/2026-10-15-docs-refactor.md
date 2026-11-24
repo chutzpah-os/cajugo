@@ -1076,3 +1076,6 @@
 
 # 2026-11-24 · e2e do Caju Indica [010/T014]
 - Seed com Recife indicada pelo lojista (crédito) e a suspensa pela vendedora (saldo), pela recompensa real; referrals.spec: [8a] [8b] [8e], landing [8c] noindex, [9d] 390/1280, banner → [9b] → [9d]; migration 0022 no staging.
+
+# 2026-11-24 · Fechamento da 010 [010/verify]
+- Rastreabilidade verde (IND-NFR-002 só aviso), spec implemented, PLAN (010 e seção 009b), e2e do cadastro pelo link ajustado à landing.
