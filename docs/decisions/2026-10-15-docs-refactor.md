@@ -424,3 +424,6 @@
 
 # 2026-11-24 · Caju Indica na cobrança [010/T005]
 - D3: billing lança o crédito com o que referrals devolve; D5: a paga com crédito também rende.
+
+# 2026-11-24 · Landing do link e banner na vitrine [010/T011]
+- Slot na vitrine para showcase não depender de referrals.

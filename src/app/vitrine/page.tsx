@@ -5,6 +5,8 @@ import {
   showcaseMetadata,
 } from "@/domains/showcase/components/showcase-view";
 import { cachedSearch } from "@/domains/showcase/current";
+import { ReferralBanner } from "@/domains/referrals/components/referral-banner";
+import { cachedProgramBanner } from "@/domains/referrals/current";
 import { parseFilters } from "@/domains/showcase/filters";
 
 /** Rota bloqueante: os filtros vêm da URL e o conteúdo precisa estar no HTML. */
@@ -30,6 +32,18 @@ export default async function FilteredShowcase({
     <>
       <SiteHeader />
       <ShowcaseView
+        promo={
+          <ReferralBanner
+            banner={await cachedProgramBanner()}
+            variant="banner"
+          />
+        }
+        promoFooter={
+          <ReferralBanner
+            banner={await cachedProgramBanner()}
+            variant="footer"
+          />
+        }
         filters={filters}
         result={await cachedSearch("showcase", filters)}
       />

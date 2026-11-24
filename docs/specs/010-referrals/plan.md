@@ -158,3 +158,9 @@ Seed do e2e:
 - [x] Página pública [8c] com `noindex` (SEO.md: página pessoal fora do índice); banner na vitrine em cache
 - [x] Migration só acrescenta; nenhuma dependência nova
 - [x] D1–D5 aprovadas em 2026-11-23
+
+## Ajustes do /implement
+- **T006:** o código é conferido pelas regras em `checkCode` (cadastro) e no painel (`referralPanel` não cria código fora das regras); `getOrCreateCode` continua criando o código do lojista no cadastro da loja (003), mas ele só vale com o programa ativo.
+- **T011:** a vitrine recebe o banner por slot (`promo`, `promoFooter`) montado na rota, como o `banner` do painel: `showcase` não depende de `referrals`. `/i/{codigo}` virou página em cache por código (`'use cache'` com `SETTINGS_TAG`).
+- **`referralUrl(code)`** em `platform/http/urls.ts` é a única função que monta o link de indicação (Minha loja e o painel).
+- **`rememberPanel`** prefere o papel principal da área: com `/indica` aberta ao vendedor (D4), quem é vendedor e indicador continua lembrando o painel do indicador.

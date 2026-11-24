@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
@@ -45,9 +46,14 @@ export function showcaseMetadata(result: SearchResult): Metadata {
 export async function ShowcaseView({
   filters,
   result,
+  promo,
+  promoFooter,
 }: {
   filters: Filters;
   result: SearchResult;
+  /** Banner montado pela rota no topo e no rodapé (Caju Indica [9a], 010). */
+  promo?: ReactNode;
+  promoFooter?: ReactNode;
 }) {
   const { makes } = await cachedFacets("showcase");
   const filtered = filtersToQuery(filters) !== "";
@@ -58,6 +64,7 @@ export async function ShowcaseView({
       {result.total > 0 && (
         <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
       )}
+      {promo}
       <CatalogView
         title={TITLE}
         count={
@@ -119,6 +126,7 @@ export async function ShowcaseView({
           )
         }
       />
+      {promoFooter}
     </main>
   );
 }

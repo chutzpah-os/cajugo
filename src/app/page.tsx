@@ -5,6 +5,8 @@ import {
   showcaseMetadata,
 } from "@/domains/showcase/components/showcase-view";
 import { cachedSearch } from "@/domains/showcase/current";
+import { ReferralBanner } from "@/domains/referrals/components/referral-banner";
+import { cachedProgramBanner } from "@/domains/referrals/current";
 import { parseFilters } from "@/domains/showcase/filters";
 
 const NONE = parseFilters({});
@@ -19,6 +21,18 @@ export default async function Home() {
     <>
       <SiteHeader />
       <ShowcaseView
+        promo={
+          <ReferralBanner
+            banner={await cachedProgramBanner()}
+            variant="banner"
+          />
+        }
+        promoFooter={
+          <ReferralBanner
+            banner={await cachedProgramBanner()}
+            variant="footer"
+          />
+        }
         filters={NONE}
         result={await cachedSearch("showcase", NONE)}
       />

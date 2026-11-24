@@ -1064,3 +1064,6 @@
 
 # 2026-11-24 · Cadastro do indicador [010/T010]
 - registerReferrer [9b]: conta nova com o papel de indicador (perfil e papel numa transação), conta existente ganha o papel, honeypot, limite por rede, termos; equipe CajuGo não acumula.
+
+# 2026-11-24 · Landing do link e banner na vitrine [010/T011]
+- /i/{codigo} virou página [8c] noindex em cache (no lugar do redirect); banner e rodapé 'Indique uma loja e ganhe' na vitrine por slot montado na rota.

@@ -71,7 +71,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   · _IND-FR-004_
 
 ## Fase 3 — Telas
-- [ ] **T011** `/i/[codigo]` vira página [8c] (`noindex`) no lugar do `route.ts`; banner e rodapé [9a] na vitrine.
+- [x] **T011** `/i/[codigo]` vira página [8c] (`noindex`) no lugar do `route.ts`; banner e rodapé [9a] na vitrine.
 
   · _IND-FR-003, IND-FR-014, IND-NFR-002_
 - [ ] **T012** Lojista: `/painel/indica` [8a], `/painel/indica/indicacoes` [8b], `/painel/indica/credito` [8e]; atalho na Conta.
