@@ -59,7 +59,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
 - [x] **T008** `balanceView` (saldo, mínimo, movimentações) e `billing.creditView` (crédito disponível, demonstrativo, movimentações), cada um só da própria pessoa ou loja.
 
   · _IND-FR-009, IND-FR-010, IND-SEC-001_
-- [ ] **T009** `landing` ([8c]: primeiro nome, mensalidade, link do cadastro; código inválido ou programa desligado sem indicação) e `programBanner` (nulo com o programa desligado).
+- [x] **T009** `landing` ([8c]: primeiro nome, mensalidade, link do cadastro; código inválido ou programa desligado sem indicação) e `programBanner` (nulo com o programa desligado).
 
   · _IND-FR-003, IND-FR-014_
 - [ ] **T010** `registerReferrer` [9b]:

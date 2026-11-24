@@ -1058,3 +1058,6 @@
 
 # 2026-11-24 · Saldo e crédito [010/T008]
 - balanceView (saldo de recompensas, mínimo, progresso, movimentações) e billing.creditView (crédito disponível, demonstrativo mensalidade − crédito, movimentações com a fatura em que foi abatido).
+
+# 2026-11-24 · Landing do link e banner [010/T009]
+- landing (primeiro nome de quem indicou, mensalidade, cadastro com o código; inválido ou fora das regras sem indicação) e programBanner (recompensa das regras; nulo com o programa desligado).

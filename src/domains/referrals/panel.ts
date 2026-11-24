@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getSettings } from "@/domains/settings/service";
 import {
   profiles,
+  referralCodes,
   referralRewards,
   referrals,
   stores,
@@ -196,5 +197,61 @@ export async function balanceView(
     minCents,
     progress: minCents ? Math.min(1, balanceCents / minCents) : 1,
     movements,
+  };
+}
+
+const CODE = /^[A-Za-z0-9]{3,20}$/;
+
+export type Landing = {
+  /** Primeiro nome de quem indicou (ou o nome da campanha); nulo sem indicação. */
+  referrerName: string | null;
+  membershipCents: number;
+  signupUrl: string;
+};
+
+/**
+ * Landing do link `/i/{codigo}` [8c] (IND-FR-003, 015): quem indicou (só o primeiro
+ * nome, STO-SEC-005) e o Catálogo com a mensalidade das regras. Código inválido,
+ * desativado ou fora das regras → landing sem indicação.
+ */
+export async function landing(db: Db, rawCode: string): Promise<Landing> {
+  const settings = await getSettings(db);
+  const none = {
+    referrerName: null,
+    membershipCents: settings.membership_cents,
+    signupUrl: "/lojistas/cadastro",
+  };
+  if (!CODE.test(rawCode)) return none;
+  const code = rawCode.toUpperCase();
+  const [row] = await db
+    .select({
+      active: referralCodes.active,
+      campaignName: referralCodes.campaignName,
+      name: profiles.name,
+      roles: profiles.roles,
+    })
+    .from(referralCodes)
+    .leftJoin(profiles, eq(profiles.id, referralCodes.profileId))
+    .where(eq(referralCodes.code, code));
+  if (!row?.active || !canRefer(settings, row.roles)) return none;
+  return {
+    referrerName: row.name
+      ? row.name.trim().split(/\s+/)[0]
+      : (row.campaignName ?? "CajuGo"),
+    membershipCents: settings.membership_cents,
+    signupUrl: `/lojistas/cadastro?codigo=${code}`,
+  };
+}
+
+/** Banner "Indique uma loja e ganhe" da vitrine [9a] (IND-FR-014); nulo com o programa desligado. */
+export async function programBanner(
+  db: Db,
+): Promise<{ pctBps: number; months: number; rewardCents: number } | null> {
+  const s = await getSettings(db);
+  if (!s.referral_enabled) return null;
+  return {
+    pctBps: s.referral_pct_bps,
+    months: s.referral_months,
+    rewardCents: Math.floor((s.membership_cents * s.referral_pct_bps) / 10_000),
   };
 }
