@@ -163,6 +163,14 @@ export const stores = pgTable(
     pastDueSince: timestamp("past_due_since", { withTimezone: true }),
     /** Primeira ativação (onboarding [5e]). */
     activatedAt: timestamp("activated_at", { withTimezone: true }),
+    /** Cancelamento pedido pelo dono [12h] (011b). */
+    cancelRequestedAt: timestamp("cancel_requested_at", { withTimezone: true }),
+    /** Motivo opcional, texto de `CANCEL_REASONS` (011b). */
+    cancelReason: text("cancel_reason"),
+    /** Fim do período pago depois do cancelamento (o `next_due_at` daquele dia). */
+    activeUntil: timestamp("active_until", { withTimezone: true }),
+    /** Loja cancelada (fim do período ou na hora); a retenção conta daqui (011b). */
+    canceledAt: timestamp("canceled_at", { withTimezone: true }),
     ...timestamps,
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
@@ -303,9 +311,10 @@ export const invoices = pgTable(
     ...timestamps,
   },
   (t) => [
-    uniqueIndex("invoices_first_per_store")
+    // Uma 1ª mensalidade aberta por vez: quem reassina (011b) abre outra.
+    uniqueIndex("invoices_first_open_per_store")
       .on(t.storeId)
-      .where(sql`${t.kind} = 'first'`),
+      .where(sql`${t.kind} = 'first' and ${t.status} = 'open'`),
     uniqueIndex("invoices_store_period").on(t.storeId, t.period),
     index("invoices_store_status").on(t.storeId, t.status),
     // Ciclo de cobrança (011): faturas abertas por vencimento.
@@ -437,6 +446,10 @@ export const noticeKind = pgEnum("notice_kind", [
   "commission_unreceived",
   "referral_active",
   "referral_reward",
+  "cancel_scheduled",
+  "cancel_undone",
+  "store_canceled",
+  "plan_changed",
 ]);
 
 export const notices = pgTable(

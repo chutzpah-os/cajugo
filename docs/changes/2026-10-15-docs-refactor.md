@@ -1082,3 +1082,6 @@
 
 # 2026-11-24 · 011b/T001 documentos do cancelamento
 - Spec, plano e tasks da 011b; PRD §5.1; ARCHITECTURE (colunas e etapas do job), API.md (actions), contrato do cron e GLOSSARY (Cancelamento agendado, Cancelada/Arquivada, Endereço provisório).
+
+# 2026-11-24 · 011b/T002 migration 0023
+- stores ganha cancel_requested_at, cancel_reason, active_until e canceled_at; notice_kind ganha 4 avisos; o índice único da 1ª mensalidade passa a valer só para a aberta. Aplicada no staging.

@@ -433,3 +433,6 @@
 
 # 2026-11-24 · 011b/T001 documentos do cancelamento
 - Os documentos de referência descrevem o cancelamento antes do código, como pede o SDD.
+
+# 2026-11-24 · 011b/T002 migration 0023
+- Reassinar (CAN-FR-006) abre uma nova 1ª mensalidade; o índice antigo permitia só uma por loja para sempre. Só uma aberta por vez mantém a proteção contra dois checkouts.

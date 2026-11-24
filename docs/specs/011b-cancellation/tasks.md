@@ -18,7 +18,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - GLOSSARY (Cancelamento agendado, Arquivada, Endereço provisório).
 
   · _—_
-- [ ] **T002** Migration `0023`, só acrescenta: `stores.cancel_requested_at`, `cancel_reason`, `active_until`, `canceled_at`; `notice_kind` + `cancel_scheduled`, `cancel_undone`, `store_canceled`, `plan_changed`. Teste de schema e a migration no staging.
+- [x] **T002** Migration `0023`, só acrescenta: `stores.cancel_requested_at`, `cancel_reason`, `active_until`, `canceled_at`; `notice_kind` + `cancel_scheduled`, `cancel_undone`, `store_canceled`, `plan_changed`. Teste de schema e a migration no staging.
 
   · _—_
 - [ ] **T003** [P] Os 4 avisos novos (tipos e frases) e `CANCEL_REASONS`, com testes unitários.

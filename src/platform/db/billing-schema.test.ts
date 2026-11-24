@@ -59,10 +59,15 @@ describe("faturas e pagamentos no banco", () => {
       submittedAt: new Date(),
     });
 
-  it("[PIX-SEC-007] uma só fatura da 1ª mensalidade por loja", async () => {
-    await firstInvoice();
+  it("[PIX-SEC-007] [CAN-FR-006] uma só 1ª mensalidade aberta por loja; paga, quem reassina abre outra", async () => {
+    const [{ id }] = await firstInvoice();
 
     await expect(firstInvoice()).rejects.toThrow();
+    await t.db
+      .update(invoices)
+      .set({ status: "paid", paidAt: new Date() })
+      .where(eq(invoices.id, id));
+    await expect(firstInvoice()).resolves.toHaveLength(1);
   });
 
   it("[PIX-FR-006] [PIX-SEC-007] um só comprovante em análise por fatura; recusado não conta", async () => {
@@ -126,5 +131,37 @@ describe("faturas e pagamentos no banco", () => {
     const [store] = await t.db.select().from(stores);
     expect(store.pastDueSince).toEqual(since);
     expect(await t.db.select().from(notices)).toHaveLength(3);
+  });
+
+  it("[CAN-FR-002] [CAN-FR-005] loja guarda o cancelamento (pedido, motivo, fim, cancelada); avisos do cancelamento existem", async () => {
+    const at = new Date("2026-12-01T12:00:00Z");
+    const until = new Date("2026-12-10T03:00:00Z");
+
+    await t.db
+      .update(stores)
+      .set({
+        status: "cancel_scheduled",
+        cancelRequestedAt: at,
+        cancelReason: "Vou parar de vender",
+        activeUntil: until,
+        canceledAt: until,
+      })
+      .where(eq(stores.id, storeId));
+    for (const kind of [
+      "cancel_scheduled",
+      "cancel_undone",
+      "store_canceled",
+      "plan_changed",
+    ] as const)
+      await t.db.insert(notices).values({ profileId: ownerId, kind, data: {} });
+
+    const [store] = await t.db.select().from(stores);
+    expect(store).toMatchObject({
+      cancelRequestedAt: at,
+      cancelReason: "Vou parar de vender",
+      activeUntil: until,
+      canceledAt: until,
+    });
+    expect(await t.db.select().from(notices)).toHaveLength(4);
   });
 });
