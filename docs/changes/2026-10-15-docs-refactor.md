@@ -1094,3 +1094,6 @@
 
 # 2026-11-24 · 011b/T005 fim do período
 - endCanceledPeriods no ciclo: cancelamento agendado com active_until vencido → cancelada (closeStore); o cron devolve ended e invalida o cache público.
+
+# 2026-11-24 · 011b/T006 reassinar
+- billing.resubscribe + stores.reopenForPayment: cancelada → cadastrada (limpa o cancelamento e o dia de cobrança, endereço reservado por 7 dias); segue o fluxo da 1ª mensalidade e a confirmação fixa o novo dia.

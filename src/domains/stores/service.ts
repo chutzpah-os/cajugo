@@ -567,6 +567,36 @@ export async function backToRegistered(db: Db, storeId: string) {
   return done.length > 0;
 }
 
+/**
+ * Reassinar (011b, CAN-FR-006): a loja cancelada volta a "cadastrada" para pagar uma
+ * nova 1ª mensalidade, com o mesmo endereço (reservado de novo por 7 dias) e os
+ * veículos; o dia de cobrança sai e é fixado na nova confirmação.
+ */
+export async function reopenForPayment(
+  db: Db,
+  storeId: string,
+  now: Date,
+): Promise<boolean> {
+  const done = await db
+    .update(stores)
+    .set({
+      status: "registered",
+      cancelRequestedAt: null,
+      cancelReason: null,
+      activeUntil: null,
+      canceledAt: null,
+      billingDay: null,
+      nextDueAt: null,
+      pastDueSince: null,
+      slugReservedUntil: new Date(
+        now.getTime() + SLUG_RESERVATION_DAYS * DAY_MS,
+      ),
+    })
+    .where(and(eq(stores.id, storeId), eq(stores.status, "canceled")))
+    .returning({ id: stores.id });
+  return done.length > 0;
+}
+
 type StoreStatus = (typeof stores.$inferSelect)["status"];
 
 /**

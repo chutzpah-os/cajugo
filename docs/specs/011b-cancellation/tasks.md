@@ -47,7 +47,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - o cron devolve `ended` e invalida o cache.
 
   · _CAN-FR-004, CAN-FR-005, CAN-FR-012, CAN-NFR-002, CAN-SEC-004_
-- [ ] **T006** `resubscribe`: cancelada → cadastrada → 1ª mensalidade confirmada → ativa, com novo dia de cobrança, o mesmo endereço e os veículos; arquivada não reassina.
+- [x] **T006** `resubscribe`: cancelada → cadastrada → 1ª mensalidade confirmada → ativa, com novo dia de cobrança, o mesmo endereço e os veículos; arquivada não reassina.
 
   · _CAN-FR-006, CAN-SEC-002_
 - [ ] **T007** Arquivamento (`archiveCanceled` + `stores.archiveStore` + remoções por domínio + `auth.deleteAccountOrRole`):

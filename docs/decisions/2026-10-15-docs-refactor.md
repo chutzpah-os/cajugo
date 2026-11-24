@@ -445,3 +445,6 @@
 
 # 2026-11-24 · 011b/T005 fim do período
 - A loja sai do ar no dia do vencimento que não será cobrado; partir do status esperado mantém o job idempotente.
+
+# 2026-11-24 · 011b/T006 reassinar
+- Reaproveita o fluxo da 004 em vez de um fluxo de pagamento novo; a arquivada não reassina porque os dados já foram apagados.

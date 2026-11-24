@@ -1,6 +1,7 @@
 import { and, eq, inArray, isNull, lte, sum } from "drizzle-orm";
 import { authorizeTo } from "@/domains/auth/service";
 import { endStorePartnerships } from "@/domains/sellers/service";
+import { reopenForPayment } from "@/domains/stores/service";
 import { billingCredits, invoices, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
@@ -244,4 +245,26 @@ export async function endCanceledPeriods(
       await closeStore(tx, id, now, { userId: null, source: "period_end" });
     });
   return ended;
+}
+
+/**
+ * Reassinar pela Conta (CAN-FR-006): só a loja cancelada (a arquivada não tem mais os
+ * dados); ela segue o fluxo da 1ª mensalidade ([5d] → [6c] → confirmação).
+ */
+export async function resubscribe(
+  deps: Deps,
+  session: Session | null,
+): Promise<void> {
+  const { userId, storeId } = ownerOf(session);
+  const now = deps.now?.() ?? new Date();
+  await deps.db.transaction(async (tx) => {
+    if (!(await reopenForPayment(tx, storeId, now)))
+      throw AppError.conflict("Só a loja cancelada pode reassinar.");
+    await logActivity(tx, {
+      userId,
+      action: "subscription.resubscribed",
+      entity: "store",
+      entityId: storeId,
+    });
+  });
 }
