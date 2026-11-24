@@ -62,7 +62,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
 - [x] **T009** `landing` ([8c]: primeiro nome, mensalidade, link do cadastro; código inválido ou programa desligado sem indicação) e `programBanner` (nulo com o programa desligado).
 
   · _IND-FR-003, IND-FR-014_
-- [ ] **T010** `registerReferrer` [9b]:
+- [x] **T010** `registerReferrer` [9b]:
   - conta nova com o papel de indicador;
   - conta existente entra e ganha o papel;
   - honeypot e rate limit;

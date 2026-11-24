@@ -1061,3 +1061,6 @@
 
 # 2026-11-24 · Landing do link e banner [010/T009]
 - landing (primeiro nome de quem indicou, mensalidade, cadastro com o código; inválido ou fora das regras sem indicação) e programBanner (recompensa das regras; nulo com o programa desligado).
+
+# 2026-11-24 · Cadastro do indicador [010/T010]
+- registerReferrer [9b]: conta nova com o papel de indicador (perfil e papel numa transação), conta existente ganha o papel, honeypot, limite por rede, termos; equipe CajuGo não acumula.
