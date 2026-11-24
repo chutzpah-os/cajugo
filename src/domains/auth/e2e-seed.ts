@@ -29,6 +29,8 @@ import {
   resetStoreForTests,
 } from "@/domains/stores/service";
 import { seedBilling } from "@/domains/billing/testing/e2e-seed";
+import { rewardReferrals } from "@/domains/billing/service";
+import { seedReferrals } from "@/domains/referrals/testing/e2e-seed";
 import { grantRole } from "./roles";
 import type { AuthDeps } from "./service";
 
@@ -223,6 +225,24 @@ export async function seedE2E(
 
   // Loja suspensa pelo ciclo de cobrança real, com a fatura de R$ 600 aberta (011).
   await seedBilling(deps.db, ids.billingOwner, now);
+  // Caju Indica (010): Recife indicada pelo lojista (crédito) e a suspensa pela
+  // vendedora (saldo), cada uma com a 1ª paga.
+  const [suspended] = await deps.db
+    .select({ id: stores.id })
+    .from(stores)
+    .where(eq(stores.slug, E2E_SHOWCASE.suspendedSlug));
+  await seedReferrals(
+    deps.db,
+    {
+      ownerId: ids.owner,
+      ownerStoreId: store.id,
+      sellerId: ids.sellerReferrer,
+      ownerReferredStoreId: showcase.recifeId,
+      sellerReferredStoreId: suspended.id,
+    },
+    now,
+    rewardReferrals,
+  );
 
   return { ids, storeId: store.id };
 }

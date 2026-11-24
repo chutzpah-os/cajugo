@@ -8,6 +8,7 @@ import {
   stores,
   vehiclePhotos,
   partnerships,
+  referralRewards,
   sales,
   sellers,
   vehicleReports,
@@ -262,6 +263,10 @@ describe("seedE2E", () => {
         .map((x) => x.commissionStatus)
         .sort(),
     ).toEqual(["paid", "to_receive"]);
+    // Caju Indica (010): duas recompensas, uma em crédito e uma em saldo, refeitas.
+    expect(
+      (await t.db.select().from(referralRewards)).map((r) => r.target).sort(),
+    ).toEqual(["balance", "credit"]);
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 

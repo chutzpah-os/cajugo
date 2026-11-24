@@ -1073,3 +1073,6 @@
 
 # 2026-11-24 · Telas do indicador [010/T013]
 - /indica/cadastro [9b] (público; conectado só aceita os termos; lojista vai para /painel/indica) e /indica [9d] (saldo, barra até o mínimo, link, indicações, movimentações); link do Caju Indica no painel do vendedor.
+
+# 2026-11-24 · e2e do Caju Indica [010/T014]
+- Seed com Recife indicada pelo lojista (crédito) e a suspensa pela vendedora (saldo), pela recompensa real; referrals.spec: [8a] [8b] [8e], landing [8c] noindex, [9d] 390/1280, banner → [9b] → [9d]; migration 0022 no staging.
