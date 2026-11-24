@@ -1079,3 +1079,6 @@
 
 # 2026-11-24 · Fechamento da 010 [010/verify]
 - Rastreabilidade verde (IND-NFR-002 só aviso), spec implemented, PLAN (010 e seção 009b), e2e do cadastro pelo link ajustado à landing.
+
+# 2026-11-24 · 011b/T001 documentos do cancelamento
+- Spec, plano e tasks da 011b; PRD §5.1; ARCHITECTURE (colunas e etapas do job), API.md (actions), contrato do cron e GLOSSARY (Cancelamento agendado, Cancelada/Arquivada, Endereço provisório).

@@ -430,3 +430,6 @@
 
 # 2026-11-24 · Fechamento da 010 [010/verify]
 - A 009b (13a, 13b, 13d) não tinha seção no PLAN; entrou entre a 010 e a 010b.
+
+# 2026-11-24 · 011b/T001 documentos do cancelamento
+- Os documentos de referência descrevem o cancelamento antes do código, como pede o SDD.

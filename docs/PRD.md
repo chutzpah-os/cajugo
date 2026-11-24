@@ -188,8 +188,8 @@ Painel [4a] com pendências → Pagamentos Pix [10b] → Lojas [1d]/[6g] → Ass
 - Aviso de vencimento 3 dias antes: no painel do lojista e na lista do admin, com botão `wa.me` para o admin avisar.
 - **Tolerância de atraso: 5 dias** (`Config`, a confirmar). Depois, a loja fica **suspensa**: catálogo e veículos ocultos ao público [12g, sem expor o motivo]; dados preservados; edição permitida; painel com alerta e botão de pagar [12f].
 - Reativação automática quando o admin confirmar o pagamento de todas as faturas em aberto. O admin pode reativar por exceção (acordo), informando o motivo: a fatura continua aberta e a loja volta a ficar em atraso.
-- **Cancelamento** [12h]: sem multa; loja no ar até o fim do período pago; depois os veículos saem do ar; dados guardados 90 dias para reativar; crédito Caju Indica não usado expira; pode desfazer até o fim do período.
-- Slug reservado no cadastro; liberado se não houver 1º pagamento confirmado em 7 dias.
+- **Cancelamento** [12h]: sem multa; loja no ar até o fim do período pago; depois os veículos saem do ar; dados guardados 90 dias para reativar; crédito Caju Indica não usado expira; pode desfazer até o fim do período. Loja em atraso ou suspensa que cancela fica cancelada na hora, e as faturas abertas são canceladas. Reassinar = nova 1ª mensalidade e novo dia de cobrança, com o mesmo endereço e os veículos. Depois de 90 dias, o arquivamento apaga loja, veículos, fotos, leads e a conta do dono sem outro papel; ficam o nome, as faturas e os pagamentos (spec 011b).
+- Slug reservado no cadastro; liberado se não houver 1º pagamento confirmado em 7 dias (a loja fica com um endereço provisório e escolhe outro ao pagar).
 
 ### 5.2 Status da loja
 ```
@@ -206,7 +206,7 @@ ativa ──cancela──▶ cancelamento_agendado ──fim do período──�
 | em_atraso | no ar (tolerância) | no ar | completo + alerta de fatura |
 | suspensa | "Catálogo temporariamente indisponível" [12g] | fora | alerta + pagar [12f]; edição permitida |
 | cancelamento_agendado | no ar até o fim do período | no ar | completo + aviso + desfazer |
-| cancelada / arquivada | fora do ar | fora | somente Conta (reassinar) |
+| cancelada / arquivada | "Esta loja não está mais na CajuGo" (404) | fora | somente Conta (reassinar; arquivada não tem painel) |
 
 ### 5.3 Status do veículo
 ```

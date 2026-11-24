@@ -126,7 +126,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | página | `/painel/leads` — leads da loja, indicadores e filtros (`?status=`) (007) | 3a |
 | A | `moveLeadAction({ leadId, to: "next" \| "lost" })` — `leads.manage` (dono e usuário da loja) (007) | 3a |
 | A | `updateStore(form)` · `changeSlug(slug)` | 3b |
-| A | `cancelSubscription(reason?)` · `undoCancel` | 12h |
+| A | `cancelSubscriptionAction({ reason? })` · `undoCancelAction()` · `resubscribeAction()` — `billing.manage` (só o dono, 011b) | 12h, 3c |
 | página | `/painel/rede/comissao` · `/painel/rede/vendedores` (009) | 7e, 7f |
 | A | `setNetworkRulesAction({ acceptsSellers, commissionType, commissionValue })` · `setCommissionOverrideAction({ vehicleId, type, value })` — `sellers.manage` (009) | 7e |
 | A | `decidePartnershipAction({ partnershipId, decision: "approve" \| "decline" \| "end" })` — `sellers.manage` (009) · `inviteSeller(sellerId)` (009b) | 7f, 13a |
@@ -159,6 +159,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | A | `createStore` (dono com senha temporária) · `updateStore` · `setTemporaryPassword` | 1d, 6g |
 | página | `/admin/assinaturas` — MRR, contagens e filtros (`?filtro=`); admin e suporte veem (`subscriptions.view`), só o admin decide (011) | 4b |
 | A | `suspendStoreAction({ storeId })` · `reactivateStoreAction({ storeId, reason })` — `stores.suspend` (só admin, 011) | 4b, 6g |
+| A | `editPlanAction({ membershipCents, validFrom })` — `settings.edit` (só admin); data ≥ hoje + 30 dias (011b) | 4b |
 | A | `approveVehicle` · `requestVehicleChanges(reason)` | 14c |
 | página | `/admin/alertas` — alertas com veículo compatível e aguardando · A `markAlertNotifiedAction({ alertId })` (006d) | 12a |
 | página | `/admin/denuncias` — fila de denúncias e aba `?aba=ocultados` (`admin.moderate`, 007b) | 14e |

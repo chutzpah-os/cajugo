@@ -5,7 +5,7 @@
 | GET | /api/v1/cron/daily | `Authorization: Bearer {CRON_SECRET}` (Vercel Cron) | não (só o cron chama) | sim | ALR-SEC-004 |
 
 ## Respostas
-- `200`: `{ "data": { "expiredAlerts": number, "purgedLeads": number, "rateLimitsBefore": ISO 8601, "opened": number, "pastDue": number, "suspended": number } }` (quantos alertas venceram agora, quantos leads perderam os dados pessoais por terem mais de 2 anos (007), até quando os contadores de rate limit foram apagados e, no ciclo de cobrança da 011, quantas faturas abriram e quantas lojas entraram em atraso ou foram suspensas), com `Cache-Control: no-store`.
+- `200`: `{ "data": { "expiredAlerts": number, "purgedLeads": number, "rateLimitsBefore": ISO 8601, "opened": number, "pastDue": number, "suspended": number, "ended": number, "archived": number, "slugsReleased": number } }` (quantos alertas venceram agora, quantos leads perderam os dados pessoais por terem mais de 2 anos (007), até quando os contadores de rate limit foram apagados e, no ciclo de cobrança da 011, quantas faturas abriram e quantas lojas entraram em atraso ou foram suspensas; na 011b, quantas lojas terminaram o período depois do cancelamento, quantas foram arquivadas e quantos endereços viraram provisórios), com `Cache-Control: no-store`.
 - `401`: sem o cabeçalho ou com segredo diferente (comparação em tempo constante); nada é executado.
 - `500`: falha numa etapa; o erro vai para o log sem dado pessoal, e a próxima execução refaz.
 - Erros no formato do `API.md` §3 (`{ error: { code, message } }`): `unauthorized`, `internal`.

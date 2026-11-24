@@ -112,7 +112,7 @@ stores ✅ (+ colunas novas)
   address_street, address_number, address_complement, address_district, address_zip (spec 003),
   logo_public_id, cover_public_id, hours (jsonb), share_by_default, owner_id,
   status (registered|payment_review|active|past_due|suspended|cancel_scheduled|canceled|archived),
-  billing_day, next_due_at, activated_at (1ª ativação), past_due_since, cancel_at, active_until, slug_reserved_until,
+  billing_day, next_due_at, activated_at (1ª ativação), past_due_since, cancel_requested_at, cancel_reason (texto de `CANCEL_REASONS`), active_until (fim do período pago), canceled_at, slug_reserved_until,
   slug_changed_at (troca no máximo 1× a cada 30 dias),
   accepts_sellers (bool, começa desligado; 009), commission_type (pct|fixed), commission_value (bps ou centavos; colunas na 008, tela [7e] na 009),
   created_at, updated_at                       # indicação usada: em referrals.referred_store_id
@@ -237,8 +237,10 @@ ISR com `revalidateTag('vehicles')` e `revalidateTag('store:<slug>')`, chamados 
   - **suspensão:** `past_due_since` + `past_due_tolerance_days` → `suspended`, avisa o lojista e os admins e invalida o cache público.
   
   A lista "Vencem em 3 dias" do admin [4b] é consulta, não job. A reativação acontece na confirmação do pagamento.
-- **Cancelamento e retenção:** `cancel_scheduled` → `canceled` no fim do período; `canceled` há mais de `retention_days` → `archived` (e expira o crédito Caju Indica).
-- **Slugs** reservados sem 1º pagamento confirmado há 7 dias são liberados.
+- **Cancelamento e retenção** (no mesmo ciclo, 011b):
+  - **fim do período:** `cancel_scheduled` com `active_until` vencido → `canceled` (`canceled_at`); o crédito disponível expira, as parcerias da Rede Caju são encerradas e o cache público é invalidado. A fatura mensal não abre para loja `cancel_scheduled`;
+  - **arquivamento:** `canceled` há mais de `retention_days` → `archived`: apaga os dados da loja, os veículos com as fotos (Cloudinary) e os leads; apaga a conta do dono (Supabase Auth) se não sobra outro papel nem outra loja; mantém o nome, as faturas e os pagamentos; o `slug` vira `arquivada-<id>`;
+  - **endereço provisório:** loja `registered` com `slug_reserved_until` vencido (7 dias sem 1º pagamento) → `slug` `provisorio-<id>`; a próxima troca em Minha loja não conta no limite de 30 dias.
 - **Limpeza** de `rate_limits` antigos (`purgeRateLimits`).
 - **Leads com mais de 2 anos** perdem nome, e-mail, telefone e mensagem (`purgeOldLeads`, 007); continuam nos números da loja.
 - **Alertas de busca:** marca como vencido o alerta pendente além da validade das regras e apaga nome e celular (006d). O veículo compatível **não** é job: é calculado quando o admin abre "Alertas", em cache de 60 s, para aparecer em até 1 minuto (o cron do plano Hobby é 1×/dia).

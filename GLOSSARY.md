@@ -216,6 +216,18 @@ Aberta pelo job 3 dias antes do vencimento, uma por mês (`period` AAAA-MM). Com
 **Em atraso** (`past_due`) e **Suspensa** (`suspended`):
 Em atraso: a fatura venceu sem pagamento confirmado; a loja continua no ar. Suspensa: passou a tolerância das regras (ou o admin suspendeu); catálogo e veículos saem do ar para o público, o painel continua aberto. Volta a ativa quando todas as faturas vencidas são pagas.
 
+**Cancelamento agendado** (`cancel_scheduled`):
+O lojista cancelou a assinatura [12h]; a loja fica no ar e editável até o fim do período pago (`active_until`) e pode **desfazer** até lá. Nenhuma fatura nova é aberta.
+_Evite_: cancelamento pendente
+
+**Cancelada** (`canceled`) e **Arquivada** (`archived`):
+Cancelada: o período pago acabou (ou a loja cancelou em atraso ou suspensa); sai do ar, o painel abre só a Conta e dá para **reassinar**. Arquivada: passou a retenção das regras; os dados pessoais, os veículos e as fotos foram apagados, ficam só o nome, as faturas e os pagamentos.
+_Evite_: excluída, desativada
+
+**Endereço provisório** (`provisorio-…`):
+Endereço que a loja recebe quando não paga a 1ª mensalidade em 7 dias: o endereço escolhido fica livre para outra loja. A próxima troca em Minha loja não conta no limite de 30 dias.
+_Evite_: slug temporário
+
 **Status da loja**:
 `cadastrada`, `pagamento_em_analise`, `ativa`, `em_atraso`, `suspensa`, `cancelamento_agendado`, `cancelada`, `arquivada` (código: `registered`, `payment_review`, `active`, `past_due`, `suspended`, `cancel_scheduled`, `canceled`, `archived`).
 _Evite_: bloqueada, inativa
