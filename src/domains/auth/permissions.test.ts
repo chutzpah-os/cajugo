@@ -135,4 +135,16 @@ describe("ações do admin", () => {
       expect(can(sessionWith(role), "stores.suspend")).toBe(false);
     }
   });
+
+  it("[EXT-SEC-002] só o vendedor marca o Recebi da comissão", () => {
+    expect(can(sessionWith("seller"), "commission.receive")).toBe(true);
+    for (const role of [
+      "store_owner",
+      "store_staff",
+      "admin",
+      "support",
+      "referrer",
+    ] as const)
+      expect(can(sessionWith(role), "commission.receive")).toBe(false);
+  });
 });

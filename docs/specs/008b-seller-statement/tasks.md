@@ -24,7 +24,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   Teste de schema.
 
   · _—_
-- [ ] **T003** [P] Permissão `commission.receive` (só `seller`) e os 3 avisos novos (tipos e frases), com testes unitários.
+- [x] **T003** [P] Permissão `commission.receive` (só `seller`) e os 3 avisos novos (tipos e frases), com testes unitários.
 
   · _EXT-SEC-002, EXT-FR-006, EXT-FR-010_
 

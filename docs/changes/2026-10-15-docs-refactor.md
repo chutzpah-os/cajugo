@@ -1007,3 +1007,6 @@
 
 # 2026-11-23 · Migration 0021 do extrato [008b/T002]
 - sales.commission_received_at e avisos sale_confirmed, commission_received, commission_unreceived; só acrescenta.
+
+# 2026-11-23 · Permissão e avisos do extrato [008b/T003]
+- commission.receive (só seller) e avisos sale_confirmed (vendedor), commission_received/unreceived (loja), com as frases.

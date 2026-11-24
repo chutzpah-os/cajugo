@@ -128,4 +128,43 @@ describe("avisos no painel", () => {
       "A loja Loja A foi suspensa por falta de pagamento.",
     ]);
   });
+
+  it("[EXT-FR-006] [EXT-FR-010] frases do extrato: venda confirmada ao vendedor; Recebi e desfazer à loja", async () => {
+    // Arrange
+    const a = await person("v@x.com");
+    const at = (m: number) => new Date(Date.UTC(2026, 10, 23, 10, m));
+    await notify(
+      t.db,
+      a.userId,
+      {
+        kind: "sale_confirmed",
+        vehicle: "Fiat Argo",
+        store: "Loja A",
+        commissionCents: 116000,
+      },
+      at(0),
+    );
+    await notify(
+      t.db,
+      a.userId,
+      { kind: "commission_received", seller: "Ana", vehicle: "Fiat Argo" },
+      at(1),
+    );
+    await notify(
+      t.db,
+      a.userId,
+      { kind: "commission_unreceived", seller: "Ana", vehicle: "Fiat Argo" },
+      at(2),
+    );
+
+    // Act
+    const texts = (await noticesFor(t.db, a)).map((n) => n.text).reverse();
+
+    // Assert
+    expect(texts).toEqual([
+      "Venda confirmada: Fiat Argo na Loja A · comissão R$ 1.160,00",
+      "Ana confirmou o recebimento da comissão do Fiat Argo.",
+      "Ana desfez o recebimento da comissão do Fiat Argo.",
+    ]);
+  });
 });

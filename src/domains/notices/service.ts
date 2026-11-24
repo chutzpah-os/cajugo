@@ -21,7 +21,17 @@ export type NoticeData =
   | { kind: "invoice_due"; due: string; totalCents: number }
   /** Sem `store`: o lojista; com `store` (nome da loja): os admins (011). */
   | { kind: "store_suspended"; store?: string }
-  | { kind: "store_reactivated"; store?: string; byAdmin?: boolean };
+  | { kind: "store_reactivated"; store?: string; byAdmin?: boolean }
+  /** Ao vendedor: venda confirmada pela loja (008b). */
+  | {
+      kind: "sale_confirmed";
+      vehicle: string;
+      store: string;
+      commissionCents: number;
+    }
+  /** À loja: o vendedor (primeiro nome) marcou ou desfez o "Recebi" (008b). */
+  | { kind: "commission_received"; seller: string; vehicle: string }
+  | { kind: "commission_unreceived"; seller: string; vehicle: string };
 
 export type NoticeView = {
   id: string;
@@ -68,6 +78,21 @@ function render(n: NoticeData): Pick<NoticeView, "text" | "tone"> {
           ? "Sua loja voltou ao ar. A fatura continua em aberto."
           : "Pagamento confirmado. Sua loja está no ar.",
         tone: "ok",
+      };
+    case "sale_confirmed":
+      return {
+        text: `Venda confirmada: ${n.vehicle} na ${n.store} · comissão ${brl(n.commissionCents)}`,
+        tone: "ok",
+      };
+    case "commission_received":
+      return {
+        text: `${n.seller} confirmou o recebimento da comissão do ${n.vehicle}.`,
+        tone: "ok",
+      };
+    case "commission_unreceived":
+      return {
+        text: `${n.seller} desfez o recebimento da comissão do ${n.vehicle}.`,
+        tone: "alert",
       };
   }
 }

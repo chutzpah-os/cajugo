@@ -27,6 +27,8 @@ export const PERMISSIONS = {
   "billing.manage": ["store_owner"],
   /** Comissão e vendedores da Rede Caju. */
   "sellers.manage": ["store_owner"],
+  /** Marcar e desfazer o "Recebi" da comissão [7d] (008b). */
+  "commission.receive": ["seller"],
   /** Caju Indica da loja. */
   "store.referral": ["store_owner"],
 
