@@ -1100,3 +1100,6 @@
 
 # 2026-11-24 · 011b/T007 arquivamento
 - archiveCanceled no ciclo (só com auth e cloudinary, passados pelo cron): apaga fotos, logo, capa e comprovantes no Cloudinary, a conta de login sem outro papel, os leads, os veículos sem venda e os dados da loja (stores.archiveStore); perfil anônimo; endereço livre. adminAccounts() no Supabase sem cookie.
+
+# 2026-11-24 · 011b/T008 endereço provisório
+- releaseUnpaidSlugs no ciclo: cadastrada com slug_reserved_until vencido → provisorio-<id> (stores.provisionalSlug), slug_changed_at nulo para a 1ª troca livre; o cron devolve slugsReleased.

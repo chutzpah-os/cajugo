@@ -451,3 +451,6 @@
 
 # 2026-11-24 · 011b/T007 arquivamento
 - LGPD (CAN-SEC-003): apagamento real depois da retenção. D7 no plano: perfil anônimo e veículo vendido mantidos para a contabilidade e o extrato.
+
+# 2026-11-24 · 011b/T008 endereço provisório
+- Quem não paga em 7 dias não segura o endereço de outra loja (CAN-FR-008).

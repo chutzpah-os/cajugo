@@ -60,7 +60,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - rodar 2× não repete.
 
   · _CAN-FR-007, CAN-SEC-003, CAN-SEC-004, CAN-NFR-002_
-- [ ] **T008** `releaseUnpaidSlugs`:
+- [x] **T008** `releaseUnpaidSlugs`:
   - cadastrada sem pagamento em 7 dias → endereço provisório e livre para outra loja;
   - a troca em Minha loja depois do provisório não conta no limite de 30 dias.
 

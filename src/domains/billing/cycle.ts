@@ -37,6 +37,7 @@ import { invoiceTotals } from "./invoice-math";
 import {
   archiveCanceled,
   endCanceledPeriods,
+  releaseUnpaidSlugs,
   type ArchiveClients,
 } from "./cancellation";
 
@@ -533,6 +534,7 @@ export async function runBillingCycle(
   suspended: number;
   ended: number;
   archived: number;
+  slugsReleased: number;
 }> {
   const opened = await openDueInvoices(db, now, scope);
   const pastDue = await markPastDue(db, now, scope);
@@ -540,5 +542,6 @@ export async function runBillingCycle(
   // Cancelamento (011b): o período pago acabou; depois da retenção, arquiva.
   const ended = await endCanceledPeriods(db, now, scope);
   const archived = clients ? await archiveCanceled(db, now, scope, clients) : 0;
-  return { opened, pastDue, suspended, ended, archived };
+  const slugsReleased = await releaseUnpaidSlugs(db, now, scope);
+  return { opened, pastDue, suspended, ended, archived, slugsReleased };
 }

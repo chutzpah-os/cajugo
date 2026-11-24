@@ -12,6 +12,7 @@ const runBillingCycle = vi.fn(async () => ({
   suspended: 1,
   ended: 0,
   archived: 0,
+  slugsReleased: 0,
 }));
 vi.mock("@/domains/billing/service", () => ({ runBillingCycle }));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({}) }));
@@ -107,6 +108,7 @@ describe("job diário › ciclo de cobrança", () => {
       suspended: 0,
       ended: 0,
       archived: 0,
+      slugsReleased: 0,
     });
 
     await call("Bearer segredo-do-cron");
@@ -122,6 +124,7 @@ describe("job diário › ciclo de cobrança", () => {
       suspended: 0,
       ended: 2,
       archived: 0,
+      slugsReleased: 0,
     });
 
     const res = await call("Bearer segredo-do-cron");
@@ -139,6 +142,7 @@ describe("job diário › ciclo de cobrança", () => {
       suspended: 0,
       ended: 0,
       archived: 1,
+      slugsReleased: 0,
     });
 
     const res = await call("Bearer segredo-do-cron");

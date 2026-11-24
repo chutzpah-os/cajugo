@@ -1,5 +1,5 @@
 import { brDate } from "@/platform/br/date";
-import { and, eq, gt, inArray, like } from "drizzle-orm";
+import { and, eq, gt, inArray, like, lte } from "drizzle-orm";
 import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
 import {
   checkCode,
@@ -595,6 +595,57 @@ export async function reopenForPayment(
     .where(and(eq(stores.id, storeId), eq(stores.status, "canceled")))
     .returning({ id: stores.id });
   return done.length > 0;
+}
+
+/**
+ * Endereço provisório (011b, CAN-FR-008): a loja cadastrada que não pagou a 1ª
+ * mensalidade na reserva perde o endereço escolhido, que fica livre para outra loja. A
+ * próxima troca em Minha loja não conta no limite de 30 dias (`slug_changed_at` nulo).
+ */
+export async function provisionalSlug(
+  tx: Db,
+  storeId: string,
+  now: Date,
+): Promise<boolean> {
+  const done = await tx
+    .update(stores)
+    .set({
+      slug: `provisorio-${storeId.replace(/-/g, "").slice(-8)}`,
+      slugReservedUntil: null,
+      slugChangedAt: null,
+    })
+    .where(
+      and(
+        eq(stores.id, storeId),
+        eq(stores.status, "registered"),
+        lte(stores.slugReservedUntil, now),
+      ),
+    )
+    .returning({ id: stores.id });
+  if (!done.length) return false;
+  await tx
+    .delete(storeSlugRedirects)
+    .where(eq(storeSlugRedirects.storeId, storeId));
+  return true;
+}
+
+/** Lojas cadastradas com a reserva do endereço vencida (job diário). */
+export async function expiredReservations(
+  db: Db,
+  now: Date,
+  storeIds?: string[],
+): Promise<string[]> {
+  const rows = await db
+    .select({ id: stores.id })
+    .from(stores)
+    .where(
+      and(
+        eq(stores.status, "registered"),
+        lte(stores.slugReservedUntil, now),
+        storeIds ? inArray(stores.id, storeIds) : undefined,
+      ),
+    );
+  return rows.map((r) => r.id);
 }
 
 /**

@@ -13,7 +13,12 @@ import {
 import type { Cloudinary } from "@/platform/cloudinary/cloudinary";
 import type { AuthProvider } from "@/platform/supabase/auth-provider";
 import { endStorePartnerships } from "@/domains/sellers/service";
-import { archiveStore, reopenForPayment } from "@/domains/stores/service";
+import {
+  archiveStore,
+  expiredReservations,
+  provisionalSlug,
+  reopenForPayment,
+} from "@/domains/stores/service";
 import {
   billingCredits,
   invoices,
@@ -370,4 +375,28 @@ export async function archiveCanceled(
     });
   }
   return archived;
+}
+
+/**
+ * Job diário (CAN-FR-008): cadastrada sem a 1ª mensalidade confirmada até o fim da
+ * reserva (7 dias) → endereço provisório; o escolhido fica livre.
+ */
+export async function releaseUnpaidSlugs(
+  db: Db,
+  now: Date,
+  scope: CycleScope = {},
+): Promise<number> {
+  let released = 0;
+  for (const id of await expiredReservations(db, now, scope.storeIds))
+    await db.transaction(async (tx) => {
+      if (!(await provisionalSlug(tx, id, now))) return;
+      released++;
+      await logActivity(tx, {
+        userId: null,
+        action: "store.slug_released",
+        entity: "store",
+        entityId: id,
+      });
+    });
+  return released;
 }
