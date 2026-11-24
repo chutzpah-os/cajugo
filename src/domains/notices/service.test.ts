@@ -167,4 +167,48 @@ describe("avisos no painel", () => {
       "Ana desfez o recebimento da comissão do Fiat Argo.",
     ]);
   });
+
+  it("[IND-FR-016] frases do Caju Indica: indicação ativa e recompensa (crédito ou saldo)", async () => {
+    // Arrange
+    const a = await person("r@x.com");
+    const at = (m: number) => new Date(Date.UTC(2026, 10, 23, 10, m));
+    await notify(
+      t.db,
+      a.userId,
+      { kind: "referral_active", store: "Loja Boa", amountCents: 3000 },
+      at(0),
+    );
+    await notify(
+      t.db,
+      a.userId,
+      {
+        kind: "referral_reward",
+        store: "Loja Boa",
+        amountCents: 3000,
+        target: "credit",
+      },
+      at(1),
+    );
+    await notify(
+      t.db,
+      a.userId,
+      {
+        kind: "referral_reward",
+        store: "Loja Boa",
+        amountCents: 3000,
+        target: "balance",
+      },
+      at(2),
+    );
+
+    // Act
+    const texts = (await noticesFor(t.db, a)).map((n) => n.text).reverse();
+
+    // Assert
+    expect(texts).toEqual([
+      "Sua indicação Loja Boa está ativa. Você ganhou R$ 30,00.",
+      "Você ganhou R$ 30,00 de crédito na sua fatura pela indicação Loja Boa.",
+      "Você ganhou R$ 30,00 de saldo pela indicação Loja Boa.",
+    ]);
+  });
 });

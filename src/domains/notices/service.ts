@@ -31,7 +31,15 @@ export type NoticeData =
     }
   /** À loja: o vendedor (primeiro nome) marcou ou desfez o "Recebi" (008b). */
   | { kind: "commission_received"; seller: string; vehicle: string }
-  | { kind: "commission_unreceived"; seller: string; vehicle: string };
+  | { kind: "commission_unreceived"; seller: string; vehicle: string }
+  /** Caju Indica (010): `store` é o nome da loja indicada. */
+  | { kind: "referral_active"; store: string; amountCents: number }
+  | {
+      kind: "referral_reward";
+      store: string;
+      amountCents: number;
+      target: "credit" | "balance";
+    };
 
 export type NoticeView = {
   id: string;
@@ -93,6 +101,19 @@ function render(n: NoticeData): Pick<NoticeView, "text" | "tone"> {
       return {
         text: `${n.seller} desfez o recebimento da comissão do ${n.vehicle}.`,
         tone: "alert",
+      };
+    case "referral_active":
+      return {
+        text: `Sua indicação ${n.store} está ativa. Você ganhou ${brl(n.amountCents)}.`,
+        tone: "ok",
+      };
+    case "referral_reward":
+      return {
+        text:
+          n.target === "credit"
+            ? `Você ganhou ${brl(n.amountCents)} de crédito na sua fatura pela indicação ${n.store}.`
+            : `Você ganhou ${brl(n.amountCents)} de saldo pela indicação ${n.store}.`,
+        tone: "ok",
       };
   }
 }

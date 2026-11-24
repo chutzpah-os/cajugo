@@ -4,7 +4,8 @@ import { authorize, type Role, type Session } from "@/platform/http/session";
 export const AREAS = {
   painel: ["store_owner", "store_staff"],
   rede: ["seller"],
-  indica: ["referrer"],
+  /** Vendedor indica pelo mesmo painel, sem virar indicador (010, D4). */
+  indica: ["referrer", "seller"],
   admin: ["admin", "support"],
 } as const satisfies Record<string, readonly Role[]>;
 

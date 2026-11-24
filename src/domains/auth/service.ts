@@ -267,9 +267,12 @@ export async function rememberPanel(
   area: Area,
 ): Promise<void> {
   const areaRoles: readonly Role[] = AREAS[area];
-  if (areaRoles.includes(session.activeRole)) return;
-  const role = session.roles.find((r) => areaRoles.includes(r));
-  if (!role) return;
+  // O papel principal da área vence (ex.: /indica é do indicador, mesmo aberta ao
+  // vendedor): quem tem os dois passa a lembrar o painel do indicador.
+  const role = session.roles.includes(areaRoles[0])
+    ? areaRoles[0]
+    : session.roles.find((r) => areaRoles.includes(r));
+  if (!role || role === session.activeRole) return;
   await db
     .update(profiles)
     .set({ lastPanel: role })

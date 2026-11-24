@@ -147,4 +147,9 @@ describe("ações do admin", () => {
     ] as const)
       expect(can(sessionWith(role), "commission.receive")).toBe(false);
   });
+
+  it("[IND-FR-002] vendedor também abre o painel do Caju Indica; lojista usa o dele", () => {
+    expect(authorizeArea(sessionWith("seller"), "indica")).toBeTruthy();
+    expect(() => authorizeArea(sessionWith("store_owner"), "indica")).toThrow();
+  });
 });

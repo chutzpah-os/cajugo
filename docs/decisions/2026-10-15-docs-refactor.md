@@ -418,3 +418,6 @@
 
 # 2026-11-23 · 010 · spec, plano, tasks e documentos [010/T001]
 - Recompensa uma por fatura (idempotente) e status calculados (D1); billing lança o crédito (D3).
+
+# 2026-11-23 · Avisos e área do Caju Indica [010/T003]
+- D4: o vendedor indica pelo mesmo painel sem ganhar o papel de indicador.

@@ -1040,3 +1040,6 @@
 
 # 2026-11-23 · Migration 0022 do Caju Indica [010/T002]
 - referral_rewards (uma por fatura), enum reward_target, avisos referral_active e referral_reward; só acrescenta.
+
+# 2026-11-23 · Avisos e área do Caju Indica [010/T003]
+- Avisos referral_active e referral_reward (crédito ou saldo); área /indica aberta também ao vendedor.
