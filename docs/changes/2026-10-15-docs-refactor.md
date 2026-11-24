@@ -1085,3 +1085,6 @@
 
 # 2026-11-24 · 011b/T002 migration 0023
 - stores ganha cancel_requested_at, cancel_reason, active_until e canceled_at; notice_kind ganha 4 avisos; o índice único da 1ª mensalidade passa a valer só para a aberta. Aplicada no staging.
+
+# 2026-11-24 · 011b/T003 avisos e motivos do cancelamento
+- Avisos cancel_scheduled, cancel_undone, store_canceled (lojista e admin) e plan_changed; CANCEL_REASONS e cancelSchema no billing. Plano ganha D6 (índice da 1ª mensalidade).

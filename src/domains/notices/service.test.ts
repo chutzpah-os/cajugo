@@ -211,4 +211,34 @@ describe("avisos no painel", () => {
       "Você ganhou R$ 30,00 de saldo pela indicação Loja Boa.",
     ]);
   });
+
+  it("[CAN-FR-012] [CAN-FR-011] frases do cancelamento ao lojista e ao admin; aviso da nova mensalidade", async () => {
+    // Arrange
+    const a = await person("c@x.com");
+    const at = (m: number) => new Date(Date.UTC(2026, 10, 24, 10, m));
+    const sent: Parameters<typeof notify>[2][] = [
+      { kind: "cancel_scheduled", until: "10/12" },
+      { kind: "cancel_scheduled", until: "10/12", store: "Loja Boa" },
+      { kind: "cancel_undone" },
+      { kind: "cancel_undone", store: "Loja Boa" },
+      { kind: "store_canceled" },
+      { kind: "store_canceled", store: "Loja Boa" },
+      { kind: "plan_changed", amountCents: 12000, from: "01/02/2027" },
+    ];
+    for (const [i, n] of sent.entries()) await notify(t.db, a.userId, n, at(i));
+
+    // Act
+    const texts = (await noticesFor(t.db, a)).map((n) => n.text).reverse();
+
+    // Assert
+    expect(texts).toEqual([
+      "Sua assinatura termina em 10/12. Até lá, dá para desfazer o cancelamento na Conta.",
+      "A loja Loja Boa cancelou a assinatura · termina em 10/12.",
+      "Cancelamento desfeito. Sua assinatura continua.",
+      "A loja Loja Boa desfez o cancelamento.",
+      "Sua assinatura terminou e a loja saiu do ar. Para voltar, reassine na Conta.",
+      "A loja Loja Boa foi cancelada.",
+      "A mensalidade do Plano Catálogo passa a R$ 120,00 a partir de 01/02/2027.",
+    ]);
+  });
 });

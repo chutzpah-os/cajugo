@@ -39,7 +39,16 @@ export type NoticeData =
       store: string;
       amountCents: number;
       target: "credit" | "balance";
-    };
+    }
+  /**
+   * Cancelamento (011b): sem `store`, o lojista; com `store` (nome da loja), os admins.
+   * `until` já em dd/mm.
+   */
+  | { kind: "cancel_scheduled"; until: string; store?: string }
+  | { kind: "cancel_undone"; store?: string }
+  | { kind: "store_canceled"; store?: string }
+  /** Editar plano (011b): `from` já em dd/mm/aaaa. */
+  | { kind: "plan_changed"; amountCents: number; from: string };
 
 export type NoticeView = {
   id: string;
@@ -114,6 +123,32 @@ function render(n: NoticeData): Pick<NoticeView, "text" | "tone"> {
             ? `Você ganhou ${brl(n.amountCents)} de crédito na sua fatura pela indicação ${n.store}.`
             : `Você ganhou ${brl(n.amountCents)} de saldo pela indicação ${n.store}.`,
         tone: "ok",
+      };
+    case "cancel_scheduled":
+      return {
+        text: n.store
+          ? `A loja ${n.store} cancelou a assinatura · termina em ${n.until}.`
+          : `Sua assinatura termina em ${n.until}. Até lá, dá para desfazer o cancelamento na Conta.`,
+        tone: "alert",
+      };
+    case "cancel_undone":
+      return {
+        text: n.store
+          ? `A loja ${n.store} desfez o cancelamento.`
+          : "Cancelamento desfeito. Sua assinatura continua.",
+        tone: "ok",
+      };
+    case "store_canceled":
+      return {
+        text: n.store
+          ? `A loja ${n.store} foi cancelada.`
+          : "Sua assinatura terminou e a loja saiu do ar. Para voltar, reassine na Conta.",
+        tone: "alert",
+      };
+    case "plan_changed":
+      return {
+        text: `A mensalidade do Plano Catálogo passa a ${brl(n.amountCents)} a partir de ${n.from}.`,
+        tone: "alert",
       };
   }
 }

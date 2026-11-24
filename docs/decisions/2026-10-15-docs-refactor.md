@@ -436,3 +436,6 @@
 
 # 2026-11-24 · 011b/T002 migration 0023
 - Reassinar (CAN-FR-006) abre uma nova 1ª mensalidade; o índice antigo permitia só uma por loja para sempre. Só uma aberta por vez mantém a proteção contra dois checkouts.
+
+# 2026-11-24 · 011b/T003 avisos e motivos do cancelamento
+- Frases e motivos ficam prontos antes das ações que os usam.
