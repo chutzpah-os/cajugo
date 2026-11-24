@@ -1115,3 +1115,6 @@
 
 # 2026-11-24 · 011b/T012 404 da loja cancelada e [4b]
 - Gate gone → proxy reescreve para o 404 com x-cajugo-not-found; not-found.tsx mostra 'Esta loja não está mais na CajuGo'. [4b]: filtros Cancelamento agendado e Canceladas, linhas com fim e motivo, mudança agendada e Editar plano (editPlanAction, lista de wa.me).
+
+# 2026-11-24 · 011b/T013 e2e do cancelamento
+- Seed: Cancela E2E (ativa) e Cancelada E2E (cancelada pelo ciclo real), contas e2e-cancela e e2e-cancelada. tests/e2e/cancellation.spec.ts: cancelar com motivo, aviso e Desfazer, [4b] em 390 e 1280 px, 404 da loja cancelada, Reassinar e Editar plano recusando data com menos de 30 dias.

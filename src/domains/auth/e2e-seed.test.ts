@@ -19,6 +19,7 @@ import { FakeAuthProvider } from "@/platform/supabase/fake-auth-provider";
 import { E2E_ACCOUNTS, E2E_PIX, seedE2E } from "./e2e-seed";
 import { E2E_SHOWCASE } from "@/domains/showcase/testing/e2e-seed";
 import { E2E_BILLING } from "@/domains/billing/testing/e2e-seed";
+import { E2E_CANCEL } from "@/domains/billing/testing/cancel-seed";
 import { getSettings } from "@/domains/settings/service";
 import { registerStore } from "@/domains/stores/service";
 import { signIn } from "./service";
@@ -294,5 +295,26 @@ describe("seedE2E", () => {
       ["first", "paid", 10_000],
       ["monthly", "open", 60_000],
     ]);
+  });
+
+  it("[CAN-FR-005] lojas do cancelamento: uma ativa e uma cancelada pelo ciclo real; refeitas a cada seed", async () => {
+    // Arrange
+    await seedE2E(deps(), "senha-e2e-1");
+
+    // Act
+    const { ids } = await seedE2E(deps(), "senha-e2e-1");
+
+    // Assert
+    const of = async (ownerId: string) =>
+      (await t.db.select().from(stores).where(eq(stores.ownerId, ownerId)))[0];
+    expect(await of(ids.cancelOwner)).toMatchObject({
+      slug: E2E_CANCEL.active.slug,
+      status: "active",
+      cancelRequestedAt: null,
+    });
+    expect(await of(ids.canceledOwner)).toMatchObject({
+      slug: E2E_CANCEL.gone.slug,
+      status: "canceled",
+    });
   });
 });

@@ -29,6 +29,7 @@ import {
   resetStoreForTests,
 } from "@/domains/stores/service";
 import { seedBilling } from "@/domains/billing/testing/e2e-seed";
+import { seedCancellation } from "@/domains/billing/testing/cancel-seed";
 import { rewardReferrals } from "@/domains/billing/service";
 import { seedReferrals } from "@/domains/referrals/testing/e2e-seed";
 import { grantRole } from "./roles";
@@ -50,6 +51,8 @@ export const E2E_ACCOUNTS = {
   suspendedOwner: { email: "e2e-suspensa@cajugo.test", roles: ["store_owner"] },
   recifeOwner: { email: "e2e-recife@cajugo.test", roles: ["store_owner"] },
   billingOwner: { email: "e2e-fatura@cajugo.test", roles: ["store_owner"] },
+  cancelOwner: { email: "e2e-cancela@cajugo.test", roles: ["store_owner"] },
+  canceledOwner: { email: "e2e-cancelada@cajugo.test", roles: ["store_owner"] },
 } as const satisfies Record<string, { email: string; roles: Role[] }>;
 
 const E2E_STORE_SLUG = "e2e-loja";
@@ -225,6 +228,13 @@ export async function seedE2E(
 
   // Loja suspensa pelo ciclo de cobrança real, com a fatura de R$ 600 aberta (011).
   await seedBilling(deps.db, ids.billingOwner, now);
+  // Cancelamento (011b): uma loja ativa para cancelar e desfazer e uma cancelada
+  // pelo ciclo real.
+  await seedCancellation(
+    deps.db,
+    { active: ids.cancelOwner, gone: ids.canceledOwner },
+    now,
+  );
   // Caju Indica (010): Recife indicada pelo lojista (crédito) e a suspensa pela
   // vendedora (saldo), cada uma com a 1ª paga.
   const [suspended] = await deps.db

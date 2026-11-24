@@ -466,3 +466,6 @@
 
 # 2026-11-24 · 011b/T012 404 da loja cancelada e [4b]
 - ADR 0013: o status real sai do proxy; o ajuste da D4 está no plano.
+
+# 2026-11-24 · 011b/T013 e2e do cancelamento
+- O e2e de Editar plano não salva: setting_values só aceita inserção e uma mensalidade futura ficaria no staging; o caminho que salva está nos testes de integração.

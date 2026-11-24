@@ -88,7 +88,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [x] **T012** `/loja/[slug]/not-found.tsx` ("Esta loja não está mais na CajuGo", `noindex`); [4b] com os filtros novos e **Editar plano** (valor, data e lista de `wa.me`).
 
   · _CAN-SEC-005, CAN-FR-010, CAN-FR-011, CAN-NFR-001_
-- [ ] **T013** Seed do e2e (loja "Cancela E2E") e `tests/e2e/cancellation.spec.ts`:
+- [x] **T013** Seed do e2e (loja "Cancela E2E") e `tests/e2e/cancellation.spec.ts`:
   - cancelar com motivo;
   - aviso e Desfazer;
   - [4b] com o filtro;
