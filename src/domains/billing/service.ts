@@ -47,7 +47,7 @@ import type { Session } from "@/platform/http/session";
 import { storeUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
 import { openMonthly, periodLabel, totalOf } from "./account";
-import { backToActiveIfSettled } from "./cycle";
+import { backToActiveIfSettled, rewardReferrals } from "./cycle";
 import { settleOldestFirst } from "./invoice-math";
 import { firstDueDate, saoPauloMonthStart } from "./due-date";
 import {
@@ -570,6 +570,8 @@ async function settleInvoice(
     .where(and(eq(invoices.id, invoice.id), eq(invoices.status, "open")))
     .returning({ id: invoices.id });
   if (!paid.length) throw AppError.conflict(ALREADY_PAID);
+  // Caju Indica: a 1ª mensalidade da loja indicada rende (010).
+  await rewardReferrals(tx, [invoice.id], at);
   const [store] = await tx
     .select({
       name: stores.name,
@@ -675,11 +677,13 @@ async function settleMonthly(
     throw AppError.validation([
       { field: "amountCents", code: "too_small", message: BELOW_OLDEST },
     ]);
-  if (result.paid.length)
+  if (result.paid.length) {
     await tx
       .update(invoices)
       .set({ status: "paid", paidAt: now })
       .where(inArray(invoices.id, result.paid));
+    await rewardReferrals(tx, result.paid, now);
+  }
   if (result.surplusCents)
     await tx.insert(billingCredits).values({
       storeId: payment.storeId,

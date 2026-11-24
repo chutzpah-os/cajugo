@@ -1046,3 +1046,6 @@
 
 # 2026-11-23 · Recompensa do Caju Indica [010/T004]
 - rewardPaidInvoices: cada fatura paga da loja indicada entre as N primeiras (pela ordem de vencimento) rende uma vez o percentual vigente; não válida e campanha não rendem; ativa/encerrada, aviso e registro; devolve o crédito do lojista.
+
+# 2026-11-24 · Caju Indica na cobrança [010/T005]
+- rewardReferrals onde a fatura vira paga (1ª confirmada ou registrada, mensais quitadas, nasce paga com crédito, zerada por taxa desfeita); crédito referral do lojista lançado no billing_credits e abatido na fatura seguinte.

@@ -34,7 +34,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   - aviso e registro.
 
   · _IND-FR-006, IND-FR-007, IND-FR-008, IND-FR-016, IND-FR-017, IND-NFR-003, IND-SEC-005, IND-SEC-006_
-- [ ] **T005** Ligar na `billing` em todo lugar em que a fatura vira paga:
+- [x] **T005** Ligar na `billing` em todo lugar em que a fatura vira paga:
   - 1ª confirmada ou registrada;
   - mensais quitadas;
   - fatura que nasce paga;

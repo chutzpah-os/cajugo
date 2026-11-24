@@ -10,6 +10,7 @@ import {
   lte,
   min,
 } from "drizzle-orm";
+import { rewardPaidInvoices } from "@/domains/referrals/service";
 import { moveSubscription } from "@/domains/stores/service";
 import { notify } from "@/domains/notices/service";
 import { getSettings } from "@/domains/settings/service";
@@ -49,6 +50,28 @@ const brDay = new Intl.DateTimeFormat("pt-BR", {
   day: "2-digit",
   month: "2-digit",
 });
+
+/**
+ * Faturas que viraram pagas: rendem o Caju Indica (010) e o crédito do lojista que
+ * indicou entra no `billing_credits` (D3), dentro da mesma transação.
+ */
+export async function rewardReferrals(
+  tx: Db,
+  invoiceIds: string[],
+  now: Date,
+): Promise<void> {
+  const credits = await rewardPaidInvoices(tx, invoiceIds, now);
+  if (credits.length)
+    await tx.insert(billingCredits).values(
+      credits.map((c) => ({
+        storeId: c.storeId,
+        kind: "referral" as const,
+        sourceId: c.rewardId,
+        amountCents: c.amountCents,
+        createdAt: now,
+      })),
+    );
+}
 
 /** Abre as faturas que chegaram à janela (SUB-FR-001, SUB-FR-006, SUB-FR-014). */
 /** Só o seed dos e2e: o ciclo restrito a estas lojas (o staging tem outras). */
@@ -160,6 +183,8 @@ async function openNext(db: Db, storeId: string, now: Date): Promise<boolean> {
       .returning({ id: invoices.id });
     // Período já faturado: só o vencimento anda (nunca duas faturas no mês).
     if (!invoice) return true;
+    // Paga com crédito também conta como mensalidade paga (D5).
+    if (paid) await rewardReferrals(tx, [invoice.id], now);
 
     if (fees.length)
       await tx
@@ -464,6 +489,7 @@ export async function refundSaleFee(
     })
     .where(eq(invoices.id, invoice.id));
   await tx.update(sales).set({ invoiceId: null }).where(eq(sales.id, saleId));
+  if (totalCents === 0) await rewardReferrals(tx, [invoice.id], now);
   // Fatura zerada era a única vencida: a loja volta ao ar.
   if (totalCents === 0)
     await backToActiveIfSettled(tx, sale.storeId, now, {

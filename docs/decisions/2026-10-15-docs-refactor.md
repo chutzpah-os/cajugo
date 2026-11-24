@@ -421,3 +421,6 @@
 
 # 2026-11-23 · Avisos e área do Caju Indica [010/T003]
 - D4: o vendedor indica pelo mesmo painel sem ganhar o papel de indicador.
+
+# 2026-11-24 · Caju Indica na cobrança [010/T005]
+- D3: billing lança o crédito com o que referrals devolve; D5: a paga com crédito também rende.
