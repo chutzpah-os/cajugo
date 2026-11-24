@@ -70,3 +70,39 @@ export async function acceptSellers(
     })
     .where(eq(stores.id, storeId));
 }
+
+/** Só testes: venda da Rede Caju já confirmada, sem passar pela [7g] (008b). */
+export async function soldBy(
+  db: Db,
+  input: {
+    sellerId: string;
+    storeId: string;
+    confirmedBy: string;
+    vehicleId: string;
+    commissionCents?: number;
+    status?: "to_receive" | "paid";
+    at?: Date;
+    finalPriceCents?: number;
+    commissionReceivedAt?: Date | null;
+  },
+) {
+  const { sales } = await import("@/platform/db/schema");
+  const [row] = await db
+    .insert(sales)
+    .values({
+      vehicleId: input.vehicleId,
+      storeId: input.storeId,
+      sellerId: input.sellerId,
+      attribution: "other_partner",
+      finalPriceCents: input.finalPriceCents ?? 5_800_000,
+      commissionCents: input.commissionCents ?? 116_000,
+      commissionStatus: input.status ?? "to_receive",
+      feeBps: 100,
+      feeCents: 58_000,
+      confirmedBy: input.confirmedBy,
+      createdAt: input.at ?? new Date("2026-11-20T12:00:00Z"),
+      commissionReceivedAt: input.commissionReceivedAt ?? null,
+    })
+    .returning();
+  return row;
+}

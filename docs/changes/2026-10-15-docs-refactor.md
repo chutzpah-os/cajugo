@@ -1010,3 +1010,6 @@
 
 # 2026-11-23 · Permissão e avisos do extrato [008b/T003]
 - commission.receive (só seller) e avisos sale_confirmed (vendedor), commission_received/unreceived (loja), com as frases.
+
+# 2026-11-23 · Extrato do vendedor, serviço [008b/T004]
+- sellerStatement: vendas do vendedor sem as desfeitas, com veículo, loja, data, valor final, comissão e status; filtros com contagens, cursor de 20, sem dados do comprador; bloqueado continua vendo.

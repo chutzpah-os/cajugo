@@ -29,7 +29,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   · _EXT-SEC-002, EXT-FR-006, EXT-FR-010_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T004** `sellerStatement`:
+- [x] **T004** `sellerStatement`:
   - vendas do vendedor da sessão, sem as desfeitas, da mais recente;
   - veículo, loja, data, valor final, comissão, status;
   - filtros e contagens;
