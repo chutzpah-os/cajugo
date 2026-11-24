@@ -1053,6 +1053,8 @@ export async function removeBillingForTests(
 
 export { saoPauloMonthStart } from "./due-date";
 export { refundSaleFee, rewardReferrals, runBillingCycle } from "./cycle";
+export { cancelSubscription, undoCancel } from "./cancellation";
+export { CANCEL_REASONS, type CancelReason } from "./cancel-reasons";
 export {
   reactivateStore,
   SUBSCRIPTION_FILTERS,

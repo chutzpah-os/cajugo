@@ -26,7 +26,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   · _CAN-FR-012, CAN-FR-002_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T004** `cancelSubscription` e `undoCancel`:
+- [x] **T004** `cancelSubscription` e `undoCancel`:
   - ativa → cancelamento agendado com `active_until` e o motivo;
   - desfazer até o fim;
   - depois do fim → 409;

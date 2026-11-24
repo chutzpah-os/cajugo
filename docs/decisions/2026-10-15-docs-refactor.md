@@ -439,3 +439,6 @@
 
 # 2026-11-24 · 011b/T003 avisos e motivos do cancelamento
 - Frases e motivos ficam prontos antes das ações que os usam.
+
+# 2026-11-24 · 011b/T004 cancelar e desfazer
+- O motivo vai para o registro e para a loja, nunca dado pessoal; cancelar em atraso sem dívida segue o /clarify.

@@ -12,7 +12,7 @@ import {
 } from "drizzle-orm";
 import { rewardPaidInvoices } from "@/domains/referrals/service";
 import { moveSubscription } from "@/domains/stores/service";
-import { notify } from "@/domains/notices/service";
+import { notify, type NoticeData } from "@/domains/notices/service";
 import { getSettings } from "@/domains/settings/service";
 import {
   billingCredits,
@@ -311,6 +311,29 @@ export async function markPastDue(
   return marked;
 }
 
+/**
+ * Avisa o dono da loja (`notice()`) e os admins (`notice(nome da loja)`) de uma troca
+ * na assinatura (SUB-FR-015, CAN-FR-012).
+ */
+export async function notifyOwnerAndAdmins(
+  tx: Db,
+  storeId: string,
+  notice: (store?: string) => NoticeData,
+  now: Date,
+) {
+  const [store] = await tx
+    .select({ name: stores.name, ownerId: stores.ownerId })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  await notify(tx, store.ownerId, notice(), now);
+  const admins = await tx
+    .select({ id: profiles.id })
+    .from(profiles)
+    .where(arrayContains(profiles.roles, ["admin"]));
+  for (const admin of admins)
+    await notify(tx, admin.id, notice(store.name), now);
+}
+
 /** Avisa o lojista e os admins de uma suspensão ou reativação (SUB-FR-015). */
 export async function notifyStatusChange(
   tx: Db,
@@ -319,24 +342,17 @@ export async function notifyStatusChange(
   now: Date,
   byAdmin = false,
 ) {
-  const [store] = await tx
-    .select({ name: stores.name, ownerId: stores.ownerId })
-    .from(stores)
-    .where(eq(stores.id, storeId));
-  await notify(
+  await notifyOwnerAndAdmins(
     tx,
-    store.ownerId,
-    kind === "store_reactivated" && byAdmin
-      ? { kind, byAdmin: true }
-      : { kind },
+    storeId,
+    (store) =>
+      store
+        ? { kind, store }
+        : kind === "store_reactivated" && byAdmin
+          ? { kind, byAdmin: true }
+          : { kind },
     now,
   );
-  const admins = await tx
-    .select({ id: profiles.id })
-    .from(profiles)
-    .where(arrayContains(profiles.roles, ["admin"]));
-  for (const admin of admins)
-    await notify(tx, admin.id, { kind, store: store.name }, now);
 }
 
 /** Em atraso além da tolerância das regras → suspensa (SUB-FR-008). */

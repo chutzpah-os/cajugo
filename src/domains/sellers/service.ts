@@ -1218,6 +1218,28 @@ export async function decidePartnership(
   });
 }
 
+/**
+ * Loja cancelada (011b, CAN-FR-005): as parcerias abertas (pendentes ou ativas) são
+ * encerradas, na transação de quem cancelou. Devolve quantas.
+ */
+export async function endStorePartnerships(
+  tx: Db,
+  storeId: string,
+  now: Date,
+): Promise<number> {
+  const ended = await tx
+    .update(partnerships)
+    .set({ status: "ended", endedAt: now })
+    .where(
+      and(
+        eq(partnerships.storeId, storeId),
+        inArray(partnerships.status, ["pending", "active"]),
+      ),
+    )
+    .returning({ id: partnerships.id });
+  return ended.length;
+}
+
 /** Regra da comissão do veículo: o ajuste dele, senão a padrão da loja (RCL-FR-003). */
 function ruleOf(v: {
   overrideType: "pct" | "fixed" | null;

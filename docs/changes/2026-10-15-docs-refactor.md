@@ -1088,3 +1088,6 @@
 
 # 2026-11-24 · 011b/T003 avisos e motivos do cancelamento
 - Avisos cancel_scheduled, cancel_undone, store_canceled (lojista e admin) e plan_changed; CANCEL_REASONS e cancelSchema no billing. Plano ganha D6 (índice da 1ª mensalidade).
+
+# 2026-11-24 · 011b/T004 cancelar e desfazer
+- billing/cancellation.ts: cancelSubscription (ativa → agendado até next_due_at; em atraso/suspensa → cancelada na hora com faturas abertas canceladas) e undoCancel; closeStore expira o crédito, encerra parcerias (sellers.endStorePartnerships) e avisa; notifyOwnerAndAdmins no ciclo.
