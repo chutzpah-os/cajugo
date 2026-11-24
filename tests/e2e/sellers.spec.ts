@@ -243,6 +243,7 @@ test.describe("Rede Caju no desktop (1280 px)", () => {
       await expect(side.getByRole("link", { name: label })).toBeVisible();
     expect(await audit(page), "[7c] 1280 px").toEqual(CLEAN);
     await page.goto("/rede/extrato");
-    await expect(page.getByText("Suas vendas aparecem aqui")).toBeVisible();
+    // As vendas do extrato (008b) vêm do seed.
+    await expect(page.getByTestId("statement-sale").first()).toBeVisible();
   });
 });

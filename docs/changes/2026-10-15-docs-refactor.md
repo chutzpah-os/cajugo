@@ -1028,3 +1028,6 @@
 
 # 2026-11-23 · Painel do vendedor [008b/T009]
 - [7b] com a receber, vendas do mês, cliques, código, últimas vendas e Ver extrato; bloqueado ganha o link do extrato.
+
+# 2026-11-23 · e2e do extrato [008b/T010]
+- Seed com duas vendas da E2EVENDE (BMW X1 paga pela loja, Citroën C3 a receber); seller-statement.spec: [7b] com KPIs, [7d] com filtro, Recebi e Desfazer, aviso à loja, 390 e 1280 px; migration 0021 no staging.

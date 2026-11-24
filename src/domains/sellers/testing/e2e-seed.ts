@@ -10,6 +10,7 @@ import {
   vehicles,
 } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
+import { E2E_SHOWCASE } from "@/domains/showcase/testing/e2e-seed";
 
 /**
  * Vendedor ativo do e2e (conta `sellerReferrer`), parceiro da loja da vitrine; e um
@@ -85,9 +86,12 @@ export async function seedSellers(
   ids: {
     sellerId: string;
     storeId: string;
+    /** Dono da loja da vitrine: quem confirmou as vendas do extrato (008b). */
+    ownerId: string;
     pendingSellerId: string;
     otherStoreIds: string[];
   },
+  now: Date = new Date(),
 ) {
   const S = E2E_SELLER;
   await db
@@ -121,6 +125,7 @@ export async function seedSellers(
       acceptsSellers: true,
     })
     .where(eq(stores.id, ids.storeId));
+  await seedStatement(db, ids, now);
   await seedPendingRequest(db, ids);
 }
 
@@ -156,4 +161,42 @@ export async function seedPendingRequest(
       .update(stores)
       .set({ acceptsSellers: true })
       .where(inArray(stores.id, ids.otherStoreIds));
+}
+
+/**
+ * Só testes: duas vendas da vendedora do e2e na loja da vitrine (008b): uma "Paga"
+ * pela loja na venda (BMW X1, há 10 dias) e uma "A receber" (Citroën C3, ontem).
+ */
+async function seedStatement(
+  db: Db,
+  ids: { sellerId: string; storeId: string; ownerId: string },
+  now: Date,
+) {
+  const DAY = 86_400_000;
+  const S = E2E_SHOWCASE;
+  for (const [vehicleId, status, days] of [
+    [S.soldId, "paid", 10],
+    [S.statementId, "to_receive", 1],
+  ] as const) {
+    const [sale] = await db
+      .insert(sales)
+      .values({
+        vehicleId,
+        storeId: ids.storeId,
+        sellerId: ids.sellerId,
+        attribution: "other_partner",
+        finalPriceCents: 4_000_000,
+        commissionCents: 80_000,
+        commissionStatus: status,
+        feeBps: 100,
+        feeCents: 40_000,
+        confirmedBy: ids.ownerId,
+        createdAt: new Date(now.getTime() - days * DAY),
+      })
+      .returning({ id: sales.id });
+    await db
+      .update(vehicles)
+      .set({ saleId: sale.id })
+      .where(eq(vehicles.id, vehicleId));
+  }
 }

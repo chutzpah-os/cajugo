@@ -32,6 +32,8 @@ export const E2E_SHOWCASE = {
   /** Citroën C3 V2 da vitrine, vendido e desfeito pelo e2e da Rede Caju (009). */
   saleTestId: "00000000-0000-4000-8000-00000000e206",
   suspendedId: "00000000-0000-4000-8000-00000000e204",
+  /** Vendido pela vendedora E2EVENDE, comissão "A receber" no extrato (008b). */
+  statementId: "00000000-0000-4000-8000-00000000e207",
 } as const;
 
 /** Imagem que já existe em toda conta Cloudinary: o seed nunca a apaga. */
@@ -155,6 +157,11 @@ export async function seedShowcase(
               : v,
     ),
     { ...row(storeId, 100, now), id: S.soldId, status: "sold" as const },
+    {
+      ...row(storeId, 101, now),
+      id: S.statementId,
+      status: "sold" as const,
+    },
     {
       ...row(suspendedId, 1, now),
       id: S.suspendedId,

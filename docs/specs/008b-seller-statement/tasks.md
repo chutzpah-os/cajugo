@@ -73,7 +73,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
 - [x] **T009** Painel `/rede` [7b]: KPIs a receber e vendas do mês, últimas vendas e "Ver extrato".
 
   · _EXT-FR-005, EXT-FR-008, EXT-NFR-001_
-- [ ] **T010** Seed do e2e (uma venda A receber e uma Paga da E2EVENDE) e `tests/e2e/seller-statement.spec.ts`:
+- [x] **T010** Seed do e2e (uma venda A receber e uma Paga da E2EVENDE) e `tests/e2e/seller-statement.spec.ts`:
   - [7b] com os KPIs;
   - [7d] com filtros;
   - Recebi e Desfazer;

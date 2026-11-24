@@ -209,12 +209,17 @@ export async function seedE2E(
   // Uma denúncia aberta de um veículo da vitrine (007b).
   await seedReports(deps.db, E2E_SHOWCASE.reportedId, now);
   // Vendedor ativo, parceiro da loja da vitrine, com comissão de 2% (008).
-  await seedSellers(deps.db, {
-    sellerId: ids.sellerReferrer,
-    storeId: showcase.storeId,
-    pendingSellerId: ids.temporary,
-    otherStoreIds: [showcase.recifeId],
-  });
+  await seedSellers(
+    deps.db,
+    {
+      sellerId: ids.sellerReferrer,
+      storeId: showcase.storeId,
+      ownerId: ids.showcaseOwner,
+      pendingSellerId: ids.temporary,
+      otherStoreIds: [showcase.recifeId],
+    },
+    now,
+  );
 
   // Loja suspensa pelo ciclo de cobrança real, com a fatura de R$ 600 aberta (011).
   await seedBilling(deps.db, ids.billingOwner, now);

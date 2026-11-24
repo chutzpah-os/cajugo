@@ -8,6 +8,7 @@ import {
   stores,
   vehiclePhotos,
   partnerships,
+  sales,
   sellers,
   vehicleReports,
   vehicles,
@@ -234,10 +235,11 @@ describe("seedE2E", () => {
     await seedE2E(withCloud(), "senha-e2e-1");
 
     // Assert: 45 no ar, 1 vendido, 1 da loja suspensa, 3 de Recife, o excluído
-    // dos leads (007) e os 2 da loja da fatura (011); os 7 leads e a denúncia
+    // dos leads (007), os 2 da loja da fatura (011) e o vendido do extrato (008b);
+    // os 7 leads e a denúncia
     // (007b) são refeitos, não somados
     expect(await t.db.select().from(vehicles)).toHaveLength(
-      E2E_SHOWCASE.total + 8,
+      E2E_SHOWCASE.total + 9,
     );
     expect(await t.db.select().from(leads)).toHaveLength(7);
     expect(await t.db.select().from(vehicleReports)).toEqual([
@@ -253,6 +255,13 @@ describe("seedE2E", () => {
     expect(
       (await t.db.select().from(partnerships)).map((p) => p.status).sort(),
     ).toEqual(["active", "pending"]);
+    // Duas vendas da vendedora no extrato, refeitas e não somadas (008b).
+    expect(
+      (await t.db.select().from(sales))
+        .filter((x) => x.sellerId)
+        .map((x) => x.commissionStatus)
+        .sort(),
+    ).toEqual(["paid", "to_receive"]);
     expect(destroy).not.toHaveBeenCalledWith("sample");
   });
 
