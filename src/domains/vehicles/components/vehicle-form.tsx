@@ -29,6 +29,53 @@ import {
 import { priceVsFipe } from "../price";
 import type { VehicleFormView } from "../service";
 
+/**
+ * Marcas mais vendidas no Brasil (Fenabrave, 2025), no topo da lista da FIPE (012):
+ * o nome da FIPE contém a chave (ex.: "GM - Chevrolet", "VW - VolksWagen").
+ */
+const POPULAR_BRANDS = [
+  "fiat",
+  "volkswagen",
+  "chevrolet",
+  "toyota",
+  "hyundai",
+  "jeep",
+  "renault",
+  "honda",
+  "nissan",
+  "byd",
+  "chery",
+  "ford",
+  "peugeot",
+  "citro",
+  "mitsubishi",
+  "gwm",
+  "ram",
+  "kia",
+  "bmw",
+  "mercedes",
+  "audi",
+  "volvo",
+];
+
+export function popularBrands(
+  list: (readonly [string, string])[],
+): (readonly [string, string])[] {
+  const norm = (t: string) =>
+    t
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  return POPULAR_BRANDS.flatMap((key) => {
+    const hit = list.find(([, name]) =>
+      norm(name)
+        .split(/[^a-z0-9]+/)
+        .some((w) => w === key || (key.length > 4 && w.startsWith(key))),
+    );
+    return hit ? [hit] : [];
+  });
+}
+
 /** Listas da FIPE pela action; erro vira o aviso do formulário (VEH-NFR-004). */
 async function loadFipe<T>(
   input: Parameters<typeof fipeAction>[0],
@@ -338,7 +385,18 @@ export function VehicleForm({
             id="fipeBrandId"
             label="Marca"
             placeholder="Escolha a marca"
-            options={brandList}
+            groups={
+              popularBrands(brandList).length
+                ? [
+                    {
+                      label: "Mais procuradas",
+                      options: popularBrands(brandList),
+                    },
+                    { label: "Todas as marcas", options: brandList },
+                  ]
+                : undefined
+            }
+            options={popularBrands(brandList).length ? [] : brandList}
             value={str("fipeBrandId")}
             onChange={(e) => {
               setFamily("");

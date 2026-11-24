@@ -1148,3 +1148,6 @@
 
 # 2026-11-24 · 012 Leads com Perdido e espaço do botão flutuante
 - Chip Perdido em Leads (a soma dos chips bate com Todos); espaço livre no fim das telas do painel no celular, acima do + Novo veículo e da barra fixa.
+
+# 2026-11-24 · 012 simulador [14b], avisos compactos e marcas mais procuradas
+- Simulador em tela cheia como no [14b] (veículo, card escuro da parcela, Entrada/Prazo, taxa e total, envio no rodapé); avisos do painel em linhas compactas, 3 à mostra e 'Ver todos'; marcas mais vendidas no Brasil no topo do cadastro [2a]; spec 014 com o Histórico do veículo (leilão, financeira, GNV, sinistro…) e PRD [2a].

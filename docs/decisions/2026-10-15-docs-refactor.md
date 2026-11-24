@@ -499,3 +499,6 @@
 
 # 2026-11-24 · 012 Leads com Perdido e espaço do botão flutuante
 - Pedido do dono (a conta dos filtros não fechava); o último card ficava embaixo do botão flutuante.
+
+# 2026-11-24 · 012 simulador [14b], avisos compactos e marcas mais procuradas
+- Pedidos do dono do produto: tela de simulação, avisos tomando a tela do admin, marcas do Brasil e mais informações do veículo.

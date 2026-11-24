@@ -212,7 +212,18 @@ export function VehicleDetails({
           </WhatsappButton>
         </div>
       </div>
-      {page.simulator && <SimulatorSheet setup={page.simulator} lead={lead} />}
+      {page.simulator && (
+        <SimulatorSheet
+          setup={page.simulator}
+          lead={lead}
+          cover={
+            page.photos[0]
+              ? imageUrlFor(cloudName, page.photos[0], IMAGE_WIDTHS.thumb)
+              : null
+          }
+          storeName={page.store.name}
+        />
+      )}
       <ReportSheet vehicleId={page.vehicleId} />
     </main>
   );

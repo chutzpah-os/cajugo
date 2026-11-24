@@ -43,8 +43,8 @@ test.describe("ferramentas do comprador (390 px)", () => {
     await dialog.getByRole("button", { name: "30%" }).click();
     await dialog.getByRole("button", { name: "36x" }).click();
     const rate = Number(
-      (await dialog.getByText(/taxa de .+% ao mês/).textContent())!
-        .match(/taxa de ([\d,]+)%/)![1]
+      (await dialog.getByText(/^[\d,]+% ao mês$/).textContent())!
+        .match(/([\d,]+)%/)![1]
         .replace(",", "."),
     );
     const sim = simulateInstallment({

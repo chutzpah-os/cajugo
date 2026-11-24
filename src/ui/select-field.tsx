@@ -6,6 +6,7 @@ export function SelectField({
   id,
   label,
   options,
+  groups,
   placeholder,
   help,
   error,
@@ -15,6 +16,11 @@ export function SelectField({
   id: string;
   label: string;
   options: readonly (readonly [value: string, label: string])[];
+  /** Grupos antes das opções soltas (ex.: "Mais procuradas"). */
+  groups?: readonly {
+    label: string;
+    options: readonly (readonly [value: string, label: string])[];
+  }[];
   placeholder?: string;
   help?: string;
   error?: string;
@@ -37,6 +43,15 @@ export function SelectField({
         {...props}
       >
         {placeholder !== undefined && <option value="">{placeholder}</option>}
+        {groups?.map((g) => (
+          <optgroup key={g.label} label={g.label}>
+            {g.options.map(([value, text]) => (
+              <option key={`${g.label}-${value}`} value={value}>
+                {text}
+              </option>
+            ))}
+          </optgroup>
+        ))}
         {options.map(([value, text]) => (
           <option key={value} value={value}>
             {text}

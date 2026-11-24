@@ -78,6 +78,17 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   - horas de uso, no lugar da quilometragem: trator;
   - lugares: van, motorhome.
 - **TIP-FR-016** As regras de fotos mínimas e de aprovação prévia (002) valem iguais para todos os tipos.
+- **TIP-FR-017** (pedido do dono do produto, 2026-11-24) O cadastro [2a] ganha a seção **Histórico do veículo**, para todos os tipos, com Sim/Não:
+  - passagem por leilão;
+  - recuperado de financiamento (veio de financeira);
+  - kit GNV instalado (e se ainda está no veículo);
+  - ex-táxi, ex-frota ou ex-locadora;
+  - laudo cautelar aprovado;
+  - chave reserva;
+  - manual e nota fiscal.
+
+  Tem também **Sinistro com indenização**: Nenhum, Pequena monta, Média monta ou Grande monta.
+- **TIP-FR-018** A página do veículo [1b] mostra o Histórico do veículo, com o que o lojista informou e "Não informado" no resto. A vitrine [1a] tem o filtro **Sem passagem por leilão** e **Sem sinistro**.
 
 ## Requisitos não funcionais
 - **TIP-NFR-001** As telas novas e as mudadas ([3b], [2a], filtros, [1b]) funcionam em 390 px e em 1280 px, com alvos de toque de pelo menos 44 px, e seguem o design (012).
@@ -162,6 +173,16 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **Dado** a regra de 3 fotos mínimas e a aprovação prévia ligada
 - **Quando** o lojista publica uma moto com 2 fotos e depois com 3
 - **Então** com 2 fotos é recusado como num carro; com 3, vai para a aprovação como num carro
+
+### TIP-FR-017
+- **Dado** o cadastro de um carro
+- **Quando** o lojista marca "Passagem por leilão: Sim" e "Sinistro: Média monta" e publica
+- **Então** o veículo fica com esse histórico salvo
+
+### TIP-FR-018
+- **Dado** um carro com passagem por leilão e média monta, e outro sem histórico informado
+- **Quando** o visitante abre as páginas e filtra "Sem passagem por leilão"
+- **Então** o primeiro mostra "Passagem por leilão: Sim" e "Sinistro: média monta", o segundo "Não informado", e o filtro esconde o primeiro
 
 ### TIP-SEC-001
 - **Dado** o lojista B logado
