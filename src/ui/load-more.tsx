@@ -82,16 +82,19 @@ export function LoadMoreButton({
   busy,
   failed,
   onClick,
+  noun = "veículos",
 }: {
   busy: boolean;
   failed: boolean;
   onClick: () => void;
+  /** O que a lista mostra ("vendas" no extrato, 008b). */
+  noun?: string;
 }) {
   return (
     <div className="flex flex-col items-center gap-2">
       {failed && (
         <p role="alert" className="text-sm text-caju-deep">
-          Não foi possível carregar mais veículos.
+          Não foi possível carregar mais {noun}.
         </p>
       )}
       <Button
@@ -104,7 +107,7 @@ export function LoadMoreButton({
           ? "Carregando…"
           : failed
             ? "Tentar de novo"
-            : "Carregar mais veículos"}
+            : `Carregar mais ${noun}`}
       </Button>
     </div>
   );

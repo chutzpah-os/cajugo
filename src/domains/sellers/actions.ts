@@ -34,7 +34,10 @@ import {
   requestPartnership,
   updatePixKey,
   sellerShowcase,
+  sellerStatement,
+  setCommissionReceived,
   type SellerCard,
+  type StatementItem,
 } from "./service";
 import { sellerShowcasePageSchema } from "./schemas";
 import type { PartnerState } from "./status";
@@ -349,4 +352,39 @@ export async function undoSaleAction(input: unknown): Promise<DecisionResult> {
   }, "");
   if (r.ok) updateTag(VEHICLES_TAG);
   return r;
+}
+
+/** Próxima página do extrato [7d] (EXT-NFR-002); `null` quando falha. */
+export async function loadMoreStatementAction(input: {
+  filtro: string;
+  cursor: string;
+}): Promise<{ items: StatementItem[]; nextCursor: string | null } | null> {
+  try {
+    const page = await sellerStatement(getDb(), await currentSession(), input);
+    return { items: page.items, nextCursor: page.nextCursor };
+  } catch (error) {
+    logger.error("sellers.statement_failed", { error: errorMessage(error) });
+    return null;
+  }
+}
+
+/** **Recebi** e **Desfazer** [7d] (EXT-FR-003, 009). */
+export async function setCommissionReceivedAction(input: {
+  saleId: string;
+  received: boolean;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  try {
+    await setCommissionReceived({ db: getDb() }, await currentSession(), input);
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof AppError)
+      return { ok: false, message: error.detail ?? error.title };
+    logger.error("sellers.commission_received_failed", {
+      error: errorMessage(error),
+    });
+    return {
+      ok: false,
+      message: "Não foi possível salvar agora. Tente de novo.",
+    };
+  }
 }

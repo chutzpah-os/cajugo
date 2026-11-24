@@ -61,7 +61,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   · _EXT-FR-005, EXT-FR-006, EXT-FR-007, EXT-FR-008_
 
 ## Fase 3 — Telas
-- [ ] **T008** `/rede/extrato` [7d]:
+- [x] **T008** `/rede/extrato` [7d]:
   - filtros na URL com as contagens;
   - cards da venda;
   - **Recebi** com confirmação;

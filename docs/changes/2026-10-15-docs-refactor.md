@@ -1022,3 +1022,6 @@
 
 # 2026-11-23 · Painel do vendedor com vendas [008b/T007]
 - sellerHome traz a receber, vendas do mês (São Paulo) e as 5 últimas, sem as desfeitas; confirmSale avisa o vendedor (veículo, loja, comissão).
+
+# 2026-11-23 · Tela do extrato [008b/T008]
+- /rede/extrato [7d]: filtros na URL com contagens, cards (veículo, loja, data, valor final, comissão, status), Recebi com confirmação, Desfazer com o prazo, Carregar mais vendas, estado vazio.
