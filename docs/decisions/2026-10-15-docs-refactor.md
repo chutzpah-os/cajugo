@@ -412,3 +412,6 @@
 
 # 2026-11-23 · Fechamento da 011 [011/verify]
 - Spec ajustada com o dono: volta a ativa sem fatura vencida, reativar sem nada vencido → ativa, sem alerta de cobrança com comprovante em conferência.
+
+# 2026-11-23 · 008b · spec, plano, tasks e documentos [008b/T001]
+- Desfazer o Recebi em 24 h pede a data do Recebi do vendedor (D1); 'Em análise' fica para a fase 2.

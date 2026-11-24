@@ -136,11 +136,11 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Vendedor (Rede Caju)
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| página | `/rede` (status ou painel) · `/rede/vitrine` · `/rede/extrato` (008b) · `/rede/conta` | 7b, 7c, 7d, 13c |
+| página | `/rede` (status ou painel) · `/rede/vitrine` · `/rede/extrato` (`?filtro=todas|a-receber|pagas`, 008b) · `/rede/conta` | 7b, 7c, 7d, 13c |
 | A | `requestPartnershipAction({ storeId })` · `loadMoreSellerShowcaseAction({ query, cursor })` (008) | 7c |
 | — | link do veículo: `/v/{id}?ref={code}` (montado por função única) | 7c |
 | A | `sellerClickAction({ vehicleId, code })` — pública, 1 por aparelho por dia, sem robôs (008) | 1b |
-| A | `markCommissionReceived(saleId)` (008b) | 7d |
+| A | `setCommissionReceivedAction({ saleId, received })` — `commission.receive` (só o vendedor da venda; desfazer em até 24 h) (008b) | 7d |
 | A | `updatePixKeyAction({ pixKey })` (008) | 13c |
 | GET | `/api/v1/sellers/{id}/document/{side}` — foto privada do documento; admin, suporte ou o próprio vendedor (`contract.md` da 008) | 7h, 13c |
 

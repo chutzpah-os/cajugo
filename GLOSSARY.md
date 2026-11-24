@@ -82,7 +82,7 @@ _Evite_: bônus, repasse
 Parceria ativa, com o vendedor ativo e a loja aceitando vendedores. Só ela dá "Você ganha", marca o contato com o vendedor e entra na Confirmar venda. Bloquear o vendedor ou desligar "Aceitar vendedores" suspende sem mudar a parceria.
 
 **Status da comissão**:
-A receber (`to_receive`, a loja ainda paga por fora) ou Paga (`paid`, marcado pela loja na venda ou pelo vendedor no "Recebi", 008b).
+A receber (`to_receive`, a loja ainda paga por fora) ou Paga (`paid`, marcado pela loja na venda ou pelo vendedor no "Recebi", 008b). O vendedor desfaz o próprio "Recebi" em até 24 h; depois, só a CajuGo corrige. "Em análise" é da fase 2.
 
 **Taxa CajuGo**:
 Percentual (1%) do valor final que a CajuGo cobra da loja por carro vendido via vendedor, lançado na fatura seguinte.

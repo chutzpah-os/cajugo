@@ -1001,3 +1001,6 @@
 
 # 2026-11-23 · Fechamento da 011 [011/verify]
 - Ajustes do /verify (comprovante em conferência segura o job, recusa na [10c], próxima cobrança da Conta, taxa que zera a fatura reativa, totalOf, suspended_staff); spec implemented, PLAN; migration 0020 aplicada e conferida no prod.
+
+# 2026-11-23 · 008b · spec, plano, tasks e documentos [008b/T001]
+- Spec 008b (extrato do vendedor) clarificada, plano aprovado e tasks; PRD §5.7/§5.13/[7d]/§9, ARCHITECTURE (sales.commission_received_at), API.md e GLOSSARY.

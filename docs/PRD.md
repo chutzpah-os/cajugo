@@ -265,7 +265,7 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - **Link do vendedor** por veículo (`/v/{id}?ref={codigo}`); leads vindos dele ficam marcados com o vendedor.
 - **Atribuição** [7g]: ao marcar vendido, o sistema sugere o vendedor do link; o lojista confirma (vendedor do link / outro parceiro / venda da loja), informa o valor final e se já pagou a comissão.
 - **Pagamento da comissão:** o lojista paga direto ao vendedor (Pix do vendedor), fora da plataforma; o vendedor marca "Recebi" [7d].
-- Status da comissão: Em análise → A receber → Paga.
+- Status da comissão: A receber → Paga ("Em análise", para contestação, é da fase 2). O vendedor pode desfazer o "Recebi" por 24 h; depois, só a CajuGo corrige (spec 008b).
 - Perfil do vendedor [13b]: vendas na CajuGo, lojas, nota média, histórico com a loja, avaliações. Lojista pode avaliar, encerrar parceria e **denunciar** [13d] (cobrou por fora, informação falsa, comportamento inadequado, uso indevido do nome da loja, outro); análise do admin em até 2 dias úteis.
 
 ### 5.8 Caju Indica
@@ -306,7 +306,7 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - **Pagamento:** Aguardando → Comprovante enviado → Confirmado | Recusado → (reenvio) Comprovante enviado.
 - **Vendedor:** Em análise → Ativo ⇄ Bloqueado.
 - **Parceria:** Pedido/Convite → Ativa → Encerrada (ou Recusada).
-- **Comissão:** Em análise → A receber → Paga.
+- **Comissão:** A receber ⇄ Paga (desfazer o Recebi em até 24 h; "Em análise" na fase 2).
 - **Indicação:** Convite → Cadastrada → Ativa ⇄ Pausada → Encerrada.
 - **Recompensa:** Prevista → Creditada → Abatida/Resgatada.
 - **Resgate:** Solicitado → Pago.
@@ -664,7 +664,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - Todos os veículos da vitrine, cada um com **Compartilhar** (link `/v/{id}?ref={codigo}` + WhatsApp). Loja parceira: mostra também **"Você ganha R$ X"**. Loja não parceira: **Pedir parceria** (desabilitado com "Esta loja não aceita vendedores" quando ela não aceita); o contato pelo link só fica marcado com o vendedor em loja parceira.
 
 ### [7d] Extrato do vendedor
-- Filtros: Todas · A receber · Em análise · Pagas. Cada venda: veículo, loja, valor da comissão, status; botão **Recebi** em "A receber".
+- Filtros: Todas · A receber · Pagas. Cada venda: veículo, loja, data, valor final, valor da comissão, status; botão **Recebi** em "A receber" e **Desfazer** até 24 h depois. Venda desfeita pela loja some do extrato.
 
 ### [7e] Configurar comissão (lojista)
 - Toggle **Aceitar vendedores independentes**.
@@ -831,6 +831,7 @@ Ver `API.md` §5 (mapa de rotas).
 | Comprovante confirmado / recusado (com motivo) | Lojista | Aviso no painel; `wa.me` na confirmação [10b] |
 | Pedido de parceria; parceria aprovada/recusada; convite | Lojista / Vendedor | Aviso no painel |
 | Venda confirmada com comissão | Vendedor | Aviso no painel [7b] |
+| Vendedor confirmou ou desfez o recebimento da comissão | Lojista | Aviso no painel |
 | Cadastro aprovado/bloqueado | Vendedor | Aviso no painel; `wa.me` em [7h] |
 | Indicação ativou; crédito/saldo recebido; Pix de resgate pago | Indicador / Lojista | Aviso no painel; `wa.me` em [8g] |
 | Veículo precisa de ajuste / foi ocultado (motivo) | Lojista | Aviso no painel |

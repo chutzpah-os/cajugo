@@ -183,7 +183,8 @@ seller_vehicle_clicks    seller_id + vehicle_id + day (pk, dia em São Paulo), c
 sales                    id, vehicle_id, store_id, final_price_cents, seller_id (nulo na venda da loja),
                          attribution (link|other_partner|store), commission_cents, commission_status (to_receive|paid;
                          "em análise" é da fase 2), fee_bps + fee_cents (taxa CajuGo guardada na confirmação),
-                         invoice_id (011), confirmed_by, created_at, canceled_at (desfazer)   # 009; 1 ativa por veículo
+                         invoice_id (011), commission_received_at (Recebi do vendedor; desfazer em 24 h, 008b), confirmed_by,
+                         created_at, canceled_at (desfazer)   # 009; 1 ativa por veículo
 seller_reviews           id, seller_id, store_id, rating (1–5), text, created_at
 
 # Caju Indica
