@@ -1037,3 +1037,6 @@
 
 # 2026-11-23 · 010 · spec, plano, tasks e documentos [010/T001]
 - Spec 010 (Caju Indica: indicação, recompensa e saldo) clarificada, plano aprovado e tasks; PRD §5.8/[8c], PLAN (010b), ARCHITECTURE (referral_rewards), API.md e GLOSSARY.
+
+# 2026-11-23 · Migration 0022 do Caju Indica [010/T002]
+- referral_rewards (uma por fatura), enum reward_target, avisos referral_active e referral_reward; só acrescenta.

@@ -270,6 +270,9 @@ export const referrals = pgTable(
   (t) => [index("referrals_referrer_status").on(t.referrerId, t.status)],
 ).enableRLS();
 
+/** Recompensa do Caju Indica (010): crédito na fatura do lojista ou saldo de quem indica. */
+export const rewardTarget = pgEnum("reward_target", ["credit", "balance"]);
+
 /** Fatura (GLOSSARY): a 1ª mensalidade (`first`, spec 004) e as mensais (`monthly`, spec 011). */
 export const invoiceKind = pgEnum("invoice_kind", ["first", "monthly"]);
 export const invoiceStatus = pgEnum("invoice_status", [
@@ -336,6 +339,31 @@ export const billingCredits = pgTable(
     index("billing_credits_store_open")
       .on(t.storeId)
       .where(sql`${t.appliedInvoiceId} is null`),
+  ],
+).enableRLS();
+
+/** Recompensa (GLOSSARY): uma por fatura paga da loja indicada (010, IND-NFR-003). */
+export const referralRewards = pgTable(
+  "referral_rewards",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    referralId: uuid("referral_id")
+      .notNull()
+      .references(() => referrals.id),
+    invoiceId: uuid("invoice_id")
+      .notNull()
+      .references(() => invoices.id)
+      .unique(),
+    beneficiaryId: uuid("beneficiary_id")
+      .notNull()
+      .references(() => profiles.id),
+    target: rewardTarget("target").notNull(),
+    amountCents: integer("amount_cents").notNull(),
+    ...timestamps,
+  },
+  (t) => [
+    index("referral_rewards_beneficiary").on(t.beneficiaryId, t.createdAt),
+    index("referral_rewards_referral").on(t.referralId),
   ],
 ).enableRLS();
 
@@ -407,6 +435,8 @@ export const noticeKind = pgEnum("notice_kind", [
   "sale_confirmed",
   "commission_received",
   "commission_unreceived",
+  "referral_active",
+  "referral_reward",
 ]);
 
 export const notices = pgTable(

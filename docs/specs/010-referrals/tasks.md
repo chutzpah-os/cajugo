@@ -17,7 +17,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   - GLOSSARY (status calculados da indicação, Recompensa).
 
   · _—_
-- [ ] **T002** Migration `0022`, só acrescenta: enum `reward_target`, tabela `referral_rewards` (única por fatura), `notice_kind` + `referral_active`, `referral_reward`. Teste de schema.
+- [x] **T002** Migration `0022`, só acrescenta: enum `reward_target`, tabela `referral_rewards` (única por fatura), `notice_kind` + `referral_active`, `referral_reward`. Teste de schema.
 
   · _IND-NFR-003_
 - [ ] **T003** [P] Os 2 avisos novos (tipos e frases) e a área `indica` aberta também para `seller` (D4), com testes.
