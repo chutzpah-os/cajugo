@@ -1555,6 +1555,7 @@ async function suggestedSeller(
 
 export {
   sellerStatement,
+  setCommissionReceived,
   STATEMENT_FILTERS,
   type SellerStatement,
   type StatementFilter,

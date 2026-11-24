@@ -1,9 +1,18 @@
 import { and, count, desc, eq, isNull, lt, or, type SQL } from "drizzle-orm";
 import { z } from "zod";
+import { authorizeTo } from "@/domains/auth/service";
+import { notifyStore } from "@/domains/notices/service";
 import { shortTitle } from "@/domains/vehicles/service";
-import { sales, sellers, stores, vehicles } from "@/platform/db/schema";
+import {
+  profiles,
+  sales,
+  sellers,
+  stores,
+  vehicles,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
-import { AppError } from "@/platform/http/errors";
+import { logActivity } from "@/platform/http/activity-log";
+import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import { authorize, type Session } from "@/platform/http/session";
 
 /**
@@ -164,4 +173,83 @@ export async function sellerStatement(
     items: page.map((r) => toItem(r, now)),
     nextCursor: rows.length > PAGE ? page[PAGE - 1].saleId : null,
   };
+}
+
+const receivedSchema = z
+  .object({ saleId: z.uuid(), received: z.boolean() })
+  .strict();
+
+/**
+ * **Recebi** e **Desfazer** [7d] (EXT-FR-003, 004, 009, 010; EXT-SEC-001, 002, 004):
+ * só o vendedor da venda (o bloqueado também, D2). Recebi passa A receber → Paga com a
+ * data; desfazer volta só o Recebi do próprio vendedor, em até 24 h. Cada mudança parte
+ * do status esperado; repetir não faz nada. A loja recebe o aviso.
+ */
+export async function setCommissionReceived(
+  deps: { db: Db },
+  session: Session | null,
+  raw: unknown,
+  now: Date = new Date(),
+): Promise<void> {
+  authorizeTo(session, "commission.receive");
+  const sellerId = await statementSellerOf(deps.db, session);
+  const parsed = receivedSchema.safeParse(raw);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { saleId, received } = parsed.data;
+
+  await deps.db.transaction(async (tx) => {
+    const [sale] = await tx
+      .select({
+        id: sales.id,
+        storeId: sales.storeId,
+        status: sales.commissionStatus,
+        receivedAt: sales.commissionReceivedAt,
+        make: vehicles.make,
+        model: vehicles.model,
+      })
+      .from(sales)
+      .innerJoin(vehicles, eq(vehicles.id, sales.vehicleId))
+      .where(and(eq(sales.id, saleId), liveSalesOf(sellerId)))
+      .for("update", { of: sales });
+    if (!sale) throw AppError.notFound();
+    if (received) {
+      if (sale.status !== "to_receive") return;
+      await tx
+        .update(sales)
+        .set({ commissionStatus: "paid", commissionReceivedAt: now })
+        .where(eq(sales.id, sale.id));
+    } else {
+      if (sale.status !== "paid") return;
+      if (
+        !sale.receivedAt ||
+        now.getTime() - sale.receivedAt.getTime() > UNDO_MS
+      )
+        throw AppError.conflict("Para corrigir, fale com a CajuGo.");
+      await tx
+        .update(sales)
+        .set({ commissionStatus: "to_receive", commissionReceivedAt: null })
+        .where(eq(sales.id, sale.id));
+    }
+    const [me] = await tx
+      .select({ name: profiles.name })
+      .from(profiles)
+      .where(eq(profiles.id, sellerId));
+    await notifyStore(
+      tx,
+      sale.storeId,
+      {
+        kind: received ? "commission_received" : "commission_unreceived",
+        seller: me.name.trim().split(/\s+/)[0],
+        vehicle: shortTitle(sale),
+      },
+      now,
+    );
+    await logActivity(tx, {
+      userId: sellerId,
+      action: received ? "commission.received" : "commission.unreceived",
+      entity: "sale",
+      entityId: sale.id,
+    });
+  });
 }

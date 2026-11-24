@@ -1013,3 +1013,6 @@
 
 # 2026-11-23 · Extrato do vendedor, serviço [008b/T004]
 - sellerStatement: vendas do vendedor sem as desfeitas, com veículo, loja, data, valor final, comissão e status; filtros com contagens, cursor de 20, sem dados do comprador; bloqueado continua vendo.
+
+# 2026-11-23 · Recebi da comissão [008b/T005]
+- setCommissionReceived: só o vendedor da venda (o bloqueado também, D2) passa A receber → Paga com a data; repetir não muda; aviso à loja (dono e usuários) e registro; vendedor B → 404, outros papéis → 403.

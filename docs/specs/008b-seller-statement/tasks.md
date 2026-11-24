@@ -38,7 +38,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   - vendedor B não vê as de A.
 
   · _EXT-FR-001, EXT-FR-002, EXT-FR-007, EXT-FR-008, EXT-NFR-002, EXT-SEC-001, EXT-SEC-003_
-- [ ] **T005** `setCommissionReceived`, marcar:
+- [x] **T005** `setCommissionReceived`, marcar:
   - Recebi passa a Paga com a data;
   - repetir não muda nada;
   - aviso à loja (`notifyStore`);
