@@ -74,7 +74,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
 - [x] **T011** `/i/[codigo]` vira página [8c] (`noindex`) no lugar do `route.ts`; banner e rodapé [9a] na vitrine.
 
   · _IND-FR-003, IND-FR-014, IND-NFR-002_
-- [ ] **T012** Lojista: `/painel/indica` [8a], `/painel/indica/indicacoes` [8b], `/painel/indica/credito` [8e]; atalho na Conta.
+- [x] **T012** Lojista: `/painel/indica` [8a], `/painel/indica/indicacoes` [8b], `/painel/indica/credito` [8e]; atalho na Conta.
 
   · _IND-FR-001, IND-FR-005, IND-FR-009, IND-NFR-001_
 - [ ] **T013** Indicador e vendedor: `/indica/cadastro` [9b] e `/indica` [9d] (saldo, barra, link, indicações, movimentações).

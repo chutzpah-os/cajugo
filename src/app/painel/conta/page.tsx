@@ -8,6 +8,7 @@ import { accountView } from "@/domains/billing/service";
 import { NetworkBlock } from "@/domains/sellers/components/network-block";
 import { networkSummary } from "@/domains/sellers/service";
 import { getDb } from "@/platform/db/client";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Conta | CajuGo",
@@ -30,6 +31,34 @@ async function Content() {
       <h1 className="text-[22px] font-extrabold">Conta</h1>
       <AccountSubscription view={account} />
       {network && <NetworkBlock {...network} />}
+      {can(session, "store.referral") && (
+        <section className="flex flex-col gap-2 rounded-card border border-line bg-surface p-4">
+          <h2 className="text-[17px] font-extrabold">Caju Indica</h2>
+          <p className="text-sm text-text-2">
+            Indique lojas e ganhe crédito na sua fatura.
+          </p>
+          <div className="flex flex-wrap gap-4 text-sm font-bold text-caju-ink">
+            <Link
+              href="/painel/indica"
+              className="flex min-h-11 items-center underline"
+            >
+              Meu link
+            </Link>
+            <Link
+              href="/painel/indica/indicacoes"
+              className="flex min-h-11 items-center underline"
+            >
+              Indicações
+            </Link>
+            <Link
+              href="/painel/indica/credito"
+              className="flex min-h-11 items-center underline"
+            >
+              Crédito
+            </Link>
+          </div>
+        </section>
+      )}
     </section>
   );
 }

@@ -1,7 +1,7 @@
 import QRCode from "qrcode";
 import { brl, centsToReais } from "@/platform/br/money";
 import type { PixView } from "../service";
-import { CopyLine } from "./pix-panel";
+import { CopyLine } from "@/ui/copy-line";
 import { ReceiptForm } from "./receipt-form";
 
 /** Conteúdo do Pix manual [6c]: valor, QR, chave, como pagar e o comprovante. */

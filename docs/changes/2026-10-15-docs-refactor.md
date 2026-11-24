@@ -1067,3 +1067,6 @@
 
 # 2026-11-24 · Landing do link e banner na vitrine [010/T011]
 - /i/{codigo} virou página [8c] noindex em cache (no lugar do redirect); banner e rodapé 'Indique uma loja e ganhe' na vitrine por slot montado na rota.
+
+# 2026-11-24 · Telas do Caju Indica do lojista [010/T012]
+- /painel/indica [8a] (chamada, código, link, Copiar, WhatsApp, Como funciona), /painel/indica/indicacoes [8b] (filtros) e /painel/indica/credito [8e] (disponível, próxima fatura, movimentações); atalho na Conta; CopyLine movido para src/ui.

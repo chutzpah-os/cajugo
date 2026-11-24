@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/ui/button";
+import { Button } from "./button";
 
-/** Chave e "copia e cola" do Pix com Copiar (PIX-FR-004). */
+/** Valor com **Copiar** (chave Pix, copia e cola, link de indicação). */
 export function CopyLine({ label, value }: { label: string; value: string }) {
   const [copied, setCopied] = useState(false);
   return (
