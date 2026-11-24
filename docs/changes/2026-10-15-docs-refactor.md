@@ -1139,3 +1139,6 @@
 
 # 2026-11-24 · 012/T019 vitrine [15a]/[9a] e filtros na própria tela
 - Cabeçalho público branco (busca e links no desktop, Entrar e menu no celular); coluna de filtros branca; card compacto do design; Caju Indica como card escuro na grade; filtros em checkbox com tipo e subtipo (Marca→Modelo, Estado→Cidade, Câmbio, Combustível) com rolagem acima de 5 linhas; ?modelo= e ?cidade=; sem os links para /carros. Plano da 012b aprovado.
+
+# 2026-11-24 · 012 logo e specs 014/014b
+- Logo com 'veículos' abaixo de 'cajugo', no formato e na cor do 'go'. Specs 014 (tipos de veículo, clarified) e 014b (descoberta, alertas, admin e cadastro da loja por tipo, draft); PRD [2a]/[3b] e PLAN.

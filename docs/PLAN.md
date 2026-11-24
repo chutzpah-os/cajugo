@@ -164,6 +164,12 @@
 - Lojas, usuários, detalhe da loja (senha temporária, suspender/reativar), equipe CajuGo, logs de atividade.
 - Desktop: painel do lojista [15b] e admin [15c] com sidebar e filas inline.
 
+## 014 · Tipos de veículo e o que a loja vende — telas 2a, 3b, 1a, 1b, 15a
+- 11 tipos (carro, moto, scooter, picape, van, ônibus, caminhão, trator, quadriciclo, motorhome, implemento); o lojista diz o que vende; ficha e campo obrigatório por tipo; filtro Tipo → Marca → Modelo na vitrine. Spec em `docs/specs/014-vehicle-types/` (clarified).
+
+## 014b · Tipos de veículo · descoberta, alertas, admin e cadastro da loja — telas 5b, 5c, 14c, 14e, 1d
+- Páginas `/motos/...`, `/caminhoes/...` etc.; alerta de busca por tipo; tipo nas filas do admin; landing e cadastro com "o que você vende". Spec em `docs/specs/014b-vehicle-types-discovery/` (draft).
+
 ## 013 · Lançamento — tela 12i
 - Termos e privacidade [12i] (rascunho para revisão jurídica): Rede Caju, Caju Indica, LGPD, encarregado.
 - Valores definitivos de `settings` (chave Pix etc.); checklist de produção do `DEPLOYMENT.md`.

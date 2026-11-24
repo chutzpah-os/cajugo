@@ -501,6 +501,8 @@ Campos:
 - Regras: marcar vendido pede confirmação e desliga a divulgação; toggle desabilitado para rascunho e vendido.
 
 ### [2a] Novo / editar veículo
+**Tipo do veículo** (spec 014): o primeiro campo, entre os tipos que a loja vende (Carro, Moto, Scooter, Picape, Van e furgão, Ônibus e micro-ônibus, Caminhão, Trator, Quadriciclo e UTV, Motorhome e trailer, Implemento). A ficha técnica mostra só os campos do tipo (ex.: cilindrada na moto, eixos no caminhão, horas de uso no trator). FIPE nos tipos que ela cobre; nos outros, a marca vem de uma lista da CajuGo e o modelo é escrito.
+
 Seções e campos:
 
 **Fotos** — até 20; primeira = capa; arrastar para reordenar; "Adicionar". Upload com compressão no cliente (máx. 1600px, JPEG/WebP), barra de progresso, remover. Mínimo 1 foto para publicar.
@@ -538,6 +540,7 @@ Validação para publicar: ≥1 foto, marca, modelo, versão, anos, km, câmbio,
 - Regras: lead "Novo" há mais de 24 h ganha destaque; tocar no veículo abre a edição [2a].
 
 ### [3b] Minha loja
+- **O que você vende** (spec 014): os tipos de veículo da loja (um ou mais); as lojas que já existiam ficam com Carro.
 - Capa (trocar capa), logo/sigla, nome, cidade · nº de veículos.
 - **Ver como cliente** (abre catálogo público) e **Compartilhar** (Web Share).
 - Link do catálogo + QR code: Copiar link, Baixar QR code (PNG).

@@ -490,3 +490,6 @@
 
 # 2026-11-24 · 012/T019 vitrine [15a]/[9a] e filtros na própria tela
 - Pedido do dono do produto: vitrine idêntica ao design, fundo claro sem a faixa laranja, filtros na própria tela (DSG-FR-018).
+
+# 2026-11-24 · 012 logo e specs 014/014b
+- Pedido do dono do produto: a CajuGo vende todos os tipos de veículo, e a marca passa a ser 'CajuGo Veículos'.
