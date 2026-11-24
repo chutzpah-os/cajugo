@@ -160,8 +160,18 @@ export class SupabaseAuthProvider implements AuthProvider {
   }
 
   async adminDeleteUser(userId: string) {
-    const { error } =
-      await createSupabaseAdminClient().auth.admin.deleteUser(userId);
-    if (error) throw error;
+    await deleteAuthUser(userId);
   }
+}
+
+/** Apaga a conta de login; a que já não existe (404) conta como apagada. */
+async function deleteAuthUser(userId: string) {
+  const { error } =
+    await createSupabaseAdminClient().auth.admin.deleteUser(userId);
+  if (error && error.status !== 404) throw error;
+}
+
+/** Só a API admin, sem sessão nem cookie (job diário: arquivamento, 011b). */
+export function adminAccounts(): Pick<AuthProvider, "adminDeleteUser"> {
+  return { adminDeleteUser: deleteAuthUser };
 }

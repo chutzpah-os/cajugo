@@ -1097,3 +1097,6 @@
 
 # 2026-11-24 · 011b/T006 reassinar
 - billing.resubscribe + stores.reopenForPayment: cancelada → cadastrada (limpa o cancelamento e o dia de cobrança, endereço reservado por 7 dias); segue o fluxo da 1ª mensalidade e a confirmação fixa o novo dia.
+
+# 2026-11-24 · 011b/T007 arquivamento
+- archiveCanceled no ciclo (só com auth e cloudinary, passados pelo cron): apaga fotos, logo, capa e comprovantes no Cloudinary, a conta de login sem outro papel, os leads, os veículos sem venda e os dados da loja (stores.archiveStore); perfil anônimo; endereço livre. adminAccounts() no Supabase sem cookie.

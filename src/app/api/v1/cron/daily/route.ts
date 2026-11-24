@@ -5,10 +5,12 @@ import { ALERTS_TAG } from "@/domains/buyers/tags";
 import { purgeOldLeads } from "@/domains/leads/service";
 import { STORES_TAG } from "@/domains/stores/tags";
 import { VEHICLES_TAG } from "@/domains/vehicles/tags";
+import { getCloudinary } from "@/platform/cloudinary/cloudinary";
 import { getDb } from "@/platform/db/client";
 import { isCronRequest } from "@/platform/http/cron";
 import { errorMessage, logger } from "@/platform/http/logger";
 import { purgeRateLimits } from "@/platform/http/rate-limit";
+import { adminAccounts } from "@/platform/supabase/server";
 
 const DAY_MS = 86_400_000;
 const NO_STORE = { "cache-control": "no-store" };
@@ -31,10 +33,17 @@ export async function GET(request: Request) {
     await purgeRateLimits(db, rateLimitsBefore);
     // Leads com mais de 2 anos perdem os dados pessoais (LED-SEC-006).
     const purgedLeads = await purgeOldLeads(db, now);
-    // Ciclo de cobrança (011): fatura, atraso e suspensão.
-    const billing = await runBillingCycle(db, now);
-    // A loja suspensa ou cancelada sai do ar já na próxima visita (SUB-NFR-003, CAN-NFR-002).
-    if (billing.suspended || billing.ended) {
+    // Ciclo de cobrança (011): fatura, atraso e suspensão; fim do período e
+    // arquivamento das canceladas (011b), que apaga a conta de login e os arquivos.
+    const billing = await runBillingCycle(
+      db,
+      now,
+      {},
+      { auth: adminAccounts(), cloudinary: getCloudinary() },
+    );
+    // A loja suspensa, cancelada ou arquivada sai do ar já na próxima visita
+    // (SUB-NFR-003, CAN-NFR-002).
+    if (billing.suspended || billing.ended || billing.archived) {
       revalidateTag(STORES_TAG, { expire: 0 });
       revalidateTag(VEHICLES_TAG, { expire: 0 });
     }

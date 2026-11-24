@@ -24,7 +24,12 @@ import {
 import { parsePlate } from "@/platform/br/plate";
 import { plainText, slugify } from "@/platform/br/slug";
 import type { FipeClient } from "@/platform/fipe/client";
-import { vehicleHistory, vehiclePhotos, vehicles } from "@/platform/db/schema";
+import {
+  sales,
+  vehicleHistory,
+  vehiclePhotos,
+  vehicles,
+} from "@/platform/db/schema";
 import type {
   Cloudinary,
   SignedUpload,
@@ -1038,6 +1043,60 @@ export async function isPublished(
  * Só testes (`pnpm e2e:seed`, que recusa a produção): apaga veículos, fotos e histórico
  * das lojas dos e2e e devolve as fotos para o seed apagar no Cloudinary.
  */
+/** Fotos de todos os veículos da loja (arquivamento, 011b): apagadas no Cloudinary antes. */
+export async function storeVehiclePhotos(
+  db: Db,
+  storeId: string,
+): Promise<string[]> {
+  const rows = await db
+    .select({ publicId: vehiclePhotos.publicId })
+    .from(vehiclePhotos)
+    .innerJoin(vehicles, eq(vehicles.id, vehiclePhotos.vehicleId))
+    .where(eq(vehicles.storeId, storeId));
+  return rows.map((r) => r.publicId);
+}
+
+/**
+ * Loja arquivada (011b, CAN-FR-007): as fotos saem de todos os veículos; o veículo com
+ * venda registrada fica (sem fotos) porque a venda e a taxa dela continuam na
+ * contabilidade e no extrato do vendedor; os outros são apagados. Na transação do
+ * arquivamento.
+ */
+export async function removeStoreVehicles(
+  tx: Db,
+  storeId: string,
+): Promise<{ deleted: number; kept: number }> {
+  const withSale = new Set(
+    (
+      await tx
+        .select({ id: sales.vehicleId })
+        .from(sales)
+        .where(eq(sales.storeId, storeId))
+    ).map((r) => r.id),
+  );
+  const all = (
+    await tx
+      .select({ id: vehicles.id })
+      .from(vehicles)
+      .where(eq(vehicles.storeId, storeId))
+  ).map((v) => ({ id: v.id, sold: withSale.has(v.id) }));
+  if (!all.length) return { deleted: 0, kept: 0 };
+  await tx.delete(vehiclePhotos).where(
+    inArray(
+      vehiclePhotos.vehicleId,
+      all.map((v) => v.id),
+    ),
+  );
+  const gone = all.filter((v) => !v.sold).map((v) => v.id);
+  if (gone.length) {
+    await tx
+      .delete(vehicleHistory)
+      .where(inArray(vehicleHistory.vehicleId, gone));
+    await tx.delete(vehicles).where(inArray(vehicles.id, gone));
+  }
+  return { deleted: gone.length, kept: all.length - gone.length };
+}
+
 export async function removeVehiclesForTests(
   db: Db,
   storeIds: string[],

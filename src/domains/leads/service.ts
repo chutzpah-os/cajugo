@@ -459,3 +459,15 @@ export async function purgeOldLeads(
     .returning({ id: leads.id });
   return rows.length;
 }
+
+/** Loja arquivada (011b, CAN-FR-007): os leads da loja são apagados. Devolve quantos. */
+export async function removeStoreLeads(
+  tx: Db,
+  storeId: string,
+): Promise<number> {
+  const gone = await tx
+    .delete(leads)
+    .where(eq(leads.storeId, storeId))
+    .returning({ id: leads.id });
+  return gone.length;
+}

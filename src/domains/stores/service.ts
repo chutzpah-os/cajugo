@@ -597,6 +597,44 @@ export async function reopenForPayment(
   return done.length > 0;
 }
 
+/**
+ * Loja arquivada (011b, CAN-FR-007, CAN-SEC-003): ficam só o nome, a cidade e o status;
+ * os dados de contato, endereço, documento, textos e imagens são apagados, e o endereço
+ * do catálogo (com os antigos) fica livre. Só a partir de `canceled`.
+ */
+export async function archiveStore(tx: Db, storeId: string): Promise<boolean> {
+  const done = await tx
+    .update(stores)
+    .set({
+      status: "archived",
+      slug: `arquivada-${storeId.replace(/-/g, "").slice(-8)}`,
+      whatsapp: "",
+      addressStreet: null,
+      addressNumber: null,
+      addressComplement: null,
+      addressDistrict: null,
+      addressZip: null,
+      about: null,
+      instagram: null,
+      logoPublicId: null,
+      coverPublicId: null,
+      hours: null,
+      taxId: null,
+      taxIdType: null,
+      cancelReason: null,
+      commissionType: null,
+      commissionValue: null,
+      acceptsSellers: false,
+    })
+    .where(and(eq(stores.id, storeId), eq(stores.status, "canceled")))
+    .returning({ id: stores.id });
+  if (!done.length) return false;
+  await tx
+    .delete(storeSlugRedirects)
+    .where(eq(storeSlugRedirects.storeId, storeId));
+  return true;
+}
+
 type StoreStatus = (typeof stores.$inferSelect)["status"];
 
 /**

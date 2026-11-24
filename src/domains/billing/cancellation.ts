@@ -1,8 +1,25 @@
-import { and, eq, inArray, isNull, lte, sum } from "drizzle-orm";
-import { authorizeTo } from "@/domains/auth/service";
+import { and, eq, inArray, isNotNull, isNull, lte, sum } from "drizzle-orm";
+import {
+  authorizeTo,
+  removeStoreAccounts,
+  storeAccountsToDelete,
+} from "@/domains/auth/service";
+import { removeStoreLeads } from "@/domains/leads/service";
+import { getSettings } from "@/domains/settings/service";
+import {
+  removeStoreVehicles,
+  storeVehiclePhotos,
+} from "@/domains/vehicles/service";
+import type { Cloudinary } from "@/platform/cloudinary/cloudinary";
+import type { AuthProvider } from "@/platform/supabase/auth-provider";
 import { endStorePartnerships } from "@/domains/sellers/service";
-import { reopenForPayment } from "@/domains/stores/service";
-import { billingCredits, invoices, stores } from "@/platform/db/schema";
+import { archiveStore, reopenForPayment } from "@/domains/stores/service";
+import {
+  billingCredits,
+  invoices,
+  payments,
+  stores,
+} from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
@@ -267,4 +284,90 @@ export async function resubscribe(
       entityId: storeId,
     });
   });
+}
+
+/** Clientes externos do arquivamento: apagar a conta de login e os arquivos. */
+export type ArchiveClients = {
+  auth: Pick<AuthProvider, "adminDeleteUser">;
+  cloudinary: Pick<Cloudinary, "destroy">;
+};
+
+const DAY_MS = 86_400_000;
+
+/**
+ * Job diário (CAN-FR-007, CAN-SEC-003): loja cancelada há a retenção das regras →
+ * arquivada. Os arquivos e as contas de login são apagados antes da transação: se
+ * algo falhar, a loja continua cancelada e o próximo job tenta de novo (apagar de novo
+ * o que já foi apagado não dá erro).
+ */
+export async function archiveCanceled(
+  db: Db,
+  now: Date,
+  scope: CycleScope,
+  clients: ArchiveClients,
+): Promise<number> {
+  const { retention_days: retention } = await getSettings(db, now);
+  const limit = new Date(now.getTime() - retention * DAY_MS);
+  const due = await db
+    .select({
+      id: stores.id,
+      logo: stores.logoPublicId,
+      cover: stores.coverPublicId,
+    })
+    .from(stores)
+    .where(
+      and(
+        eq(stores.status, "canceled"),
+        lte(stores.canceledAt, limit),
+        scope.storeIds ? inArray(stores.id, scope.storeIds) : undefined,
+      ),
+    );
+  let archived = 0;
+  for (const store of due) {
+    const receipts = await db
+      .select({ publicId: payments.receiptPublicId })
+      .from(payments)
+      .where(
+        and(
+          eq(payments.storeId, store.id),
+          isNotNull(payments.receiptPublicId),
+        ),
+      );
+    const images = [
+      ...(await storeVehiclePhotos(db, store.id)),
+      ...[store.logo, store.cover].filter((id): id is string => !!id),
+    ];
+    for (const id of images) await clients.cloudinary.destroy(id);
+    for (const r of receipts)
+      await clients.cloudinary.destroy(r.publicId!, "authenticated");
+    for (const id of await storeAccountsToDelete(db, store.id))
+      await clients.auth.adminDeleteUser(id);
+
+    await db.transaction(async (tx) => {
+      const leads = await removeStoreLeads(tx, store.id);
+      const vehicles = await removeStoreVehicles(tx, store.id);
+      await tx
+        .update(payments)
+        .set({ receiptPublicId: null, receiptFormat: null })
+        .where(eq(payments.storeId, store.id));
+      const accounts = await removeStoreAccounts(tx, store.id);
+      if (!(await archiveStore(tx, store.id))) return;
+      archived++;
+      await logActivity(tx, {
+        userId: null,
+        action: "store.archived",
+        entity: "store",
+        entityId: store.id,
+        data: {
+          vehiclesDeleted: vehicles.deleted,
+          vehiclesKept: vehicles.kept,
+          leads,
+          files: images.length + receipts.length,
+          accountsDeleted: accounts.deleted,
+          rolesRemoved: accounts.rolesRemoved,
+        },
+      });
+    });
+  }
+  return archived;
 }

@@ -448,3 +448,6 @@
 
 # 2026-11-24 · 011b/T006 reassinar
 - Reaproveita o fluxo da 004 em vez de um fluxo de pagamento novo; a arquivada não reassina porque os dados já foram apagados.
+
+# 2026-11-24 · 011b/T007 arquivamento
+- LGPD (CAN-SEC-003): apagamento real depois da retenção. D7 no plano: perfil anônimo e veículo vendido mantidos para a contabilidade e o extrato.

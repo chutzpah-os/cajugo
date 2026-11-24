@@ -11,9 +11,18 @@ const runBillingCycle = vi.fn(async () => ({
   pastDue: 2,
   suspended: 1,
   ended: 0,
+  archived: 0,
 }));
 vi.mock("@/domains/billing/service", () => ({ runBillingCycle }));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({}) }));
+const cloudinary = { destroy: vi.fn() };
+vi.mock("@/platform/cloudinary/cloudinary", () => ({
+  getCloudinary: () => cloudinary,
+}));
+const accounts = { adminDeleteUser: vi.fn() };
+vi.mock("@/platform/supabase/server", () => ({
+  adminAccounts: () => accounts,
+}));
 const revalidateTag = vi.fn();
 vi.mock("next/cache", () => ({ revalidateTag }));
 const { GET } = await import("./route");
@@ -97,6 +106,7 @@ describe("job diário › ciclo de cobrança", () => {
       pastDue: 0,
       suspended: 0,
       ended: 0,
+      archived: 0,
     });
 
     await call("Bearer segredo-do-cron");
@@ -111,6 +121,7 @@ describe("job diário › ciclo de cobrança", () => {
       pastDue: 0,
       suspended: 0,
       ended: 2,
+      archived: 0,
     });
 
     const res = await call("Bearer segredo-do-cron");
@@ -118,6 +129,28 @@ describe("job diário › ciclo de cobrança", () => {
     expect((await res.json()).data.ended).toBe(2);
     expect(revalidateTag).toHaveBeenCalledWith("stores", { expire: 0 });
     expect(revalidateTag).toHaveBeenCalledWith("vehicles", { expire: 0 });
+  });
+
+  it("[CAN-FR-007] arquiva com os clientes de login e de arquivos; devolve `archived` e tira do ar", async () => {
+    vi.stubEnv("CRON_SECRET", "segredo-do-cron");
+    runBillingCycle.mockResolvedValueOnce({
+      opened: 0,
+      pastDue: 0,
+      suspended: 0,
+      ended: 0,
+      archived: 1,
+    });
+
+    const res = await call("Bearer segredo-do-cron");
+
+    expect((await res.json()).data.archived).toBe(1);
+    expect(runBillingCycle).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.any(Date),
+      {},
+      { auth: accounts, cloudinary },
+    );
+    expect(revalidateTag).toHaveBeenCalledWith("stores", { expire: 0 });
   });
 
   it("[SUB-NFR-002] sem o segredo, o ciclo não roda", async () => {

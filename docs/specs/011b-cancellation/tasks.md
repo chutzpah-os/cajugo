@@ -50,7 +50,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [x] **T006** `resubscribe`: cancelada → cadastrada → 1ª mensalidade confirmada → ativa, com novo dia de cobrança, o mesmo endereço e os veículos; arquivada não reassina.
 
   · _CAN-FR-006, CAN-SEC-002_
-- [ ] **T007** Arquivamento (`archiveCanceled` + `stores.archiveStore` + remoções por domínio + `auth.deleteAccountOrRole`):
+- [x] **T007** Arquivamento (`archiveCanceled` + `stores.archiveStore` + remoções por domínio + `auth.deleteAccountOrRole`):
   - 90 dias depois do cancelamento;
   - apaga dados da loja, veículos, fotos (fake) e leads;
   - apaga a conta sem outro papel; a conta com outro papel só perde o de lojista;

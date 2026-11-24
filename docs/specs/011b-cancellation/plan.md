@@ -117,6 +117,12 @@ Seed do e2e: uma loja de teste própria para cancelar e desfazer ("Cancela E2E")
 - **D4.** A loja cancelada responde 404 pelo `not-found.tsx` do segmento `/loja/[slug]`, com o texto "Esta loja não está mais na CajuGo" (vale também para endereço inexistente, que hoje é genérico).
 - **D5.** Os motivos de cancelamento são uma lista fixa no código (texto, não regra numérica).
 - **D6** (na implementação, 2026-11-24). O índice único `invoices_first_per_store` (uma 1ª mensalidade por loja, para sempre) vira `invoices_first_open_per_store` (uma 1ª mensalidade **aberta** por vez), na migration `0023`: reassinar abre uma nova 1ª mensalidade. Não apaga dado.
+- **D7** (na implementação, 2026-11-24). No arquivamento:
+  - o perfil de quem perde a conta fica **anônimo** ("Conta apagada", e-mail inválido, sem celular, CPF nem Pix), em vez de apagado: `stores.owner_id`, `payments.submitted_by` e `sales.confirmed_by` apontam para ele e são guardados;
+  - os usuários da loja seguem a mesma regra do dono;
+  - o veículo **com venda registrada** fica sem fotos, porque a venda e a taxa dela continuam na contabilidade e no extrato do vendedor; os outros veículos são apagados;
+  - os comprovantes dos pagamentos são apagados no Cloudinary (o valor do pagamento fica);
+  - arquivos e contas de login são apagados **antes** da transação; se falharem, a loja continua cancelada e o próximo job tenta de novo (conta que já não existe conta como apagada).
 
 ## Ajustes de documento (na T001)
 - **ARCHITECTURE §4:** as colunas novas de `stores`; **§6:** as 3 etapas do job.
