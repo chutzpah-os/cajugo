@@ -1025,3 +1025,6 @@
 
 # 2026-11-23 · Tela do extrato [008b/T008]
 - /rede/extrato [7d]: filtros na URL com contagens, cards (veículo, loja, data, valor final, comissão, status), Recebi com confirmação, Desfazer com o prazo, Carregar mais vendas, estado vazio.
+
+# 2026-11-23 · Painel do vendedor [008b/T009]
+- [7b] com a receber, vendas do mês, cliques, código, últimas vendas e Ver extrato; bloqueado ganha o link do extrato.

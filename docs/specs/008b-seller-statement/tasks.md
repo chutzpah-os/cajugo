@@ -70,7 +70,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   - estado vazio.
 
   · _EXT-FR-001, EXT-FR-002, EXT-FR-003, EXT-FR-008, EXT-FR-009, EXT-NFR-001, EXT-NFR-002_
-- [ ] **T009** Painel `/rede` [7b]: KPIs a receber e vendas do mês, últimas vendas e "Ver extrato".
+- [x] **T009** Painel `/rede` [7b]: KPIs a receber e vendas do mês, últimas vendas e "Ver extrato".
 
   · _EXT-FR-005, EXT-FR-008, EXT-NFR-001_
 - [ ] **T010** Seed do e2e (uma venda A receber e uma Paga da E2EVENDE) e `tests/e2e/seller-statement.spec.ts`:

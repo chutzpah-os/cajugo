@@ -1,11 +1,13 @@
 import Link from "next/link";
+import { brl } from "@/platform/br/money";
+import { Badge } from "@/ui/badge";
 import { ButtonLink } from "@/ui/button";
 import type { SellerHome as Home } from "../service";
 import { PARTNER_LABEL } from "../status";
 
 /**
- * Início do vendedor [7b] (SEL-FR-002, 006): em análise ou bloqueado, só o status;
- * ativo, os cliques do mês e as lojas com parceria.
+ * Início do vendedor [7b] (SEL-FR-002, 006; EXT-FR-005, 008): em análise ou bloqueado,
+ * só o status; ativo, a receber, vendas do mês, cliques, últimas vendas e lojas.
  */
 export function SellerHome({ home }: { home: Home }) {
   if (home.kind === "status")
@@ -19,6 +21,12 @@ export function SellerHome({ home }: { home: Home }) {
         <p className="text-sm text-text-2">
           Seus links não marcam novos contatos. Para revisar, fale com a CajuGo.
         </p>
+        <Link
+          href="/rede/extrato"
+          className="flex min-h-11 items-center text-sm font-bold text-caju-ink underline underline-offset-2"
+        >
+          Ver extrato
+        </Link>
       </section>
     ) : (
       <section
@@ -49,6 +57,24 @@ export function SellerHome({ home }: { home: Home }) {
         <div className="flex flex-col">
           <span
             className="text-[22px] font-extrabold"
+            data-testid="seller-to-receive"
+          >
+            {brl(home.toReceiveCents)}
+          </span>
+          <span className="text-xs text-on-dark-2">a receber</span>
+        </div>
+        <div className="flex flex-col">
+          <span
+            className="text-[22px] font-extrabold"
+            data-testid="seller-sales-month"
+          >
+            {home.salesThisMonth}
+          </span>
+          <span className="text-xs text-on-dark-2">vendas do mês</span>
+        </div>
+        <div className="flex flex-col">
+          <span
+            className="text-[22px] font-extrabold"
             data-testid="seller-clicks"
           >
             {home.clicksThisMonth}
@@ -60,6 +86,38 @@ export function SellerHome({ home }: { home: Home }) {
           <span className="text-xs text-on-dark-2">seu código</span>
         </div>
       </div>
+      <section className="flex flex-col gap-2">
+        <h2 className="text-[17px] font-extrabold">Últimas vendas</h2>
+        {home.recentSales.length ? (
+          <ul className="flex flex-col gap-2">
+            {home.recentSales.map((sale) => (
+              <li
+                key={sale.saleId}
+                data-testid="seller-recent-sale"
+                className="flex min-h-11 items-center justify-between gap-2 rounded-card border border-line bg-surface px-3 py-2"
+              >
+                <span className="text-sm">
+                  <strong className="block">{sale.vehicle}</strong>
+                  {sale.store} · {brl(sale.commissionCents)}
+                </span>
+                <Badge tone={sale.status === "paid" ? "ok" : "warn"}>
+                  {sale.status === "paid" ? "Paga" : "A receber"}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-text-2">
+            Suas vendas aparecem aqui quando a loja confirmar.
+          </p>
+        )}
+        <Link
+          href="/rede/extrato"
+          className="flex min-h-11 items-center text-sm font-bold text-caju-ink underline underline-offset-2"
+        >
+          Ver extrato
+        </Link>
+      </section>
       <section className="flex flex-col gap-2">
         <h2 className="text-[17px] font-extrabold">Lojas</h2>
         {home.stores.length ? (

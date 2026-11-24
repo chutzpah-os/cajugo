@@ -59,4 +59,53 @@ describe("início do vendedor [7b]", () => {
     expect(html).toContain("Parceiro");
     expect(html).toContain("Pendente");
   });
+
+  it("[EXT-FR-005] [EXT-FR-008] a receber, vendas do mês, últimas vendas e Ver extrato; sem vendas, R$ 0 e 0", () => {
+    const base = {
+      kind: "panel" as const,
+      code: "ANA",
+      clicksThisMonth: 3,
+      stores: [],
+    };
+    const html = renderToStaticMarkup(
+      <SellerHome
+        home={{
+          ...base,
+          toReceiveCents: 116_000,
+          salesThisMonth: 2,
+          recentSales: [
+            {
+              saleId: "s1",
+              vehicle: "Fiat Argo",
+              store: "Loja A",
+              date: new Date("2026-11-20T12:00:00Z"),
+              finalPriceCents: 5_800_000,
+              commissionCents: 116_000,
+              status: "to_receive",
+              canUndoUntil: null,
+            },
+          ],
+        }}
+      />,
+    );
+    const empty = renderToStaticMarkup(
+      <SellerHome
+        home={{
+          ...base,
+          toReceiveCents: 0,
+          salesThisMonth: 0,
+          recentSales: [],
+        }}
+      />,
+    );
+
+    expect(html).toContain("R$ 1.160,00");
+    expect(html).toContain(">2<");
+    expect(html).toContain("Fiat Argo");
+    expect(html).toContain('href="/rede/extrato"');
+    expect(empty).toContain("R$ 0,00");
+    expect(empty).toContain(
+      "Suas vendas aparecem aqui quando a loja confirmar.",
+    );
+  });
 });
