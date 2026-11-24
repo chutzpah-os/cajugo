@@ -454,3 +454,6 @@
 
 # 2026-11-24 · 011b/T008 endereço provisório
 - Quem não paga em 7 dias não segura o endereço de outra loja (CAN-FR-008).
+
+# 2026-11-24 · 011b/T009 editar plano
+- D3: a vigência das regras (ADR 0010) já escolhe o valor na abertura de cada fatura, sem tabela de planos.

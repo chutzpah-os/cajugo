@@ -1056,6 +1056,12 @@ export { refundSaleFee, rewardReferrals, runBillingCycle } from "./cycle";
 export { cancelSubscription, resubscribe, undoCancel } from "./cancellation";
 export { CANCEL_REASONS, type CancelReason } from "./cancel-reasons";
 export {
+  earliestPlanChange,
+  editPlan,
+  PLAN_NOTICE_DAYS,
+  type PlanChangeStore,
+} from "./plan";
+export {
   reactivateStore,
   SUBSCRIPTION_FILTERS,
   subscriptionsView,

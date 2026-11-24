@@ -65,7 +65,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - a troca em Minha loja depois do provisório não conta no limite de 30 dias.
 
   · _CAN-FR-008, CAN-SEC-004_
-- [ ] **T009** `editPlan` (só admin):
+- [x] **T009** `editPlan` (só admin):
   - data ≥ 30 dias;
   - vigência futura da mensalidade;
   - a fatura aberta depois da data usa o valor novo;

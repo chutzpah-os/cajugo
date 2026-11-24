@@ -1103,3 +1103,6 @@
 
 # 2026-11-24 · 011b/T008 endereço provisório
 - releaseUnpaidSlugs no ciclo: cadastrada com slug_reserved_until vencido → provisorio-<id> (stores.provisionalSlug), slug_changed_at nulo para a 1ª troca livre; o cron devolve slugsReleased.
+
+# 2026-11-24 · 011b/T009 editar plano
+- billing.editPlan (só admin): membership_cents com vigência futura (settings.scheduleSetting), data ≥ hoje + 30 dias em São Paulo; aviso plan_changed aos donos das lojas não canceladas; devolve a lista de wa.me; registro plan.edited.

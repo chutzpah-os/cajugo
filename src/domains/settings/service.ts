@@ -163,6 +163,22 @@ export async function updateSettings(
   return { changed };
 }
 
+/**
+ * Regra com vigência futura (011b, Editar plano): grava o valor a partir de
+ * `validFrom`, na transação de quem chama (que confere a permissão e a auditoria).
+ */
+export async function scheduleSetting<K extends SettingKey>(
+  tx: Db,
+  input: {
+    key: K;
+    value: Settings[K];
+    validFrom: Date;
+    changedBy: string;
+  },
+): Promise<void> {
+  await tx.insert(settingValues).values(input);
+}
+
 /** Uma alteração de regra na tela de histórico (saída montada à mão). */
 export type SettingChange = {
   at: Date;
@@ -239,4 +255,4 @@ export async function restoreInitialSettings(
       .values(changed.map((key) => ({ key, value: target(key) })));
   return changed;
 }
-export { pixReady } from "./definitions";
+export { pixReady, SETTINGS } from "./definitions";
