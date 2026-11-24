@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { brl } from "@/platform/br/money";
+import { brlWhole } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
 import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
@@ -24,7 +24,12 @@ export function favoriteSnapshot(
   };
 }
 
-/** Card do veículo [1a] (SHW-FR-003). `showStore`: vitrine CajuGo; catálogo da loja, não. */
+/**
+ * Card do veículo na vitrine e no catálogo da loja ([15a], [9a]; SHW-FR-003): foto,
+ * nome em caixa alta (marca e modelo), versão, preço sem centavos, parcela e, depois
+ * da divisória, ano · km · cidade. O card inteiro é o link. `showStore`: vitrine
+ * CajuGo ("Anunciado por", conteúdo da 006).
+ */
 export function PublicCard({
   card,
   cloudName,
@@ -36,9 +41,22 @@ export function PublicCard({
   showStore: boolean;
   priority?: boolean;
 }) {
+  const title = [card.make, card.model].filter(Boolean).join(" ");
+  const meta = [
+    card.yearManufacture && card.yearModel
+      ? `${card.yearManufacture}/${card.yearModel}`
+      : card.yearModel,
+    card.mileageKm !== null ? `${km.format(card.mileageKm)} km` : null,
+    `${card.city} (${card.state})`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   return (
-    <li className="flex flex-col overflow-hidden rounded-card border border-line bg-surface">
-      <div className="relative aspect-[4/3] bg-line-2">
+    <li
+      data-testid="public-card"
+      className="relative flex flex-col overflow-hidden rounded-card border border-line bg-surface"
+    >
+      <div className="relative aspect-[390/220] bg-[repeating-linear-gradient(135deg,#E4E0D9_0_12px,#DDD8D0_12px_24px)] lg:aspect-auto lg:h-[190px]">
         {card.coverPublicId && (
           // eslint-disable-next-line @next/next/no-img-element -- URL do Cloudinary já otimizada
           <img
@@ -46,62 +64,55 @@ export function PublicCard({
             alt={vehicleAlt({ ...card, color: null })}
             loading={priority ? "eager" : "lazy"}
             fetchPriority={priority ? "high" : undefined}
-            className="size-full object-cover"
+            className="absolute inset-0 size-full object-cover"
           />
         )}
-        {card.photoCount > 0 && (
-          <span className="absolute right-2 bottom-2 rounded-full bg-ink/75 px-2 py-0.5 text-xs font-semibold text-white">
+        {card.photoCount > 1 && (
+          <span className="absolute bottom-2.5 left-2.5 rounded-xl bg-ink/70 px-2 py-1 text-xs font-semibold text-white">
             1/{card.photoCount}
           </span>
         )}
         {card.badge && (
-          <span className="absolute top-2 left-2">
+          <span className="absolute top-2.5 left-2.5">
             <Badge tone="ok">{card.badge}</Badge>
           </span>
         )}
         <FavoriteButton
           snapshot={favoriteSnapshot(card)}
-          className="absolute top-1 right-1 bg-surface/90 text-ink"
+          className="absolute top-2 right-2 z-[1] bg-surface/90 text-ink"
         />
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
-        <p className="text-xs font-bold tracking-wide text-text-3 uppercase">
-          {card.make}
-        </p>
-        <h2 className="line-clamp-2 font-bold">{card.version ?? card.model}</h2>
-        <p className="text-sm text-text-3">
-          {[
-            card.yearManufacture && card.yearModel
-              ? `${card.yearManufacture}/${card.yearModel}`
-              : null,
-            card.mileageKm !== null ? `${km.format(card.mileageKm)} km` : null,
-          ]
-            .filter(Boolean)
-            .join(" · ")}
-        </p>
-        <p className="text-sm text-text-3">
-          {card.city} ({card.state})
-        </p>
-        {showStore && (
-          <p className="text-sm text-text-2">Anunciado por {card.storeName}</p>
+      <div className="flex flex-1 flex-col gap-0.5 px-4 pt-3.5 pb-4">
+        <h2 className="text-base leading-tight font-extrabold tracking-[-0.01em] uppercase">
+          <Link
+            href={card.path}
+            className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:outline-2 focus-visible:after:outline-ink"
+          >
+            {title || card.version}
+          </Link>
+        </h2>
+        {card.version && (
+          <p className="truncate text-[13px] text-text-3">{card.version}</p>
         )}
         {card.priceCents !== null && (
-          <p className="mt-1 text-[19px] font-extrabold">
-            {brl(card.priceCents)}
+          <p className="mt-1.5 text-xl leading-tight font-extrabold tracking-[-0.02em]">
+            {brlWhole(card.priceCents)}
           </p>
         )}
         {card.installmentCents !== null && (
-          <p className="text-sm text-text-2">
-            a partir de {brl(card.installmentCents)}/mês*
+          <p className="text-[13px] text-text-2">
+            ou {brlWhole(card.installmentCents)}/mês*
           </p>
         )}
-        <Link
-          href={card.path}
-          aria-label={`Ver detalhes de ${card.version ?? card.model}`}
-          className="mt-2 flex min-h-11 items-center justify-center rounded-button bg-ink text-sm font-bold text-white"
-        >
-          Ver detalhes
-        </Link>
+        <p className="mt-2.5 border-t border-line-2 pt-2.5 text-xs text-text-3">
+          {meta}
+        </p>
+        {showStore && (
+          <p className="text-xs text-text-3">
+            Anunciado por{" "}
+            <span className="font-semibold text-ink">{card.storeName}</span>
+          </p>
+        )}
       </div>
     </li>
   );

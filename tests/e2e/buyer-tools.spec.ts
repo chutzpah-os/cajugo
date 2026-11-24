@@ -164,7 +164,12 @@ test.describe("ferramentas do comprador (390 px)", () => {
     ]);
 
     await page.goto("/");
-    await page.getByRole("link", { name: "Favoritos" }).click();
+    // No celular, Favoritos fica no menu [11a].
+    await page.getByRole("button", { name: "Abrir menu" }).click();
+    await page
+      .getByRole("dialog")
+      .getByRole("link", { name: "Favoritos" })
+      .click();
     await expect(page).toHaveURL(/\/favoritos$/);
 
     const items = page.locator('[data-testid="favorites-list"] > li');

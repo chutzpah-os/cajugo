@@ -4,6 +4,7 @@ import {
   ShowcaseView,
   showcaseMetadata,
 } from "@/domains/showcase/components/showcase-view";
+import { HeaderSearch } from "@/domains/showcase/components/catalog-toolbar";
 import { cachedSearch } from "@/domains/showcase/current";
 import { ReferralBanner } from "@/domains/referrals/components/referral-banner";
 import { cachedProgramBanner } from "@/domains/referrals/current";
@@ -30,13 +31,13 @@ export default async function FilteredShowcase({
   const filters = parseFilters(await searchParams);
   return (
     <>
-      <SiteHeader />
+      <SiteHeader
+        joined
+        search={<HeaderSearch filters={filters} basePath="/" />}
+      />
       <ShowcaseView
         promo={
-          <ReferralBanner
-            banner={await cachedProgramBanner()}
-            variant="banner"
-          />
+          <ReferralBanner banner={await cachedProgramBanner()} variant="card" />
         }
         promoFooter={
           <ReferralBanner

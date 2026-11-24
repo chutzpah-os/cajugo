@@ -34,6 +34,7 @@ import { appUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
 import { estimatedInstallment } from "@/platform/br/installment";
 import { plainText } from "@/platform/br/slug";
+import { STATE_NAME } from "@/platform/geo/states";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import type { GateDecision } from "@/platform/http/public-gate";
@@ -87,7 +88,19 @@ function filterConditions(f: Filters): (SQL | undefined)[] {
     query
       ? sql`${vehicles.search} @@ to_tsquery('simple', ${query})`
       : undefined,
-    f.makes.length ? inArray(vehicles.makeSlug, f.makes) : undefined,
+    f.makes.length || f.models?.length
+      ? or(
+          f.makes.length ? inArray(vehicles.makeSlug, f.makes) : undefined,
+          ...(f.models ?? []).map((m) => {
+            const [make, model] = m.split("--");
+            return and(
+              eq(vehicles.makeSlug, make),
+              eq(vehicles.modelSlug, model),
+            );
+          }),
+        )
+      : undefined,
+    f.cities?.length ? inArray(stores.citySlug, f.cities) : undefined,
     f.priceFrom !== undefined
       ? gte(vehicles.priceCents, f.priceFrom)
       : undefined,
@@ -525,18 +538,89 @@ export async function countMatches(
 }
 
 /** Marcas com veículo visível no escopo, para o filtro [6d]. */
+/** Opção de filtro com subtipos (marca → modelos, estado → cidades), 012. */
+export type FacetOption = {
+  slug: string;
+  name: string;
+  count: number;
+  children?: FacetOption[];
+};
+
 export async function facets(
   db: Db,
   scope: Scope,
-): Promise<{ makes: { slug: string; name: string; count: number }[] }> {
-  const rows = await db
-    .select({ slug: vehicles.makeSlug, name: vehicles.make, count: count() })
+): Promise<{
+  /** Marcas com os modelos dentro (filtro em árvore, 012). */
+  makes: FacetOption[];
+  /** Estados com as cidades dentro (filtro em árvore, 012). */
+  cities: FacetOption[];
+}> {
+  const modelRows = await db
+    .select({
+      slug: vehicles.makeSlug,
+      name: vehicles.make,
+      modelSlug: vehicles.modelSlug,
+      model: vehicles.model,
+      count: count(),
+    })
     .from(vehicles)
     .innerJoin(stores, eq(stores.id, vehicles.storeId))
     .where(publicVisible(scope))
-    .groupBy(vehicles.makeSlug, vehicles.make)
-    .orderBy(vehicles.make);
-  return { makes: knownMakes(rows) };
+    .groupBy(
+      vehicles.makeSlug,
+      vehicles.make,
+      vehicles.modelSlug,
+      vehicles.model,
+    )
+    .orderBy(vehicles.make, vehicles.model);
+  const rows = modelRows.map(({ slug, name, count }) => ({
+    slug,
+    name,
+    count,
+  }));
+  const cityRows = await db
+    .select({
+      slug: stores.citySlug,
+      city: stores.city,
+      state: stores.state,
+      count: count(),
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(publicVisible(scope))
+    .groupBy(stores.citySlug, stores.city, stores.state)
+    .orderBy(desc(count()), stores.city);
+  const states = new Map<string, FacetOption>();
+  for (const c of cityRows) {
+    if (!c.slug) continue;
+    const uf = c.state.toUpperCase();
+    const state = states.get(uf) ?? {
+      slug: uf.toLowerCase(),
+      name: STATE_NAME[uf] ?? uf,
+      count: 0,
+      children: [],
+    };
+    state.count += c.count;
+    state.children!.push({ slug: c.slug, name: c.city, count: c.count });
+    states.set(uf, state);
+  }
+  return {
+    makes: knownMakes(rows).map((m) => ({
+      ...m,
+      children: modelRows
+        .filter((r) => r.slug === m.slug && r.modelSlug && r.model)
+        .reduce<FacetOption[]>((acc, r) => {
+          const slug = `${m.slug}--${r.modelSlug}`;
+          const seen = acc.find((x) => x.slug === slug);
+          if (seen) seen.count += r.count;
+          else acc.push({ slug, name: r.model!, count: r.count });
+          return acc;
+        }, []),
+    })),
+    cities: [...states.values()].sort((a, b) =>
+      a.name.localeCompare(b.name, "pt-BR"),
+    ),
+  };
 }
 
 export type VehiclePage =

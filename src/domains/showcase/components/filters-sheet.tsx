@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Chip } from "@/ui/chip";
+import { ChevronDownIcon, FilterIcon } from "@/ui/icons";
 import { activeFilters, type Filters } from "../filters";
 import {
   FiltersForm,
@@ -18,6 +19,11 @@ const CHIPS: {
   on: (f: Filters) => boolean;
 }[] = [
   { section: "marca", label: "Marca", on: (f) => f.makes.length > 0 },
+  {
+    section: "cidade",
+    label: "Cidade",
+    on: (f) => (f.cities?.length ?? 0) > 0,
+  },
   {
     section: "preco",
     label: "Preço",
@@ -40,6 +46,7 @@ export function FiltersSheet({
   basePath,
   source,
   lockMake = false,
+  cities,
 }: {
   filters: Filters;
   makes: MakeOption[];
@@ -47,6 +54,7 @@ export function FiltersSheet({
   basePath: string;
   source: ListSource;
   lockMake?: boolean;
+  cities?: MakeOption[];
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const dragStart = useRef<number | null>(null);
@@ -67,16 +75,29 @@ export function FiltersSheet({
   return (
     <>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 lg:hidden">
-        <Chip
+        <button
+          type="button"
           data-testid="filters-chip"
           aria-haspopup="dialog"
-          active={active > 0}
-          count={active || undefined}
+          aria-pressed={active > 0}
           onClick={() => openAt()}
+          className="inline-flex h-11 shrink-0 items-center"
         >
-          Filtros
-        </Chip>
-        {CHIPS.filter((c) => !(lockMake && c.section === "marca")).map((c) => (
+          <span className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ink px-3.5 text-sm font-semibold text-white">
+            <FilterIcon size={15} />
+            Filtros
+            {active > 0 && (
+              <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-caju px-1 text-[11px]">
+                {active}
+              </span>
+            )}
+          </span>
+        </button>
+        {CHIPS.filter(
+          (c) =>
+            !(lockMake && c.section === "marca") &&
+            !(c.section === "cidade" && (cities?.length ?? 0) < 2),
+        ).map((c) => (
           <Chip
             key={c.section}
             aria-haspopup="dialog"
@@ -84,6 +105,7 @@ export function FiltersSheet({
             onClick={() => openAt(c.section)}
           >
             {c.label}
+            <ChevronDownIcon size={14} />
           </Chip>
         ))}
       </div>
@@ -131,6 +153,7 @@ export function FiltersSheet({
           basePath={basePath}
           source={source}
           lockMake={lockMake}
+          cities={cities}
           idPrefix="filtro"
           layout="sheet"
           section={opening.section}

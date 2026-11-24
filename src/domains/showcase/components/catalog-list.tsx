@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 import { LoadMoreButton, useLoadMore } from "@/ui/load-more";
 import { loadMoreAction } from "../actions";
 import type { PublicCard as Card, SearchResult } from "../service";
@@ -19,6 +19,7 @@ export function CatalogList({
   source,
   query,
   empty,
+  promo,
 }: {
   result: SearchResult;
   cloudName: string;
@@ -26,6 +27,8 @@ export function CatalogList({
   source: ListSource;
   query: string;
   empty: ReactNode;
+  /** Card de divulgação na grade (Caju Indica [15a], [9a]), depois do 5º veículo. */
+  promo?: ReactNode;
 }) {
   const { pending } = useCatalogNavigation();
   const list = useLoadMore<Card>({
@@ -41,16 +44,20 @@ export function CatalogList({
     <>
       <ul
         data-testid="catalog-list"
-        className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
+        className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:gap-4 xl:grid-cols-3"
       >
         {list.items.map((card, i) => (
-          <PublicCard
-            key={card.vehicleId}
-            card={card}
-            cloudName={cloudName}
-            showStore={showStore}
-            priority={i === 0}
-          />
+          <Fragment key={card.vehicleId}>
+            <PublicCard
+              card={card}
+              cloudName={cloudName}
+              showStore={showStore}
+              priority={i === 0}
+            />
+            {promo && i === Math.min(4, list.items.length - 1) && (
+              <li>{promo}</li>
+            )}
+          </Fragment>
         ))}
       </ul>
       {list.hasMore && (

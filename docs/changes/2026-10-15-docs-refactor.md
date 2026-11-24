@@ -1136,3 +1136,6 @@
 
 # 2026-11-24 · 012/T005-T006 Meus veículos [1c]/[15b]
 - Cabeçalho escuro com 3 KPIs e o card da assinatura com selo; busca com ícone; chips; card de gestão do design; FAB; no desktop, tabela com 4 KPIs (Contatos no mês via leads.leadsThisMonth, Próxima fatura via accountView). Selo Vendido em caju; preço sem centavos (brlWhole).
+
+# 2026-11-24 · 012/T019 vitrine [15a]/[9a] e filtros na própria tela
+- Cabeçalho público branco (busca e links no desktop, Entrar e menu no celular); coluna de filtros branca; card compacto do design; Caju Indica como card escuro na grade; filtros em checkbox com tipo e subtipo (Marca→Modelo, Estado→Cidade, Câmbio, Combustível) com rolagem acima de 5 linhas; ?modelo= e ?cidade=; sem os links para /carros. Plano da 012b aprovado.

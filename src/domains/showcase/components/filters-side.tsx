@@ -10,6 +10,7 @@ export function FiltersSide({
   basePath,
   source,
   lockMake = false,
+  cities,
 }: {
   filters: Filters;
   makes: MakeOption[];
@@ -17,12 +18,13 @@ export function FiltersSide({
   basePath: string;
   source: ListSource;
   lockMake?: boolean;
+  cities?: MakeOption[];
 }) {
   return (
-    <section
-      aria-label="Filtros"
-      className="rounded-card border border-line bg-surface p-4"
-    >
+    <section aria-labelledby="filtros-lateral" className="flex flex-col gap-4">
+      <h2 id="filtros-lateral" className="text-lg font-extrabold">
+        Filtros
+      </h2>
       <FiltersForm
         key={filtersToQuery(filters)}
         filters={filters}
@@ -34,6 +36,7 @@ export function FiltersSide({
         layout="side"
         showSort={false}
         lockMake={lockMake}
+        cities={cities}
       />
     </section>
   );

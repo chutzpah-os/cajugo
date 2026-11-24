@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Button } from "@/ui/button";
+import { CheckTree, type CheckNode } from "@/ui/check-tree";
 import { Chip } from "@/ui/chip";
 import { TextField } from "@/ui/text-field";
 import { countMatchesAction } from "../actions";
@@ -18,11 +19,17 @@ import {
 import { useCatalogNavigation } from "./catalog-navigation";
 import type { ListSource } from "../list-source";
 
-export type MakeOption = { slug: string; name: string; count: number };
-export type FilterSection = "marca" | "preco" | "ano" | "km" | "cambio";
+export type MakeOption = {
+  slug: string;
+  name: string;
+  count: number;
+  /** Subtipos: modelos da marca ou cidades do estado (012). */
+  children?: MakeOption[];
+};
+export type FilterSection =
+  "marca" | "cidade" | "preco" | "ano" | "km" | "cambio";
 
 const COUNT_PAUSE_MS = 300;
-const COLLAPSED_MAKES = 6;
 const KM_MAX = 300_000;
 const KM_STEP = 5_000;
 
@@ -48,7 +55,7 @@ function Group({
   );
 }
 
-const chipRow = "flex flex-wrap gap-2";
+const chipRow = "flex flex-wrap gap-x-2 gap-y-0";
 
 const LAYOUT = {
   sheet: {
@@ -56,7 +63,7 @@ const LAYOUT = {
     footer: "grid shrink-0 grid-cols-[auto_1fr] gap-2 border-t border-line p-4",
   },
   side: {
-    scroll: "flex flex-col gap-5",
+    scroll: "flex flex-col gap-4",
     footer: "mt-4 grid grid-cols-[auto_1fr] gap-2",
   },
 };
@@ -73,6 +80,7 @@ export function FiltersForm({
   section,
   showSort = true,
   lockMake = false,
+  cities = [],
   onApply,
 }: {
   filters: Filters;
@@ -86,13 +94,13 @@ export function FiltersForm({
   showSort?: boolean;
   /** Página com marca fixa (descoberta): sem a seção Marca. */
   lockMake?: boolean;
+  /** Cidades da vitrine (012): filtro na própria tela, como a Marca. */
+  cities?: MakeOption[];
   onApply?: () => void;
 }) {
   const { navigate } = useCatalogNavigation();
   const [draft, setDraft] = useState(filters);
   const [count, setCount] = useState<number | null>(total);
-  const [allMakes, setAllMakes] = useState(false);
-  const [makeSearch, setMakeSearch] = useState("");
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const latest = useRef(0);
   const scrollClass = LAYOUT[layout].scroll;
@@ -125,19 +133,77 @@ export function FiltersForm({
     clearTimeout(timer.current);
     latest.current += 1;
     onApply?.();
-    navigate(filterHref(basePath, normalizeFilters(draft)));
+    navigate?.(filterHref(basePath, normalizeFilters(draft)));
   }
 
-  const ranked = [...makes].sort((a, b) => b.count - a.count);
-  const needle = makeSearch.trim().toLowerCase();
-  const visibleMakes = allMakes
-    ? makes.filter((m) => m.name.toLowerCase().includes(needle))
-    : makes.filter(
-        (m) =>
-          draft.makes.includes(m.slug) ||
-          ranked.slice(0, COLLAPSED_MAKES).includes(m),
-      );
   const km = Math.min(draft.kmTo ?? KM_MAX, KM_MAX);
+  const chipSize = layout === "side" ? "sm" : "md";
+  const makeNodes: CheckNode[] = makes.map((m) => ({
+    value: m.slug,
+    label: m.name,
+    count: m.count,
+    children: m.children?.map((c) => ({
+      value: c.slug,
+      label: c.name,
+      count: c.count,
+    })),
+  }));
+  const stateNodes: CheckNode[] = cities.map((st) => ({
+    value: `uf:${st.slug}`,
+    label: st.name,
+    count: st.count,
+    children: st.children?.map((c) => ({
+      value: c.slug,
+      label: c.name,
+      count: c.count,
+    })),
+  }));
+  const kids = (n: CheckNode) => (n.children ?? []).map((c) => c.value);
+  const models = draft.models ?? [];
+  const chosenCities = draft.cities ?? [];
+
+  /** Marca: marcada vale para todos os modelos; sem modelos, sai tudo. */
+  function toggleMake(n: CheckNode) {
+    const on =
+      draft.makes.includes(n.value) || kids(n).some((k) => models.includes(k));
+    update({
+      ...draft,
+      makes: on
+        ? draft.makes.filter((x) => x !== n.value)
+        : [...draft.makes, n.value],
+      models: models.filter((m) => !kids(n).includes(m)),
+    });
+  }
+  /** Modelo: desmarcar um da marca inteira deixa os outros; todos = a marca. */
+  function toggleModel(n: CheckNode, c: CheckNode) {
+    const whole = draft.makes.includes(n.value);
+    let next = whole
+      ? kids(n).filter((k) => k !== c.value)
+      : toggled(
+          models.filter((m) => kids(n).includes(m)),
+          c.value,
+        );
+    let makesNext = draft.makes.filter((x) => x !== n.value);
+    if (next.length === kids(n).length) {
+      makesNext = [...makesNext, n.value];
+      next = [];
+    }
+    update({
+      ...draft,
+      makes: makesNext,
+      models: [...models.filter((m) => !kids(n).includes(m)), ...next],
+    });
+  }
+  /** Estado: marca ou desmarca todas as cidades dele. */
+  function toggleState(n: CheckNode) {
+    const all = kids(n).every((k) => chosenCities.includes(k));
+    update({
+      ...draft,
+      cities: all
+        ? chosenCities.filter((c) => !kids(n).includes(c))
+        : [...new Set([...chosenCities, ...kids(n)])],
+    });
+  }
 
   return (
     <>
@@ -147,6 +213,7 @@ export function FiltersForm({
             <div className={chipRow}>
               {SORT_OPTIONS.map((o) => (
                 <Chip
+                  size={chipSize}
                   key={o.value}
                   active={draft.sort === o.value}
                   onClick={() => update({ ...draft, sort: o.value })}
@@ -158,37 +225,27 @@ export function FiltersForm({
           </Group>
         )}
         {!lockMake && (
-          <Group id={`${idPrefix}-marca`} title="Marca">
-            {allMakes && (
-              <TextField
-                id={`${idPrefix}-make-search`}
-                label="Buscar marca"
-                value={makeSearch}
-                onChange={(e) => setMakeSearch(e.target.value)}
-              />
-            )}
-            <div className={chipRow}>
-              {visibleMakes.map((m) => (
-                <Chip
-                  key={m.slug}
-                  active={draft.makes.includes(m.slug)}
-                  onClick={() =>
-                    update({ ...draft, makes: toggled(draft.makes, m.slug) })
-                  }
-                >
-                  {m.name}
-                </Chip>
-              ))}
-            </div>
-            {!allMakes && makes.length > COLLAPSED_MAKES && (
-              <button
-                type="button"
-                onClick={() => setAllMakes(true)}
-                className="flex h-11 items-center self-start text-sm font-semibold text-caju-deep"
-              >
-                Ver todas
-              </button>
-            )}
+          <Group id={`${idPrefix}-marca`} title="Marca e modelo">
+            <CheckTree
+              label="Marca e modelo"
+              nodes={makeNodes}
+              isOn={(v) => draft.makes.includes(v) || models.includes(v)}
+              onToggleParent={toggleMake}
+              onToggleChild={toggleModel}
+            />
+          </Group>
+        )}
+        {stateNodes.length > 0 && (
+          <Group id={`${idPrefix}-cidade`} title="Estado e cidade">
+            <CheckTree
+              label="Estado e cidade"
+              nodes={stateNodes}
+              isOn={(v) => chosenCities.includes(v)}
+              onToggleParent={toggleState}
+              onToggleChild={(_, c) =>
+                update({ ...draft, cities: toggled(chosenCities, c.value) })
+              }
+            />
           </Group>
         )}
         <Group id={`${idPrefix}-preco`} title="Preço">
@@ -270,37 +327,35 @@ export function FiltersForm({
           </label>
         </Group>
         <Group id={`${idPrefix}-cambio`} title="Câmbio">
-          <div className={chipRow}>
-            {TRANSMISSION_OPTIONS.map((o) => (
-              <Chip
-                key={o.value}
-                active={draft.transmissions.includes(o.value)}
-                onClick={() =>
-                  update({
-                    ...draft,
-                    transmissions: toggled(draft.transmissions, o.value),
-                  })
-                }
-              >
-                {o.label}
-              </Chip>
-            ))}
-          </div>
+          <CheckTree
+            label="Câmbio"
+            nodes={TRANSMISSION_OPTIONS.map((o) => ({
+              value: o.value,
+              label: o.label,
+            }))}
+            isOn={(v) => draft.transmissions.includes(v)}
+            onToggleParent={(n) =>
+              update({
+                ...draft,
+                transmissions: toggled(draft.transmissions, n.value),
+              })
+            }
+            onToggleChild={() => {}}
+          />
         </Group>
         <Group title="Combustível">
-          <div className={chipRow}>
-            {FUEL_OPTIONS.map((o) => (
-              <Chip
-                key={o.value}
-                active={draft.fuels.includes(o.value)}
-                onClick={() =>
-                  update({ ...draft, fuels: toggled(draft.fuels, o.value) })
-                }
-              >
-                {o.label}
-              </Chip>
-            ))}
-          </div>
+          <CheckTree
+            label="Combustível"
+            nodes={FUEL_OPTIONS.map((o) => ({
+              value: o.value,
+              label: o.label,
+            }))}
+            isOn={(v) => draft.fuels.includes(v)}
+            onToggleParent={(n) =>
+              update({ ...draft, fuels: toggled(draft.fuels, n.value) })
+            }
+            onToggleChild={() => {}}
+          />
         </Group>
       </div>
       <div className={footerClass}>

@@ -487,3 +487,6 @@
 
 # 2026-11-24 · 012/T005-T006 Meus veículos [1c]/[15b]
 - Fidelidade às capturas [1c] e [15b].
+
+# 2026-11-24 · 012/T019 vitrine [15a]/[9a] e filtros na própria tela
+- Pedido do dono do produto: vitrine idêntica ao design, fundo claro sem a faixa laranja, filtros na própria tela (DSG-FR-018).

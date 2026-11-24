@@ -14,7 +14,6 @@ import { filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
 import { CatalogToolbar } from "./catalog-toolbar";
 import { CatalogView, showcaseCount } from "./catalog-view";
-import { DiscoveryShortcuts } from "./discovery-index";
 import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
@@ -51,21 +50,21 @@ export async function ShowcaseView({
 }: {
   filters: Filters;
   result: SearchResult;
-  /** Banner montado pela rota no topo e no rodapé (Caju Indica [9a], 010). */
+  /** Card montado pela rota dentro da grade e a linha do rodapé (Caju Indica [9a], 010). */
   promo?: ReactNode;
   promoFooter?: ReactNode;
 }) {
-  const { makes } = await cachedFacets("showcase");
+  const { makes, cities } = await cachedFacets("showcase");
   const filtered = filtersToQuery(filters) !== "";
   return (
-    <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 py-6 md:max-w-5xl lg:max-w-6xl">
+    <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 pb-8 md:max-w-3xl lg:max-w-none lg:px-8 lg:pb-0">
       <JsonLd data={websiteJsonLd()} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Início", path: BASE_PATH }])} />
       {result.total > 0 && (
         <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
       )}
-      {promo}
       <CatalogView
+        promo={promo}
         title={TITLE}
         count={
           result.total || filtered
@@ -82,6 +81,7 @@ export async function ShowcaseView({
             <CatalogToolbar
               filters={filters}
               makes={makes}
+              cities={cities}
               total={result.total}
               basePath={BASE_PATH}
               source={null}
@@ -93,14 +93,13 @@ export async function ShowcaseView({
             <FiltersSide
               filters={filters}
               makes={makes}
+              cities={cities}
               total={result.total}
               basePath={BASE_PATH}
               source={null}
             />
           ) : undefined
         }
-        // Some só com a vitrine toda vazia; filtro sem resultado ainda leva a /carros.
-        intro={makes.length > 0 ? <DiscoveryShortcuts /> : undefined}
         sort={
           result.total > 1 ? (
             <SortSelect filters={filters} basePath={BASE_PATH} />
@@ -126,7 +125,7 @@ export async function ShowcaseView({
           )
         }
       />
-      {promoFooter}
+      <div className="lg:hidden">{promoFooter}</div>
     </main>
   );
 }

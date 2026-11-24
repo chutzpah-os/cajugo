@@ -35,6 +35,10 @@ const FUELS: Record<string, string> = {
 
 export type Filters = {
   makes: string[];
+  /** Modelos escolhidos dentro de uma marca: "bmw--x1" (marca--modelo), 012. */
+  models?: string[];
+  /** Cidades no formato do endereço de descoberta ("aracaju-se"), 012. */
+  cities?: string[];
   priceFrom?: number;
   priceTo?: number;
   yearFrom?: number;
@@ -81,6 +85,8 @@ export function parseFilters(params: Params): Filters {
           .filter((m) => /^[a-z0-9-]{1,40}$/.test(m)),
       ),
     ].slice(0, 20),
+    ...modelsOf(params.modelo),
+    ...citiesOf(params.cidade),
     ...optional("priceFrom", reais(params.preco_de)),
     ...optional("priceTo", reais(params.preco_ate)),
     ...optional("yearFrom", intIn(params.ano_de, 1950, 2100)),
@@ -91,6 +97,32 @@ export function parseFilters(params: Params): Filters {
     sort: SORTS[one(params.ordem) as keyof typeof SORTS] ?? "relevance",
     ...(q ? { q } : {}),
   };
+}
+
+/** `?modelo=bmw--x1,fiat--argo`: o modelo dentro da marca. */
+function modelsOf(v: Params[string]): { models?: string[] } {
+  const list = [
+    ...new Set(
+      one(v)
+        .split(",")
+        .map((m) => m.trim())
+        .filter((m) => /^[a-z0-9-]{1,40}--[a-z0-9-]{1,60}$/.test(m)),
+    ),
+  ].slice(0, 20);
+  return list.length ? { models: list } : {};
+}
+
+/** `?cidade=aracaju-se,recife-pe` (cidade + UF sem acento), como no `city_slug`. */
+function citiesOf(v: Params[string]): { cities?: string[] } {
+  const list = [
+    ...new Set(
+      one(v)
+        .split(",")
+        .map((c) => c.trim())
+        .filter((c) => /^[a-z0-9-]{2,60}-[a-z]{2}$/.test(c)),
+    ),
+  ].slice(0, 10);
+  return list.length ? { cities: list } : {};
 }
 
 function optional<K extends string>(key: K, value: number | undefined) {
@@ -106,6 +138,8 @@ const keyOf = (map: Record<string, string>, value: string) =>
 export function filtersToQuery(f: Filters): string {
   const p = new URLSearchParams();
   if (f.makes.length) p.set("marca", f.makes.join(","));
+  if (f.models?.length) p.set("modelo", f.models.join(","));
+  if (f.cities?.length) p.set("cidade", f.cities.join(","));
   if (f.priceFrom !== undefined) p.set("preco_de", String(f.priceFrom / 100));
   if (f.priceTo !== undefined) p.set("preco_ate", String(f.priceTo / 100));
   if (f.yearFrom !== undefined) p.set("ano_de", String(f.yearFrom));
@@ -126,7 +160,8 @@ export function filtersToQuery(f: Filters): string {
 /** Quantos filtros estão ativos, para o chip "Filtros" (busca e ordem não contam). */
 export function activeFilters(f: Filters): number {
   return (
-    (f.makes.length ? 1 : 0) +
+    (f.makes.length || f.models?.length ? 1 : 0) +
+    (f.cities?.length ? 1 : 0) +
     (f.priceFrom !== undefined || f.priceTo !== undefined ? 1 : 0) +
     (f.yearFrom !== undefined || f.yearTo !== undefined ? 1 : 0) +
     (f.kmTo !== undefined ? 1 : 0) +

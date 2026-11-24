@@ -11,8 +11,9 @@ import {
 
 const Navigation = createContext<{
   pending: boolean;
-  navigate: (href: string) => void;
-}>({ pending: false, navigate: () => {} });
+  /** Nulo fora do catálogo (ex.: busca no cabeçalho): o formulário segue o GET. */
+  navigate: ((href: string) => void) | null;
+}>({ pending: false, navigate: null });
 
 export const useCatalogNavigation = () => useContext(Navigation);
 

@@ -12,6 +12,7 @@ export function CatalogToolbar({
   basePath,
   source,
   lockMake = false,
+  cities,
 }: {
   filters: Filters;
   makes: MakeOption[];
@@ -19,6 +20,7 @@ export function CatalogToolbar({
   basePath: string;
   source: ListSource;
   lockMake?: boolean;
+  cities?: MakeOption[];
 }) {
   const others = new URLSearchParams(
     filtersToQuery({ ...filters, q: undefined }),
@@ -33,7 +35,29 @@ export function CatalogToolbar({
         basePath={basePath}
         source={source}
         lockMake={lockMake}
+        cities={cities}
       />
     </div>
+  );
+}
+
+/** Busca no cabeçalho do desktop [15a]: mantém os filtros já escolhidos. */
+export function HeaderSearch({
+  filters,
+  basePath,
+}: {
+  filters: Filters;
+  basePath: string;
+}) {
+  const others = new URLSearchParams(
+    filtersToQuery({ ...filters, q: undefined }),
+  );
+  return (
+    <SearchBox
+      filters={filters}
+      basePath={basePath}
+      hidden={[...others]}
+      size="sm"
+    />
   );
 }

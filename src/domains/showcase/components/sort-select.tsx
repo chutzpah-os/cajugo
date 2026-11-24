@@ -14,13 +14,15 @@ export function SortSelect({
   const { navigate } = useCatalogNavigation();
   return (
     <label className="shrink-0">
-      <span className="sr-only">Ordenar por</span>
+      <span className="sr-only lg:not-sr-only lg:text-[13px] lg:text-text-3">
+        Ordenar:{" "}
+      </span>
       <select
         key={filters.sort}
         defaultValue={filters.sort}
         data-testid="sort-select"
         onChange={(e) =>
-          navigate(
+          navigate?.(
             filterHref(basePath, {
               ...filters,
               sort: e.target.value as Sort,

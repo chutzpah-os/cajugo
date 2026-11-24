@@ -4,6 +4,7 @@ import {
   ShowcaseView,
   showcaseMetadata,
 } from "@/domains/showcase/components/showcase-view";
+import { HeaderSearch } from "@/domains/showcase/components/catalog-toolbar";
 import { cachedSearch } from "@/domains/showcase/current";
 import { ReferralBanner } from "@/domains/referrals/components/referral-banner";
 import { cachedProgramBanner } from "@/domains/referrals/current";
@@ -19,13 +20,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   return (
     <>
-      <SiteHeader />
+      <SiteHeader
+        joined
+        search={<HeaderSearch filters={NONE} basePath="/" />}
+      />
       <ShowcaseView
         promo={
-          <ReferralBanner
-            banner={await cachedProgramBanner()}
-            variant="banner"
-          />
+          <ReferralBanner banner={await cachedProgramBanner()} variant="card" />
         }
         promoFooter={
           <ReferralBanner

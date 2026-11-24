@@ -64,6 +64,12 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
   - no painel do lojista, o item da navegação é "Leads" (PRD) e o KPI do desktop é "Contatos no mês" (captura [15b]).
 - **DSG-FR-017** Telas do painel do lojista, do vendedor, do indicador e do admin sem captura de desktop seguem o padrão de [15b]/[15c] a partir de 1024 px: sidebar escura, título e ação principal no alto, KPIs em cards brancos, listas longas em tabela e cards e formulários em colunas largas (até 2), sem só esticar a versão mobile.
 
+- **DSG-FR-018** (pedido do dono do produto, 2026-11-24) A busca por marca e por cidade faz parte da própria vitrine, sem levar a outra tela:
+  - os links "Buscar por marca" e "Buscar por cidade" saem da vitrine; as páginas de descoberta da 006b continuam no ar só para o Google;
+  - os filtros de lista são **checkbox com tipo e subtipo**: Marca → Modelos, Estado → Cidades, além de Câmbio e Combustível;
+  - o tipo marcado vale para todos os subtipos, e os subtipos aparecem embaixo do tipo marcado;
+  - com mais de 5 linhas, a lista rola dentro do grupo.
+
 ## Requisitos não funcionais
 - **DSG-NFR-001** Para cada tela desta spec, fica registrada a comparação lado a lado (captura do design × tela entregue) em 390 px e, quando há versão desktop, em 1280 px, sem nenhuma diferença de estrutura, ordem ou componente que não esteja justificada por escrito.
 - **DSG-NFR-002** A adequação não piora a acessibilidade: alvos de toque ≥ 44 px, sem rolagem horizontal, campos com rótulo e contraste mínimo de 4,5:1 (`DESIGN.md` §7) continuam valendo em todas as telas.
@@ -167,6 +173,12 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
 - **Dado** o lojista em Leads em 1280 px
 - **Quando** abre a tela
 - **Então** vê a sidebar escura, o título com os KPIs em cards brancos e os leads em tabela ou em cards largos, e não a coluna mobile esticada
+
+### DSG-FR-018
+- **Dado** a vitrine com BMW (X1 e 320i), Fiat, lojas em Aracaju/SE e Recife/PE
+- **Quando** o visitante marca BMW e desmarca o 320i, e marca Sergipe
+- **Então** a lista mostra só BMW X1 de Aracaju, a BMW aparece "em parte", e nenhuma outra tela abre
+- **E** um grupo com mais de 5 linhas rola dentro dele
 
 ## Pendências
 Nenhuma. Resolvidas no `/clarify` de 2026-11-24, com as opções recomendadas (instrução do dono do produto de seguir sem parar):

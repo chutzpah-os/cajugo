@@ -50,7 +50,9 @@ describe("barra de busca e filtros [1a]", () => {
   });
 
   it("[SHW-FR-005] sem filtro ativo o chip não mostra número", () => {
-    expect(toolbar({})).toMatch(/data-testid="filters-chip"[^>]*>Filtros</);
+    expect(toolbar({})).toMatch(
+      /data-testid="filters-chip"[^>]*><span[^>]*><svg[\s\S]*?<\/svg>Filtros<\/span>/,
+    );
   });
 
   it("[SHW-FR-004] a busca guarda os outros filtros e não repete o próprio termo", () => {

@@ -35,7 +35,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [ ] **T018** Login [9f], Nova senha, [6b]. · _DSG-FR-012, DSG-FR-015_
 
 ## Fase 5 — Públicas
-- [ ] **T019** [1a] vitrine e [15a] desktop, [6d] filtros. · _DSG-FR-009_
+- [x] **T019** [1a] vitrine e [15a] desktop, [6d] filtros. · _DSG-FR-009_
 - [ ] **T020** [1b] página do veículo, [14b], [14d], [12d]. · _DSG-FR-009_
 - [ ] **T021** Página da loja, [12g], [12a–12c], [14a]. · _DSG-FR-009_
 - [ ] **T022** [11a] menu, [5b] landing, [5c] cadastro. · _DSG-FR-009_

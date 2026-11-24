@@ -90,9 +90,37 @@ describe("busca e filtros", () => {
     expect(
       await countMatches(t.db, "showcase", parseFilters({ marca: "bmw" })),
     ).toBe(2);
-    expect((await facets(t.db, "showcase")).makes).toEqual([
+    expect((await facets(t.db, "showcase")).makes).toMatchObject([
       { slug: "bmw", name: "BMW", count: 2 },
       { slug: "citroen", name: "Citroën", count: 1 },
     ]);
+  });
+
+  it("[DSG-FR-018] marca com os modelos dentro e estado com as cidades; o modelo filtra dentro da marca", async () => {
+    const f = await facets(t.db, "showcase");
+
+    expect(f.makes[0].children).toEqual([
+      { slug: "bmw--320i", name: "320i", count: 1 },
+      { slug: "bmw--x1", name: "X1", count: 1 },
+    ]);
+    expect(f.cities[0]).toMatchObject({ name: expect.any(String) });
+    expect(f.cities[0].children?.length).toBeGreaterThan(0);
+    expect(
+      await countMatches(t.db, "showcase", parseFilters({ modelo: "bmw--x1" })),
+    ).toBe(1);
+    expect(
+      await countMatches(
+        t.db,
+        "showcase",
+        parseFilters({ modelo: "bmw--x1", marca: "citroen" }),
+      ),
+    ).toBe(2);
+    expect(
+      await countMatches(
+        t.db,
+        "showcase",
+        parseFilters({ cidade: f.cities[0].children![0].slug }),
+      ),
+    ).toBeGreaterThan(0);
   });
 });
