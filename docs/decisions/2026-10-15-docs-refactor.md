@@ -415,3 +415,6 @@
 
 # 2026-11-23 · 008b · spec, plano, tasks e documentos [008b/T001]
 - Desfazer o Recebi em 24 h pede a data do Recebi do vendedor (D1); 'Em análise' fica para a fase 2.
+
+# 2026-11-23 · 010 · spec, plano, tasks e documentos [010/T001]
+- Recompensa uma por fatura (idempotente) e status calculados (D1); billing lança o crédito (D3).

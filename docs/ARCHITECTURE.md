@@ -191,8 +191,8 @@ seller_reviews           id, seller_id, store_id, rating (1–5), text, created_
 referral_codes           code (pk), profile_id (dono) ou campaign_name (link de campanha, sem recompensa), active   # criadas na 003 (código pessoal do lojista); campanhas na 010
 referrals                id, code, referrer_id, referred_store_id, status (invited|registered|active|paused|ended|rejected),
                          reject_reason (ex.: self_referral, spec 004), months_paid (0–3), created_at
-rewards                  id, referral_id, beneficiary_id, period, amount_cents,
-                         status (expected|credited|applied|redeemed)
+referral_rewards         id, referral_id, invoice_id (único: 1 por fatura paga), beneficiary_id, target (credit|balance),
+                         amount_cents, created_at   # 010; crédito vira billing_credits(referral), saldo = soma de balance
 payouts                  id, profile_id, amount_cents, pix_key, cpf, status (requested|paid), paid_by, paid_at
 
 # Comprador

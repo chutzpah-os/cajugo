@@ -1034,3 +1034,6 @@
 
 # 2026-11-23 · Fechamento da 008b [008b/verify]
 - Rastreabilidade verde (16 requisitos com teste), spec implemented, PLAN; ajustes do /implement no plano.
+
+# 2026-11-23 · 010 · spec, plano, tasks e documentos [010/T001]
+- Spec 010 (Caju Indica: indicação, recompensa e saldo) clarificada, plano aprovado e tasks; PRD §5.8/[8c], PLAN (010b), ARCHITECTURE (referral_rewards), API.md e GLOSSARY.

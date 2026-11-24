@@ -272,9 +272,10 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - Indica **somente lojas** para o Catálogo (não há indicação de vendedores).
 - Quem indica: lojistas, vendedores, indicadores e admin (links de campanha, sem recompensa).
 - Recompensa: **30% da mensalidade (R$ 30) por mês, por até 3 meses**, enquanto a loja continuar assinando, a partir do **1º pagamento confirmado** da indicada.
-- Pausa se a indicada atrasar/for suspensa; retoma ao regularizar, sem estender o prazo.
+- Pausa se a indicada atrasar/for suspensa; retoma ao regularizar, sem estender o prazo: rendem as primeiras mensalidades da loja (a 1ª e as faturas seguintes, pela ordem dos meses), cada uma quando é confirmada, mesmo paga com atraso (spec 010).
+- Com o programa desligado (ou o papel fora de "quem pode indicar"), códigos não valem em novos cadastros; indicações já existentes rendem até o fim.
 - Recebimento: **lojista** → crédito abatido na fatura (sobra passa para o mês seguinte); **vendedor/indicador** → saldo resgatável por Pix a partir de **R$ 50** [9e]; o admin marca o Pix como pago [8g].
-- Código/link pessoal (ex.: `RICARDO10`, `/i/ricardo10`), aplicado pelo link [8c] ou digitado no cadastro [8d] ("Indicação de {nome} aplicada").
+- Código/link pessoal (ex.: `RICARDO10`, `/i/ricardo10`), um por pessoa em todos os papéis e separado do código da Rede Caju, aplicado pelo link [8c] ou digitado no cadastro [8d] ("Indicação de {nome} aplicada").
 - Status da indicação: Convite → Cadastrada (aguardando 1º pagamento) → Ativa ⇄ Pausada → Encerrada.
 - **Antifraude:** CPF único por resgate; autoindicação bloqueada (mesmo CPF/CNPJ/celular).
 - CPF e chave Pix do indicador só são pedidos no primeiro resgate.
@@ -689,7 +690,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - Filtros: Todas · Rendendo · Cadastradas · Pausadas. Cada uma: loja, status, quanto já rendeu e quantos meses faltam.
 
 ### [8c] Landing pública do link
-- Quem indicou; card do Catálogo (R$ 100/mês) → cadastro [5c] com o código aplicado.
+- Quem indicou; card do Catálogo (R$ 100/mês) → cadastro [5c] com o código aplicado. Fora da busca (`noindex`).
 
 ### [8d] Cadastro com código
 - Campo de código validado ao vivo ("Indicação de {nome} aplicada"); erro claro se inválido ou autoindicação.

@@ -118,8 +118,10 @@ Código pessoal de quem indica (ex.: `RICARDO10`), criado com a conta, e o link 
 **Indicação não válida** (`rejected`):
 Indicação descartada por autoindicação (mesmo e-mail, celular, CPF ou CNPJ de quem indicou); nunca gera recompensa. Só o admin vê o motivo.
 
-**Recompensa** (`reward`):
-Valor mensal gerado por uma indicação ativa (R$ 30), creditado a quem indicou.
+**Recompensa** (`referral_rewards`):
+Valor gerado por uma mensalidade paga da loja indicada (30% das regras), uma por fatura, nas primeiras mensalidades dela (3 nas regras). Vira **crédito** na fatura de quem indicou se ele tem loja, ou **saldo** para vendedor e indicador (resgatado por Pix na 010b).
+
+**Status da indicação** (mostrado): Cadastrada (ainda não rendeu), Ativa, Pausada (a loja indicada está em atraso ou suspensa), Encerrada (rendeu todas) e Não válida. Pausada, Cadastrada e Encerrada são calculadas, não guardadas.
 
 **Crédito** (`billing_credits`):
 Valor a favor da loja, abatido na próxima fatura: recompensa do Caju Indica, sobra de um pagamento maior que a fatura ou taxa CajuGo de venda desfeita depois da fatura paga. A fatura nunca fica negativa; o que passar fica para a seguinte.

@@ -139,6 +139,9 @@
 - Recompensas creditadas na confirmação do pagamento da indicada (até 3 meses, pausa em atraso); crédito do lojista; saldo e resgate Pix ≥ mínimo; admin marca Pix pago; regras e links de campanha [8f].
 - Antifraude: autoindicação, CPF único por resgate.
 
+## 010b · Caju Indica: resgate, admin e campanhas — telas 9e, 8g, 8f (links)
+- Resgate por Pix [9e] com CPF único e chave Pix no primeiro resgate; indicações e pagamentos do admin [8g] com **Marcar Pix pago** e `wa.me`; links de campanha [8f] sem recompensa. Dividida da 010 no `/clarify` de 2026-11-23.
+
 ## 011 · Fatura, atraso, suspensão e cancelamento — telas 10c, 12f, 12g, 12h, 4b, 3c
 > ✅ **Implementada** em 2026-11-23 (`docs/specs/011-billing-cycle/`): fatura mensal aberta pelo job 3 dias antes do vencimento (mensalidade + taxas CajuGo das vendas via vendedor − créditos), uma por mês; atraso no dia seguinte e suspensão depois da tolerância, sem mexer em loja com comprovante em conferência; [10c] e Pix da mensal com o total em aberto, quitação da mais antiga e sobra como crédito; alerta no painel e [12f]; Conta [3c]; Assinaturas [4b] com MRR, vencendo em 3 dias, Suspender e Reativar com motivo; taxa de venda desfeita sai da fatura ou vira crédito. Migration `0020` no staging e no prod. Cancelamento e fim da assinatura na 011b.
 - Fatura mensal = mensalidade + taxas Rede Caju − crédito Caju Indica; pagamento pela mesma fila de comprovantes (004).

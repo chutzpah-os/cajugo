@@ -85,7 +85,7 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 |---|---|---|
 | página | `/`, `/loja/{slug}` — vitrine e catálogo da loja (filtros na query string) | 1a, 6d, 9a, 15a |
 | página | `/v/{id}-{make}-{model}` — detalhe, uma URL só para vitrine e catálogo (a origem do lead vem da marca da aba, 007/D1; guarda `?ref=` do vendedor na 008) | 1b, 12d |
-| página | `/i/{codigo}` — landing do Caju Indica | 8c |
+| página | `/i/{codigo}` — landing do Caju Indica, `noindex` (010) | 8c |
 | A | `contactLeadAction({ requestId, vehicleId, origin, name, email, phone, message })` — honeypot + rate limit · `whatsappClickAction({ requestId, vehicleId, origin })` · `viewAction({ vehicleId })` (007); `requestId` é um uuid v7 gerado na tela e vira o id do lead (idempotência, §2.6) | 1b, 14b |
 | A | `reportVehicleAction({ requestId, vehicleId, reason, details })` — honeypot + rate limit; `requestId` vira o id da denúncia; sem autor nem IP (007b) | 14d |
 | página | `/favoritos` — favoritos guardados no aparelho, `noindex` (006c) | 14a |
@@ -147,8 +147,11 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Caju Indica
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| A | `getOrCreateReferralCode()` | 8a, 9d |
-| A | `requestPayout({ cpf, pixKeyType, pixKey })` (saldo ≥ mínimo) | 9e |
+| página | `/painel/indica` · `/painel/indica/indicacoes` (`?filtro=`) · `/painel/indica/credito` — lojista (`store.referral`) (010) | 8a, 8b, 8e |
+| página | `/indica` (indicador e vendedor) · `/indica/cadastro` (público) (010) | 9d, 9b |
+| A | `registerReferrerAction(form)` — pública, honeypot + rate limit (010) | 9b |
+| — | código pessoal criado no 1º acesso ao painel (`getOrCreateCode`, regras do programa) | 8a, 9d |
+| A | `requestPayout({ cpf, pixKeyType, pixKey })` (saldo ≥ mínimo) (010b) | 9e |
 
 ### Admin
 | Tipo | Rota / ação | Tela |
