@@ -1,16 +1,24 @@
 import { Suspense, type ReactNode } from "react";
 import { Skeleton } from "@/ui/skeleton";
 import type { Area } from "../permissions";
-import { AreaShell, type Banner, type NavCounts } from "./area-shell";
+import {
+  AreaShell,
+  type Banner,
+  type Identity,
+  type NavCounts,
+} from "./area-shell";
 
 /** Layout de área logada: a sessão é lida por requisição, dentro de `<Suspense>`. */
 export function AreaLayout({
   area,
   navCounts,
   banner,
+  identity,
   children,
 }: {
   area: Area;
+  /** Card da sidebar do desktop (loja ou pessoa), montado pela rota (012). */
+  identity?: Identity;
   /** Contadores do menu, calculados pela rota (o domínio dono do dado). */
   navCounts?: NavCounts;
   /** Alerta no topo, montado pela rota (fatura do lojista, 011). */
@@ -26,7 +34,12 @@ export function AreaLayout({
         </div>
       }
     >
-      <AreaShell area={area} navCounts={navCounts} banner={banner}>
+      <AreaShell
+        area={area}
+        navCounts={navCounts}
+        banner={banner}
+        identity={identity}
+      >
         {children}
       </AreaShell>
     </Suspense>

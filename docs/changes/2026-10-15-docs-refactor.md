@@ -1127,3 +1127,6 @@
 
 # 2026-11-24 · 012/T002 confirmações [6f]
 - ConfirmSheet com alça, ícone de 48 px por tipo, título 20/800 e botões empilhados (danger só em suspender/cancelar); RadioOptions; SheetNote; [12h] e Suspender com os textos do DESIGN.md §6; Button danger/soft/xs.
+
+# 2026-11-24 · 012/T003 moldura
+- AreaShell sem o cabeçalho claro global: avatar com AccountMenu (trocar de painel, sair) no canto do cabeçalho da página no celular; avisos logo abaixo do cabeçalho; sidebar preta [15b]/[15c] com logo, identidade (storeIdentity / nome da pessoa), contadores e conta no pé; barra inferior do design.

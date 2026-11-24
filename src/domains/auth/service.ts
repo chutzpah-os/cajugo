@@ -477,7 +477,12 @@ export async function changePassword(
 export async function accountMenu(
   db: Db,
   session: Session | null,
-): Promise<{ name: string; panels: { label: string; href: string }[] } | null> {
+): Promise<{
+  name: string;
+  /** Nome completo, para a sigla do avatar (012). */
+  fullName: string;
+  panels: { label: string; href: string }[];
+} | null> {
   if (!session) return null;
   const [profile] = await db
     .select({ name: profiles.name })
@@ -486,6 +491,7 @@ export async function accountMenu(
   if (!profile) return null;
   return {
     name: profile.name.trim().split(/\s+/)[0],
+    fullName: profile.name.trim(),
     panels: session.roles.map((r) => ({
       label: PANEL_LABEL[r],
       href: PANEL_HREF[r],

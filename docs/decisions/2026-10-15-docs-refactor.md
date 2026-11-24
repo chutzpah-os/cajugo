@@ -478,3 +478,6 @@
 
 # 2026-11-24 · 012/T002 confirmações [6f]
 - Fidelidade ao [6f] do design.
+
+# 2026-11-24 · 012/T003 moldura
+- Os menus do design: sidebar escura no desktop, barra branca no celular.

@@ -55,6 +55,7 @@ export function DarkHeader({
   return (
     <header
       data-testid="dark-header"
+      data-header
       className="-mx-4 flex flex-col gap-4 bg-ink px-4 pt-6 pb-5 text-white lg:mx-0 lg:bg-transparent lg:px-0 lg:pt-2 lg:pb-0 lg:text-ink"
     >
       <div className="flex items-center justify-between gap-3 lg:hidden">
@@ -105,6 +106,7 @@ export function LightHeader({
   return (
     <header
       data-testid="light-header"
+      data-header
       className={cn(
         "-mx-4 flex flex-col gap-3.5 border-b border-line bg-surface px-4 pt-4 lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:pt-2",
         tabs ? "pb-0" : "pb-4 lg:pb-0",
@@ -170,6 +172,7 @@ export function BackHeader({
   return (
     <header
       data-testid="back-header"
+      data-header
       className="-mx-4 flex flex-col gap-2 border-b border-line bg-surface px-4 pt-3 pb-3 lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0"
     >
       <div className="flex items-center justify-between gap-3">

@@ -963,3 +963,34 @@ export async function resetStoreForTests(
 }
 
 export { STORES_TAG } from "./tags";
+
+const IDENTITY_STATUS: Record<string, string> = {
+  registered: "aguardando pagamento",
+  payment_review: "pagamento em análise",
+  active: "em dia",
+  past_due: "em atraso",
+  suspended: "suspensa",
+  cancel_scheduled: "cancelamento agendado",
+  canceled: "cancelada",
+  archived: "arquivada",
+};
+
+/**
+ * Identidade da loja na moldura do painel (012, [15b]): nome e "Plano Catálogo · em
+ * dia". Lojista e usuário da loja; sem loja, `null`.
+ */
+export async function storeIdentity(
+  db: Db,
+  session: Session | null,
+): Promise<{ name: string; caption: string } | null> {
+  if (!session?.storeId) return null;
+  const [s] = await db
+    .select({ name: stores.name, status: stores.status })
+    .from(stores)
+    .where(eq(stores.id, session.storeId));
+  if (!s) return null;
+  return {
+    name: s.name,
+    caption: `Plano Catálogo · ${IDENTITY_STATUS[s.status] ?? s.status}`,
+  };
+}

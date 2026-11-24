@@ -73,7 +73,8 @@ test.describe("login e painéis", () => {
     await page.goto("/entrar");
     await signIn(page, accounts.sellerReferrer.email);
     await expect(page).toHaveURL(/\/rede$/);
-    const select = page.getByLabel("Trocar de painel");
+    await page.locator("[data-testid=account-menu]:visible").click();
+    const select = page.getByRole("dialog").getByLabel("Trocar de painel");
     await expect(select.locator("option")).toHaveText([
       "Rede Caju",
       "Caju Indica",
@@ -114,7 +115,11 @@ test.describe("login e painéis", () => {
     await page.goto("/entrar");
     await signIn(page, accounts.referrer.email);
     await expect(page).toHaveURL(/\/indica$/);
-    await page.getByRole("button", { name: "Sair" }).click();
+    await page.locator("[data-testid=account-menu]:visible").click();
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Sair" })
+      .click();
     await expect(page).toHaveURL(/\/$/);
     await page.goto("/indica");
     await expect(page).toHaveURL(/\/entrar\?next=%2Findica$/);

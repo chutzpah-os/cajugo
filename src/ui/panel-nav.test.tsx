@@ -110,4 +110,28 @@ describe("menu do painel", () => {
       .split("</ul>")[0];
     expect(bar).toMatch(/Leads<span data-testid="nav-count"[^>]*>3/);
   });
+
+  it("[DSG-FR-003] [DSG-FR-001] sidebar escura com o logo, a identidade da loja, o selo da área e o pé; barra inferior com a barrinha do ativo", () => {
+    const html = renderToStaticMarkup(
+      <PanelNavView
+        items={items}
+        pathname="/admin"
+        identity={{
+          name: "Auto Center Silva",
+          caption: "Plano Catálogo · em dia",
+        }}
+        tag="Admin"
+        footer={<span>Sair</span>}
+      />,
+    );
+
+    expect(html).toContain('data-testid="sidebar"');
+    expect(html).toContain("bg-ink");
+    expect(html).toMatch(
+      /sidebar-identity[\s\S]*AS[\s\S]*Auto Center Silva[\s\S]*Plano Catálogo · em dia/,
+    );
+    expect(html).toContain(">Admin<");
+    expect(html).toContain(">Sair<");
+    expect(html).toContain("w-[22px]");
+  });
 });
