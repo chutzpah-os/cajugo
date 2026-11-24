@@ -118,6 +118,12 @@ export function SellerHome({ home }: { home: Home }) {
           Ver extrato
         </Link>
       </section>
+      <Link
+        href="/indica"
+        className="flex min-h-11 items-center justify-between rounded-card bg-caju-tint px-4 font-bold"
+      >
+        Caju Indica: indique lojas e ganhe <span aria-hidden>›</span>
+      </Link>
       <section className="flex flex-col gap-2">
         <h2 className="text-[17px] font-extrabold">Lojas</h2>
         {home.stores.length ? (

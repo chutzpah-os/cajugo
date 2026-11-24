@@ -1070,3 +1070,6 @@
 
 # 2026-11-24 · Telas do Caju Indica do lojista [010/T012]
 - /painel/indica [8a] (chamada, código, link, Copiar, WhatsApp, Como funciona), /painel/indica/indicacoes [8b] (filtros) e /painel/indica/credito [8e] (disponível, próxima fatura, movimentações); atalho na Conta; CopyLine movido para src/ui.
+
+# 2026-11-24 · Telas do indicador [010/T013]
+- /indica/cadastro [9b] (público; conectado só aceita os termos; lojista vai para /painel/indica) e /indica [9d] (saldo, barra até o mínimo, link, indicações, movimentações); link do Caju Indica no painel do vendedor.

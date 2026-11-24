@@ -77,7 +77,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
 - [x] **T012** Lojista: `/painel/indica` [8a], `/painel/indica/indicacoes` [8b], `/painel/indica/credito` [8e]; atalho na Conta.
 
   · _IND-FR-001, IND-FR-005, IND-FR-009, IND-NFR-001_
-- [ ] **T013** Indicador e vendedor: `/indica/cadastro` [9b] e `/indica` [9d] (saldo, barra, link, indicações, movimentações).
+- [x] **T013** Indicador e vendedor: `/indica/cadastro` [9b] e `/indica` [9d] (saldo, barra, link, indicações, movimentações).
 
   · _IND-FR-002, IND-FR-004, IND-FR-005, IND-FR-010, IND-NFR-001_
 - [ ] **T014** Seed do e2e (loja indicada pelo lojista de teste com a 1ª paga; indicação do vendedor com recompensa) e `tests/e2e/referrals.spec.ts`:
