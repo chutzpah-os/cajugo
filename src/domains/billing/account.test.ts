@@ -102,7 +102,8 @@ describe("fatura e Conta do lojista", () => {
       howToPay: { pixKey: PIX.key, beneficiary: PIX.beneficiary },
       current: { reference: "12/2026", totalCents: 60_000, status: "open" },
     });
-    expect(view.nextDueAt?.toISOString()).toBe("2027-01-10T03:00:00.000Z");
+    // A fatura aberta vence antes do próximo ciclo.
+    expect(view.nextDueAt).toEqual(DUE);
     expect(view.howToPay.supportUrl).toMatch(/^https:\/\/wa\.me\//);
     expect(view.history).toEqual([
       {

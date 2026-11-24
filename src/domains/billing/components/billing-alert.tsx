@@ -28,12 +28,12 @@ export function BillingAlertBanner({ alert }: { alert: BillingAlert | null }) {
             "Sua loja continua no ar por enquanto. Pague para evitar a suspensão.",
           ]
         : [
-            alert.canPay
+            alert.kind === "suspended"
               ? `Loja suspensa · ${days(alert.days)} de atraso · ${brl(alert.totalCents)}`
               : "Loja suspensa por falta de pagamento",
             "Seus veículos não aparecem para o público até o pagamento ser confirmado. Você continua editando a loja e os veículos.",
           ];
-  const canPay = alert.kind !== "suspended" || alert.canPay;
+  const canPay = alert.kind !== "suspended_staff";
   return (
     <div
       role="alert"

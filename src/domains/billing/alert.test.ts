@@ -53,18 +53,8 @@ describe("alerta da fatura no painel", () => {
       staff,
     );
 
-    expect(owner).toEqual({
-      kind: "suspended",
-      days: 6,
-      totalCents: 10_000,
-      canPay: true,
-    });
-    expect(forStaff).toEqual({
-      kind: "suspended",
-      days: 0,
-      totalCents: 0,
-      canPay: false,
-    });
+    expect(owner).toEqual({ kind: "suspended", days: 6, totalCents: 10_000 });
+    expect(forStaff).toEqual({ kind: "suspended_staff" });
   });
 
   it("[SUB-FR-006] sem fatura aberta, paga ou com comprovante em análise: sem alerta de vencimento", async () => {

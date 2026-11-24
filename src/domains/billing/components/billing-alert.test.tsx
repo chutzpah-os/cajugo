@@ -34,13 +34,11 @@ describe("alerta da fatura no painel", () => {
   it("[SUB-FR-009] [SUB-NFR-001] suspensa: dias, valor e Pagar agora (44 px); sem valor nem botão para o usuário da loja", () => {
     const owner = renderToStaticMarkup(
       <BillingAlertBanner
-        alert={{ kind: "suspended", days: 6, totalCents: 60_000, canPay: true }}
+        alert={{ kind: "suspended", days: 6, totalCents: 60_000 }}
       />,
     );
     const staff = renderToStaticMarkup(
-      <BillingAlertBanner
-        alert={{ kind: "suspended", days: 0, totalCents: 0, canPay: false }}
-      />,
+      <BillingAlertBanner alert={{ kind: "suspended_staff" }} />,
     );
 
     expect(text(owner)).toContain(

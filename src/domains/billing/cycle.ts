@@ -16,6 +16,7 @@ import { getSettings } from "@/domains/settings/service";
 import {
   billingCredits,
   invoices,
+  payments,
   profiles,
   sales,
   stores,
@@ -225,6 +226,16 @@ async function applyCredits(
   });
 }
 
+/** Comprovante em conferência: a loja fica como está até o admin decidir (SUB-FR-003). */
+async function receiptInReview(db: Db, storeId: string): Promise<boolean> {
+  const [row] = await db
+    .select({ id: payments.id })
+    .from(payments)
+    .where(and(eq(payments.storeId, storeId), eq(payments.status, "submitted")))
+    .limit(1);
+  return !!row;
+}
+
 /** Vencimento da fatura aberta mais antiga de cada loja `status`. */
 async function oldestOpenDue(
   db: Db,
@@ -257,7 +268,10 @@ export async function markPastDue(
     if (!dueAt || !isOverdue(dueAt, now)) continue;
     const since = pastDueStart(dueAt);
     await db.transaction(async (tx) => {
-      if (!(await moveSubscription(tx, storeId, ["active"], "past_due", since)))
+      if (
+        (await receiptInReview(tx, storeId)) ||
+        !(await moveSubscription(tx, storeId, ["active"], "past_due", since))
+      )
         return;
       marked++;
       await logActivity(tx, {
@@ -322,6 +336,7 @@ export async function suspendOverdue(
     if (!suspensionDue(store.since!, tolerance, now)) continue;
     await db.transaction(async (tx) => {
       if (
+        (await receiptInReview(tx, store.id)) ||
         !(await moveSubscription(
           tx,
           store.id,
@@ -343,6 +358,56 @@ export async function suspendOverdue(
     });
   }
   return suspended;
+}
+
+/**
+ * Sem fatura mensal vencida em aberto, a loja em atraso ou suspensa volta a ativa
+ * (SUB-FR-004); a que estava suspensa avisa e fica no registro como reativação.
+ * `true` se voltou.
+ */
+export async function backToActiveIfSettled(
+  tx: Db,
+  storeId: string,
+  now: Date,
+  by: { userId: string | null; source: "payment" | "fee_refund"; id: string },
+): Promise<boolean> {
+  const open = await tx
+    .select({ dueAt: invoices.dueAt })
+    .from(invoices)
+    .where(
+      and(
+        eq(invoices.storeId, storeId),
+        eq(invoices.kind, "monthly"),
+        eq(invoices.status, "open"),
+      ),
+    );
+  if (open.some((i) => isOverdue(i.dueAt, now))) return false;
+  const [store] = await tx
+    .select({ status: stores.status })
+    .from(stores)
+    .where(eq(stores.id, storeId));
+  const wasSuspended = store?.status === "suspended";
+  if (
+    !(await moveSubscription(
+      tx,
+      storeId,
+      ["past_due", "suspended"],
+      "active",
+      null,
+    ))
+  )
+    return false;
+  if (wasSuspended) {
+    await notifyStatusChange(tx, storeId, "store_reactivated", now);
+    await logActivity(tx, {
+      userId: by.userId,
+      action: "store.reactivated",
+      entity: "store",
+      entityId: storeId,
+      data: { by: by.source, sourceId: by.id },
+    });
+  }
+  return true;
 }
 
 /**
@@ -399,6 +464,13 @@ export async function refundSaleFee(
     })
     .where(eq(invoices.id, invoice.id));
   await tx.update(sales).set({ invoiceId: null }).where(eq(sales.id, saleId));
+  // Fatura zerada era a única vencida: a loja volta ao ar.
+  if (totalCents === 0)
+    await backToActiveIfSettled(tx, sale.storeId, now, {
+      userId: null,
+      source: "fee_refund",
+      id: saleId,
+    });
 }
 
 /** Job diário: cada etapa do ciclo (contrato do cron, D6). */

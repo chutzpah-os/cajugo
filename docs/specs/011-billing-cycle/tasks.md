@@ -139,6 +139,6 @@ Decisões D1–D6 do plano aprovadas em 2026-11-23.
   · _SUB-FR-002…013, SUB-SEC-003, SUB-SEC-005, SUB-NFR-001_
 
 ## Fase 4 — Fechamento
-- [ ] **T019** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0020` no prod só com a sua autorização.
+- [x] **T019** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0020` no prod só com a sua autorização.
 
   · _—_

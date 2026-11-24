@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { STORES_TAG } from "@/domains/stores/service";
+import { STORES_TAG } from "@/domains/stores/tags";
 import { VEHICLES_TAG } from "@/domains/vehicles/tags";
 import { currentSession } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";

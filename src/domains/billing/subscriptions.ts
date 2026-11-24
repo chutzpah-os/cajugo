@@ -12,6 +12,7 @@ import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import { BILLED_STATUSES, notifyStatusChange } from "./cycle";
 import { daysLate, dueSoon, isOverdue } from "./cycle-dates";
+import { totalOf } from "./account";
 import { mrrCents } from "./invoice-math";
 
 /** Assinaturas do admin [4b] (spec 011): admin e suporte veem; só o admin decide. */
@@ -144,7 +145,7 @@ export async function subscriptionsView(
     ]++;
     if (!FILTER_STATUS[filtro].includes(status)) continue;
     const mine = openOf(r.storeId);
-    const total = mine.reduce((sum, i) => sum + i.totalCents, 0);
+    const total = totalOf(mine);
     const days = mine[0] ? daysLate(mine[0].dueAt, now) : 0;
     const review = inReview.find((p) => p.storeId === r.storeId);
     const line: SubscriptionLine = review
@@ -233,14 +234,15 @@ function parse<T>(schema: z.ZodType<T>, raw: unknown): T {
   return parsed.data;
 }
 
-async function storeStatus(db: Db, storeId: string) {
+/** Loja travada até o fim da transação; inexistente → 404. */
+async function lockedStore(db: Db, storeId: string) {
   const [store] = await db
-    .select({ status: stores.status })
+    .select({ status: stores.status, pastDueSince: stores.pastDueSince })
     .from(stores)
     .where(eq(stores.id, storeId))
     .for("update");
   if (!store) throw AppError.notFound();
-  return store.status;
+  return store;
 }
 
 /** **Suspender** [4b] (SUB-FR-013): só o admin, só loja em atraso. */
@@ -253,18 +255,14 @@ export async function suspendStore(
   const { storeId } = parse(suspendSchema, raw);
   const now = deps.now?.() ?? new Date();
   await deps.db.transaction(async (tx) => {
-    await storeStatus(tx, storeId);
-    const [row] = await tx
-      .select({ since: stores.pastDueSince })
-      .from(stores)
-      .where(eq(stores.id, storeId));
+    const store = await lockedStore(tx, storeId);
     if (
       !(await moveSubscription(
         tx,
         storeId,
         ["past_due"],
         "suspended",
-        row.since,
+        store.pastDueSince,
       ))
     )
       throw AppError.conflict("Só uma loja em atraso pode ser suspensa.");
@@ -293,7 +291,7 @@ export async function reactivateStore(
   const { storeId, reason } = parse(reactivateSchema, raw);
   const now = deps.now?.() ?? new Date();
   await deps.db.transaction(async (tx) => {
-    if ((await storeStatus(tx, storeId)) !== "suspended")
+    if ((await lockedStore(tx, storeId)).status !== "suspended")
       throw AppError.conflict("Só uma loja suspensa pode ser reativada.");
     const open = await tx
       .select({ dueAt: invoices.dueAt })

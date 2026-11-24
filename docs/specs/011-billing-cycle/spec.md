@@ -2,7 +2,7 @@
 id: 011
 slug: billing-cycle
 title: Fatura mensal, atraso e suspensão
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-20
 ---
@@ -40,16 +40,16 @@ Sucesso: uma loja que não paga até o fim da tolerância sai do ar sozinha, e v
 - **SUB-FR-004** Ao **Confirmar** o comprovante da fatura mensal, a fatura fica paga, o próximo vencimento passa para o mesmo dia do mês seguinte (último dia do mês quando ele não existe) e a loja em atraso ou suspensa volta a **ativa**.
 - **SUB-FR-005** Ao **Recusar** o comprovante da fatura mensal, o lojista vê [12e] com o motivo e o valor faltante, e a loja segue no status em que estava (no ar até o fim da tolerância).
 - **SUB-FR-006** Três dias antes do vencimento, o lojista vê no painel o aviso "Sua fatura vence em dd/mm · R$ X" com **Pagar agora**, e o admin vê a loja na lista de vencimentos com o botão `wa.me` para avisar.
-- **SUB-FR-007** No dia seguinte ao vencimento sem pagamento confirmado, a loja passa a **em atraso**: catálogo e vitrine continuam no ar e o painel mostra o alerta da fatura com os dias de atraso e **Pagar agora**.
+- **SUB-FR-007** No dia seguinte ao vencimento sem pagamento confirmado, a loja passa a **em atraso**: catálogo e vitrine continuam no ar e o painel mostra o alerta da fatura com os dias de atraso e **Pagar agora** (com um comprovante em conferência, o alerta de vencimento e o de atraso não aparecem; o de loja suspensa, sim).
 - **SUB-FR-008** Passada a tolerância das regras (5 dias) sem pagamento confirmado, a loja passa a **suspensa**: catálogo e veículos saem do ar para o público ([12g], sem expor o motivo), os dados ficam guardados e o lojista continua editando.
 - **SUB-FR-009** O lojista de loja suspensa vê [12f]: alerta com os dias de atraso e o valor, e **Pagar agora** → [6c]; o resto do painel continua aberto.
 - **SUB-FR-010** A Conta do lojista [3c] mostra o Plano Catálogo, o status da assinatura, o valor, a próxima cobrança, **Como pagar** (chave Pix da CajuGo e WhatsApp do suporte), a fatura do mês e as faturas anteriores (mês, valor, status), além do bloco Rede Caju da 009.
 - **SUB-FR-011** A tela Assinaturas do admin [4b] mostra o MRR, as contagens Em dia, Atrasadas e Suspensas, o card do plano e os filtros Todas, Em dia, Atrasadas, Suspensas.
 - **SUB-FR-012** Em [4b], cada loja mostra dono, desde quando assina, selo e a linha do status: em dia "Próxima cobrança dd/mm · R$ X" + **Detalhes**; em atraso "Em atraso N dias · R$ X" + `wa.me` + **Suspender**; em análise "Comprovante enviado dd/mm" + **Conferir** (→ [10b]); suspensa "Catálogo e vitrine · Fora do ar" + **Reativar**.
-- **SUB-FR-013** O admin suspende uma loja em atraso antes do fim da tolerância com **Suspender** (confirmação de [6f]) e reativa uma loja suspensa com **Reativar**, informando o motivo; reativada sem pagamento, a fatura continua aberta e a loja volta a **em atraso** (o job suspende de novo depois da tolerância, contada da reativação).
+- **SUB-FR-013** O admin suspende uma loja em atraso antes do fim da tolerância com **Suspender** (confirmação de [6f]) e reativa uma loja suspensa com **Reativar**, informando o motivo; reativada sem pagamento, a fatura continua aberta e a loja volta a **em atraso** (o job suspende de novo depois da tolerância, contada da reativação); sem fatura vencida em aberto, volta a **ativa**.
 - **SUB-FR-014** A taxa CajuGo de uma venda entra em uma fatura só uma vez; a venda desfeita antes de entrar numa fatura não entra; desfeita com a fatura ainda aberta, a taxa sai dela e o total é recalculado; desfeita com a fatura já paga, a taxa volta como crédito na próxima fatura.
 - **SUB-FR-017** O comprovante só quita a fatura com o valor total em aberto; com valor menor, o admin recusa com o valor faltante (SUB-FR-005); com valor maior, a sobra vira crédito na próxima fatura.
-- **SUB-FR-016** Com mais de uma fatura em aberto (atraso de mais de um mês), cada mês tem a sua; [6c] cobra o total em aberto e o comprovante confirmado quita da mais antiga para a mais nova; a loja só volta a ativa com todas pagas.
+- **SUB-FR-016** Com mais de uma fatura em aberto (atraso de mais de um mês), cada mês tem a sua; [6c] cobra o total em aberto e o comprovante confirmado quita da mais antiga para a mais nova; a loja só volta a ativa com todas as vencidas pagas (a fatura aberta que ainda não venceu não a segura fora do ar).
 - **SUB-FR-015** O lojista e o admin veem no painel o aviso quando a loja é suspensa e quando é reativada.
 
 ## Requisitos não funcionais
@@ -192,4 +192,4 @@ Sucesso: uma loja que não paga até o fim da tolerância sai do ar sozinha, e v
 - **Então** vê "Catálogo temporariamente indisponível" sem motivo, valor ou dias de atraso
 
 ## Pendências
-Nenhuma. Resolvidas no `/clarify` de 2026-11-23: divisão com a 011b (cancelamento, arquivamento, liberação do endereço, Editar plano), fatura aberta 3 dias antes do vencimento, taxa de venda desfeita (sai da fatura aberta ou vira crédito), faturas separadas quitadas da mais antiga, reativar sem pagamento com motivo, suporte consulta e avisa, fatura só quita com o total (sobra vira crédito).
+Nenhuma. No `/verify` de 2026-11-23: volta a ativa sem fatura vencida (SUB-FR-016), reativar sem nada vencido → ativa (SUB-FR-013), sem alerta de cobrança com comprovante em conferência (SUB-FR-007). Resolvidas no `/clarify` de 2026-11-23: divisão com a 011b (cancelamento, arquivamento, liberação do endereço, Editar plano), fatura aberta 3 dias antes do vencimento, taxa de venda desfeita (sai da fatura aberta ou vira crédito), faturas separadas quitadas da mais antiga, reativar sem pagamento com motivo, suporte consulta e avisa, fatura só quita com o total (sobra vira crédito).

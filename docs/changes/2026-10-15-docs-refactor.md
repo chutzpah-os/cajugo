@@ -998,3 +998,6 @@
 
 # 2026-11-23 · e2e do ciclo de cobrança [011/T018]
 - Conta e loja 'Fatura E2E' no seed, suspensa pelo runBillingCycle real (restrito à loja); billing-cycle.spec: alerta [12f], edição, [10c], [6c], [3c], [12g] sem dados, [4b] suporte/admin, Reativar/Suspender, comprovante e confirmação.
+
+# 2026-11-23 · Fechamento da 011 [011/verify]
+- Ajustes do /verify (comprovante em conferência segura o job, recusa na [10c], próxima cobrança da Conta, taxa que zera a fatura reativa, totalOf, suspended_staff); spec implemented, PLAN; migration 0020 aplicada e conferida no prod.

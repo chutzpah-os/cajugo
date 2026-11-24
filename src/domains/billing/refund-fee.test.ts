@@ -4,7 +4,7 @@ import { billingCredits, invoices, sales } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { car } from "@/domains/showcase/testing/fixtures";
 import { refundSaleFee, runBillingCycle } from "./service";
-import { payingStore } from "./testing/fixtures";
+import { payingStore, storeRow } from "./testing/fixtures";
 
 const DUE = new Date("2026-12-10T03:00:00Z");
 const DAY7 = new Date("2026-12-07T12:00:00Z");
@@ -96,5 +96,27 @@ describe("taxa CajuGo de venda desfeita", () => {
       .from(invoices)
       .where(eq(invoices.period, "2027-01"));
     expect(jan).toMatchObject({ creditCents: 10_000, totalCents: 0 });
+  });
+
+  it("[SUB-FR-014] taxa desfeita zera a fatura vencida: a loja suspensa volta ao ar", async () => {
+    // Arrange
+    const { a, sale } = await withSale();
+    await t.db.insert(billingCredits).values({
+      storeId: a.storeId,
+      kind: "overpayment",
+      amountCents: 10_000,
+    });
+    await runBillingCycle(t.db, DAY7);
+    await runBillingCycle(t.db, new Date("2026-12-11T12:00:00Z"));
+    await runBillingCycle(t.db, new Date("2026-12-16T12:00:00Z"));
+    await cancel(sale.id);
+
+    // Act
+    await refundSaleFee(t.db, sale.id, new Date("2026-12-17T12:00:00Z"));
+
+    // Assert
+    const [invoice] = await t.db.select().from(invoices);
+    expect(invoice).toMatchObject({ totalCents: 0, status: "paid" });
+    expect((await storeRow(t.db, a.storeId)).status).toBe("active");
   });
 });

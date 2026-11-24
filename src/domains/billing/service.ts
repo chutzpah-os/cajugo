@@ -19,7 +19,6 @@ import {
   activateFirstTime,
   backToRegistered,
   markPaymentReview,
-  moveSubscription,
 } from "@/domains/stores/service";
 import { getSettings, pixReady } from "@/domains/settings/service";
 import { maskTaxId, parseTaxId, type TaxIdType } from "@/platform/br/tax-id";
@@ -47,9 +46,8 @@ import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { storeUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { openMonthly, periodLabel } from "./account";
-import { notifyStatusChange } from "./cycle";
-import { isOverdue } from "./cycle-dates";
+import { openMonthly, periodLabel, totalOf } from "./account";
+import { backToActiveIfSettled } from "./cycle";
 import { settleOldestFirst } from "./invoice-math";
 import { firstDueDate, saoPauloMonthStart } from "./due-date";
 import {
@@ -116,7 +114,7 @@ async function payable(
   if (!open.length) return null;
   return {
     invoice: open[0],
-    amountCents: open.reduce((sum, i) => sum + i.totalCents, 0),
+    amountCents: totalOf(open),
     first: false,
   };
 }
@@ -125,7 +123,7 @@ async function payable(
 async function expectedFor(db: Db, invoice: Invoice): Promise<number> {
   if (invoice.kind === "first") return invoice.totalCents;
   const open = await openMonthly(db, invoice.storeId);
-  return open.reduce((sum, i) => sum + i.totalCents, 0) || invoice.totalCents;
+  return totalOf(open) || invoice.totalCents;
 }
 
 async function hasReceiptInReview(db: Db, storeId: string) {
@@ -519,10 +517,7 @@ export async function reviewQueue(
     if (r.kind === "monthly" && !monthlyExpected.has(r.storeId))
       monthlyExpected.set(
         r.storeId,
-        (await openMonthly(deps.db, r.storeId)).reduce(
-          (sum, i) => sum + i.totalCents,
-          0,
-        ) || r.expectedCents,
+        totalOf(await openMonthly(deps.db, r.storeId)) || r.expectedCents,
       );
   return {
     items: rows.map((r) => {
@@ -718,29 +713,15 @@ async function settleMonthly(
     })
     .from(stores)
     .where(eq(stores.id, payment.storeId));
-  const stillLate = open.some(
-    (i) => !result.paid.includes(i.id) && isOverdue(i.dueAt, now),
-  );
   const wasSuspended = store.status === "suspended";
-  const back =
-    !stillLate &&
-    (await moveSubscription(
-      tx,
-      payment.storeId,
-      ["past_due", "suspended"],
-      "active",
-      null,
-    ));
-  if (back && wasSuspended) {
-    await notifyStatusChange(tx, payment.storeId, "store_reactivated", now);
-    await logActivity(tx, {
-      userId: adminId,
-      action: "store.reactivated",
-      entity: "store",
-      entityId: payment.storeId,
-      data: { by: "payment", paymentId: payment.id },
-    });
-  } else await notify(tx, store.ownerId, { kind: "payment_confirmed" }, now);
+  const back = await backToActiveIfSettled(tx, payment.storeId, now, {
+    userId: adminId,
+    source: "payment",
+    id: payment.id,
+  });
+  // A reativada já recebeu "Pagamento confirmado. Sua loja está no ar."
+  if (!(back && wasSuspended))
+    await notify(tx, store.ownerId, { kind: "payment_confirmed" }, now);
 
   const next = store.nextDueAt
     ? ` Próximo vencimento: ${brDate.format(store.nextDueAt)}.`

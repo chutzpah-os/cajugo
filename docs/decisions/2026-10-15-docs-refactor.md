@@ -409,3 +409,6 @@
 
 # 2026-11-23 · e2e do ciclo de cobrança [011/T018]
 - Sem CRON_SECRET local, o seed roda o ciclo real restrito à loja de teste; a migration 0020 foi aplicada no staging.
+
+# 2026-11-23 · Fechamento da 011 [011/verify]
+- Spec ajustada com o dono: volta a ativa sem fatura vencida, reativar sem nada vencido → ativa, sem alerta de cobrança com comprovante em conferência.

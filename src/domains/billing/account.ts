@@ -125,7 +125,16 @@ export async function openMonthly(db: Db, storeId: string) {
     .orderBy(asc(invoices.dueAt));
 }
 
-export type InvoiceView = { open: InvoiceCard[]; openTotalCents: number };
+/** Soma das faturas (o total em aberto, quando são as abertas). */
+export const totalOf = (rows: { totalCents: number }[]) =>
+  rows.reduce((sum, i) => sum + i.totalCents, 0);
+
+export type InvoiceView = {
+  open: InvoiceCard[];
+  openTotalCents: number;
+  /** Último comprovante recusado da mensal ([12e]): motivo e o que falta. */
+  lastRejection: { reason: string; missingCents: number | null } | null;
+};
 
 /** Fatura do mês [10c] (SUB-FR-002, SUB-FR-016): as abertas e o total a pagar. */
 export async function invoiceView(
@@ -135,9 +144,31 @@ export async function invoiceView(
   const storeId = storeOf(session);
   const now = deps.now?.() ?? new Date();
   const open = await cards(deps.db, await openMonthly(deps.db, storeId), now);
+  const openTotalCents = totalOf(open);
+  const [last] = open.length
+    ? await deps.db
+        .select({
+          status: payments.status,
+          reason: payments.rejectReason,
+          amountCents: payments.amountCents,
+        })
+        .from(payments)
+        .innerJoin(invoices, eq(invoices.id, payments.invoiceId))
+        .where(and(eq(payments.storeId, storeId), eq(invoices.kind, "monthly")))
+        .orderBy(desc(payments.submittedAt))
+        .limit(1)
+    : [];
+  const missing = last ? openTotalCents - last.amountCents : 0;
   return {
     open,
-    openTotalCents: open.reduce((sum, i) => sum + i.totalCents, 0),
+    openTotalCents,
+    lastRejection:
+      last?.status === "rejected"
+        ? {
+            reason: last.reason ?? "",
+            missingCents: missing > 0 ? missing : null,
+          }
+        : null,
   };
 }
 
@@ -203,7 +234,8 @@ export async function accountView(
     status: store.status,
     statusLabel: STORE_LABEL[store.status],
     membershipCents: settings.membership_cents,
-    nextDueAt: store.nextDueAt,
+    // A fatura aberta vence antes do `next_due_at`, que já andou na abertura (D4).
+    nextDueAt: oldestOpen?.dueAt ?? store.nextDueAt,
     howToPay: {
       pixKey: settings.pix?.key ?? null,
       beneficiary: settings.pix?.beneficiary ?? null,
@@ -230,7 +262,9 @@ export async function accountView(
 export type BillingAlert =
   | { kind: "due"; dueAt: Date; totalCents: number }
   | { kind: "late"; days: number; totalCents: number }
-  | { kind: "suspended"; days: number; totalCents: number; canPay: boolean };
+  | { kind: "suspended"; days: number; totalCents: number }
+  /** Usuário da loja: só que ela está suspensa, sem valor nem pagar. */
+  | { kind: "suspended_staff" };
 
 /**
  * Alerta da fatura no topo do painel (SUB-FR-006, 007, 009): vence em até 3 dias, em
@@ -250,14 +284,12 @@ export async function billingAlert(
   if (!store) return null;
   const owner = can(session, "billing.manage");
   if (!owner)
-    return store.status === "suspended"
-      ? { kind: "suspended", days: 0, totalCents: 0, canPay: false }
-      : null;
+    return store.status === "suspended" ? { kind: "suspended_staff" } : null;
   const open = await openMonthly(deps.db, session.storeId);
-  const totalCents = open.reduce((sum, i) => sum + i.totalCents, 0);
+  const totalCents = totalOf(open);
   const days = open[0] ? daysLate(open[0].dueAt, now) : 0;
   if (store.status === "suspended")
-    return { kind: "suspended", days, totalCents, canPay: true };
+    return { kind: "suspended", days, totalCents };
   if (!open.length) return null;
   const [inReview] = await deps.db
     .select({ id: payments.id })

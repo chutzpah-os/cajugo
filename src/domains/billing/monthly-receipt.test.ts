@@ -4,6 +4,7 @@ import { invoices, notices, payments } from "@/platform/db/schema";
 import { FakeCloudinary } from "@/platform/cloudinary/fake-cloudinary";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import {
+  invoiceView,
   pixView,
   receiptUpload,
   rejectPayment,
@@ -125,6 +126,10 @@ describe("comprovante da fatura mensal", () => {
       .from(invoices)
       .where(eq(invoices.status, "open"));
     expect(open).toHaveLength(2);
+    expect((await invoiceView(deps(), a)).lastRejection).toEqual({
+      reason: "Valor divergente",
+      missingCents: 5_000,
+    });
   });
 
   it("[SUB-SEC-002] total, taxa ou crédito junto com o comprovante são recusados", async () => {
@@ -159,5 +164,25 @@ describe("comprovante da fatura mensal", () => {
       }),
     ).rejects.toMatchObject({ status: 404 });
     expect(await t.db.select().from(payments)).toHaveLength(0);
+  });
+
+  it("[SUB-FR-003] com o comprovante em conferência, o job não marca atraso nem suspende", async () => {
+    // Arrange
+    const a = await payingStore(t.db, "loja-c", {
+      billingDay: 10,
+      nextDueAt: new Date("2026-12-10T03:00:00Z"),
+    });
+    await runBillingCycle(t.db, new Date("2026-12-07T12:00:00Z"));
+    await send(a, 10_000);
+
+    // Act
+    const result = await runBillingCycle(
+      t.db,
+      new Date("2026-12-20T12:00:00Z"),
+    );
+
+    // Assert
+    expect(result.pastDue).toBe(0);
+    expect((await storeRow(t.db, a.storeId)).status).toBe("active");
   });
 });

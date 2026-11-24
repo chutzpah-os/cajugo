@@ -164,3 +164,10 @@ O e2e controla a data pelo seed: o seed põe o vencimento da loja de teste no pa
 - **e2e sem a rota do cron:** o `.env.local` não tem `CRON_SECRET`, então o seed roda o `runBillingCycle` real só na loja de teste da fatura (`scope.storeIds`, para não mexer nas outras lojas do staging); a rota do cron fica coberta pelo teste dela (Vitest).
 - **[6c] da mensal em `/painel/fatura/pix`:** `/lojistas/pagamento` é só da loja recém-cadastrada (`store-access`); as duas telas usam o mesmo `PixPayment`.
 - **Alerta do painel por slot (`banner`)** no `AreaLayout`, como o `navCounts`: `auth` não passa a depender de `billing`.
+
+## Ajustes do /verify
+- **SUB-FR-003:** o job não marca atraso nem suspende a loja com comprovante em conferência.
+- **SUB-FR-005:** [10c] mostra o último comprovante recusado da mensal (motivo e valor faltante), como a [12e], e o reenvio é pelo Pix da fatura.
+- **SUB-FR-010:** a próxima cobrança da Conta é o vencimento da fatura aberta (o `next_due_at` já andou na abertura, D4).
+- **SUB-FR-014:** taxa desfeita que zera a fatura vencida devolve a loja a ativa (`backToActiveIfSettled`, a mesma regra da confirmação).
+- Padrões: total em aberto numa função só (`totalOf`), variante `suspended_staff` no alerta do usuário da loja, `STORES_TAG` de `stores/tags`.

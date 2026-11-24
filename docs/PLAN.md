@@ -139,6 +139,7 @@
 - Antifraude: autoindicação, CPF único por resgate.
 
 ## 011 · Fatura, atraso, suspensão e cancelamento — telas 10c, 12f, 12g, 12h, 4b, 3c
+> ✅ **Implementada** em 2026-11-23 (`docs/specs/011-billing-cycle/`): fatura mensal aberta pelo job 3 dias antes do vencimento (mensalidade + taxas CajuGo das vendas via vendedor − créditos), uma por mês; atraso no dia seguinte e suspensão depois da tolerância, sem mexer em loja com comprovante em conferência; [10c] e Pix da mensal com o total em aberto, quitação da mais antiga e sobra como crédito; alerta no painel e [12f]; Conta [3c]; Assinaturas [4b] com MRR, vencendo em 3 dias, Suspender e Reativar com motivo; taxa de venda desfeita sai da fatura ou vira crédito. Migration `0020` no staging e no prod. Cancelamento e fim da assinatura na 011b.
 - Fatura mensal = mensalidade + taxas Rede Caju − crédito Caju Indica; pagamento pela mesma fila de comprovantes (004).
 - Jobs diários: vencimentos em 3 dias (lista + `wa.me`), `past_due`, suspensão após tolerância, reativação na confirmação, cancelamento no fim do período, arquivamento após retenção, liberação de slug.
 - Cancelar [12h] com desfazer; Assinaturas do admin [4b]; Conta do lojista [3c].

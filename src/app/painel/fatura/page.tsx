@@ -40,6 +40,23 @@ async function Content() {
         </EmptyState>
       ) : (
         <>
+          {view.lastRejection && (
+            <div
+              role="alert"
+              className="rounded-card bg-warn-soft p-4 text-sm text-warn"
+            >
+              <strong className="block">Comprovante recusado</strong>
+              Motivo: {view.lastRejection.reason}.
+              {view.lastRejection.missingCents && (
+                <span className="block">
+                  Valor faltante: {brl(view.lastRejection.missingCents)}
+                </span>
+              )}
+              <span className="block">
+                Envie um novo comprovante pelo Pix abaixo.
+              </span>
+            </div>
+          )}
           {view.open.map((invoice) => (
             <InvoiceCard key={invoice.id} invoice={invoice} />
           ))}
