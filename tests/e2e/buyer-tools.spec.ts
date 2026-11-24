@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 import { simulateInstallment } from "../../src/platform/br/installment";
-import { brl } from "../../src/platform/br/money";
+import { brl, brlWhole } from "../../src/platform/br/money";
 import { E2E_SHOWCASE as S } from "../../src/domains/showcase/testing/e2e-seed";
 import { audit, expect, test } from "./fixtures";
 
@@ -104,11 +104,18 @@ test.describe("ferramentas do comprador (390 px)", () => {
     const heart = card.getByTestId("favorite");
     await expect(heart).toHaveAttribute("aria-pressed", "false");
 
-    await heart.click();
-    await expect(heart).toHaveAttribute("aria-pressed", "true");
+    // Repete até a página hidratar: antes disso o clique não tem efeito.
+    await expect(async () => {
+      if ((await heart.getAttribute("aria-pressed")) !== "true")
+        await heart.click();
+      await expect(heart).toHaveAttribute("aria-pressed", "true", {
+        timeout: 1_000,
+      });
+    }).toPass({ timeout: 20_000 });
     expect(posts, "favoritar não vai ao servidor").toEqual([]);
 
-    await card.getByRole("link", { name: /Ver detalhes/ }).click();
+    // O título é o link do card ([15a]).
+    await card.getByRole("heading").getByRole("link").click();
     await page.waitForURL(/\/v\//);
     // Na navegação do cliente, a vitrine fica escondida no DOM: só o coração visível.
     const pageHeart = page.getByTestId("favorite").filter({ visible: true });
@@ -165,17 +172,19 @@ test.describe("ferramentas do comprador (390 px)", () => {
 
     await page.goto("/");
     // No celular, Favoritos fica no menu [11a].
-    await page.getByRole("button", { name: "Abrir menu" }).click();
-    await page
-      .getByRole("dialog")
-      .getByRole("link", { name: "Favoritos" })
-      .click();
+    const menu = page.getByRole("navigation", { name: "Menu principal" });
+    await expect(async () => {
+      if (!(await menu.isVisible()))
+        await page.getByRole("button", { name: "Abrir menu" }).click();
+      await expect(menu).toBeVisible({ timeout: 2_000 });
+    }).toPass({ timeout: 20_000 });
+    await menu.getByRole("link", { name: "Favoritos" }).click();
     await expect(page).toHaveURL(/\/favoritos$/);
 
     const items = page.locator('[data-testid="favorites-list"] > li');
     await expect(items).toHaveCount(3);
     await expect(items.nth(0)).toContainText("Baixou R$ 4.000");
-    await expect(items.nth(0)).toContainText(brl(FULL_PRICE));
+    await expect(items.nth(0)).toContainText(brlWhole(FULL_PRICE));
     await expect(items.nth(1).getByTestId("favorite")).toHaveAttribute(
       "aria-pressed",
       "true",

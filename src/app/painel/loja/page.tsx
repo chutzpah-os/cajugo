@@ -22,10 +22,13 @@ async function Content() {
   const s = await storeSummary(getDb(), session);
   const cloudinary = getCloudinary();
   return (
-    <section className="flex flex-col gap-4 py-6">
-      <h1 className="text-[22px] font-extrabold">Minha loja</h1>
+    <section className="flex flex-col gap-4 pb-6 lg:pt-2">
+      <h1 className="sr-only lg:not-sr-only lg:text-[26px] lg:font-extrabold lg:tracking-[-0.02em]">
+        Minha loja
+      </h1>
       <StoreSharePanel
         storeName={s.name}
+        subtitle={`${s.address.city} (${s.address.state})`}
         catalogUrl={storeUrl(s.slug)}
         referralUrl={s.referralCode ? referralUrl(s.referralCode) : null}
         referralCode={s.referralCode}

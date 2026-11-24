@@ -65,15 +65,20 @@ export function CatalogView({
         >
           <div className="flex flex-col gap-1.5">
             <div className="flex flex-col gap-1.5 lg:flex-row lg:items-baseline lg:justify-between lg:gap-4">
-              <h1 className="text-xl leading-tight font-extrabold tracking-[-0.02em] text-pretty lg:text-[22px]">
-                {title}
+              <div className="flex flex-col gap-1.5 lg:block">
+                <h1 className="inline text-xl leading-tight font-extrabold tracking-[-0.02em] text-pretty lg:text-[22px]">
+                  {title}
+                </h1>
                 {count && (
-                  <span className="hidden text-[13px] font-semibold tracking-normal text-text-3 lg:inline">
+                  <span
+                    aria-hidden
+                    className="hidden text-[13px] font-semibold text-text-3 lg:inline"
+                  >
                     {" "}
                     · {count}
                   </span>
                 )}
-              </h1>
+              </div>
               <div className="flex items-center justify-between gap-3 lg:justify-end">
                 <p
                   className="text-[13px] text-text-3 lg:sr-only"

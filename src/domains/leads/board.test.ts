@@ -72,7 +72,7 @@ describe("tela Leads", () => {
     expect(board.cards[0].id).toBe(newest);
     expect(board.newCount).toBe(2);
     expect(board.cajugoShare).toBe(75);
-    expect(board.counts).toEqual({
+    expect(board.counts).toMatchObject({
       all: 5,
       new: 2,
       contacting: 1,
@@ -212,7 +212,7 @@ describe("tela Leads", () => {
     // Assert
     expect(board).toEqual({
       cards: [],
-      counts: { all: 0, new: 0, contacting: 0, negotiating: 0 },
+      counts: { all: 0, new: 0, contacting: 0, negotiating: 0, sold: 0 },
       newCount: 0,
       cajugoShare: null,
     });

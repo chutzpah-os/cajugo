@@ -67,7 +67,7 @@ test.describe("páginas de descoberta (390 px)", () => {
     await page.getByTestId("filters-chip").click();
     const sheet = page.getByTestId("filters-sheet");
     await expect(sheet.getByRole("heading", { name: "Marca" })).toHaveCount(0);
-    await sheet.getByRole("button", { name: "Automático" }).click();
+    await sheet.getByText("Automático", { exact: true }).click();
     await expect(sheet.getByTestId("filters-apply")).toHaveText(
       `Ver ${FIAT_AUTOMATIC} veículos`,
     );
@@ -93,18 +93,16 @@ test.describe("páginas de descoberta (390 px)", () => {
     expect(await audit(page), "descoberta: vazia").toEqual(CLEAN);
   });
 
-  test("[DSC-FR-013] índice /carros a partir da vitrine", async ({ page }) => {
-    // Busca sem resultado ainda leva ao índice
-    await page.goto("/?q=nenhum-carro-assim");
-    await expect(page.getByTestId("no-results")).toBeVisible();
+  test("[DSC-FR-013] [DSG-FR-018] índice /carros no ar para o Google, sem link a partir da vitrine", async ({
+    page,
+  }) => {
+    // A busca por marca e por cidade é filtro da própria vitrine (DSG-FR-018).
+    await page.goto("/");
     await expect(
       page.getByRole("link", { name: "Buscar por marca" }),
-    ).toBeVisible();
+    ).toHaveCount(0);
 
-    await page.goto("/");
-    await page.getByRole("link", { name: "Buscar por cidade" }).click();
-
-    await expect(page).toHaveURL(/\/carros#cidades$/);
+    await page.goto("/carros#cidades");
     const cities = page.locator("#cidades");
     await expect(
       cities.getByRole("link", { name: /Recife\/PE/ }),

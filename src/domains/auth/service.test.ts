@@ -1062,6 +1062,7 @@ describe("signIn", () => {
       expect(menu).toEqual({
         name: "Fulano",
         fullName: expect.stringMatching(/^Fulano/),
+        email: "vr@x.com",
         panels: [
           { label: "Rede Caju", href: "/rede" },
           { label: "Caju Indica", href: "/indica" },

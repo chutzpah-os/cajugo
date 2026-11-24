@@ -5,6 +5,7 @@ import { requireStorePage } from "@/domains/auth/guards";
 import { LeadsBoardView } from "@/domains/leads/components/leads-board";
 import { leadsBoard, type LeadFilter } from "@/domains/leads/service";
 import { LEAD_FILTERS } from "@/domains/leads/status";
+import { storeIdentity } from "@/domains/stores/service";
 import { getDb } from "@/platform/db/client";
 
 export const metadata: Metadata = { title: "Leads | CajuGo" };
@@ -18,8 +19,18 @@ async function Content({ searchParams }: PageProps<"/painel/leads">) {
   const sp = await searchParams;
   const filter: LeadFilter = LEAD_FILTERS.find((f) => f === sp.status) ?? "all";
   const now = new Date();
-  const board = await leadsBoard(getDb(), session, filter, now);
-  return <LeadsBoardView board={board} filter={filter} now={now} />;
+  const [board, store] = await Promise.all([
+    leadsBoard(getDb(), session, filter, now),
+    storeIdentity(getDb(), session),
+  ]);
+  return (
+    <LeadsBoardView
+      board={board}
+      filter={filter}
+      now={now}
+      storeName={store?.name}
+    />
+  );
 }
 
 /** Leads [3a] (LED-FR-005 a 010, 014): sem cache, o lead aparece na hora (LED-NFR-003). */

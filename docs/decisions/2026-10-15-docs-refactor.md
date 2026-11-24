@@ -493,3 +493,6 @@
 
 # 2026-11-24 · 012 logo e specs 014/014b
 - Pedido do dono do produto: a CajuGo vende todos os tipos de veículo, e a marca passa a ser 'CajuGo Veículos'.
+
+# 2026-11-24 · 012/T007-T009 Leads, Minha loja, Conta e página da loja
+- Fidelidade às capturas do Turno 03 e [1a] modo lojista; pedidos do dono (filtro Vendido, Vendidos no mês).

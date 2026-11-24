@@ -70,6 +70,8 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
   - o tipo marcado vale para todos os subtipos, e os subtipos aparecem embaixo do tipo marcado;
   - com mais de 5 linhas, a lista rola dentro do grupo.
 
+- **DSG-FR-019** (pedido do dono do produto, 2026-11-24) Leads [3a] tem também o filtro **Vendido**, com a contagem, depois de Negociando.
+
 ## Requisitos não funcionais
 - **DSG-NFR-001** Para cada tela desta spec, fica registrada a comparação lado a lado (captura do design × tela entregue) em 390 px e, quando há versão desktop, em 1280 px, sem nenhuma diferença de estrutura, ordem ou componente que não esteja justificada por escrito.
 - **DSG-NFR-002** A adequação não piora a acessibilidade: alvos de toque ≥ 44 px, sem rolagem horizontal, campos com rótulo e contraste mínimo de 4,5:1 (`DESIGN.md` §7) continuam valendo em todas as telas.
@@ -179,6 +181,11 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
 - **Quando** o visitante marca BMW e desmarca o 320i, e marca Sergipe
 - **Então** a lista mostra só BMW X1 de Aracaju, a BMW aparece "em parte", e nenhuma outra tela abre
 - **E** um grupo com mais de 5 linhas rola dentro dele
+
+### DSG-FR-019
+- **Dado** a loja com um lead Vendido
+- **Quando** o lojista abre Leads
+- **Então** vê o chip "Vendido 1" e, ao tocar, só o lead vendido
 
 ## Pendências
 Nenhuma. Resolvidas no `/clarify` de 2026-11-24, com as opções recomendadas (instrução do dono do produto de seguir sem parar):

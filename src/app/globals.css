@@ -52,3 +52,13 @@ body {
   outline: 2px solid var(--color-ink);
   outline-offset: 2px;
 }
+
+/*
+ * Celular: a barra inferior do painel e o botão "+ Novo veículo" ficam fixos; a
+ * rolagem até um elemento (foco, âncora) para acima deles (DESIGN.md §4, 012).
+ */
+@media (max-width: 1023px) {
+  html {
+    scroll-padding-bottom: 10rem;
+  }
+}

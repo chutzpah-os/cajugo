@@ -481,17 +481,20 @@ export async function accountMenu(
   name: string;
   /** Nome completo, para a sigla do avatar (012). */
   fullName: string;
+  /** E-mail da conta, no perfil da Conta [3c] (012). */
+  email: string;
   panels: { label: string; href: string }[];
 } | null> {
   if (!session) return null;
   const [profile] = await db
-    .select({ name: profiles.name })
+    .select({ name: profiles.name, email: profiles.email })
     .from(profiles)
     .where(eq(profiles.id, session.userId));
   if (!profile) return null;
   return {
     name: profile.name.trim().split(/\s+/)[0],
     fullName: profile.name.trim(),
+    email: profile.email,
     panels: session.roles.map((r) => ({
       label: PANEL_LABEL[r],
       href: PANEL_HREF[r],

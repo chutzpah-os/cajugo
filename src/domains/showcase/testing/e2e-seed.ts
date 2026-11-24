@@ -156,11 +156,18 @@ export async function seedShowcase(
               ? { ...v, id: S.saleTestId }
               : v,
     ),
-    { ...row(storeId, 100, now), id: S.soldId, status: "sold" as const },
+    // Vendidos há 2 dias: entram em "Vendidos no mês" (012).
+    {
+      ...row(storeId, 100, now),
+      id: S.soldId,
+      status: "sold" as const,
+      soldAt: new Date(now.getTime() - 2 * 86_400_000),
+    },
     {
       ...row(storeId, 101, now),
       id: S.statementId,
       status: "sold" as const,
+      soldAt: new Date(now.getTime() - 2 * 86_400_000),
     },
     {
       ...row(suspendedId, 1, now),

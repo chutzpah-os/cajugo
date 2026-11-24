@@ -118,10 +118,12 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     // [1c]: "Vendido" leva à Confirmar venda em [6e].
     await enterAs(page, accounts.showcaseOwner.email, "/painel/veiculos");
     await page.goto("/painel/veiculos?q=C3%20V2");
-    await page
+    const sell = page
       .locator(`a[href="/painel/veiculos/${S.saleTestId}?vender=1"]`)
-      .first()
-      .click();
+      .first();
+    // Fora da barra fixa e do "+ Novo veículo".
+    await sell.evaluate((el) => el.scrollIntoView({ block: "center" }));
+    await sell.click();
     const sheet = page.getByRole("dialog", { name: "Confirmar venda" });
     await expect(sheet).toBeVisible();
     await expect(sheet.getByLabel(`${V.name} (pelo link)`)).toBeChecked();

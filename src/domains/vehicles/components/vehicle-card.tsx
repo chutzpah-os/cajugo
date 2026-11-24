@@ -107,7 +107,8 @@ function ShareSwitch({
         type="checkbox"
         role="switch"
         className="peer sr-only"
-        checked={c.share}
+        // Vendido, rascunho e oculto aparecem desligados, como no design.
+        checked={c.share && v.canShare}
         disabled={disabled}
         aria-label={title ? undefined : `Divulgar ${v.name} na CajuGo`}
         onChange={(e) => c.toggle(e.target.checked)}
@@ -137,33 +138,37 @@ function Actions({
   sellOnPage: boolean;
 }) {
   const hidden = v.status === "hidden";
-  const small =
-    "flex h-[34px] min-w-11 items-center justify-center rounded-[9px] border border-field bg-surface px-2.5 text-xs font-bold";
+  // Área de toque de 44 px (DESIGN.md §4) com o botão visível de 34 px (§3).
+  const hit = "group flex h-11 min-w-11 items-center justify-center";
+  const face =
+    "flex h-[34px] items-center justify-center rounded-[9px] border border-field bg-surface px-2.5 text-xs font-bold group-hover:border-ink";
   return (
-    <div className="flex flex-none gap-1.5">
+    <div className="flex flex-none gap-0.5">
       {v.canSell &&
         (sellOnPage ? (
           <Link
             href={`/painel/veiculos/${v.vehicleId}?vender=1`}
-            className={small}
+            className={hit}
           >
-            Vendido
+            <span className={face}>Vendido</span>
           </Link>
         ) : (
           <button
             type="button"
-            className={small}
+            className={hit}
             onClick={() => c.setConfirm(true)}
           >
-            Vendido
+            <span className={face}>Vendido</span>
           </button>
         ))}
       <Link
         href={`/painel/veiculos/${v.vehicleId}`}
-        className={cn(small, "w-[34px] px-0")}
+        className={hit}
         aria-label={`${hidden ? "Ver" : "Editar"} ${v.name}`}
       >
-        <PencilIcon size={15} />
+        <span className={cn(face, "w-[34px] px-0")}>
+          <PencilIcon size={15} />
+        </span>
       </Link>
     </div>
   );

@@ -31,20 +31,20 @@ export function LeadActions({
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-1 flex-col gap-1">
       <div className="flex items-center gap-2">
         <button
           type="button"
           disabled={busy}
           onClick={() => move("next")}
-          className="flex h-11 flex-1 items-center justify-center rounded-button bg-ink px-3 text-sm font-bold text-white disabled:opacity-60"
+          className="flex h-11 flex-1 items-center justify-center rounded-xl border border-field bg-surface px-3 text-[13px] font-bold disabled:opacity-60"
         >
           → {STATUS_LABEL[next]}
         </button>
         <details className="relative">
           <summary
             aria-label="Mais ações do lead"
-            className="flex size-11 cursor-pointer list-none items-center justify-center rounded-button border border-field text-lg font-bold"
+            className="flex size-11 cursor-pointer list-none items-center justify-center rounded-xl border border-field bg-surface text-lg font-bold"
           >
             ⋯
           </summary>

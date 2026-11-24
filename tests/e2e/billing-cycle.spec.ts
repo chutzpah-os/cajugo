@@ -76,7 +76,9 @@ test.describe("ciclo de cobrança (011)", () => {
 
     // [3c]: plano, status, Como pagar, fatura do mês e a anterior
     await page.goto("/painel/conta");
-    await expect(page.getByText("Plano Catálogo")).toBeVisible();
+    await expect(
+      page.getByTestId("subscription-card").getByText("Plano Catálogo"),
+    ).toBeVisible();
     await expect(page.getByText("Suspensa", { exact: true })).toBeVisible();
     await expect(page.getByText("pix-e2e@cajugo.test")).toBeVisible();
     await expect(page.getByText(/1ª mensalidade · R\$ 100,00/)).toBeVisible();

@@ -105,19 +105,3 @@ export async function DiscoveryIndexView() {
     </main>
   );
 }
-
-/** Atalhos da vitrine para o índice (DSC-FR-013). */
-export function DiscoveryShortcuts() {
-  const link =
-    "flex min-h-11 items-center text-sm font-semibold text-caju-deep underline";
-  return (
-    <nav aria-label="Buscar por marca ou cidade" className="flex gap-4">
-      <Link href="/carros#marcas" className={link}>
-        Buscar por marca
-      </Link>
-      <Link href="/carros#cidades" className={link}>
-        Buscar por cidade
-      </Link>
-    </nav>
-  );
-}

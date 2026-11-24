@@ -45,6 +45,7 @@ export const LEAD_FILTERS = [
   "new",
   "contacting",
   "negotiating",
+  "sold",
 ] as const;
 export type LeadFilter = (typeof LEAD_FILTERS)[number];
 
@@ -53,6 +54,7 @@ export const FILTER_LABEL: Record<LeadFilter, string> = {
   new: STATUS_LABEL.new,
   contacting: STATUS_LABEL.contacting,
   negotiating: STATUS_LABEL.negotiating,
+  sold: STATUS_LABEL.sold,
 };
 
 /** O veículo de um contato em [1b]: o servidor acha a loja; a origem vem da aba (D1). */

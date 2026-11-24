@@ -9,6 +9,8 @@ import { NoResults } from "@/domains/showcase/components/no-results";
 import { RelatedLinks } from "@/domains/showcase/components/related-links";
 import { SortSelect } from "@/domains/showcase/components/sort-select";
 import { StoreIdentity } from "@/domains/showcase/components/store-identity";
+import { HeaderSearch } from "@/domains/showcase/components/catalog-toolbar";
+import Link from "next/link";
 import { Unavailable } from "@/domains/showcase/components/unavailable";
 import {
   cachedDiscoveryLinks,
@@ -104,8 +106,25 @@ export default async function StorePage({
 
   return (
     <>
-      <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 py-6 md:max-w-5xl lg:max-w-6xl">
+      <SiteHeader
+        joined
+        active={null}
+        search={<HeaderSearch filters={filters} basePath={path} />}
+        brand={
+          <Link href={path} className="flex min-h-11 min-w-0 items-center">
+            <StoreIdentity
+              name={page.name}
+              city={page.city}
+              state={page.state}
+              initials={page.initials}
+              logoPublicId={page.logoPublicId}
+              cloudName={cloud}
+              caption="catálogo CajuGo"
+            />
+          </Link>
+        }
+      />
+      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 pb-8 md:max-w-3xl lg:max-w-none lg:px-8 lg:pb-0">
         <JsonLd
           data={autoDealerJsonLd({
             name: page.name,
@@ -129,16 +148,6 @@ export default async function StorePage({
           <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
         )}
         <CatalogVisit storeSlug={page.slug} />
-        <StoreIdentity
-          name={page.name}
-          city={page.city}
-          state={page.state}
-          initials={page.initials}
-          logoPublicId={page.logoPublicId}
-          cloudName={cloud}
-          caption="catálogo CajuGo"
-        />
-        <RelatedLinks links={cityLinks} title="Mais carros na cidade" />
         <CatalogView
           title={`Estoque ${page.name}`}
           count={`${result.total} ${result.total === 1 ? "veículo disponível" : "veículos disponíveis"}`}
@@ -184,6 +193,9 @@ export default async function StorePage({
             )
           }
         />
+        <div className="lg:hidden">
+          <RelatedLinks links={cityLinks} title="Mais carros na cidade" />
+        </div>
       </main>
     </>
   );

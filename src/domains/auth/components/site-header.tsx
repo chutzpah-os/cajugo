@@ -70,10 +70,13 @@ export function SiteHeader({
   search,
   active = "/",
   joined = false,
+  brand,
 }: {
   search?: ReactNode;
   active?: string | null;
   joined?: boolean;
+  /** Identidade da loja no lugar do logo (catálogo da loja, [1a] modo lojista). */
+  brand?: ReactNode;
 }) {
   return (
     <header
@@ -84,13 +87,15 @@ export function SiteHeader({
     >
       <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between gap-4 px-4 md:max-w-3xl lg:max-w-none lg:px-7">
         <div className="flex min-w-0 items-center gap-8">
-          <Link
-            href="/"
-            aria-label="CajuGo, página inicial"
-            className="flex min-h-11 flex-none items-center"
-          >
-            <Logo />
-          </Link>
+          {brand ?? (
+            <Link
+              href="/"
+              aria-label="CajuGo, página inicial"
+              className="flex min-h-11 flex-none items-center"
+            >
+              <Logo />
+            </Link>
+          )}
           {search && <div className="hidden w-[270px] lg:block">{search}</div>}
         </div>
         <div className="flex items-center gap-2 lg:gap-7">

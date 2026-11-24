@@ -127,7 +127,7 @@ test.describe("veículos do lojista", () => {
     // Catálogo mostra sem a placa
     await page.goto("/loja/e2e-loja");
     await expect(catalogCards(page)).toHaveCount(1);
-    await expect(catalogCards(page)).toContainText("R$ 50.000,00");
+    await expect(catalogCards(page)).toContainText("R$ 50.000");
     expect(await page.content()).not.toContain(PLATE);
 
     // Lista: indicadores, filtro, busca por placa e primeiros passos
@@ -140,7 +140,7 @@ test.describe("veículos do lojista", () => {
     await page.getByLabel("Buscar por modelo ou placa").fill(PLATE);
     await page.getByLabel("Buscar por modelo ou placa").press("Enter");
     await expect(page).toHaveURL(/q=ABC1D23/);
-    await expect(page.locator("main ul li")).toHaveCount(1);
+    await expect(page.getByTestId("vehicle-card")).toHaveCount(1);
 
     // Vendido sai do catálogo; desfazer volta
     await page.goto(summaryUrl);

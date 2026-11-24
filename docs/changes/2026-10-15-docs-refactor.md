@@ -1142,3 +1142,6 @@
 
 # 2026-11-24 · 012 logo e specs 014/014b
 - Logo com 'veículos' abaixo de 'cajugo', no formato e na cor do 'go'. Specs 014 (tipos de veículo, clarified) e 014b (descoberta, alertas, admin e cadastro da loja por tipo, draft); PRD [2a]/[3b] e PLAN.
+
+# 2026-11-24 · 012/T007-T009 Leads, Minha loja, Conta e página da loja
+- Leads [3a] com cabeçalho escuro, chips (com Vendido), card do design e ações; Minha loja [3b] com capa, logo sobreposto e card do QR; Conta [3c] com perfil, card escuro da assinatura, Faturas, Sair e Cancelar por último; página da loja com a identidade no cabeçalho; seed com vendidos no mês; toggle desligado no vendido; scroll-padding no celular.

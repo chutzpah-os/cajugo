@@ -76,7 +76,11 @@ test.describe("Caju Indica (010)", () => {
     page,
   }) => {
     await page.goto("/");
-    await page.getByTestId("referral-banner").click();
+    // Card escuro do Caju Indica dentro da grade ([15a], [9a]).
+    await page
+      .getByTestId("referral-banner")
+      .getByRole("link", { name: "Quero indicar" })
+      .click();
     await expect(page).toHaveURL(/\/indica\/cadastro$/);
     await expect(heading(page)).toHaveText("Indique lojas e ganhe");
     expect(await audit(page), "[9b]").toEqual(CLEAN);

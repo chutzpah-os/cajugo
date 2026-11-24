@@ -355,6 +355,7 @@ export async function leadsBoard(
       new: countOf("new"),
       contacting: countOf("contacting"),
       negotiating: countOf("negotiating"),
+      sold: countOf("sold"),
     },
     newCount: countOf("new"),
     cajugoShare: recent.all

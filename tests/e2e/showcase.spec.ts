@@ -51,8 +51,9 @@ test.describe("vitrine e catálogo (390 px)", () => {
     await expect(sheet).toBeVisible();
     expect(await audit(page), "[6d]").toEqual(CLEAN);
 
-    await sheet.getByRole("button", { name: "BMW" }).click();
-    await sheet.getByRole("button", { name: "Automático" }).click();
+    // Filtros em checkbox, com tipo e subtipo (DSG-FR-018).
+    await sheet.getByText("BMW", { exact: true }).click();
+    await sheet.getByText("Automático", { exact: true }).click();
     const apply = sheet.getByTestId("filters-apply");
     await expect(apply).toHaveText(`Ver ${S.bmwAutomatic} veículos`);
     await apply.click();
@@ -107,8 +108,8 @@ test.describe("vitrine e catálogo (390 px)", () => {
       .selectOption({ label: "Menor preço" });
 
     await expect(page).toHaveURL(/ordem=menor-preco/);
-    await expect(cards(page).first()).toContainText("R$ 30.000,00");
-    await expect(cards(page).nth(1)).toContainText("R$ 31.000,00");
+    await expect(cards(page).first()).toContainText("R$ 30.000");
+    await expect(cards(page).nth(1)).toContainText("R$ 31.000");
   });
 
   test("[SHW-FR-007] carrega de 20 em 20, sem repetir, até acabar", async ({
@@ -324,8 +325,8 @@ test.describe("desktop [15a] (1280 px)", () => {
     expect(await audit(page), "[15a]").toEqual(CLEAN);
 
     const side = page.getByTestId("filters-side");
-    await side.getByRole("button", { name: "BMW" }).click();
-    await side.getByRole("button", { name: "Automático" }).click();
+    await side.getByText("BMW", { exact: true }).click();
+    await side.getByText("Automático", { exact: true }).click();
     const apply = side.getByTestId("filters-apply");
     await expect(apply).toHaveText(`Ver ${S.bmwAutomatic} veículos`);
     await apply.click();
