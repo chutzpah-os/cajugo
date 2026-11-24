@@ -1109,3 +1109,6 @@
 
 # 2026-11-24 · 011b/T010 telas no servidor
 - subscriptionsView com os filtros cancelamento e canceladas (fim e motivo), contagens e a mudança de mensalidade agendada (settings.upcomingSetting); accountView.cancel; billingAlert ending (Desfazer só para o dono); showcase.storePage → gone para a cancelada.
+
+# 2026-11-24 · 011b/T011 tela do cancelamento
+- Conta [3c]: Cancelar assinatura → [12h] (ConfirmSheet com as consequências e o motivo), o fim agendado com Desfazer e Reassinar; aviso do painel 'Sua assinatura termina em dd/mm' com Desfazer só para o dono; cancelSubscriptionAction, undoCancelAction, resubscribeAction.

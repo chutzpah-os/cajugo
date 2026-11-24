@@ -13,15 +13,18 @@ import {
   type SignedUpload,
 } from "@/platform/cloudinary/cloudinary";
 import {
+  cancelSubscription,
   confirmPayment,
   findStoresToCharge,
   receiptUpload,
   registerManualPayment,
   reactivateStore,
   rejectPayment,
+  resubscribe,
   startCheckout,
   suspendStore,
   submitReceipt,
+  undoCancel,
   type StoreHit,
 } from "./service";
 
@@ -209,6 +212,49 @@ export async function reactivateStoreAction(input: {
     await reactivateStore({ db: getDb() }, await currentSession(), input);
     updateTag(STORES_TAG);
     updateTag(VEHICLES_TAG);
+    return { ok: true };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/**
+ * **Cancelar assinatura** [12h] (CAN-FR-002, CAN-FR-009): agendada, a loja continua no
+ * ar; em atraso ou suspensa, sai do ar agora.
+ */
+export async function cancelSubscriptionAction(input: {
+  reason?: string;
+}): Promise<ReviewResult> {
+  try {
+    const { status } = await cancelSubscription(
+      { db: getDb() },
+      await currentSession(),
+      input,
+    );
+    if (status === "canceled") {
+      updateTag(STORES_TAG);
+      updateTag(VEHICLES_TAG);
+    }
+    return { ok: true };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/** **Desfazer cancelamento** (CAN-FR-003). */
+export async function undoCancelAction(): Promise<ReviewResult> {
+  try {
+    await undoCancel({ db: getDb() }, await currentSession());
+    return { ok: true };
+  } catch (error) {
+    return reviewError(error);
+  }
+}
+
+/** **Reassinar** (CAN-FR-006): segue para a 1ª mensalidade [5d]. */
+export async function resubscribeAction(): Promise<ReviewResult> {
+  try {
+    await resubscribe({ db: getDb() }, await currentSession());
     return { ok: true };
   } catch (error) {
     return reviewError(error);

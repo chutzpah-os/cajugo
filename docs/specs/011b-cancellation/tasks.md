@@ -79,7 +79,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   · _CAN-FR-010, CAN-FR-001, CAN-SEC-005_
 
 ## Fase 3 — Telas
-- [ ] **T011** Conta [3c]:
+- [x] **T011** Conta [3c]:
   - **Cancelar assinatura** → [12h] (ConfirmSheet com as consequências e o motivo);
   - aviso do painel "Sua assinatura termina em dd/mm" com **Desfazer**;
   - loja cancelada com **Reassinar**.

@@ -460,3 +460,6 @@
 
 # 2026-11-24 · 011b/T010 telas no servidor
 - Os dados das telas [3c], [4b] e do aviso ficam prontos e testados antes dos componentes.
+
+# 2026-11-24 · 011b/T011 tela do cancelamento
+- O lojista cancela e desfaz sozinho, sem falar com a CajuGo (CAN-FR-001..003, 006).

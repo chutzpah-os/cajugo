@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { brl } from "@/platform/br/money";
 import type { BillingAlert } from "../service";
+import { UndoCancelButton } from "./cancellation";
 
 const brDay = new Intl.DateTimeFormat("pt-BR", {
   timeZone: "America/Sao_Paulo",
@@ -16,6 +17,22 @@ export const MONTHLY_PIX_PATH = "/painel/fatura/pix";
 /** Alerta da fatura no topo do painel (SUB-FR-006, 007, 009; [12f]). */
 export function BillingAlertBanner({ alert }: { alert: BillingAlert | null }) {
   if (!alert) return null;
+  // Cancelamento agendado (CAN-FR-003): o fim e o Desfazer, só para o dono.
+  if (alert.kind === "ending")
+    return (
+      <div
+        role="status"
+        className="mt-3 flex flex-col gap-1 rounded-card bg-warn-soft p-4 text-sm text-warn"
+      >
+        <strong className="block">
+          {alert.canUndo
+            ? `Sua assinatura termina em ${brDay.format(alert.until)}`
+            : `A assinatura da loja termina em ${brDay.format(alert.until)}`}
+        </strong>
+        A loja continua no ar até lá. Depois, catálogo e veículos saem do ar.
+        {alert.canUndo && <UndoCancelButton />}
+      </div>
+    );
   const [title, text] =
     alert.kind === "due"
       ? [

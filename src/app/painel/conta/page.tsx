@@ -4,7 +4,8 @@ import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireStorePage } from "@/domains/auth/guards";
 import { can } from "@/domains/auth/service";
 import { AccountSubscription } from "@/domains/billing/components/account-subscription";
-import { accountView } from "@/domains/billing/service";
+import { CancelSubscription } from "@/domains/billing/components/cancellation";
+import { accountView, CANCEL_REASONS } from "@/domains/billing/service";
 import { NetworkBlock } from "@/domains/sellers/components/network-block";
 import { networkSummary } from "@/domains/sellers/service";
 import { getDb } from "@/platform/db/client";
@@ -29,6 +30,9 @@ async function Content() {
   return (
     <section className="flex flex-col gap-4 py-6">
       <h1 className="text-[22px] font-extrabold">Conta</h1>
+      {account.cancel && account.cancel.kind !== "available" && (
+        <CancelSubscription cancel={account.cancel} reasons={CANCEL_REASONS} />
+      )}
       <AccountSubscription view={account} />
       {network && <NetworkBlock {...network} />}
       {can(session, "store.referral") && (
@@ -59,11 +63,17 @@ async function Content() {
           </div>
         </section>
       )}
+      {account.cancel?.kind === "available" && (
+        <CancelSubscription cancel={account.cancel} reasons={CANCEL_REASONS} />
+      )}
     </section>
   );
 }
 
-/** Conta do lojista [3c] (SUB-FR-010): assinatura, Como pagar, faturas e Rede Caju. */
+/**
+ * Conta do lojista [3c] (SUB-FR-010): assinatura, Como pagar, faturas e Rede Caju;
+ * Cancelar assinatura [12h], o fim agendado e Reassinar (011b).
+ */
 export default function Page() {
   return (
     <AreaPage>
