@@ -1019,3 +1019,6 @@
 
 # 2026-11-23 · Desfazer o Recebi [008b/T006]
 - Desfazer em até 24 h volta a A receber; depois 409 'fale com a CajuGo'; comissão marcada paga pela loja não desfaz; aviso à loja e registro; canUndoUntil no extrato.
+
+# 2026-11-23 · Painel do vendedor com vendas [008b/T007]
+- sellerHome traz a receber, vendas do mês (São Paulo) e as 5 últimas, sem as desfeitas; confirmSale avisa o vendedor (veículo, loja, comissão).

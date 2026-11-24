@@ -35,6 +35,8 @@ import {
   type PublicCard,
 } from "@/domains/showcase/service";
 import { refundSaleFee } from "@/domains/billing/service";
+import { notify } from "@/domains/notices/service";
+import { sellerSalesSummary, type StatementItem } from "./statement";
 import { getSettings } from "@/domains/settings/service";
 import { LIVE_STATUSES } from "@/domains/stores/service";
 import {
@@ -372,6 +374,10 @@ export type SellerHome =
       code: string;
       clicksThisMonth: number;
       stores: { storeId: string; name: string; status: PartnerState }[];
+      /** 008b: soma das comissões "A receber". */
+      toReceiveCents: number;
+      salesThisMonth: number;
+      recentSales: StatementItem[];
     };
 
 /**
@@ -420,6 +426,7 @@ export async function sellerHome(
     kind: "panel",
     code: me.code,
     clicksThisMonth: clicks?.n ?? 0,
+    ...(await sellerSalesSummary(db, me.profileId, now)),
     stores: rows.map((r) => ({
       storeId: r.storeId,
       name: r.name,
@@ -1266,6 +1273,9 @@ async function saleVehicle(db: Db, storeId: string, vehicleId: string) {
       commissionType: stores.commissionType,
       commissionValue: stores.commissionValue,
       acceptsSellers: stores.acceptsSellers,
+      make: vehicles.make,
+      model: vehicles.model,
+      storeName: stores.name,
     })
     .from(vehicles)
     .innerJoin(stores, eq(stores.id, vehicles.storeId))
@@ -1426,6 +1436,19 @@ export async function confirmSale(
         feeCents,
       },
     });
+    // O vendedor vê a venda no painel (EXT-FR-006).
+    if (sellerId)
+      await notify(
+        tx,
+        sellerId,
+        {
+          kind: "sale_confirmed",
+          vehicle: shortTitle(v),
+          store: v.storeName,
+          commissionCents: commissionCents ?? 0,
+        },
+        now,
+      );
     return { saleId: sale.id };
   });
 }

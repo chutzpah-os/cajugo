@@ -95,6 +95,9 @@ describe("início do vendedor [7b]", () => {
         { storeId: a.storeId, name: "Loja loja-a", status: "partner" },
         { storeId: b.storeId, name: "Loja loja-b", status: "pending" },
       ],
+      toReceiveCents: 0,
+      salesThisMonth: 0,
+      recentSales: [],
     });
   });
 

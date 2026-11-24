@@ -56,7 +56,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   - `canUndoUntil` no item.
 
   · _EXT-FR-009, EXT-FR-010, EXT-SEC-004_
-- [ ] **T007** `sellerHome` com a receber, vendas do mês (São Paulo) e as 5 últimas, sem as desfeitas; aviso `sale_confirmed` no `confirmSale` (009).
+- [x] **T007** `sellerHome` com a receber, vendas do mês (São Paulo) e as 5 últimas, sem as desfeitas; aviso `sale_confirmed` no `confirmSale` (009).
 
   · _EXT-FR-005, EXT-FR-006, EXT-FR-007, EXT-FR-008_
 

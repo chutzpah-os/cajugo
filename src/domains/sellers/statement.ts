@@ -1,4 +1,16 @@
-import { and, count, desc, eq, isNull, lt, or, type SQL } from "drizzle-orm";
+import {
+  and,
+  count,
+  desc,
+  eq,
+  gte,
+  isNull,
+  lt,
+  or,
+  sum,
+  type SQL,
+} from "drizzle-orm";
+import { saoPauloMonthStart } from "@/domains/billing/service";
 import { z } from "zod";
 import { authorizeTo } from "@/domains/auth/service";
 import { notifyStore } from "@/domains/notices/service";
@@ -252,4 +264,31 @@ export async function setCommissionReceived(
       entityId: sale.id,
     });
   });
+}
+
+/** Totais do painel [7b] (EXT-FR-005, 007, 008): a receber, vendas do mês e as 5 últimas. */
+export async function sellerSalesSummary(
+  db: Db,
+  sellerId: string,
+  now: Date,
+): Promise<{
+  toReceiveCents: number;
+  salesThisMonth: number;
+  recentSales: StatementItem[];
+}> {
+  const mine = liveSalesOf(sellerId);
+  const [due] = await db
+    .select({ cents: sum(sales.commissionCents).mapWith(Number) })
+    .from(sales)
+    .where(and(mine, eq(sales.commissionStatus, "to_receive")));
+  const [month] = await db
+    .select({ n: count() })
+    .from(sales)
+    .where(and(mine, gte(sales.createdAt, saoPauloMonthStart(now))));
+  const recent = await statementRows(db, mine).limit(5);
+  return {
+    toReceiveCents: due?.cents ?? 0,
+    salesThisMonth: month?.n ?? 0,
+    recentSales: recent.map((r) => toItem(r, now)),
+  };
 }
