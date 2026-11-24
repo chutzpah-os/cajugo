@@ -1151,3 +1151,6 @@
 
 # 2026-11-24 · 012 simulador [14b], avisos compactos e marcas mais procuradas
 - Simulador em tela cheia como no [14b] (veículo, card escuro da parcela, Entrada/Prazo, taxa e total, envio no rodapé); avisos do painel em linhas compactas, 3 à mostra e 'Ver todos'; marcas mais vendidas no Brasil no topo do cadastro [2a]; spec 014 com o Histórico do veículo (leilão, financeira, GNV, sinistro…) e PRD [2a].
+
+# 2026-11-24 · 012 marcas de carro na ordem do dono e anexo de marcas na 014
+- Lista 'Mais procuradas' do cadastro [2a] na ordem enviada pelo dono (Fiat … GWM, Gurgel); spec 014 ganha TIP-FR-019 e o anexo com as marcas de moto, ônibus (chassi e carroceria), caminhão e trator.

@@ -90,6 +90,8 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   Tem também **Sinistro com indenização**: Nenhum, Pequena monta, Média monta ou Grande monta.
 - **TIP-FR-018** A página do veículo [1b] mostra o Histórico do veículo, com o que o lojista informou e "Não informado" no resto. A vitrine [1a] tem o filtro **Sem passagem por leilão** e **Sem sinistro**.
 
+- **TIP-FR-019** (pedido do dono do produto, 2026-11-24) Em cada tipo, a lista de marcas começa pelas **mais procuradas no Brasil**, nesta ordem, e depois traz todas as outras (anexo "Marcas por tipo"). No ônibus, o cadastro pede a **marca do chassi** e a **marca da carroceria**.
+
 ## Requisitos não funcionais
 - **TIP-NFR-001** As telas novas e as mudadas ([3b], [2a], filtros, [1b]) funcionam em 390 px e em 1280 px, com alvos de toque de pelo menos 44 px, e seguem o design (012).
 - **TIP-NFR-002** Trocar o tipo no cadastro [2a] mostra os campos dele na hora, sem recarregar a página.
@@ -198,6 +200,20 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **Dado** a Loja A, que vende só Carro
 - **Quando** alguém envia um veículo do tipo Trator, ou um carro com "Horas de uso", por fora da tela
 - **Então** o cadastro recusa com o erro no campo e nada é salvo
+
+### TIP-FR-019
+- **Dado** o cadastro de uma moto
+- **Quando** o lojista abre a lista de marcas
+- **Então** as primeiras são Honda, Yamaha, Shineray e Dafra, e as outras vêm depois
+- **E** num ônibus, aparecem os campos marca do chassi (ex.: Mercedes-Benz) e marca da carroceria (ex.: Marcopolo)
+
+## Anexo · Marcas por tipo (mais procuradas, nesta ordem)
+- **Carro** (FIPE): Fiat, Volkswagen, Chevrolet, Toyota, Hyundai, Renault, Honda, Nissan, Jeep, Caoa Chery, Ford, Peugeot, Citroën, BMW, Mercedes-Benz, Audi, Volvo, Kia, BYD, GWM, Gurgel. _Já em uso no cadastro (012)._
+- **Moto e scooter** (FIPE de motos): Honda, Yamaha, Shineray, Dafra, Haojue, Bajaj, BMW Motorrad, Kawasaki, Suzuki, Triumph, Ducati, Harley-Davidson, Royal Enfield, KTM, Zontes, Kymco, Hisun.
+- **Ônibus · chassi** (FIPE de caminhões): Mercedes-Benz, Volkswagen Caminhões e Ônibus, Volvo, Scania, Iveco, Agrale.
+- **Ônibus · carroceria** (lista da CajuGo): Marcopolo, Caio, Comil, Busscar, Mascarello, Neobus, Induscar.
+- **Caminhão** (FIPE de caminhões): Mercedes-Benz, Volkswagen Caminhões e Ônibus, Volvo, Scania, Iveco, DAF, Ford Trucks, Agrale, Foton, Shacman.
+- **Trator** (lista da CajuGo): John Deere, New Holland Agriculture, Massey Ferguson, Valtra, Case IH, Fendt, Agrale, LS Tractor, Mahindra, Kubota, Yanmar, Landini, Solis.
 
 ## Pendências
 Nenhuma. Resolvidas no `/clarify` de 2026-11-24 com as opções recomendadas (instrução do dono do produto de seguir sem parar):

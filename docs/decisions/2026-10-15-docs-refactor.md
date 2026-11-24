@@ -502,3 +502,6 @@
 
 # 2026-11-24 · 012 simulador [14b], avisos compactos e marcas mais procuradas
 - Pedidos do dono do produto: tela de simulação, avisos tomando a tela do admin, marcas do Brasil e mais informações do veículo.
+
+# 2026-11-24 · 012 marcas de carro na ordem do dono e anexo de marcas na 014
+- Pedido do dono do produto com as principais marcas do Brasil por tipo.

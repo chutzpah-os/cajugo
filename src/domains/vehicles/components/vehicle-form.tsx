@@ -30,7 +30,8 @@ import { priceVsFipe } from "../price";
 import type { VehicleFormView } from "../service";
 
 /**
- * Marcas mais vendidas no Brasil (Fenabrave, 2025), no topo da lista da FIPE (012):
+ * Marcas mais procuradas no Brasil, na ordem do dono do produto (2026-11-24), no topo
+ * da lista da FIPE (012):
  * o nome da FIPE contém a chave (ex.: "GM - Chevrolet", "VW - VolksWagen").
  */
 const POPULAR_BRANDS = [
@@ -39,23 +40,22 @@ const POPULAR_BRANDS = [
   "chevrolet",
   "toyota",
   "hyundai",
-  "jeep",
   "renault",
   "honda",
   "nissan",
-  "byd",
+  "jeep",
   "chery",
   "ford",
   "peugeot",
   "citro",
-  "mitsubishi",
-  "gwm",
-  "ram",
-  "kia",
   "bmw",
   "mercedes",
   "audi",
   "volvo",
+  "kia",
+  "byd",
+  "gwm",
+  "gurgel",
 ];
 
 export function popularBrands(
