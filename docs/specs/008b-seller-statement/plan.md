@@ -126,3 +126,9 @@ O seed do e2e já tem a vendedora E2EVENDE como parceira da loja da vitrine. Ele
 - [x] Consultas com índice (`sales_seller_created`)
 - [x] Migration só acrescenta; nenhuma dependência nova
 - [x] D1–D4 aprovadas em 2026-11-23
+
+## Ajustes do /implement
+- `LoadMoreButton` ganhou `noun` ("Carregar mais vendas" no extrato); o padrão continua "veículos".
+- Seed: um veículo vendido a mais na vitrine (`E2E_SHOWCASE.statementId`) para a venda "A receber" da E2EVENDE; a "Paga" usa o vendido que já existia.
+- O vendedor bloqueado ganhou o link "Ver extrato" no aviso de conta bloqueada (SEL-FR-002).
+- Rastreabilidade: os 16 requisitos com teste (integração, componente e e2e), todos passando.

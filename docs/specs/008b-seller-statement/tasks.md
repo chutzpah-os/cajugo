@@ -83,6 +83,6 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   · _EXT-FR-001…010, EXT-NFR-001_
 
 ## Fase 4 — Fechamento
-- [ ] **T011** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0021` no prod só com a sua autorização.
+- [x] **T011** `/verify`: rastreabilidade verde; status da spec `implemented` e `docs/PLAN.md`. A migration `0021` no prod só com a sua autorização.
 
   · _—_

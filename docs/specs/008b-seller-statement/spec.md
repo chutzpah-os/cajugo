@@ -2,7 +2,7 @@
 id: 008b
 slug: seller-statement
 title: Rede Caju · extrato do vendedor
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-23
 ---

@@ -130,6 +130,7 @@
 - **Confirmar venda** [7g]: atribuição, valor final, comissão (A receber/Paga), **taxa CajuGo** registrada para a próxima fatura; veículo sai de todos os lugares.
 
 ## 008b · Rede Caju: extrato do vendedor — tela 7d
+> ✅ **Implementada** em 2026-11-23 (`docs/specs/008b-seller-statement/`): Extrato [7d] com filtros Todas · A receber · Pagas (na URL, com contagens), valor final e comissão, **Recebi** com confirmação e **Desfazer** por 24 h, Carregar mais; painel [7b] com a receber, vendas do mês e últimas vendas; aviso ao vendedor na venda confirmada e à loja no Recebi e no desfazer. Migration `0021` no staging (prod com autorização).
 - Extrato com filtros (Todas · A receber · Em análise · Pagas) e **Recebi**; "a receber", vendas do mês e últimas vendas no painel [7b]. Dividida da 008 no `/clarify` de 2026-11-16: depende da Confirmar venda [7g] da 009.
 
 ## 010 · Caju Indica — telas 8a–8g, 9a, 9b, 9d, 9e
