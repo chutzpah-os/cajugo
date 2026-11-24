@@ -40,6 +40,21 @@ describe("status real no proxy", () => {
     expect(await gateDecision(t.db, "/loja/nao-existe")).toBe("not-found");
   });
 
+  it("[CAN-SEC-005] loja cancelada: `gone` (404 com o texto próprio); arquivada: como inexistente", async () => {
+    const a = await liveStore(t.db, "loja-fim");
+    await t.db
+      .update(stores)
+      .set({ status: "canceled" })
+      .where(eq(stores.id, a.storeId));
+
+    expect(await gateDecision(t.db, "/loja/loja-fim")).toBe("gone");
+    await t.db
+      .update(stores)
+      .set({ status: "archived", slug: "arquivada-x" })
+      .where(eq(stores.id, a.storeId));
+    expect(await gateDecision(t.db, "/loja/loja-fim")).toBe("not-found");
+  });
+
   it("[SHW-FR-014] veículo: endereço atual passa; texto desatualizado e formato antigo redirecionam", async () => {
     const a = await liveStore(t.db, "loja-a");
     const v = await car(t.db, a.storeId);

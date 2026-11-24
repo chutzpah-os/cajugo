@@ -115,6 +115,7 @@ Seed do e2e: uma loja de teste própria para cancelar e desfazer ("Cancela E2E")
 - **D2.** O arquivamento roda no job diário e recebe `auth` (admin do Supabase) e `cloudinary`; o cron passa a criar esses clientes.
 - **D3.** Editar plano = valor de `membership_cents` com vigência futura (ADR 0010), sem tabela de planos.
 - **D4.** A loja cancelada responde 404 pelo `not-found.tsx` do segmento `/loja/[slug]`, com o texto "Esta loja não está mais na CajuGo" (vale também para endereço inexistente, que hoje é genérico).
+  - _Ajuste na implementação (2026-11-24):_ pelo ADR 0013, só o proxy garante o 404 de verdade. O gate devolve `gone`, o proxy reescreve para o 404 global com o cabeçalho `x-cajugo-not-found: store-gone`, e o `app/not-found.tsx` mostra "Esta loja não está mais na CajuGo". Endereço inexistente e loja arquivada continuam com o 404 genérico (CAN-SEC-005).
 - **D5.** Os motivos de cancelamento são uma lista fixa no código (texto, não regra numérica).
 - **D6** (na implementação, 2026-11-24). O índice único `invoices_first_per_store` (uma 1ª mensalidade por loja, para sempre) vira `invoices_first_open_per_store` (uma 1ª mensalidade **aberta** por vez), na migration `0023`: reassinar abre uma nova 1ª mensalidade. Não apaga dado.
 - **D7** (na implementação, 2026-11-24). No arquivamento:

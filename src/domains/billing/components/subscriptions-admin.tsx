@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge, type BadgeTone } from "@/ui/badge";
 import { ButtonLink } from "@/ui/button";
 import { EmptyState } from "@/ui/empty-state";
+import { EditPlanButton } from "./edit-plan";
 import { brl } from "@/platform/br/money";
 import type {
   SubscriptionFilter,
@@ -25,6 +26,8 @@ const FILTERS: [SubscriptionFilter, string][] = [
   ["em-dia", "Em dia"],
   ["atrasadas", "Atrasadas"],
   ["suspensas", "Suspensas"],
+  ["cancelamento", "Cancelamento agendado"],
+  ["canceladas", "Canceladas"],
 ];
 
 const BADGE: Record<SubscriptionItem["status"], [string, BadgeTone]> = {
@@ -82,6 +85,18 @@ function Card({ item }: { item: SubscriptionItem }) {
       {line.kind === "suspended" && (
         <p className="text-sm font-semibold text-warn">
           Catálogo e vitrine · Fora do ar
+        </p>
+      )}
+      {line.kind === "canceling" && (
+        <p className="text-sm">
+          Termina em {brDay.format(line.until)}
+          {line.reason && ` · ${line.reason}`}
+        </p>
+      )}
+      {line.kind === "canceled" && (
+        <p className="text-sm text-text-2">
+          Cancelada em {brDay.format(line.at)}
+          {line.reason && ` · ${line.reason}`}
         </p>
       )}
       <div className="flex flex-col gap-2">
@@ -145,12 +160,21 @@ export function SubscriptionsAdmin({ view }: { view: SubscriptionsView }) {
         ))}
       </div>
 
-      <section className="rounded-card border border-line bg-surface p-4">
+      <section className="flex flex-col gap-2 rounded-card border border-line bg-surface p-4">
         <p className="font-bold">{view.plan.name}</p>
         <p className="text-sm text-text-2">
           {brl(view.plan.membershipCents)}/mês · {view.plan.stores}{" "}
           {view.plan.stores === 1 ? "loja" : "lojas"}
         </p>
+        {view.plan.upcoming && (
+          <p className="text-sm font-semibold" data-testid="plan-upcoming">
+            Passa a {brl(view.plan.upcoming.membershipCents)} a partir de{" "}
+            {brDate.format(view.plan.upcoming.validFrom)}
+          </p>
+        )}
+        {view.plan.canEdit && (
+          <EditPlanButton earliest={view.plan.earliestChange} />
+        )}
       </section>
 
       {view.dueSoon.length > 0 && (

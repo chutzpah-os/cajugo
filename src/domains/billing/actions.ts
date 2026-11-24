@@ -15,6 +15,7 @@ import {
 import {
   cancelSubscription,
   confirmPayment,
+  editPlan,
   findStoresToCharge,
   receiptUpload,
   registerManualPayment,
@@ -25,8 +26,10 @@ import {
   suspendStore,
   submitReceipt,
   undoCancel,
+  type PlanChangeStore,
   type StoreHit,
 } from "./service";
+import { reaisToCents } from "@/platform/br/money";
 
 export type FormState = {
   ok: boolean;
@@ -258,5 +261,26 @@ export async function resubscribeAction(): Promise<ReviewResult> {
     return { ok: true };
   } catch (error) {
     return reviewError(error);
+  }
+}
+
+export type EditPlanResult =
+  | { ok: true; stores: PlanChangeStore[] }
+  | { ok: false; message?: string; errors: Record<string, string> };
+
+/** **Editar plano** [4b] (CAN-FR-011): o valor chega em reais e vira centavos aqui. */
+export async function editPlanAction(input: {
+  amount: string;
+  validFrom: string;
+}): Promise<EditPlanResult> {
+  try {
+    const { stores } = await editPlan({ db: getDb() }, await currentSession(), {
+      membershipCents: reaisToCents(input.amount),
+      validFrom: input.validFrom,
+    });
+    return { ok: true, stores };
+  } catch (error) {
+    const r = reviewError(error);
+    return r.ok ? { ok: false, errors: {} } : r;
   }
 }

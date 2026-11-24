@@ -827,6 +827,7 @@ export async function gateDecision(
   if (parts[0] === "loja" && parts.length === 2) {
     const page = await storePage(db, parts[1]);
     if (!page) return "not-found";
+    if (page.kind === "gone") return "gone";
     return page.kind === "redirect" ? { redirect: page.to } : "ok";
   }
   return "ok";

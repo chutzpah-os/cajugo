@@ -1112,3 +1112,6 @@
 
 # 2026-11-24 · 011b/T011 tela do cancelamento
 - Conta [3c]: Cancelar assinatura → [12h] (ConfirmSheet com as consequências e o motivo), o fim agendado com Desfazer e Reassinar; aviso do painel 'Sua assinatura termina em dd/mm' com Desfazer só para o dono; cancelSubscriptionAction, undoCancelAction, resubscribeAction.
+
+# 2026-11-24 · 011b/T012 404 da loja cancelada e [4b]
+- Gate gone → proxy reescreve para o 404 com x-cajugo-not-found; not-found.tsx mostra 'Esta loja não está mais na CajuGo'. [4b]: filtros Cancelamento agendado e Canceladas, linhas com fim e motivo, mudança agendada e Editar plano (editPlanAction, lista de wa.me).

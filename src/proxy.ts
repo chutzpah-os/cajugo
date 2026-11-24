@@ -3,7 +3,7 @@ import { gateDecision } from "@/domains/showcase/service";
 import { parseRefCode, REF_COOKIE, REF_MAX_AGE } from "@/domains/showcase/urls";
 import { getDb } from "@/platform/db/client";
 import { isProtectedPath, loginUrl } from "@/platform/http/protected-paths";
-import { createGate } from "@/platform/http/public-gate";
+import { createGate, NOT_FOUND_HEADER } from "@/platform/http/public-gate";
 import {
   createSupabaseServerClient,
   withSessionMaxAge,
@@ -40,6 +40,14 @@ export async function proxy(request: NextRequest) {
     const decision = await gate(path);
     if (decision === "not-found")
       return NextResponse.rewrite(new URL("/_nao-encontrado", request.url));
+    // Loja cancelada (011b, CAN-SEC-005): 404 de verdade, com o texto próprio.
+    if (decision === "gone") {
+      const headers = new Headers(request.headers);
+      headers.set(NOT_FOUND_HEADER, "store-gone");
+      return NextResponse.rewrite(new URL("/_nao-encontrado", request.url), {
+        request: { headers },
+      });
+    }
     if (decision !== "ok")
       return NextResponse.redirect(
         new URL(`${decision.redirect}${request.nextUrl.search}`, request.url),

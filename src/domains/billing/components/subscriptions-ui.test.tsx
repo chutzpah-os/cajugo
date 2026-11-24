@@ -7,6 +7,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh() {} }) }));
 vi.mock("../actions", () => ({
   suspendStoreAction: vi.fn(),
   reactivateStoreAction: vi.fn(),
+  editPlanAction: vi.fn(),
 }));
 
 const text = (html: string) =>
@@ -35,6 +36,8 @@ const view = (decide: boolean): SubscriptionsView => ({
     membershipCents: 10_000,
     stores: 5,
     upcoming: null,
+    canEdit: decide,
+    earliestChange: "2027-01-14",
   },
   dueSoon: [],
   items: [
@@ -91,5 +94,67 @@ describe("assinaturas do admin [4b]", () => {
     expect(html).not.toContain("subscription-suspend");
     expect(html).not.toContain("subscription-reactivate");
     expect(html).toContain("wa.me");
+  });
+
+  it("[CAN-FR-010] [CAN-NFR-001] filtros Cancelamento agendado e Canceladas; linha com o fim e o motivo", () => {
+    const html = renderToStaticMarkup(
+      <SubscriptionsAdmin
+        view={{
+          ...view(true),
+          filter: "cancelamento",
+          items: [
+            item({
+              name: "Loja A",
+              status: "cancel_scheduled",
+              whatsappUrl: null,
+              line: {
+                kind: "canceling",
+                until: new Date("2026-12-10T03:00:00Z"),
+                reason: "Vou parar de vender",
+              },
+            }),
+            item({
+              name: "Loja C",
+              status: "canceled",
+              whatsappUrl: null,
+              line: {
+                kind: "canceled",
+                at: new Date("2026-11-30T12:00:00Z"),
+                reason: null,
+              },
+            }),
+          ],
+        }}
+      />,
+    );
+
+    const t = text(html);
+    expect(html).toContain('href="/admin/assinaturas?filtro=cancelamento"');
+    expect(html).toContain('href="/admin/assinaturas?filtro=canceladas"');
+    expect(t).toContain("Cancelamento agendado");
+    expect(t).toContain("Termina em 10/12 · Vou parar de vender");
+    expect(t).toContain("Cancelada em 30/11");
+  });
+
+  it("[CAN-FR-011] [CAN-SEC-002] Editar plano só para o admin; mudança agendada aparece para todos", () => {
+    const upcoming = {
+      membershipCents: 12_000,
+      validFrom: new Date("2027-02-01T03:00:00Z"),
+    };
+    const admin = renderToStaticMarkup(
+      <SubscriptionsAdmin
+        view={{ ...view(true), plan: { ...view(true).plan, upcoming } }}
+      />,
+    );
+    const support = renderToStaticMarkup(
+      <SubscriptionsAdmin
+        view={{ ...view(false), plan: { ...view(false).plan, upcoming } }}
+      />,
+    );
+
+    expect(admin).toContain('data-testid="edit-plan"');
+    expect(admin).toContain('min="2027-01-14"');
+    expect(text(support)).toContain("Passa a R$ 120,00 a partir de 01/02/2027");
+    expect(support).not.toContain('data-testid="edit-plan"');
   });
 });

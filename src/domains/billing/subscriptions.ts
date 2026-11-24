@@ -14,6 +14,7 @@ import { BILLED_STATUSES, notifyStatusChange } from "./cycle";
 import { daysLate, dueSoon, isOverdue } from "./cycle-dates";
 import { totalOf } from "./account";
 import { mrrCents } from "./invoice-math";
+import { earliestPlanChange } from "./plan";
 
 /** Assinaturas do admin [4b] (spec 011): admin e suporte veem; só o admin decide. */
 
@@ -95,6 +96,9 @@ export type SubscriptionsView = {
     stores: number;
     /** Mudança de mensalidade já agendada (Editar plano, 011b). */
     upcoming: { membershipCents: number; validFrom: Date } | null;
+    /** Só o admin edita; a data mínima (AAAA-MM-DD) tem 30 dias de aviso. */
+    canEdit: boolean;
+    earliestChange: string;
   };
   items: SubscriptionItem[];
   /** "Vencem em 3 dias" (SUB-FR-006). */
@@ -255,6 +259,8 @@ export async function subscriptionsView(
       upcoming: upcoming
         ? { membershipCents: upcoming.value, validFrom: upcoming.validFrom }
         : null,
+      canEdit: can(s, "settings.edit"),
+      earliestChange: earliestPlanChange(now),
     },
     items,
     dueSoon: dueSoonList,

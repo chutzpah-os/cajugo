@@ -463,3 +463,6 @@
 
 # 2026-11-24 · 011b/T011 tela do cancelamento
 - O lojista cancela e desfaz sozinho, sem falar com a CajuGo (CAN-FR-001..003, 006).
+
+# 2026-11-24 · 011b/T012 404 da loja cancelada e [4b]
+- ADR 0013: o status real sai do proxy; o ajuste da D4 está no plano.

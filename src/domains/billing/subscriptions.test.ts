@@ -66,7 +66,7 @@ describe("assinaturas do admin [4b]", () => {
       canceling: 0,
       canceled: 0,
     });
-    expect(view.plan).toEqual({
+    expect(view.plan).toMatchObject({
       name: "Plano Catálogo",
       membershipCents: 10_000,
       stores: 5,

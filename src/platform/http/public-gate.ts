@@ -3,7 +3,15 @@
  * por minuto, para não consultar o banco a cada acesso (cota gratuita). Decisão que
  * falha deixa passar: a página decide de novo, como segunda barreira.
  */
-export type GateDecision = "ok" | "not-found" | { redirect: string };
+export type GateDecision =
+  | "ok"
+  | "not-found"
+  /** Loja cancelada (011b): 404 com "Esta loja não está mais na CajuGo". */
+  | "gone"
+  | { redirect: string };
+
+/** Cabeçalho que o proxy manda ao 404 para escolher o texto (`store-gone`). */
+export const NOT_FOUND_HEADER = "x-cajugo-not-found";
 
 const TTL_MS = 60_000;
 
