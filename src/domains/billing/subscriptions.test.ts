@@ -59,11 +59,18 @@ describe("assinaturas do admin [4b]", () => {
 
     // Assert
     expect(view.mrrCents).toBe(50_000);
-    expect(view.counts).toEqual({ ok: 3, late: 1, suspended: 1 });
+    expect(view.counts).toEqual({
+      ok: 3,
+      late: 1,
+      suspended: 1,
+      canceling: 0,
+      canceled: 0,
+    });
     expect(view.plan).toEqual({
       name: "Plano Catálogo",
       membershipCents: 10_000,
       stores: 5,
+      upcoming: null,
     });
     expect(view.items).toHaveLength(5);
   });

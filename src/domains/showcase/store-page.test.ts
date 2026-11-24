@@ -58,7 +58,7 @@ describe("catálogo da loja", () => {
     expect(JSON.stringify(page)).not.toContain("12345678000195");
   });
 
-  it("[SHW-FR-011] loja suspensa: aviso sem motivo; cadastrada, cancelada ou inexistente: nada", async () => {
+  it("[SHW-FR-011] loja suspensa: aviso sem motivo; cadastrada, arquivada ou inexistente: nada (cancelada: 011b)", async () => {
     const a = await liveStore(t.db, "loja-a");
     await t.db
       .update(stores)
@@ -69,7 +69,6 @@ describe("catálogo da loja", () => {
     for (const status of [
       "registered",
       "payment_review",
-      "canceled",
       "archived",
     ] as const) {
       await t.db.update(stores).set({ status }).where(eq(stores.id, a.storeId));

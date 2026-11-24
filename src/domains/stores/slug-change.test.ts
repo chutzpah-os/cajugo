@@ -186,12 +186,18 @@ describe("troca do endereço do catálogo", () => {
         .where(eq(stores.id, a.storeId!));
       expect(await storePage(t.db, "silvautocar"), status).not.toBeNull();
     }
-    for (const status of ["payment_review", "canceled", "archived"] as const) {
+    for (const status of ["payment_review", "archived"] as const) {
       await t.db
         .update(stores)
         .set({ status })
         .where(eq(stores.id, a.storeId!));
       expect(await storePage(t.db, "silvautocar"), status).toBeNull();
     }
+    // Cancelada: "não está mais na CajuGo" (CAN-SEC-005).
+    await t.db
+      .update(stores)
+      .set({ status: "canceled" })
+      .where(eq(stores.id, a.storeId!));
+    expect(await storePage(t.db, "silvautocar")).toEqual({ kind: "gone" });
   });
 });

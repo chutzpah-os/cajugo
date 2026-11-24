@@ -1106,3 +1106,6 @@
 
 # 2026-11-24 · 011b/T009 editar plano
 - billing.editPlan (só admin): membership_cents com vigência futura (settings.scheduleSetting), data ≥ hoje + 30 dias em São Paulo; aviso plan_changed aos donos das lojas não canceladas; devolve a lista de wa.me; registro plan.edited.
+
+# 2026-11-24 · 011b/T010 telas no servidor
+- subscriptionsView com os filtros cancelamento e canceladas (fim e motivo), contagens e a mudança de mensalidade agendada (settings.upcomingSetting); accountView.cancel; billingAlert ending (Desfazer só para o dono); showcase.storePage → gone para a cancelada.

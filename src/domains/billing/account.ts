@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, ne } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, ne, sum } from "drizzle-orm";
 import { authorizeTo, can } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { getSettings } from "@/domains/settings/service";
@@ -198,6 +198,21 @@ export type AccountView = {
   };
   /** Fatura mais antiga em aberto, ou a última fatura. */
   current: InvoiceCard | null;
+  /**
+   * Cancelamento [12h] (011b): `available` com o fim do período (nulo em atraso ou
+   * suspensa: cancela na hora), a retenção e o crédito que expira; `scheduled` com o
+   * fim e o motivo; `canceled`, para reassinar.
+   */
+  cancel:
+    | {
+        kind: "available";
+        until: Date | null;
+        retentionDays: number;
+        creditCents: number;
+      }
+    | { kind: "scheduled"; until: Date; reason: string | null }
+    | { kind: "canceled"; at: Date }
+    | null;
   /** Faturas anteriores: mês, valor e status. */
   history: {
     reference: string;
@@ -215,11 +230,18 @@ export async function accountView(
   const storeId = storeOf(session);
   const now = deps.now?.() ?? new Date();
   const [store] = await deps.db
-    .select({ status: stores.status, nextDueAt: stores.nextDueAt })
+    .select({
+      status: stores.status,
+      nextDueAt: stores.nextDueAt,
+      activeUntil: stores.activeUntil,
+      canceledAt: stores.canceledAt,
+      cancelReason: stores.cancelReason,
+    })
     .from(stores)
     .where(eq(stores.id, storeId));
   if (!store) throw AppError.notFound();
   const settings = await getSettings(deps.db, now);
+  const cancel = await cancelState(deps.db, storeId, store, settings);
   const rows = await deps.db
     .select()
     .from(invoices)
@@ -246,6 +268,7 @@ export async function accountView(
       ),
     },
     current,
+    cancel,
     history: rows
       .filter((r) => r.id !== currentRow?.id)
       .map((r) => {
@@ -260,12 +283,59 @@ export async function accountView(
   };
 }
 
+async function cancelState(
+  db: Db,
+  storeId: string,
+  store: {
+    status: string;
+    nextDueAt: Date | null;
+    activeUntil: Date | null;
+    canceledAt: Date | null;
+    cancelReason: string | null;
+  },
+  settings: { retention_days: number },
+): Promise<AccountView["cancel"]> {
+  switch (store.status) {
+    case "active":
+    case "past_due":
+    case "suspended": {
+      const [credit] = await db
+        .select({ cents: sum(billingCredits.amountCents).mapWith(Number) })
+        .from(billingCredits)
+        .where(
+          and(
+            eq(billingCredits.storeId, storeId),
+            isNull(billingCredits.appliedInvoiceId),
+          ),
+        );
+      return {
+        kind: "available",
+        until: store.status === "active" ? store.nextDueAt : null,
+        retentionDays: settings.retention_days,
+        creditCents: credit?.cents ?? 0,
+      };
+    }
+    case "cancel_scheduled":
+      return {
+        kind: "scheduled",
+        until: store.activeUntil!,
+        reason: store.cancelReason,
+      };
+    case "canceled":
+      return { kind: "canceled", at: store.canceledAt! };
+    default:
+      return null;
+  }
+}
+
 export type BillingAlert =
   | { kind: "due"; dueAt: Date; totalCents: number }
   | { kind: "late"; days: number; totalCents: number }
   | { kind: "suspended"; days: number; totalCents: number }
   /** Usuário da loja: só que ela está suspensa, sem valor nem pagar. */
-  | { kind: "suspended_staff" };
+  | { kind: "suspended_staff" }
+  /** Cancelamento agendado (011b): "Sua assinatura termina em dd/mm"; Desfazer, só o dono. */
+  | { kind: "ending"; until: Date; canUndo: boolean };
 
 /**
  * Alerta da fatura no topo do painel (SUB-FR-006, 007, 009): vence em até 3 dias, em
@@ -279,11 +349,13 @@ export async function billingAlert(
   if (!session?.storeId) return null;
   const now = deps.now?.() ?? new Date();
   const [store] = await deps.db
-    .select({ status: stores.status })
+    .select({ status: stores.status, activeUntil: stores.activeUntil })
     .from(stores)
     .where(eq(stores.id, session.storeId));
   if (!store) return null;
   const owner = can(session, "billing.manage");
+  if (store.status === "cancel_scheduled" && store.activeUntil)
+    return { kind: "ending", until: store.activeUntil, canUndo: owner };
   if (!owner)
     return store.status === "suspended" ? { kind: "suspended_staff" } : null;
   const open = await openMonthly(deps.db, session.storeId);

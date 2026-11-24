@@ -31,6 +31,8 @@ const BADGE: Record<SubscriptionItem["status"], [string, BadgeTone]> = {
   active: ["Em dia", "ok"],
   past_due: ["Em atraso", "warn"],
   suspended: ["Suspensa", "dark"],
+  cancel_scheduled: ["Cancelamento agendado", "info"],
+  canceled: ["Cancelada", "neutral"],
 };
 
 function WhatsApp({ href }: { href: string }) {

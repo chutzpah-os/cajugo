@@ -457,3 +457,6 @@
 
 # 2026-11-24 · 011b/T009 editar plano
 - D3: a vigência das regras (ADR 0010) já escolhe o valor na abertura de cada fatura, sem tabela de planos.
+
+# 2026-11-24 · 011b/T010 telas no servidor
+- Os dados das telas [3c], [4b] e do aviso ficam prontos e testados antes dos componentes.

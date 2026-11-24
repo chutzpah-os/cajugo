@@ -75,7 +75,8 @@ export default async function StorePage({
   const { slug } = await params;
   if (slug === BUILD_PLACEHOLDER) notFound();
   const page = await cachedStorePage(slug);
-  if (!page) notFound();
+  // Cancelada (011b): o proxy já responde 404 com "não está mais na CajuGo".
+  if (!page || page.kind === "gone") notFound();
   if (page.kind === "redirect") permanentRedirect(page.to);
   if (page.kind === "suspended")
     return (

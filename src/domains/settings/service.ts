@@ -1,4 +1,4 @@
-import { asc, desc, eq, lte } from "drizzle-orm";
+import { and, asc, desc, eq, gt, lte } from "drizzle-orm";
 import { z } from "zod";
 import {
   authorizeTo,
@@ -161,6 +161,27 @@ export async function updateSettings(
     });
   });
   return { changed };
+}
+
+/** Próxima alteração já agendada de uma regra (depois de `now`), ou `null`. */
+export async function upcomingSetting<K extends SettingKey>(
+  db: Db,
+  key: K,
+  now: Date,
+): Promise<{ value: Settings[K]; validFrom: Date } | null> {
+  const [row] = await db
+    .select({ value: settingValueJson, validFrom: settingValues.validFrom })
+    .from(settingValues)
+    .where(and(eq(settingValues.key, key), gt(settingValues.validFrom, now)))
+    .orderBy(asc(settingValues.validFrom))
+    .limit(1);
+  if (!row) return null;
+  return {
+    value: SETTINGS[key].schema.parse(
+      parseSettingValue(row.value ?? null),
+    ) as Settings[K],
+    validFrom: row.validFrom,
+  };
 }
 
 /**

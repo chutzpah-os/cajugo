@@ -1,7 +1,7 @@
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { authorizeTo, can } from "@/domains/auth/service";
-import { getSettings } from "@/domains/settings/service";
+import { getSettings, upcomingSetting } from "@/domains/settings/service";
 import { brl } from "@/platform/br/money";
 import { invoices, payments, profiles, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
@@ -22,6 +22,8 @@ export const SUBSCRIPTION_FILTERS = [
   "em-dia",
   "atrasadas",
   "suspensas",
+  "cancelamento",
+  "canceladas",
 ] as const;
 export type SubscriptionFilter = (typeof SUBSCRIPTION_FILTERS)[number];
 
@@ -29,18 +31,39 @@ const filterSchema = z.object({
   filtro: z.enum(SUBSCRIPTION_FILTERS).catch("todas").default("todas"),
 });
 
-const FILTER_STATUS: Record<SubscriptionFilter, string[]> = {
-  todas: [...BILLED_STATUSES],
+/** Status em [4b]: as cobradas, o cancelamento agendado e as canceladas (011b). */
+const LISTED_STATUSES = [
+  ...BILLED_STATUSES,
+  "cancel_scheduled",
+  "canceled",
+] as const;
+type ListedStatus = (typeof LISTED_STATUSES)[number];
+
+const FILTER_STATUS: Record<SubscriptionFilter, ListedStatus[]> = {
+  todas: [...BILLED_STATUSES, "cancel_scheduled"],
   "em-dia": ["active"],
   atrasadas: ["past_due"],
   suspensas: ["suspended"],
+  cancelamento: ["cancel_scheduled"],
+  canceladas: ["canceled"],
+};
+
+const COUNT_OF: Record<ListedStatus, keyof SubscriptionsView["counts"]> = {
+  active: "ok",
+  past_due: "late",
+  suspended: "suspended",
+  cancel_scheduled: "canceling",
+  canceled: "canceled",
 };
 
 export type SubscriptionLine =
   | { kind: "ok"; nextDueAt: Date | null; amountCents: number }
   | { kind: "late"; days: number; amountCents: number }
   | { kind: "review"; submittedAt: Date }
-  | { kind: "suspended"; days: number; amountCents: number };
+  | { kind: "suspended"; days: number; amountCents: number }
+  /** Cancelamento agendado (011b): "Termina em dd/mm · motivo". */
+  | { kind: "canceling"; until: Date; reason: string | null }
+  | { kind: "canceled"; at: Date; reason: string | null };
 
 export type SubscriptionItem = {
   storeId: string;
@@ -48,7 +71,7 @@ export type SubscriptionItem = {
   slug: string;
   owner: string;
   since: Date | null;
-  status: (typeof BILLED_STATUSES)[number];
+  status: ListedStatus;
   line: SubscriptionLine;
   /** `wa.me` com a mensagem de cobrança pronta (atraso e suspensa). */
   whatsappUrl: string | null;
@@ -59,8 +82,20 @@ export type SubscriptionItem = {
 export type SubscriptionsView = {
   filter: SubscriptionFilter;
   mrrCents: number;
-  counts: { ok: number; late: number; suspended: number };
-  plan: { name: string; membershipCents: number; stores: number };
+  counts: {
+    ok: number;
+    late: number;
+    suspended: number;
+    canceling: number;
+    canceled: number;
+  };
+  plan: {
+    name: string;
+    membershipCents: number;
+    stores: number;
+    /** Mudança de mensalidade já agendada (Editar plano, 011b). */
+    upcoming: { membershipCents: number; validFrom: Date } | null;
+  };
   items: SubscriptionItem[];
   /** "Vencem em 3 dias" (SUB-FR-006). */
   dueSoon: {
@@ -88,6 +123,7 @@ export async function subscriptionsView(
   const { filtro } = filterSchema.parse(query ?? {});
   const now = deps.now?.() ?? new Date();
   const settings = await getSettings(deps.db, now);
+  const upcoming = await upcomingSetting(deps.db, "membership_cents", now);
   const decide = can(s, "stores.suspend");
 
   const rows = await deps.db
@@ -99,11 +135,14 @@ export async function subscriptionsView(
       status: stores.status,
       since: stores.activatedAt,
       nextDueAt: stores.nextDueAt,
+      activeUntil: stores.activeUntil,
+      canceledAt: stores.canceledAt,
+      cancelReason: stores.cancelReason,
       owner: profiles.name,
     })
     .from(stores)
     .innerJoin(profiles, eq(profiles.id, stores.ownerId))
-    .where(inArray(stores.status, [...BILLED_STATUSES]))
+    .where(inArray(stores.status, [...LISTED_STATUSES]))
     .orderBy(asc(stores.name));
   const ids = rows.map((r) => r.storeId);
   const open = ids.length
@@ -136,31 +175,34 @@ export async function subscriptionsView(
     : [];
 
   const openOf = (id: string) => open.filter((i) => i.storeId === id);
-  const counts = { ok: 0, late: 0, suspended: 0 };
+  const counts = { ok: 0, late: 0, suspended: 0, canceling: 0, canceled: 0 };
   const items: SubscriptionItem[] = [];
   for (const r of rows) {
-    const status = r.status as SubscriptionItem["status"];
-    counts[
-      status === "active" ? "ok" : status === "past_due" ? "late" : "suspended"
-    ]++;
+    const status = r.status as ListedStatus;
+    counts[COUNT_OF[status]]++;
     if (!FILTER_STATUS[filtro].includes(status)) continue;
     const mine = openOf(r.storeId);
     const total = totalOf(mine);
     const days = mine[0] ? daysLate(mine[0].dueAt, now) : 0;
     const review = inReview.find((p) => p.storeId === r.storeId);
-    const line: SubscriptionLine = review
-      ? { kind: "review", submittedAt: review.submittedAt }
-      : status === "active"
-        ? {
-            kind: "ok",
-            nextDueAt: mine[0]?.dueAt ?? r.nextDueAt,
-            amountCents: total || settings.membership_cents,
-          }
-        : {
-            kind: status === "past_due" ? "late" : "suspended",
-            days,
-            amountCents: total,
-          };
+    const ending = status === "cancel_scheduled" || status === "canceled";
+    const line: SubscriptionLine = ending
+      ? status === "cancel_scheduled"
+        ? { kind: "canceling", until: r.activeUntil!, reason: r.cancelReason }
+        : { kind: "canceled", at: r.canceledAt!, reason: r.cancelReason }
+      : review
+        ? { kind: "review", submittedAt: review.submittedAt }
+        : status === "active"
+          ? {
+              kind: "ok",
+              nextDueAt: mine[0]?.dueAt ?? r.nextDueAt,
+              amountCents: total || settings.membership_cents,
+            }
+          : {
+              kind: status === "past_due" ? "late" : "suspended",
+              days,
+              amountCents: total,
+            };
     items.push({
       storeId: r.storeId,
       name: r.name,
@@ -170,7 +212,7 @@ export async function subscriptionsView(
       status,
       line,
       whatsappUrl:
-        status === "active"
+        status === "active" || ending
           ? null
           : whatsappLink(
               r.whatsapp,
@@ -182,6 +224,7 @@ export async function subscriptionsView(
   }
 
   const dueSoonList = rows.flatMap((r) => {
+    if (!(BILLED_STATUSES as readonly string[]).includes(r.status)) return [];
     const next = openOf(r.storeId).find((i) => dueSoon(i.dueAt, now));
     if (!next) return [];
     return [
@@ -208,7 +251,10 @@ export async function subscriptionsView(
     plan: {
       name: "Plano Catálogo",
       membershipCents: settings.membership_cents,
-      stores: rows.length,
+      stores: counts.ok + counts.late + counts.suspended + counts.canceling,
+      upcoming: upcoming
+        ? { membershipCents: upcoming.value, validFrom: upcoming.validFrom }
+        : null,
     },
     items,
     dueSoon: dueSoonList,

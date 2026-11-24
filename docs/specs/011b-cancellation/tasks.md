@@ -74,7 +74,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - suporte e lojista → 403.
 
   · _CAN-FR-011, CAN-SEC-002, CAN-SEC-004_
-- [ ] **T010** `subscriptionsView` com os filtros Cancelamento agendado e Canceladas (data do fim, motivo); `accountView` com o cancelamento; `showcase.storePage` → `gone` para loja cancelada.
+- [x] **T010** `subscriptionsView` com os filtros Cancelamento agendado e Canceladas (data do fim, motivo); `accountView` com o cancelamento; `showcase.storePage` → `gone` para loja cancelada.
 
   · _CAN-FR-010, CAN-FR-001, CAN-SEC-005_
 

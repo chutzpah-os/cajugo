@@ -15,6 +15,7 @@ describe("Conta do lojista [3c]", () => {
           statusLabel: "Ativa",
           membershipCents: 10_000,
           nextDueAt: new Date("2027-01-10T03:00:00Z"),
+          cancel: null,
           howToPay: {
             pixKey: "pix@cajugo.com",
             beneficiary: "CajuGo Tecnologia",

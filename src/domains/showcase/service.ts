@@ -448,6 +448,8 @@ export type StorePage =
       initials: string;
     }
   | { kind: "suspended" }
+  /** Cancelada (011b, CAN-SEC-005): "Esta loja não está mais na CajuGo", sem motivo. */
+  | { kind: "gone" }
   | { kind: "redirect"; to: string };
 
 const initialsOf = (name: string) =>
@@ -460,7 +462,7 @@ const initialsOf = (name: string) =>
 
 /**
  * Loja do endereço `/loja/{slug}` (SHW-FR-002, 011, 014). Suspensa: aviso sem motivo.
- * Cadastrada, em análise, cancelada, arquivada ou inexistente: `null`.
+ * Cancelada: `gone` (011b). Cadastrada, em análise, arquivada ou inexistente: `null`.
  */
 export async function storePage(
   db: Db,
@@ -487,6 +489,7 @@ export async function storePage(
     .where(eq(stores.id, resolved.storeId));
   if (!s) return null;
   if (s.status === "suspended") return { kind: "suspended" };
+  if (s.status === "canceled") return { kind: "gone" };
   if (!isStoreLive(s.status)) return null;
   if (resolved.redirected)
     return { kind: "redirect", to: `/loja/${resolved.slug}` };

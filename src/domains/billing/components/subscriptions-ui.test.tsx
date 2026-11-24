@@ -29,8 +29,13 @@ const item = (
 const view = (decide: boolean): SubscriptionsView => ({
   filter: "todas",
   mrrCents: 50_000,
-  counts: { ok: 3, late: 1, suspended: 1 },
-  plan: { name: "Plano Catálogo", membershipCents: 10_000, stores: 5 },
+  counts: { ok: 3, late: 1, suspended: 1, canceling: 0, canceled: 0 },
+  plan: {
+    name: "Plano Catálogo",
+    membershipCents: 10_000,
+    stores: 5,
+    upcoming: null,
+  },
   dueSoon: [],
   items: [
     item({
