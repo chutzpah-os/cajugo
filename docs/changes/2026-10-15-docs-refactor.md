@@ -1118,3 +1118,6 @@
 
 # 2026-11-24 · 011b/T013 e2e do cancelamento
 - Seed: Cancela E2E (ativa) e Cancelada E2E (cancelada pelo ciclo real), contas e2e-cancela e e2e-cancelada. tests/e2e/cancellation.spec.ts: cancelar com motivo, aviso e Desfazer, [4b] em 390 e 1280 px, 404 da loja cancelada, Reassinar e Editar plano recusando data com menos de 30 dias.
+
+# 2026-11-24 · 011b/T014 verificação
+- Rastreabilidade: todos os CAN-FR/NFR/SEC com teste; e2e 113 + store-network isolado verde; build de produção com 404 real e o texto da loja cancelada. Cancelar em atraso com comprovante em análise → 409. Spec implemented e PLAN atualizado. Migration 0023 no prod pendente de autorização.

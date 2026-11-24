@@ -469,3 +469,6 @@
 
 # 2026-11-24 · 011b/T013 e2e do cancelamento
 - O e2e de Editar plano não salva: setting_values só aceita inserção e uma mensalidade futura ficaria no staging; o caminho que salva está nos testes de integração.
+
+# 2026-11-24 · 011b/T014 verificação
+- Achado na revisão: cancelar na hora com um pagamento por conferir deixaria o comprovante sem fatura aberta.

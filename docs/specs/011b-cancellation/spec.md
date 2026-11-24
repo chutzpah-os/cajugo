@@ -2,7 +2,7 @@
 id: 011b
 slug: cancellation
 title: Cancelamento e fim da assinatura
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-24
 ---
@@ -52,7 +52,7 @@ Sucesso: o lojista cancela sozinho, continua no ar até o dia em que já pagou e
   - libera o endereço do catálogo;
   - mantém o nome da loja, as faturas e os pagamentos (sem dado pessoal), para a contabilidade.
 - **CAN-FR-008** Uma loja cadastrada sem 1º pagamento confirmado em 7 dias perde o endereço do catálogo, que fica livre para outra loja: a loja continua com um endereço provisório e, se pagar depois, escolhe um endereço livre em Minha loja [3b] (essa primeira troca não conta no limite de 1 a cada 30 dias).
-- **CAN-FR-009** Loja em atraso ou suspensa também pode cancelar; o período pago já acabou, então ela fica **cancelada** na hora, e as faturas mensais em aberto são canceladas (não são cobradas depois).
+- **CAN-FR-009** Loja em atraso ou suspensa também pode cancelar; o período pago já acabou, então ela fica **cancelada** na hora, e as faturas mensais em aberto são canceladas (não são cobradas depois). Com um comprovante em análise, o cancelamento espera a conferência.
 - **CAN-FR-010** O admin vê em [4b] o filtro **Cancelamento agendado** e **Canceladas**, com a data do fim e o motivo informado.
 - **CAN-FR-011** Em [4b], **Editar plano** muda a mensalidade a partir de uma data pelo menos 30 dias à frente, para todas as lojas: as faturas abertas a partir dessa data usam o valor novo, todos os lojistas veem no painel o aviso com o valor e a data, e o admin ganha a lista de `wa.me` para avisar.
 - **CAN-FR-012** O lojista e o admin veem no painel o aviso do cancelamento agendado, do desfazer e da loja cancelada.

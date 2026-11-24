@@ -153,6 +153,7 @@
 - Cancelar [12h] com desfazer; Assinaturas do admin [4b]; Conta do lojista [3c].
 
 ## 011b · Cancelamento e fim da assinatura — telas 12h, 4b (Editar plano)
+> ✅ **Implementada** em 2026-11-24 (`docs/specs/011b-cancellation/`): Cancelar assinatura [12h] na Conta com motivo, no ar até o próximo vencimento e **Desfazer** até lá (aviso no painel); em atraso ou suspensa, cancelada na hora com as faturas abertas canceladas; o job encerra o período (crédito expira, parcerias encerradas, fora do ar), arquiva em 90 dias (apaga loja, veículos sem venda, fotos, comprovantes, leads e a conta de login sem outro papel; perfil anônimo; ficam nome, faturas e pagamentos) e dá endereço provisório a quem não pagou em 7 dias; Reassinar com nova 1ª mensalidade; loja cancelada com 404 "Esta loja não está mais na CajuGo"; [4b] com Cancelamento agendado, Canceladas e **Editar plano** (vigência futura, aviso de 30 dias, lista de `wa.me`). Migration `0023` no staging; no prod, pendente de autorização.
 - Cancelar [12h] com motivo e desfazer até o fim do período; fim do período (cancelada), arquivamento em 90 dias, liberação do endereço sem 1º pagamento em 7 dias, Editar plano com aviso de 30 dias. Dividida da 011 no `/clarify` de 2026-11-23.
 
 ## 012 · Admin: painel, lojas e equipe — telas 4a, 1d, 6g, 4c, 15b, 15c

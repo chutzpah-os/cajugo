@@ -151,6 +151,18 @@ export async function cancelSubscription(
     }
 
     if (store.status === "past_due" || store.status === "suspended") {
+      // As faturas abertas seriam canceladas com um pagamento ainda por conferir.
+      const [inReview] = await tx
+        .select({ id: payments.id })
+        .from(payments)
+        .where(
+          and(eq(payments.storeId, storeId), eq(payments.status, "submitted")),
+        )
+        .limit(1);
+      if (inReview)
+        throw AppError.conflict(
+          "Seu comprovante está em análise. Aguarde a conferência para cancelar.",
+        );
       await tx
         .update(stores)
         .set({

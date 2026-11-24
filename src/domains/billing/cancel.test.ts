@@ -5,6 +5,7 @@ import {
   billingCredits,
   invoices,
   notices,
+  payments,
 } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
 import { isStoreLive } from "@/domains/stores/service";
@@ -125,6 +126,33 @@ describe("cancelar e desfazer [12h]", () => {
     expect(invoice.status).toBe("canceled");
     expect(await t.db.select().from(billingCredits)).toHaveLength(0);
     expect(isStoreLive("canceled")).toBe(false);
+  });
+
+  it("[CAN-FR-009] em atraso com comprovante em análise: não cancela até a conferência (409)", async () => {
+    // Arrange
+    const b = await storeA();
+    await runBillingCycle(t.db, new Date("2026-12-07T12:00:00Z"));
+    await runBillingCycle(t.db, new Date("2026-12-11T12:00:00Z"));
+    const [invoice] = await t.db.select().from(invoices);
+    await t.db.insert(payments).values({
+      invoiceId: invoice.id,
+      storeId: b.storeId,
+      amountCents: invoice.totalCents,
+      status: "submitted",
+      submittedBy: b.userId,
+      submittedAt: new Date("2026-12-11T13:00:00Z"),
+    });
+
+    // Act
+    const attempt = cancelSubscription(
+      deps(new Date("2026-12-12T12:00:00Z")),
+      b,
+      {},
+    );
+
+    // Assert
+    await expect(attempt).rejects.toMatchObject({ status: 409 });
+    expect((await storeRow(t.db, b.storeId)).status).toBe("past_due");
   });
 
   it("[CAN-FR-012] [CAN-SEC-004] o lojista e os admins são avisados; o registro tem o motivo e nenhum dado pessoal", async () => {

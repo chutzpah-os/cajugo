@@ -99,6 +99,6 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   · _CAN-FR-001…012, CAN-SEC-005, CAN-NFR-001_
 
 ## Fase 4 — Fechamento
-- [ ] **T014** Verificação: rastreabilidade verde, suíte e2e, revisão; status `implemented` e `docs/PLAN.md`. A migration `0023` no prod só com a sua autorização.
+- [x] **T014** Verificação: rastreabilidade verde, suíte e2e, revisão; status `implemented` e `docs/PLAN.md`. A migration `0023` no prod só com a sua autorização.
 
   · _—_
