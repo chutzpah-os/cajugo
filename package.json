@@ -21,6 +21,8 @@
     "admin:create": "tsx --env-file=.env.local scripts/create-admin.ts",
     "admin:create:prod": "tsx --env-file=.env.prod scripts/create-admin.ts",
     "e2e:seed": "tsx --env-file=.env.local scripts/e2e-seed.ts",
+    "e2e:photos": "tsx --env-file=.env.local scripts/e2e-photos.ts",
+    "design:shots": "node --env-file=.env.local scripts/design-shots.mjs",
     "prepare": "husky"
   },
   "dependencies": {

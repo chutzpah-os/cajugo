@@ -8,6 +8,7 @@ import {
 } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { removeVehiclesForTests } from "@/domains/vehicles/service";
+import { carPhoto } from "./car-photos";
 
 /** Vitrine dos testes ponta a ponta (spec 006). Só no staging, nunca na produção. */
 export const E2E_SHOWCASE = {
@@ -37,7 +38,6 @@ export const E2E_SHOWCASE = {
 } as const;
 
 /** Imagem que já existe em toda conta Cloudinary: o seed nunca a apaga. */
-const SAMPLE_PHOTO = "sample";
 const MODELS = [
   ["Fiat", "Argo"],
   ["BMW", "X1"],
@@ -127,7 +127,7 @@ export async function seedShowcase(
     .update(stores)
     .set({ city: "Recife", state: "PE" })
     .where(eq(stores.id, recifeId));
-  // A lista devolvida fica sem uso de propósito: a foto é a `sample`, não é dos testes.
+  // A lista devolvida fica sem uso de propósito: as fotos de carro são compartilhadas.
   await removeVehiclesForTests(db, [storeId, suspendedId, recifeId]);
 
   const list = Array.from({ length: S.total }, (_, i) => row(storeId, i, now));
@@ -198,10 +198,10 @@ export async function seedShowcase(
     .values(rows)
     .returning({ id: vehicles.id });
   await db.insert(vehiclePhotos).values(
-    created.flatMap(({ id }) =>
+    created.flatMap(({ id }, i) =>
       Array.from({ length: id === S.fullId ? 3 : 1 }, (_, position) => ({
         vehicleId: id,
-        publicId: SAMPLE_PHOTO,
+        publicId: carPhoto(i + position),
         position,
       })),
     ),

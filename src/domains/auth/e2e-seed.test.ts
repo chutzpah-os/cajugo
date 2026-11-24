@@ -227,7 +227,7 @@ describe("seedE2E", () => {
     ).toEqual([]);
   });
 
-  it("recria a vitrine sempre igual e nunca apaga a foto de exemplo da Cloudinary", async () => {
+  it("[DSG-NFR-004] recria a vitrine sempre igual, com fotos de carro, e nunca apaga essas fotos da Cloudinary", async () => {
     // Arrange
     const destroy = vi.fn();
     const withCloud = () => ({ ...deps(), cloudinary: { destroy } as never });
@@ -268,7 +268,9 @@ describe("seedE2E", () => {
     expect(
       (await t.db.select().from(referralRewards)).map((r) => r.target).sort(),
     ).toEqual(["balance", "credit"]);
-    expect(destroy).not.toHaveBeenCalledWith("sample");
+    expect(
+      destroy.mock.calls.some(([id]) => String(id).includes("/e2e/cars/")),
+    ).toBe(false);
   });
 
   it("[SUB-FR-008] loja da fatura suspensa pelo ciclo real, com R$ 600 em aberto; refeita a cada seed", async () => {

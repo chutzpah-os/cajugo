@@ -12,7 +12,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [x] **T001** Componentes base (`icons`, `Badge`, `Kpi`, `Initials`, `KeyValue`, `StoreCard`, `SettingsList`, `DataTable`, `PageHeader`) com testes de componente. · _DSG-FR-013_
 - [x] **T002** `ConfirmSheet` do [6f] (alça, ícone 48 px por tipo, ordem dos botões) e botão pequeno com ícone. · _DSG-FR-011, DSG-FR-013_
 - [x] **T003** Moldura: o cabeçalho sai da `AreaShell`; slot `identity` nos layouts; `PanelNav` com sidebar escura, card da identidade e contadores; barra inferior sem cobrir conteúdo; Sair e Trocar de painel no menu do avatar. · _DSG-FR-001, DSG-FR-002, DSG-FR-003_
-- [ ] **T004** `pnpm e2e:photos` e o seed com fotos de carro; `pnpm design:shots` e `comparacao.md`. · _DSG-NFR-001, DSG-NFR-004_
+- [x] **T004** `pnpm e2e:photos` e o seed com fotos de carro; `pnpm design:shots` e `comparacao.md`. · _DSG-NFR-001, DSG-NFR-004_
 
 ## Fase 2 — Painel do lojista
 - [ ] **T005** [1c] Meus veículos no celular. · _DSG-FR-004_

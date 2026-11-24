@@ -8,6 +8,7 @@ import {
 } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
 import { ownStore, row } from "@/domains/showcase/testing/e2e-seed";
+import { carPhoto } from "@/domains/showcase/testing/car-photos";
 import { removeVehiclesForTests } from "@/domains/vehicles/service";
 import { runBillingCycle } from "../cycle";
 import { saoPauloDate, saoPauloMidnight } from "../due-date";
@@ -79,9 +80,9 @@ export async function seedBilling(
     },
   ]);
   await db.insert(vehiclePhotos).values(
-    [B.vehicleId, B.soldId].map((vehicleId) => ({
+    [B.vehicleId, B.soldId].map((vehicleId, i) => ({
       vehicleId,
-      publicId: "sample",
+      publicId: carPhoto(i),
       position: 0,
     })),
   );

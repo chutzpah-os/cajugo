@@ -1130,3 +1130,6 @@
 
 # 2026-11-24 · 012/T003 moldura
 - AreaShell sem o cabeçalho claro global: avatar com AccountMenu (trocar de painel, sair) no canto do cabeçalho da página no celular; avisos logo abaixo do cabeçalho; sidebar preta [15b]/[15c] com logo, identidade (storeIdentity / nome da pessoa), contadores e conta no pé; barra inferior do design.
+
+# 2026-11-24 · 012/T004 fotos e capturas
+- pnpm e2e:photos sobe as fotos de carro do design para o Cloudinary do staging (e2e/cars/car-1…7); o seed usa essas fotos e nunca as apaga; pnpm design:shots captura as telas em 390/1280 para test-results/design; comparacao.md com a rotina.

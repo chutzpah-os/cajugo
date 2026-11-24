@@ -30,6 +30,7 @@ import {
 } from "@/domains/stores/service";
 import { seedBilling } from "@/domains/billing/testing/e2e-seed";
 import { seedCancellation } from "@/domains/billing/testing/cancel-seed";
+import { isCarPhoto } from "@/domains/showcase/testing/car-photos";
 import { rewardReferrals } from "@/domains/billing/service";
 import { seedReferrals } from "@/domains/referrals/testing/e2e-seed";
 import { grantRole } from "./roles";
@@ -173,7 +174,9 @@ export async function seedE2E(
     store.id,
     ...signups.storeIds,
   ]);
-  for (const publicId of photos) await deps.cloudinary?.destroy(publicId);
+  // As fotos de carro dos testes são compartilhadas: nunca saem do Cloudinary (012).
+  for (const publicId of photos)
+    if (!isCarPhoto(publicId)) await deps.cloudinary?.destroy(publicId);
   // Vendedores das contas de teste e dos cadastros dos e2e (spec 008), com as fotos.
   const documents = await removeSellersForTests(deps.db, [
     ...signups.profileIds,

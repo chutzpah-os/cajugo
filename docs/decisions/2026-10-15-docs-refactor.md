@@ -481,3 +481,6 @@
 
 # 2026-11-24 · 012/T003 moldura
 - Os menus do design: sidebar escura no desktop, barra branca no celular.
+
+# 2026-11-24 · 012/T004 fotos e capturas
+- A comparação com o design precisa de fotos de carro e de capturas repetíveis.
