@@ -226,3 +226,5 @@ export async function removeReferralData(
   if (codes.length)
     await db.delete(referralCodes).where(inArray(referralCodes.code, codes));
 }
+
+export { rewardPaidInvoices, type ReferralCredit } from "./rewards";

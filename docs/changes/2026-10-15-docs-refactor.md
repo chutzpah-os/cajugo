@@ -1043,3 +1043,6 @@
 
 # 2026-11-23 · Avisos e área do Caju Indica [010/T003]
 - Avisos referral_active e referral_reward (crédito ou saldo); área /indica aberta também ao vendedor.
+
+# 2026-11-23 · Recompensa do Caju Indica [010/T004]
+- rewardPaidInvoices: cada fatura paga da loja indicada entre as N primeiras (pela ordem de vencimento) rende uma vez o percentual vigente; não válida e campanha não rendem; ativa/encerrada, aviso e registro; devolve o crédito do lojista.

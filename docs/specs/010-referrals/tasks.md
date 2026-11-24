@@ -25,7 +25,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   · _IND-FR-016, IND-FR-002_
 
 ## Fase 2 — Fatias verticais (servidor)
-- [ ] **T004** `rewardPaidInvoices`:
+- [x] **T004** `rewardPaidInvoices`:
   - a 1ª paga ativa a indicação e rende o percentual sobre a mensalidade;
   - rendem só as N primeiras faturas da loja, inclusive a atrasada paga depois;
   - indicação não válida e link de campanha não rendem;
