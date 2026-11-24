@@ -1091,3 +1091,6 @@
 
 # 2026-11-24 · 011b/T004 cancelar e desfazer
 - billing/cancellation.ts: cancelSubscription (ativa → agendado até next_due_at; em atraso/suspensa → cancelada na hora com faturas abertas canceladas) e undoCancel; closeStore expira o crédito, encerra parcerias (sellers.endStorePartnerships) e avisa; notifyOwnerAndAdmins no ciclo.
+
+# 2026-11-24 · 011b/T005 fim do período
+- endCanceledPeriods no ciclo: cancelamento agendado com active_until vencido → cancelada (closeStore); o cron devolve ended e invalida o cache público.

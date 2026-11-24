@@ -34,6 +34,7 @@ import {
 } from "./cycle-dates";
 import { nextDueAfter } from "./due-date";
 import { invoiceTotals } from "./invoice-math";
+import { endCanceledPeriods } from "./cancellation";
 
 /**
  * Ciclo de cobrança no job diário (spec 011): abre a fatura mensal, marca o atraso e
@@ -520,9 +521,16 @@ export async function runBillingCycle(
   db: Db,
   now: Date,
   scope: CycleScope = {},
-): Promise<{ opened: number; pastDue: number; suspended: number }> {
+): Promise<{
+  opened: number;
+  pastDue: number;
+  suspended: number;
+  ended: number;
+}> {
   const opened = await openDueInvoices(db, now, scope);
   const pastDue = await markPastDue(db, now, scope);
   const suspended = await suspendOverdue(db, now, scope);
-  return { opened, pastDue, suspended };
+  // Cancelamento (011b): o período pago acabou.
+  const ended = await endCanceledPeriods(db, now, scope);
+  return { opened, pastDue, suspended, ended };
 }

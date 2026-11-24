@@ -10,6 +10,7 @@ const runBillingCycle = vi.fn(async () => ({
   opened: 4,
   pastDue: 2,
   suspended: 1,
+  ended: 0,
 }));
 vi.mock("@/domains/billing/service", () => ({ runBillingCycle }));
 vi.mock("@/platform/db/client", () => ({ getDb: () => ({}) }));
@@ -95,11 +96,28 @@ describe("job diário › ciclo de cobrança", () => {
       opened: 1,
       pastDue: 0,
       suspended: 0,
+      ended: 0,
     });
 
     await call("Bearer segredo-do-cron");
 
     expect(revalidateTag).not.toHaveBeenCalledWith("stores", { expire: 0 });
+  });
+
+  it("[CAN-FR-005] [CAN-NFR-002] loja cancelada no fim do período: devolve `ended` e tira a loja do ar", async () => {
+    vi.stubEnv("CRON_SECRET", "segredo-do-cron");
+    runBillingCycle.mockResolvedValueOnce({
+      opened: 0,
+      pastDue: 0,
+      suspended: 0,
+      ended: 2,
+    });
+
+    const res = await call("Bearer segredo-do-cron");
+
+    expect((await res.json()).data.ended).toBe(2);
+    expect(revalidateTag).toHaveBeenCalledWith("stores", { expire: 0 });
+    expect(revalidateTag).toHaveBeenCalledWith("vehicles", { expire: 0 });
   });
 
   it("[SUB-NFR-002] sem o segredo, o ciclo não roda", async () => {

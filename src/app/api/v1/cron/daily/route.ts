@@ -33,8 +33,8 @@ export async function GET(request: Request) {
     const purgedLeads = await purgeOldLeads(db, now);
     // Ciclo de cobrança (011): fatura, atraso e suspensão.
     const billing = await runBillingCycle(db, now);
-    // A loja suspensa sai do ar já na próxima visita (SUB-NFR-003).
-    if (billing.suspended) {
+    // A loja suspensa ou cancelada sai do ar já na próxima visita (SUB-NFR-003, CAN-NFR-002).
+    if (billing.suspended || billing.ended) {
       revalidateTag(STORES_TAG, { expire: 0 });
       revalidateTag(VEHICLES_TAG, { expire: 0 });
     }

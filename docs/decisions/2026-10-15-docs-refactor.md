@@ -442,3 +442,6 @@
 
 # 2026-11-24 · 011b/T004 cancelar e desfazer
 - O motivo vai para o registro e para a loja, nunca dado pessoal; cancelar em atraso sem dívida segue o /clarify.
+
+# 2026-11-24 · 011b/T005 fim do período
+- A loja sai do ar no dia do vencimento que não será cobrado; partir do status esperado mantém o job idempotente.

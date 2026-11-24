@@ -36,7 +36,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - a loja B não mexe na A.
 
   · _CAN-FR-002, CAN-FR-003, CAN-FR-009, CAN-FR-012, CAN-SEC-001, CAN-SEC-002, CAN-SEC-004_
-- [ ] **T005** Ciclo, fim do período:
+- [x] **T005** Ciclo, fim do período:
   - nenhuma fatura aberta para loja com cancelamento agendado;
   - `active_until` vencido → cancelada;
   - o crédito disponível expira;

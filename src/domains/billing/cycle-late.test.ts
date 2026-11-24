@@ -129,7 +129,7 @@ describe("ciclo de cobrança restrito (seed dos e2e)", () => {
     });
 
     // Assert
-    expect(result).toEqual({ opened: 1, pastDue: 1, suspended: 1 });
+    expect(result).toMatchObject({ opened: 1, pastDue: 1, suspended: 1 });
     expect((await storeRow(t.db, a.storeId)).status).toBe("suspended");
     expect((await storeRow(t.db, b.storeId)).status).toBe("active");
     expect(await t.db.select().from(invoices)).toHaveLength(1);

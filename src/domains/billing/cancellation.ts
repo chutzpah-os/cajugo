@@ -1,4 +1,4 @@
-import { and, eq, isNull, sum } from "drizzle-orm";
+import { and, eq, inArray, isNull, lte, sum } from "drizzle-orm";
 import { authorizeTo } from "@/domains/auth/service";
 import { endStorePartnerships } from "@/domains/sellers/service";
 import { billingCredits, invoices, stores } from "@/platform/db/schema";
@@ -7,7 +7,7 @@ import { logActivity } from "@/platform/http/activity-log";
 import { AppError, fieldErrorsFromZod } from "@/platform/http/errors";
 import type { Session } from "@/platform/http/session";
 import { cancelSchema } from "./cancel-reasons";
-import { notifyOwnerAndAdmins } from "./cycle";
+import { notifyOwnerAndAdmins, type CycleScope } from "./cycle";
 
 /**
  * Cancelamento da assinatura (spec 011b): o dono agenda o fim para o próximo
@@ -210,4 +210,38 @@ export async function undoCancel(
       entityId: storeId,
     });
   });
+}
+
+/**
+ * Job diário (CAN-FR-005): cancelamento agendado com o período pago no fim → cancelada.
+ * Parte do status esperado, então rodar de novo não repete (CAN-NFR-002).
+ */
+export async function endCanceledPeriods(
+  db: Db,
+  now: Date,
+  scope: CycleScope = {},
+): Promise<number> {
+  const due = await db
+    .select({ id: stores.id })
+    .from(stores)
+    .where(
+      and(
+        eq(stores.status, "cancel_scheduled"),
+        lte(stores.activeUntil, now),
+        scope.storeIds ? inArray(stores.id, scope.storeIds) : undefined,
+      ),
+    );
+  let ended = 0;
+  for (const { id } of due)
+    await db.transaction(async (tx) => {
+      const done = await tx
+        .update(stores)
+        .set({ status: "canceled", canceledAt: now })
+        .where(and(eq(stores.id, id), eq(stores.status, "cancel_scheduled")))
+        .returning({ id: stores.id });
+      if (!done.length) return;
+      ended++;
+      await closeStore(tx, id, now, { userId: null, source: "period_end" });
+    });
+  return ended;
 }
