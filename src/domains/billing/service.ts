@@ -1100,6 +1100,8 @@ export async function subscriptionCard(
 ): Promise<{
   plan: string;
   membershipCents: number;
+  /** Status da loja, para o selo do card (012). */
+  status: string;
   statusLabel: string;
   nextDueAt: Date | null;
 }> {
@@ -1113,6 +1115,7 @@ export async function subscriptionCard(
   return {
     plan: "Plano Catálogo",
     membershipCents: settings.membership_cents,
+    status: store.status,
     statusLabel: SUBSCRIPTION_LABEL[store.status],
     nextDueAt: store.nextDueAt,
   };

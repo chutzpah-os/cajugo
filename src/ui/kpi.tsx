@@ -23,6 +23,7 @@ export function Kpi({
   hintTone = "ok",
   tone = "light",
   testId,
+  className,
 }: {
   value: ReactNode;
   label: string;
@@ -30,20 +31,25 @@ export function Kpi({
   hintTone?: keyof typeof HINT;
   tone?: "dark" | "light";
   testId?: string;
+  /** Ex.: só no desktop (`hidden lg:flex`) ou só no celular (`lg:hidden`). */
+  className?: string;
 }) {
   const dark = tone === "dark";
   return (
     <div
-      data-testid={testId}
       className={cn(
         "flex min-w-0 flex-col gap-0.5",
         "lg:rounded-[14px] lg:border lg:border-line lg:bg-surface lg:px-3.5 lg:py-3 lg:text-ink",
         dark
           ? "rounded-xl bg-ink-2 px-3 py-2.5 text-white"
           : "rounded-[14px] border border-line bg-surface p-3",
+        className,
       )}
     >
-      <span className="text-[22px] leading-tight font-extrabold tracking-[-0.01em] lg:order-2 lg:text-[24px]">
+      <span
+        data-testid={testId}
+        className="text-[22px] leading-tight font-extrabold tracking-[-0.01em] lg:order-2 lg:text-[24px]"
+      >
         {value}
       </span>
       <span

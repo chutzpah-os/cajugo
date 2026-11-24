@@ -30,7 +30,7 @@ export const STATUS_TONE: Record<
   pending_approval: "info",
   published: "ok",
   hidden: "warn",
-  sold: "dark",
+  sold: "caju",
   deleted: "neutral",
 };
 

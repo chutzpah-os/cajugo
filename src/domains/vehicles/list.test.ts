@@ -128,7 +128,7 @@ describe("Meus veículos [1c]", () => {
       .where(eq(stores.id, a.storeId));
     const staff = await personWith(t.db, "store_staff", a.storeId);
 
-    expect(await subscriptionCard(deps(), a)).toEqual({
+    expect(await subscriptionCard(deps(), a)).toMatchObject({
       plan: "Plano Catálogo",
       membershipCents: 10000,
       statusLabel: "Ativo",

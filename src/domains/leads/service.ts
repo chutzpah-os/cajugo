@@ -6,12 +6,15 @@ import {
   desc,
   eq,
   gt,
+  gte,
   isNull,
+  lt,
   lte,
   ne,
   sql,
   sum,
 } from "drizzle-orm";
+import { saoPauloMonthStart } from "@/domains/billing/service";
 import { authorizeTo, can, type Permission } from "@/domains/auth/service";
 import { brandName } from "@/domains/fipe/service";
 import { brDay } from "@/platform/br/date";
@@ -458,6 +461,34 @@ export async function purgeOldLeads(
     .where(and(lte(leads.createdAt, limit), isNull(leads.purgedAt)))
     .returning({ id: leads.id });
   return rows.length;
+}
+
+/**
+ * "Contatos no mês" do painel [15b] (012): leads da loja do dia 1 até agora e no mesmo
+ * período do mês anterior. Só a contagem, sem dado do comprador.
+ */
+export async function leadsThisMonth(
+  db: Db,
+  session: Session | null,
+  now: Date = new Date(),
+): Promise<{ count: number; previous: number }> {
+  const storeId = storeOf(session, "leads.view");
+  const start = saoPauloMonthStart(now);
+  const prevStart = saoPauloMonthStart(new Date(start.getTime() - 86_400_000));
+  const prevEnd = new Date(
+    prevStart.getTime() + (now.getTime() - start.getTime()),
+  );
+  const between = (a: Date, b: Date) =>
+    and(
+      eq(leads.storeId, storeId),
+      gte(leads.createdAt, a),
+      lt(leads.createdAt, b),
+    );
+  const [[cur], [prev]] = await Promise.all([
+    db.select({ n: count() }).from(leads).where(between(start, now)),
+    db.select({ n: count() }).from(leads).where(between(prevStart, prevEnd)),
+  ]);
+  return { count: cur.n, previous: prev.n };
 }
 
 /** Loja arquivada (011b, CAN-FR-007): os leads da loja são apagados. Devolve quantos. */

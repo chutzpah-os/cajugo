@@ -1133,3 +1133,6 @@
 
 # 2026-11-24 · 012/T004 fotos e capturas
 - pnpm e2e:photos sobe as fotos de carro do design para o Cloudinary do staging (e2e/cars/car-1…7); o seed usa essas fotos e nunca as apaga; pnpm design:shots captura as telas em 390/1280 para test-results/design; comparacao.md com a rotina.
+
+# 2026-11-24 · 012/T005-T006 Meus veículos [1c]/[15b]
+- Cabeçalho escuro com 3 KPIs e o card da assinatura com selo; busca com ícone; chips; card de gestão do design; FAB; no desktop, tabela com 4 KPIs (Contatos no mês via leads.leadsThisMonth, Próxima fatura via accountView). Selo Vendido em caju; preço sem centavos (brlWhole).

@@ -13,6 +13,11 @@ export function brl(cents: number): string {
   return `R$ ${centsToReais(cents)}`;
 }
 
+/** Preço de veículo sem centavos ("R$ 189.900"), como no card do design (DESIGN.md §2.2). */
+export function brlWhole(cents: number): string {
+  return `R$ ${Math.round(cents / 100).toLocaleString("pt-BR")}`;
+}
+
 /** Texto em reais → centavos ("1.234,56" → 123456; "100" → 10000). Inválido → NaN. */
 export function reaisToCents(text: string): number {
   const t = text.trim().replace(/^R\$\s*/, "");

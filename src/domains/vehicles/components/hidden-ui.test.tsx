@@ -17,6 +17,7 @@ const CARD: Card = {
   status: "hidden",
   statusLabel: "Oculto",
   yearModel: 2022,
+  yearManufacture: 2022,
   mileageKm: 12000,
   priceCents: 6500000,
   coverPublicId: null,

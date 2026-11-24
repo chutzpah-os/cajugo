@@ -15,8 +15,8 @@ Legenda: ✅ igual ao design · ⚠️ diferença justificada · ⏳ a fazer.
 | Moldura do lojista | 1c, 15b | ✅ | ✅ | Avatar abre o menu da conta (trocar de painel e sair), já que o design não mostra onde ficam |
 | Moldura do admin | 4a, 15c | ✅ | ✅ | O mesmo |
 | [6f] Confirmações | Turno 06 | ✅ | ✅ | [12h]: motivos da lista da 011b, com as consequências da 011b numa nota (conteúdo da spec 011b) |
-| [1c] Meus veículos | Turno 01 | ⏳ | — | |
-| [15b] Meus veículos | Turno 15 | — | ⏳ | |
+| [1c] Meus veículos | Turno 01 | ✅ | — | Status da assinatura no texto ("Ativo") e no selo, como na captura |
+| [15b] Meus veículos | Turno 15 | — | ✅ | "Vendidos no mês" sem a dica "via Rede Caju" (o dado não existe na tela; conteúdo da spec 005) |
 | [3a] Leads | Turno 03 | ⏳ | ⏳ | |
 | [3b] Minha loja | Turno 03 | ⏳ | ⏳ | |
 | [3c] Conta | Turno 03 | ⏳ | ⏳ | |

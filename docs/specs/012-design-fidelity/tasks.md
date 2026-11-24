@@ -15,8 +15,8 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [x] **T004** `pnpm e2e:photos` e o seed com fotos de carro; `pnpm design:shots` e `comparacao.md`. · _DSG-NFR-001, DSG-NFR-004_
 
 ## Fase 2 — Painel do lojista
-- [ ] **T005** [1c] Meus veículos no celular. · _DSG-FR-004_
-- [ ] **T006** [15b] Meus veículos no desktop (tabela e 4 KPIs). · _DSG-FR-005_
+- [x] **T005** [1c] Meus veículos no celular. · _DSG-FR-004_
+- [x] **T006** [15b] Meus veículos no desktop (tabela e 4 KPIs). · _DSG-FR-005_
 - [ ] **T007** [3a] Leads (celular e desktop). · _DSG-FR-006, DSG-FR-017_
 - [ ] **T008** [3b] Minha loja. · _DSG-FR-006, DSG-FR-017_
 - [ ] **T009** [3c] Conta com o card escuro da assinatura, [12h] e Rede Caju/Caju Indica na ordem da captura. · _DSG-FR-006, DSG-FR-016_

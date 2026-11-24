@@ -138,7 +138,7 @@ test.describe("veículos do lojista", () => {
     );
     expect(await audit(page), "[1c]").toEqual(CLEAN);
     await page.getByLabel("Buscar por modelo ou placa").fill(PLATE);
-    await page.getByRole("button", { name: "Buscar" }).click();
+    await page.getByLabel("Buscar por modelo ou placa").press("Enter");
     await expect(page).toHaveURL(/q=ABC1D23/);
     await expect(page.locator("main ul li")).toHaveCount(1);
 

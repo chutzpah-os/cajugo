@@ -484,3 +484,6 @@
 
 # 2026-11-24 · 012/T004 fotos e capturas
 - A comparação com o design precisa de fotos de carro e de capturas repetíveis.
+
+# 2026-11-24 · 012/T005-T006 Meus veículos [1c]/[15b]
+- Fidelidade às capturas [1c] e [15b].

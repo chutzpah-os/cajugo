@@ -863,6 +863,7 @@ export type VehicleCard = {
   status: string;
   statusLabel: string;
   yearModel: number | null;
+  yearManufacture: number | null;
   mileageKm: number | null;
   priceCents: number | null;
   coverPublicId: string | null;
@@ -1000,6 +1001,7 @@ export async function listVehicles(
       status: v.status,
       statusLabel: STATUS_LABEL[v.status],
       yearModel: v.yearModel,
+      yearManufacture: v.yearManufacture,
       mileageKm: v.mileageKm,
       priceCents: v.priceCents,
       coverPublicId: coverOf.get(v.id) ?? null,
