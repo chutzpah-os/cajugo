@@ -17,3 +17,8 @@ export function appUrl(): string {
 export function storeUrl(slug: string): string {
   return `${appUrl()}/loja/${slug}`;
 }
+
+/** Link de indicação do Caju Indica (`/i/{codigo}`, STO-FR-014, 010). */
+export function referralUrl(code: string): string {
+  return `${appUrl()}/i/${code.toLowerCase()}`;
+}

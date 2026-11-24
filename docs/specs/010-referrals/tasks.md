@@ -48,7 +48,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   - as indicações existentes continuam rendendo.
 
   · _IND-FR-002, IND-FR-015_
-- [ ] **T007** `referralPanel` ([8a]/[9d]: código, link, regras) e `referralsList`:
+- [x] **T007** `referralPanel` ([8a]/[9d]: código, link, regras) e `referralsList`:
   - filtros;
   - status calculado (Cadastrada, Ativa, Pausada, Encerrada, Não válida);
   - rendeu e meses que faltam;

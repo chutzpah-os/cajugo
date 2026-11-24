@@ -9,7 +9,7 @@ import { hoursToForm } from "@/domains/stores/hours-form";
 import { storeSummary } from "@/domains/stores/service";
 import { getCloudinary } from "@/platform/cloudinary/cloudinary";
 import { getDb } from "@/platform/db/client";
-import { appUrl, storeUrl } from "@/platform/http/urls";
+import { appUrl, referralUrl, storeUrl } from "@/platform/http/urls";
 
 export const metadata: Metadata = { title: "Minha loja | CajuGo" };
 
@@ -27,11 +27,7 @@ async function Content() {
       <StoreSharePanel
         storeName={s.name}
         catalogUrl={storeUrl(s.slug)}
-        referralUrl={
-          s.referralCode
-            ? `${appUrl()}/i/${s.referralCode.toLowerCase()}`
-            : null
-        }
+        referralUrl={s.referralCode ? referralUrl(s.referralCode) : null}
         referralCode={s.referralCode}
         logoUrl={
           s.logoPublicId

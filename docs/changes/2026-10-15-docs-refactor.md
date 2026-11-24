@@ -1052,3 +1052,6 @@
 
 # 2026-11-24 · Regras do programa nos códigos [010/T006]
 - canRefer (programa ativo e algum papel em 'quem pode indicar'); checkCode recusa o código fora das regras; as indicações existentes continuam rendendo.
+
+# 2026-11-24 · Painel e indicações do Caju Indica [010/T007]
+- referralPanel (código no 1º acesso, link pela função única referralUrl, regras; programa desligado sem código) e referralsList (filtros, status calculados, rendeu, meses que faltam, só o nome da loja).
