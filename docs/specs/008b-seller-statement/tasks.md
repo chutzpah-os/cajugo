@@ -48,7 +48,7 @@ Decisões D1–D4 do plano aprovadas em 2026-11-23.
   - vendedor bloqueado pode (D2).
 
   · _EXT-FR-003, EXT-FR-004, EXT-FR-010, EXT-SEC-001, EXT-SEC-002, EXT-SEC-004_
-- [ ] **T006** `setCommissionReceived`, desfazer:
+- [x] **T006** `setCommissionReceived`, desfazer:
   - em até 24 h volta a A receber;
   - depois, 409;
   - comissão marcada pela loja não desfaz;

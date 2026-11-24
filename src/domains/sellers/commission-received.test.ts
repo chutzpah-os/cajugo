@@ -5,7 +5,7 @@ import { createTestDb } from "@/platform/db/testing/test-db";
 import { uuidv7 } from "@/platform/db/uuid";
 import { personWith } from "@/domains/billing/testing/fixtures";
 import { car, liveStore } from "@/domains/showcase/testing/fixtures";
-import { setCommissionReceived } from "./service";
+import { sellerStatement, setCommissionReceived } from "./service";
 import { activeSeller, soldBy } from "./testing/fixtures";
 
 const NOW = new Date("2026-11-23T12:00:00Z");
@@ -160,5 +160,104 @@ describe("Recebi da comissão [7d]", () => {
     );
 
     expect((await saleRow(row.id)).commissionStatus).toBe("paid");
+  });
+
+  it("[EXT-FR-009] Desfazer em até 24 h volta a A receber; o item mostra até quando vale", async () => {
+    // Arrange
+    const { ana, row } = await sale();
+    await setCommissionReceived(
+      deps(),
+      ana,
+      { saleId: row.id, received: true },
+      NOW,
+    );
+    const before = await sellerStatement(t.db, ana, {}, later(2));
+
+    // Act
+    await setCommissionReceived(
+      deps(),
+      ana,
+      { saleId: row.id, received: false },
+      later(2),
+    );
+
+    // Assert
+    expect(before.items[0].canUndoUntil).toEqual(later(24));
+    expect(await saleRow(row.id)).toMatchObject({
+      commissionStatus: "to_receive",
+      commissionReceivedAt: null,
+    });
+  });
+
+  it("[EXT-FR-009] depois de 24 h não desfaz (409) e o Desfazer some do extrato", async () => {
+    const { ana, row } = await sale();
+    await setCommissionReceived(
+      deps(),
+      ana,
+      { saleId: row.id, received: true },
+      NOW,
+    );
+
+    const view = await sellerStatement(t.db, ana, {}, later(25));
+
+    expect(view.items[0].canUndoUntil).toBeNull();
+    await expect(
+      setCommissionReceived(
+        deps(),
+        ana,
+        { saleId: row.id, received: false },
+        later(25),
+      ),
+    ).rejects.toMatchObject({
+      status: 409,
+      detail: "Para corrigir, fale com a CajuGo.",
+    });
+    expect((await saleRow(row.id)).commissionStatus).toBe("paid");
+  });
+
+  it("[EXT-FR-009] comissão marcada paga pela loja na venda não tem Desfazer para o vendedor", async () => {
+    const { ana, row } = await sale("paid");
+
+    await expect(
+      setCommissionReceived(
+        deps(),
+        ana,
+        { saleId: row.id, received: false },
+        NOW,
+      ),
+    ).rejects.toMatchObject({ status: 409 });
+    expect(
+      (await sellerStatement(t.db, ana, {}, NOW)).items[0].canUndoUntil,
+    ).toBeNull();
+  });
+
+  it("[EXT-FR-010] [EXT-SEC-004] desfazer avisa a loja e fica no registro", async () => {
+    const { ana, a, row } = await sale();
+    await setCommissionReceived(
+      deps(),
+      ana,
+      { saleId: row.id, received: true },
+      NOW,
+    );
+
+    await setCommissionReceived(
+      deps(),
+      ana,
+      { saleId: row.id, received: false },
+      later(1),
+    );
+
+    const mine = await t.db
+      .select()
+      .from(notices)
+      .where(eq(notices.profileId, a.userId));
+    expect(mine.map((n) => n.kind).sort()).toEqual([
+      "commission_received",
+      "commission_unreceived",
+    ]);
+    const actions = (await t.db.select().from(activityLog)).map(
+      (l) => l.action,
+    );
+    expect(actions).toContain("commission.unreceived");
   });
 });

@@ -1016,3 +1016,6 @@
 
 # 2026-11-23 · Recebi da comissão [008b/T005]
 - setCommissionReceived: só o vendedor da venda (o bloqueado também, D2) passa A receber → Paga com a data; repetir não muda; aviso à loja (dono e usuários) e registro; vendedor B → 404, outros papéis → 403.
+
+# 2026-11-23 · Desfazer o Recebi [008b/T006]
+- Desfazer em até 24 h volta a A receber; depois 409 'fale com a CajuGo'; comissão marcada paga pela loja não desfaz; aviso à loja e registro; canUndoUntil no extrato.
