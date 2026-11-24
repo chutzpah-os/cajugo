@@ -5,6 +5,7 @@ import {
   referrals,
   stores,
 } from "@/platform/db/schema";
+import { getSettings } from "@/domains/settings/service";
 import { logActivity } from "@/platform/http/activity-log";
 import type { Db } from "@/platform/db/types";
 
@@ -62,6 +63,26 @@ export async function codeOf(
 const digits = (s: string) =>
   s.replace(/\D/g, "").replace(/^55(?=\d{10,11}$)/, "");
 
+const REFERRING_ROLES = ["store_owner", "seller", "referrer"] as const;
+
+/**
+ * A pessoa pode indicar? Programa ativo e algum dos papéis dela em "quem pode indicar"
+ * (IND-FR-002, IND-FR-015). Link de campanha (sem pessoa) só depende do programa.
+ */
+export function canRefer(
+  settings: Pick<
+    Awaited<ReturnType<typeof getSettings>>,
+    "referral_enabled" | "referral_who"
+  >,
+  roles: readonly string[] | null,
+): boolean {
+  if (!settings.referral_enabled) return false;
+  if (!roles) return true;
+  return REFERRING_ROLES.some(
+    (r) => roles.includes(r) && settings.referral_who[r],
+  );
+}
+
 export type CodeCheck =
   | { status: "ok"; code: string; referrerName: string }
   | { status: "not-found" }
@@ -87,11 +108,15 @@ export async function checkCode(
       name: profiles.name,
       email: profiles.email,
       phone: profiles.phone,
+      roles: profiles.roles,
     })
     .from(referralCodes)
     .leftJoin(profiles, eq(profiles.id, referralCodes.profileId))
     .where(eq(referralCodes.code, code));
   if (!row || !row.active) return { status: "not-found" };
+  // Programa desligado ou papel fora de "quem pode indicar" (IND-FR-015).
+  if (!canRefer(await getSettings(db), row.roles))
+    return { status: "not-found" };
 
   const sameEmail =
     !!row.email &&

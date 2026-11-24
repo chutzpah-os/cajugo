@@ -1049,3 +1049,6 @@
 
 # 2026-11-24 · Caju Indica na cobrança [010/T005]
 - rewardReferrals onde a fatura vira paga (1ª confirmada ou registrada, mensais quitadas, nasce paga com crédito, zerada por taxa desfeita); crédito referral do lojista lançado no billing_credits e abatido na fatura seguinte.
+
+# 2026-11-24 · Regras do programa nos códigos [010/T006]
+- canRefer (programa ativo e algum papel em 'quem pode indicar'); checkCode recusa o código fora das regras; as indicações existentes continuam rendendo.

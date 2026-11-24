@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { profiles, referralCodes } from "@/platform/db/schema";
+import { profiles, referralCodes, settingValues } from "@/platform/db/schema";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { checkCode, getOrCreateCode } from "./service";
+import { canRefer, checkCode, getOrCreateCode } from "./service";
 
 describe("referrals", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
@@ -122,6 +122,69 @@ describe("referrals", () => {
         code: "FEIRA10",
         referrerName: "Feira de Aracaju",
       });
+    });
+  });
+
+  describe("regras do programa", () => {
+    const rule = (key: string, value: unknown) =>
+      t.db
+        .insert(settingValues)
+        .values({ key, value, validFrom: new Date("2026-01-01") });
+
+    it("[IND-FR-015] programa desligado: código não vale em novo cadastro", async () => {
+      // Arrange
+      const id = await person("Ricardo Souza", "r@x.com");
+      await getOrCreateCode(t.db, id, "Ricardo Souza");
+      await rule("referral_enabled", false);
+
+      // Act
+      const result = await checkCode(t.db, "RICARDO10", {
+        email: "n@x.com",
+        phone: "",
+      });
+
+      // Assert
+      expect(result).toEqual({ status: "not-found" });
+    });
+
+    it("[IND-FR-015] papel fora de 'quem pode indicar': código do indicador não vale; o do lojista sim", async () => {
+      const ind = await person("Júlia", "j@x.com");
+      await getOrCreateCode(t.db, ind, "Júlia");
+      const owner = crypto.randomUUID();
+      await t.db.insert(profiles).values({
+        id: owner,
+        name: "Ricardo",
+        email: "r@x.com",
+        roles: ["store_owner"],
+      });
+      await getOrCreateCode(t.db, owner, "Ricardo");
+      await rule("referral_who", {
+        store_owner: true,
+        seller: true,
+        referrer: false,
+      });
+
+      expect(
+        (await checkCode(t.db, "JULIA10", { email: "n@x.com", phone: "" }))
+          .status,
+      ).toBe("not-found");
+      expect(
+        (await checkCode(t.db, "RICARDO10", { email: "n@x.com", phone: "" }))
+          .status,
+      ).toBe("ok");
+    });
+
+    it("[IND-FR-002] [IND-FR-015] canRefer: algum papel da pessoa precisa estar liberado, com o programa ativo", () => {
+      const on = {
+        referral_enabled: true,
+        referral_who: { store_owner: false, seller: true, referrer: false },
+      };
+
+      expect(canRefer(on, ["seller", "referrer"])).toBe(true);
+      expect(canRefer(on, ["referrer"])).toBe(false);
+      expect(canRefer({ ...on, referral_enabled: false }, ["seller"])).toBe(
+        false,
+      );
     });
   });
 });

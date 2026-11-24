@@ -43,7 +43,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-23.
   Crédito `referral` para o lojista (D2), abatido na fatura seguinte; saldo para os outros.
 
   · _IND-FR-006, IND-FR-009, IND-FR-010, IND-SEC-004_
-- [ ] **T006** Código e regras:
+- [x] **T006** Código e regras:
   - `getOrCreateCode` e `checkCode` respeitam o programa ativo e "quem pode indicar" pelo papel de quem indicou;
   - as indicações existentes continuam rendendo.
 
