@@ -1199,3 +1199,6 @@
 
 # 2026-11-24 · feat(stores): nova loja pelo admin [012b/T007]
 - createStoreByAdmin cria a conta do dono com senha temporária (24 h, troca no 1º login) e a loja cadastrada; e-mail repetido → 422; registro store.created_by_admin com o admin, sem a senha; só admin (stores.manage).
+
+# 2026-11-24 · feat(stores): editar dados da loja pelo admin [012b/T008]
+- updateStoreByAdmin grava nome, WhatsApp, cidade, endereço, sobre e Instagram com as validações de Minha loja; sem endereço do catálogo nem dono (schema estrito); loja inexistente/arquivada ou id inválido → 404; registro store.updated_by_admin; só admin. CEP extraído em zipSchema.

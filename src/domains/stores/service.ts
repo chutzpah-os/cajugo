@@ -1,5 +1,6 @@
 import { brDate } from "@/platform/br/date";
-import { and, eq, gt, inArray, like, lte } from "drizzle-orm";
+import { and, eq, gt, inArray, like, lte, ne } from "drizzle-orm";
+import { z } from "zod";
 import {
   authorizeTo,
   generateTemporaryPassword,
@@ -27,6 +28,7 @@ import { storeUrl } from "@/platform/http/urls";
 import {
   addStoreSchema,
   adminCreateStoreSchema,
+  adminStoreUpdateSchema,
   registerStoreSchema,
   storeUpdateSchema,
 } from "./schemas";
@@ -340,6 +342,50 @@ export async function updateStore(
     await logActivity(tx, {
       userId,
       action: "store.updated",
+      entity: "store",
+      entityId: storeId,
+    });
+  });
+}
+
+/**
+ * Editar dados da loja pelo admin [6g] (ADM-FR-010): as validações de Minha loja, sem
+ * o endereço do catálogo nem o dono; loja inexistente, arquivada ou id inválido → 404.
+ */
+export async function updateStoreByAdmin(
+  deps: AuthDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<void> {
+  const admin = authorizeTo(session, "stores.manage");
+  const parsed = adminStoreUpdateSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const { storeId, ...d } = parsed.data;
+  if (!z.uuid().safeParse(storeId).success) throw AppError.notFound();
+
+  await deps.db.transaction(async (tx) => {
+    const [updated] = await tx
+      .update(stores)
+      .set({
+        name: d.name,
+        whatsapp: d.whatsapp,
+        city: d.city,
+        state: d.state,
+        about: d.about ?? null,
+        instagram: d.instagram ?? null,
+        addressStreet: d.addressStreet ?? null,
+        addressNumber: d.addressNumber ?? null,
+        addressComplement: d.addressComplement ?? null,
+        addressDistrict: d.addressDistrict ?? null,
+        addressZip: d.addressZip ?? null,
+      })
+      .where(and(eq(stores.id, storeId), ne(stores.status, "archived")))
+      .returning({ id: stores.id });
+    if (!updated) throw AppError.notFound();
+    await logActivity(tx, {
+      userId: admin.userId,
+      action: "store.updated_by_admin",
       entity: "store",
       entityId: storeId,
     });

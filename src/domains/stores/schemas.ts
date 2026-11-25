@@ -121,6 +121,15 @@ const instagramSchema = z
   .nullable()
   .optional();
 
+/** CEP opcional: só dígitos, 8 ou vazio (vira `null`). */
+const zipSchema = z
+  .string()
+  .transform((v) => v.replace(/\D/g, ""))
+  .pipe(z.string().regex(/^$|^\d{8}$/, "O CEP tem 8 dígitos."))
+  .transform((v) => v || null)
+  .nullable()
+  .optional();
+
 /** Minha loja [3b] (STO-FR-008, 009, 012). Sem `storeId`, `status` nem endereço do catálogo. */
 export const storeUpdateSchema = z
   .object({
@@ -136,14 +145,30 @@ export const storeUpdateSchema = z
     addressNumber: optionalText(10),
     addressComplement: optionalText(60),
     addressDistrict: optionalText(60),
-    addressZip: z
-      .string()
-      .transform((v) => v.replace(/\D/g, ""))
-      .pipe(z.string().regex(/^$|^\d{8}$/, "O CEP tem 8 dígitos."))
-      .transform((v) => v || null)
-      .nullable()
-      .optional(),
+    addressZip: zipSchema,
     hours: hoursSchema.nullable().optional(),
     shareByDefault: z.boolean(),
   })
   .strict();
+
+/**
+ * Editar dados da loja pelo admin [6g] (ADM-FR-010): os campos de Minha loja (nome,
+ * WhatsApp, cidade, endereço, sobre, Instagram), sem o endereço do catálogo nem o dono.
+ */
+export const adminStoreUpdateSchema = z
+  .object({
+    storeId: z.string(),
+    name: storeFields.storeName,
+    whatsapp: storeFields.whatsapp,
+    city: storeFields.city,
+    state: storeFields.state,
+    about: optionalText(2000),
+    instagram: instagramSchema,
+    addressStreet: optionalText(120),
+    addressNumber: optionalText(10),
+    addressComplement: optionalText(60),
+    addressDistrict: optionalText(60),
+    addressZip: zipSchema,
+  })
+  .strict()
+  .transform(withCity);

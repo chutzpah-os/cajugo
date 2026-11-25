@@ -550,3 +550,6 @@
 
 # 2026-11-24 · feat(stores): nova loja pelo admin [012b/T007]
 - ADM-FR-005, ADM-SEC-002/003; reaproveita o createStore do cadastro com a origem do papel e o autor do registro como parâmetro.
+
+# 2026-11-24 · feat(stores): editar dados da loja pelo admin [012b/T008]
+- ADM-FR-010, ADM-SEC-002; mesmo schema de Minha loja para não divergir das regras da 003.
