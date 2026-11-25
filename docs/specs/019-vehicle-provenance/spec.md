@@ -2,7 +2,7 @@
 id: 019
 slug: vehicle-provenance
 title: Procedência e situação do veículo (leilão, sinistro, restrições)
-status: planned
+status: in-progress
 owner: dono do produto
 created: 2026-11-25
 ---

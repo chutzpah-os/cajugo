@@ -39,6 +39,18 @@ describe("veículos no banco", () => {
     });
   });
 
+  it("[PRO-FR-007] veículo de antes da 019 fica com a procedência não informada (nula)", async () => {
+    const [v] = await t.db.insert(vehicles).values({ storeId }).returning();
+
+    expect(v).toMatchObject({
+      origin: null,
+      damage: null,
+      gnv: null,
+      lien: null,
+      provenanceDeclaredAt: null,
+    });
+  });
+
   it("[VEH-FR-004] duas fotos não ocupam a mesma posição no mesmo veículo", async () => {
     const [v] = await t.db
       .insert(vehicles)

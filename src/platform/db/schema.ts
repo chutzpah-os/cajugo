@@ -499,6 +499,7 @@ export const reportReason = pgEnum("report_reason", [
   "unreal_price",
   "wrong_photos",
   "scam",
+  "provenance_omitted",
   "other",
 ]);
 
@@ -563,6 +564,23 @@ export const vehicles = pgTable(
     soldAt: timestamp("sold_at", { withTimezone: true }),
     /** Excluído: guardado 90 dias para o admin (VEH-FR-014). */
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    /**
+     * Procedência e situação (019): nulo = "não informado" (veículos de antes da 019).
+     * Valores fechados em `domains/vehicles/provenance.ts`.
+     */
+    origin: text("origin"),
+    damage: text("damage"),
+    gnv: text("gnv"),
+    remarked: boolean("remarked"),
+    lien: boolean("lien"),
+    judicialRestriction: boolean("judicial_restriction"),
+    theft: boolean("theft"),
+    provenanceDeclaredAt: timestamp("provenance_declared_at", {
+      withTimezone: true,
+    }),
+    provenanceDeclaredBy: uuid("provenance_declared_by").references(
+      () => profiles.id,
+    ),
     /** Filtro por marca e descoberta (spec 006). */
     makeSlug: text("make_slug"),
     modelSlug: text("model_slug"),
@@ -586,6 +604,7 @@ export const vehicles = pgTable(
     index("vehicles_make_model_slug").on(t.makeSlug, t.modelSlug),
     index("vehicles_search").using("gin", t.search),
     index("vehicles_status_rank").on(t.status, t.rankScore.desc(), t.id),
+    index("vehicles_status_origin_damage").on(t.status, t.origin, t.damage),
     index("vehicles_status_price").on(t.status, t.priceCents, t.id),
     index("vehicles_status_published").on(t.status, t.publishedAt.desc(), t.id),
     index("vehicles_store_status_rank").on(

@@ -48,6 +48,25 @@ describe("denunciar anúncio", () => {
     ]);
   });
 
+  it("[PRO-FR-010] aceita o motivo Procedência ou sinistro omitido", async () => {
+    // Arrange
+    const { storeId } = await liveStore(t.db, "loja-a");
+    const v = await car(t.db, storeId);
+
+    // Act
+    const r = await reportVehicle(
+      t.db,
+      form(v.id, { reason: "provenance_omitted" }),
+      ctx,
+    );
+
+    // Assert
+    expect(r).toEqual({ ok: true });
+    expect(await t.db.select().from(vehicleReports)).toEqual([
+      expect.objectContaining({ reason: "provenance_omitted" }),
+    ]);
+  });
+
   it("[RPT-FR-001] o mesmo envio repetido cria uma denúncia só; descrição vazia fica nula", async () => {
     // Arrange
     const { storeId } = await liveStore(t.db, "loja-a");

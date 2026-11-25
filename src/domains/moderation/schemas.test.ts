@@ -26,13 +26,14 @@ const errors = (
 };
 
 describe("formulário de denúncia [14d]", () => {
-  it("[RPT-FR-001] os 4 motivos da denúncia, com rótulo", () => {
+  it("[RPT-FR-001] [PRO-FR-010] os 5 motivos da denúncia, com rótulo", () => {
     // Assert
     expect(REPORT_REASONS.map((r) => REASON_LABEL[r])).toEqual([
       "Já vendido",
       "Preço não real",
       "Fotos de outro carro",
       "Suspeita de golpe",
+      "Procedência ou sinistro omitido",
     ]);
   });
 
@@ -74,13 +75,14 @@ describe("formulário de denúncia [14d]", () => {
 });
 
 describe("Ocultar [6f]", () => {
-  it("[RPT-FR-004] 5 motivos; 'Outro' exige nota de até 200 caracteres", () => {
+  it("[RPT-FR-004] 6 motivos; 'Outro' exige nota de até 200 caracteres", () => {
     // Act / Assert
     expect(HIDE_REASONS.map((r) => REASON_LABEL[r])).toEqual([
       "Já vendido",
       "Preço não real",
       "Fotos de outro carro",
       "Suspeita de golpe",
+      "Procedência ou sinistro omitido",
       "Outro",
     ]);
     expect(

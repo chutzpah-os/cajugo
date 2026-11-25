@@ -7,6 +7,7 @@ export const REPORT_REASONS = [
   "unreal_price",
   "wrong_photos",
   "scam",
+  "provenance_omitted",
 ] as const;
 export type ReportReason = (typeof REPORT_REASONS)[number];
 
@@ -19,6 +20,7 @@ export const REASON_LABEL: Record<HideReason, string> = {
   unreal_price: "Preço não real",
   wrong_photos: "Fotos de outro carro",
   scam: "Suspeita de golpe",
+  provenance_omitted: "Procedência ou sinistro omitido",
   other: "Outro",
 };
 

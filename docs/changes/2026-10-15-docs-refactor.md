@@ -1359,3 +1359,6 @@
 
 # 2026-11-25 · test(admin): e2e do painel e verificação; 012b implementada [012b/T017-T018]
 - e2e do painel no celular, da Visão geral no desktop e do menu Mais com o ID; "Ver todos" dos comprovantes com 44 px. 31 e2e do admin passando; 012b `implemented`; fila de aprovação inline fica com a 005b.
+
+# 2026-11-25 · feat(db): procedência do veículo e motivo de denúncia [019/T001, T008]
+- Migration 0028: colunas de procedência em vehicles (nulas = não informado), declarante e índice para o filtro; motivo de denúncia "Procedência ou sinistro omitido" no formulário, na fila e no Ocultar. Aplicada no staging; prod pendente de autorização.

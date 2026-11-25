@@ -11,7 +11,7 @@ Cada resposta da seção **Procedência e situação** vira uma coluna em `vehic
 ## Impacto
 | Camada | Mudança |
 |---|---|
-| Dados | Migration `0030`: colunas `origin`, `damage`, `gnv`, `remarked`, `lien`, `judicial_restriction`, `theft`, `provenance_declared_at`, `provenance_declared_by`; `ALTER TYPE report_reason ADD VALUE 'provenance_omitted'`; índice `vehicles_status_origin_damage (status, origin, damage)` |
+| Dados | Migration `0028`: colunas `origin`, `damage`, `gnv`, `remarked`, `lien`, `judicial_restriction`, `theft`, `provenance_declared_at`, `provenance_declared_by`; `ALTER TYPE report_reason ADD VALUE 'provenance_omitted'`; índice `vehicles_status_origin_damage (status, origin, damage)` |
 | `src/domains/vehicles` | `provenance.ts` (listas fechadas, `classify`, `notices`, `isAuction`); `saveDraft` grava as respostas só com a declaração marcada; `publish` e a edição de publicado recusam bloqueado e "não informado" |
 | `src/domains/showcase` | filtro `?procedencia=` (limpo, leilao, media-monta, enchente) na lateral e na folha; selo Leilão no card; quadro de avisos e linha Procedência na ficha [1b] |
 | `src/domains/moderation` | motivo **Procedência ou sinistro omitido** em Denunciar [14d] e na fila do admin |

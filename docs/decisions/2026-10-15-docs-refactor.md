@@ -710,3 +710,6 @@
 
 # 2026-11-25 · 012b fechada sem a fila de aprovação [012b/T018]
 - Aprovar veículo depende da tela [14c] e da regra da 005b, que ainda não tem spec; a fila inline entra com ela. ADM-NFR-002 (desempenho com 500 lojas) fica para a medição do lançamento (013).
+
+# 2026-11-25 · 019 começa pela migration [019/T001]
+- A 019 veio antes da 018 (proteção contra golpe é mais urgente), então ficou com a 0028. O motivo de denúncia novo entrou junto porque a lista de motivos é a mesma do banco e do formulário.
