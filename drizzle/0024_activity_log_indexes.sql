@@ -1,0 +1,2 @@
+CREATE INDEX "activity_log_created" ON "activity_log" USING btree ("created_at" DESC NULLS LAST);--> statement-breakpoint
+CREATE INDEX "activity_log_entity_created" ON "activity_log" USING btree ("entity_id","created_at" DESC NULLS LAST);

@@ -16,7 +16,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - permissões `admin.view` (admin e suporte), `stores.manage` e `team.manage` (só admin), com teste.
 
   · _ADM-SEC-001, ADM-SEC-002_
-- [ ] **T002** Migration `0024` (índices de `activity_log`), teste de schema e a migration no staging. · _—_
+- [x] **T002** Migration `0024` (índices de `activity_log`), teste de schema e a migration no staging. · _—_
 
 ## Fase 2 — Servidor
 - [ ] **T003** `adminDashboard`: KPIs com a variação, "Precisa de atenção" (só com pendência), origem dos leads e top lojas, a partir dos serviços dos outros domínios. · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-NFR-002_

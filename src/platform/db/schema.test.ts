@@ -80,4 +80,15 @@ describe("schema e migrations", () => {
       t.db.insert(stores).values({ ...base, slug: "garagem77" }),
     ).rejects.toThrow();
   });
+
+  it("[ADM-FR-011] [ADM-FR-015] índices do registro de atividade para os logs e o histórico da loja", async () => {
+    const { rows } = await t.client.query<{ indexname: string }>(
+      "select indexname from pg_indexes where tablename = 'activity_log' and indexname in ('activity_log_created', 'activity_log_entity_created') order by indexname",
+    );
+
+    expect(rows.map((r) => r.indexname)).toEqual([
+      "activity_log_created",
+      "activity_log_entity_created",
+    ]);
+  });
 });

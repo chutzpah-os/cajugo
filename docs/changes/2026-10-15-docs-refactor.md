@@ -1172,3 +1172,6 @@
 
 # 2026-11-24 · 012b/T001 documentos e permissões
 - Tasks da 012b; ARCHITECTURE (domínio admin só leitura), API.md (rotas e actions do admin), GLOSSARY (Equipe CajuGo); permissão stores.manage (só admin) e teste de admin.read/team.manage.
+
+# 2026-11-24 · 012b/T002 migration 0024
+- Índices activity_log_created e activity_log_entity_created; aplicada no staging.

@@ -195,15 +195,23 @@ export const rateLimits = pgTable(
 ).enableRLS();
 
 /** Auditoria: só recebe insert (garantido no código, SECURITY.md §4 e §11). */
-export const activityLog = pgTable("activity_log", {
-  id: uuid("id").primaryKey().$defaultFn(uuidv7),
-  userId: uuid("user_id"),
-  action: text("action").notNull(),
-  entity: text("entity").notNull(),
-  entityId: text("entity_id"),
-  data: jsonb("data"),
-  ...timestamps,
-}).enableRLS();
+export const activityLog = pgTable(
+  "activity_log",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    userId: uuid("user_id"),
+    action: text("action").notNull(),
+    entity: text("entity").notNull(),
+    entityId: text("entity_id"),
+    data: jsonb("data"),
+    ...timestamps,
+  },
+  // Logs de atividade e histórico da loja do admin (012b), 20 por vez.
+  (t) => [
+    index("activity_log_created").on(t.createdAt.desc()),
+    index("activity_log_entity_created").on(t.entityId, t.createdAt.desc()),
+  ],
+).enableRLS();
 
 /**
  * Regras configuráveis (spec 002, ADR 0010): uma linha por alteração, só INSERT.

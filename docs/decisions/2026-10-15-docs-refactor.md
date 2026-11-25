@@ -523,3 +523,6 @@
 
 # 2026-11-24 · 012b/T001 documentos e permissões
 - Base da 012b; reaproveita admin.read em vez de criar admin.view (ajuste da D5).
+
+# 2026-11-24 · 012b/T002 migration 0024
+- Logs e histórico da loja paginados sem varrer a tabela.

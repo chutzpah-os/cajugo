@@ -169,6 +169,13 @@
       "when": 1795530408030,
       "tag": "0023_cancellation",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795578009683,
+      "tag": "0024_activity_log_indexes",
+      "breakpoints": true
     }
   ]
 }
