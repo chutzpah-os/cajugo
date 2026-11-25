@@ -643,3 +643,6 @@
 
 # 2026-11-24 · feat(site): páginas de vendas do Caju Indica e da Rede Caju; Vender e Descobrir separados [017]
 - Pedidos do dono em 2026-11-25: uma página exclusiva e completa por produto, ligada aos cadastros; contato fica para depois.
+
+# 2026-11-24 · feat(site): página de vendas do Catálogo para lojas em Descobrir [017]
+- Pedido do dono: em Descobrir, uma página de vendas própria para o lojista, não o atalho para /lojistas.

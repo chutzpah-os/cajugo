@@ -71,7 +71,7 @@ export const SITE_NAV: NavSection[] = [
     key: "descobrir",
     label: "Descobrir",
     items: [
-      { label: "Para lojistas", href: "/lojistas" },
+      { label: "Para lojistas", href: "/conheca/lojistas" },
       { label: "Caju Indica", href: "/conheca/caju-indica" },
       { label: "Rede Caju", href: "/conheca/rede-caju" },
       { label: "Tabela FIPE", href: null },

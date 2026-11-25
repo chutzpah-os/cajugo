@@ -1292,3 +1292,6 @@
 
 # 2026-11-24 · feat(site): páginas de vendas do Caju Indica e da Rede Caju; Vender e Descobrir separados [017]
 - ProgramLanding: abertura com a chamada, números em destaque, Para quem é, Como funciona, exemplo de ganhos (Caju Indica, com as regras reais do programa), O que você ganha, Por que a CajuGo, perguntas e chamada final. Novas /conheca/caju-indica e /conheca/rede-caju (no sitemap). Menu: Vender leva aos cadastros; Descobrir às páginas de vendas (Para lojistas, Caju Indica, Rede Caju). Rodapé com o Instagram @caju.go.
+
+# 2026-11-24 · feat(site): página de vendas do Catálogo para lojas em Descobrir [017]
+- Nova /conheca/lojistas no formato das outras páginas de vendas (números, para quem é, como funciona, card do Plano Catálogo, o que ganha, por que a CajuGo, perguntas, chamada final), no sitemap; Descobrir → Para lojistas aponta para ela. /lojistas continua como a página do plano antes do cadastro.
