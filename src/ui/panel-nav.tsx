@@ -37,7 +37,7 @@ export function isActive(pathname: string, href: string, root: string) {
 }
 
 const tabClass =
-  "relative flex h-12 w-full flex-col items-center justify-center gap-[3px] px-1 text-center text-[11px] font-semibold text-text-3 aria-[current=page]:text-caju";
+  "relative flex h-12 w-full flex-col items-center justify-center gap-[3px] px-1 text-center text-[11px] font-semibold text-on-dark-2 aria-[current=page]:text-white";
 
 /** Barrinha do item ativo na barra inferior (DESIGN.md §3). */
 function ActiveMark({ on }: { on: boolean }) {
@@ -85,7 +85,7 @@ export function PanelNavView({
     <>
       <nav
         aria-label="Menu do painel (celular)"
-        className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-surface px-2 pt-2 pb-[max(env(safe-area-inset-bottom),18px)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 border-t border-ink-2 bg-ink px-2 pt-2 pb-[max(env(safe-area-inset-bottom),18px)] lg:hidden"
       >
         <ul
           className="mx-auto grid max-w-[480px]"

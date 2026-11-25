@@ -5,7 +5,7 @@ test('menu do admin no celular: itens fora da barra ficam no "Mais"', async ({
 }) => {
   await page.goto("/entrar?next=%2Fadmin");
   await signIn(page, accounts.support.email);
-  await expect(heading(page)).toHaveText("Painel admin");
+  await expect(heading(page)).toHaveText(/^Olá, /);
 
   const bar = page.getByRole("navigation", {
     name: "Menu do painel (celular)",

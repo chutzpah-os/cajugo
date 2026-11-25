@@ -31,17 +31,17 @@ export function AccountMenu({
       <button
         type="button"
         aria-haspopup="dialog"
-        aria-label={`Conta de ${fullName}`}
+        aria-label={`Conta de ${fullName}: sair ou trocar de painel`}
         data-testid="account-menu"
         onClick={() => ref.current?.showModal()}
         className={cn(
           variant === "sidebar"
-            ? "flex min-h-11 w-full items-center gap-2.5 rounded-input px-3 text-left text-sm font-semibold text-on-dark-2 hover:bg-ink-2"
+            ? "flex min-h-12 w-full items-center gap-2.5 rounded-input border-[1.5px] border-ink-3 bg-ink-2 px-2.5 text-left text-sm font-semibold text-white hover:border-on-dark-2"
             : cn(
-                "flex size-11 items-center justify-center rounded-full text-sm font-bold",
+                "flex h-11 items-center gap-2 rounded-full border-[1.5px] py-1 pr-3.5 pl-1 text-sm font-bold",
                 variant === "avatar-dark"
-                  ? "bg-ink-3 text-white"
-                  : "bg-bg text-ink",
+                  ? "border-ink-3 bg-ink-2 text-white"
+                  : "border-field bg-surface text-ink",
               ),
         )}
       >
@@ -53,10 +53,32 @@ export function AccountMenu({
             >
               {initialsOf(fullName)}
             </span>
-            <span className="truncate">{fullName}</span>
+            <span className="min-w-0 flex-1 truncate">{fullName}</span>
+            <span
+              aria-hidden
+              className="flex flex-none items-center gap-1.5 text-[13px] font-bold"
+            >
+              Sair
+              <LogoutIcon />
+            </span>
           </>
         ) : (
-          <span aria-hidden>{initialsOf(fullName)}</span>
+          // Botão claro (pedido do dono, 2026-11-25): as iniciais e "Sair" com o ícone.
+          <>
+            <span
+              aria-hidden
+              className={cn(
+                "flex size-8 flex-none items-center justify-center rounded-full text-xs font-bold",
+                variant === "avatar-dark"
+                  ? "bg-ink-3 text-white"
+                  : "bg-bg text-ink",
+              )}
+            >
+              {initialsOf(fullName)}
+            </span>
+            <span aria-hidden>Sair</span>
+            <LogoutIcon />
+          </>
         )}
       </button>
       <dialog
@@ -119,5 +141,23 @@ export function AccountMenu({
         </div>
       </dialog>
     </>
+  );
+}
+
+/** Porta com seta: "Sair" no botão da conta (celular e sidebar). */
+function LogoutIcon() {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 24 24"
+      className="size-4 flex-none"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+    </svg>
   );
 }

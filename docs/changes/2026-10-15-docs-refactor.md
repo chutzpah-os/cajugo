@@ -1341,3 +1341,6 @@
 
 # 2026-11-25 · feat(showcase): faixa do Caju Indica entre a lista e o rodapé [010]
 - Na vitrine (/veiculos e páginas de tipo), a faixa do Caju Indica sai de baixo do quadro Comprar · Vender e vai para o fim da página, com espaço antes do rodapé, no mesmo estilo; em 390 e 1440 px.
+
+# 2026-11-25 · feat(ui): barra do painel escura no celular e botão Sair claro [012]
+- Barra inferior das áreas logadas no celular passa a ser escura como a sidebar do desktop; o avatar "HA" vira botão com contorno, iniciais, "Sair" e o ícone (celular e pé da sidebar). e2e do menu do admin com a saudação nova.

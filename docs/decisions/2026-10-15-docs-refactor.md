@@ -692,3 +692,6 @@
 
 # 2026-11-25 · Faixa do Caju Indica no fim da vitrine [010]
 - Pedido do dono: o rodapé não fica colado no fim do filtro lateral; o espaço recebe a faixa, e o topo fica só com a busca.
+
+# 2026-11-25 · Botão Sair visível e barra escura [012]
+- Pedido do dono: o avatar solto não parecia botão e escondia o Sair; o botão diz o que faz. A barra do celular segue a cor da sidebar do desktop, para as áreas logadas terem uma identidade só.
