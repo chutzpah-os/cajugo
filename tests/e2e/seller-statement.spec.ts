@@ -19,7 +19,7 @@ test.describe.serial("extrato do vendedor (008b)", () => {
   test("[EXT-FR-005] [EXT-NFR-001] painel com a receber, vendas e últimas vendas", async ({
     page,
   }) => {
-    await enterAs(page, accounts.sellerReferrer.email, "/rede");
+    await enterAs(page, accounts.sellerReferrer.email, "/rede-caju");
 
     await expect(page.getByTestId("seller-to-receive")).toHaveText("R$ 800,00");
     await expect(page.getByTestId("seller-recent-sale")).toHaveCount(2);
@@ -28,13 +28,13 @@ test.describe.serial("extrato do vendedor (008b)", () => {
     );
     expect(await audit(page), "[7b]").toEqual(CLEAN);
     await page.getByRole("link", { name: "Ver extrato" }).click();
-    await expect(page).toHaveURL(/\/rede\/extrato$/);
+    await expect(page).toHaveURL(/\/rede-caju\/extrato$/);
   });
 
   test("[EXT-FR-001] [EXT-FR-002] [EXT-FR-003] [EXT-FR-009] [EXT-NFR-001] extrato com filtros, Recebi e Desfazer", async ({
     page,
   }) => {
-    await enterAs(page, accounts.sellerReferrer.email, "/rede/extrato");
+    await enterAs(page, accounts.sellerReferrer.email, "/rede-caju/extrato");
     await expect(heading(page)).toHaveText("Extrato");
     await expect(page.getByTestId("statement-sale")).toHaveCount(2);
     await expect(toReceive(page)).toContainText("Vendido por R$ 40.000,00");
@@ -46,7 +46,7 @@ test.describe.serial("extrato do vendedor (008b)", () => {
     await expect(page.getByTestId("statement-sale")).toHaveCount(1);
 
     // Recebi com confirmação → Paga, com Desfazer
-    await page.goto("/rede/extrato");
+    await page.goto("/rede-caju/extrato");
     await toReceive(page).getByRole("button", { name: "Recebi" }).click();
     await page.getByRole("button", { name: "Sim, recebi" }).click();
     await expect(toReceive(page).getByText("Paga")).toBeVisible();

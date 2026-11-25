@@ -25,7 +25,7 @@ describe("bloco Rede Caju da Conta [3c]", () => {
     // Assert
     expect(html).toContain("form-comissao");
     expect(html).toContain("lista-vendedores");
-    expect(html).not.toContain('href="/painel/rede');
+    expect(html).not.toContain('href="/painel/rede-caju');
     expect(html).toMatch(/data-testid="network-pending"[^>]*>2</);
     expect(none).not.toContain("network-pending");
     expect(none).toContain("não está aceitando vendedores");

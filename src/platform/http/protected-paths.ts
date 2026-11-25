@@ -1,14 +1,14 @@
 /** Áreas que exigem login (AUT-FR-011). Os cadastros públicos ficam de fora. */
 const PROTECTED = [
   "/painel",
-  "/rede",
+  "/rede-caju",
   "/indica",
   "/admin",
   "/lojistas/pagamento",
   "/nova-senha",
   "/conta",
 ];
-const PUBLIC_EXCEPTIONS = ["/rede/cadastro", "/indica/cadastro"];
+const PUBLIC_EXCEPTIONS = ["/rede-caju/cadastro", "/indica/cadastro"];
 
 const within = (path: string, prefix: string) =>
   path === prefix || path.startsWith(`${prefix}/`);

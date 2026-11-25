@@ -14,7 +14,7 @@ import { AccountMenu } from "./account-menu";
 
 const AREA_ROOT: Record<Area, string> = {
   painel: "/painel",
-  rede: "/rede",
+  rede: "/rede-caju",
   indica: "/indica",
   admin: "/admin",
 };

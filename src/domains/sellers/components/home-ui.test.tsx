@@ -102,7 +102,7 @@ describe("início do vendedor [7b]", () => {
     expect(html).toContain("R$ 1.160,00");
     expect(html).toContain(">2<");
     expect(html).toContain("Fiat Argo");
-    expect(html).toContain('href="/rede/extrato"');
+    expect(html).toContain('href="/rede-caju/extrato"');
     expect(empty).toContain("R$ 0,00");
     expect(empty).toContain(
       "Suas vendas aparecem aqui quando a loja confirmar.",

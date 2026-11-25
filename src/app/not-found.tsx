@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
+import { SiteHeader } from "@/domains/auth/components/site-header";
 import { NOT_FOUND_HEADER } from "@/platform/http/public-gate";
 
 export const metadata: Metadata = {
@@ -38,16 +39,19 @@ async function Reason() {
 /** 404 em português: inexistente ou de outra loja, sem dizer qual dos dois. */
 export default function NotFound() {
   return (
-    <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col items-start gap-3 px-4 py-12">
-      <Suspense fallback={<Message {...GENERIC} />}>
-        <Reason />
-      </Suspense>
-      <Link
-        href="/"
-        className="flex min-h-11 items-center font-bold text-caju-ink"
-      >
-        Voltar para o início
-      </Link>
-    </main>
+    <>
+      <SiteHeader />
+      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col items-start gap-3 px-4 py-12">
+        <Suspense fallback={<Message {...GENERIC} />}>
+          <Reason />
+        </Suspense>
+        <Link
+          href="/"
+          className="flex min-h-11 items-center font-bold text-caju-ink"
+        >
+          Voltar para o início
+        </Link>
+      </main>
+    </>
   );
 }

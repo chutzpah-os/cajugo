@@ -22,7 +22,7 @@ export function SellerHome({ home }: { home: Home }) {
           Seus links não marcam novos contatos. Para revisar, fale com a CajuGo.
         </p>
         <Link
-          href="/rede/extrato"
+          href="/rede-caju/extrato"
           className="flex min-h-11 items-center text-sm font-bold text-caju-ink underline underline-offset-2"
         >
           Ver extrato
@@ -44,7 +44,10 @@ export function SellerHome({ home }: { home: Home }) {
             : "A CajuGo confere seus dados e o documento antes de aprovar. Quando for aprovado, a vitrine e os seus links aparecem aqui. Você não paga nada."}
         </p>
         {home.documentsMissing && (
-          <ButtonLink href="/rede/cadastro/documento" className="self-start">
+          <ButtonLink
+            href="/rede-caju/cadastro/documento"
+            className="self-start"
+          >
             Enviar documento
           </ButtonLink>
         )}
@@ -112,7 +115,7 @@ export function SellerHome({ home }: { home: Home }) {
           </p>
         )}
         <Link
-          href="/rede/extrato"
+          href="/rede-caju/extrato"
           className="flex min-h-11 items-center text-sm font-bold text-caju-ink underline underline-offset-2"
         >
           Ver extrato
@@ -144,7 +147,7 @@ export function SellerHome({ home }: { home: Home }) {
         ) : (
           <p className="text-sm text-text-2">
             Nenhuma loja ainda. Na{" "}
-            <Link href="/rede/vitrine" className="font-bold underline">
+            <Link href="/rede-caju/vitrine" className="font-bold underline">
               vitrine
             </Link>
             , peça parceria às lojas dos carros que quer divulgar.

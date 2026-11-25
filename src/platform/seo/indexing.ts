@@ -14,7 +14,7 @@ export type SitemapId = (typeof SITEMAP_IDS)[number];
 /** Áreas logadas e telas de conta: fora da busca (SEO.md §2). */
 const PRIVATE = [
   "/painel",
-  "/rede",
+  "/rede-caju",
   "/indica",
   "/admin",
   "/entrar",
@@ -26,7 +26,7 @@ const PRIVATE = [
   "/api",
 ];
 /** Cadastros públicos dentro de áreas bloqueadas. */
-const PUBLIC_EXCEPTIONS = ["/rede/cadastro", "/indica/cadastro"];
+const PUBLIC_EXCEPTIONS = ["/rede-caju/cadastro", "/indica/cadastro"];
 
 export function robotsRules(): MetadataRoute.Robots {
   return {

@@ -14,16 +14,17 @@ import { AppError } from "@/platform/http/errors";
 
 export const metadata: Metadata = { title: "Vitrine | Rede Caju" };
 
-const BASE_PATH = "/rede/vitrine";
+const BASE_PATH = "/rede-caju/vitrine";
 
-async function Content({ searchParams }: PageProps<"/rede/vitrine">) {
+async function Content({ searchParams }: PageProps<"/rede-caju/vitrine">) {
   const { session, allowed, home } = await requireArea("rede", BASE_PATH);
   if (!allowed) return <NoPermission home={home} />;
   const filters = parseFilters(await searchParams);
   // Só o vendedor ativo usa a vitrine; em análise ou bloqueado vê o status (SEL-FR-002).
   const view = await sellerShowcase(getDb(), session, { filters }).catch(
     (error: unknown) => {
-      if (error instanceof AppError && error.status === 403) redirect("/rede");
+      if (error instanceof AppError && error.status === 403)
+        redirect("/rede-caju");
       throw error;
     },
   );
@@ -56,7 +57,7 @@ async function Content({ searchParams }: PageProps<"/rede/vitrine">) {
 }
 
 /** Vitrine do vendedor [7c] (SEL-FR-007, 008, 009): sem cache (parceria e comissão). */
-export default function Page(props: PageProps<"/rede/vitrine">) {
+export default function Page(props: PageProps<"/rede-caju/vitrine">) {
   return (
     <AreaPage>
       <Content {...props} />

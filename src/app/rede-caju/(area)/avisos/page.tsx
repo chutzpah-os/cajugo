@@ -12,7 +12,10 @@ export const metadata: Metadata = {
 };
 
 async function Content() {
-  const { session, allowed, home } = await requireArea("rede", "/rede/avisos");
+  const { session, allowed, home } = await requireArea(
+    "rede",
+    "/rede-caju/avisos",
+  );
   if (!allowed) return <NoPermission home={home} />;
   return <NoticesPage notices={await noticesFor(getDb(), session, 50)} />;
 }

@@ -14,7 +14,7 @@ export const PANEL_LABEL: Record<Role, string> = {
 export const PANEL_HREF: Record<Role, string> = {
   store_owner: "/painel",
   store_staff: "/painel",
-  seller: "/rede",
+  seller: "/rede-caju",
   referrer: "/indica",
   admin: "/admin",
   support: "/admin",

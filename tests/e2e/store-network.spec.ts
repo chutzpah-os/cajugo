@@ -54,7 +54,7 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     const seller = await windowAs(
       browser,
       accounts.sellerReferrer.email,
-      "/rede/vitrine",
+      "/rede-caju/vitrine",
     );
     const card = seller
       .getByTestId("seller-card")

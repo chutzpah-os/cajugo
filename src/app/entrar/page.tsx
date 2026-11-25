@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const SIGN_UPS = [
   { href: "/lojistas", label: "Divulgar meus veículos" },
-  { href: "/rede/cadastro", label: "Rede Caju" },
+  { href: "/rede-caju/cadastro", label: "Rede Caju" },
   { href: "/indica/cadastro", label: "Caju Indica" },
 ];
 

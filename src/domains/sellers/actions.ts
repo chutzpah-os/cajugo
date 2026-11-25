@@ -110,7 +110,7 @@ export async function registerSellerAction(
   } catch (error) {
     return stateOf(error, "Não foi possível concluir agora. Tente de novo.");
   }
-  redirect("/rede/cadastro/documento");
+  redirect("/rede-caju/cadastro/documento");
 }
 
 /** Assinatura para enviar a foto do documento (SEL-FR-001, SEL-SEC-009). */

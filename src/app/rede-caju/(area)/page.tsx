@@ -9,7 +9,7 @@ import { getDb } from "@/platform/db/client";
 export const metadata: Metadata = { title: "Rede Caju | CajuGo" };
 
 async function Content() {
-  const { session, allowed, home } = await requireArea("rede", "/rede");
+  const { session, allowed, home } = await requireArea("rede", "/rede-caju");
   if (!allowed) return <NoPermission home={home} />;
   return (
     <section className="flex flex-col gap-4 py-6">

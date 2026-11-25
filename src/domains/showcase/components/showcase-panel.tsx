@@ -4,7 +4,7 @@ import { useState, type ReactNode } from "react";
 import { cn } from "@/ui/cn";
 
 const TABS = [
-  ["buscar", "Buscar"],
+  ["buscar", "Comprar"],
   ["vender", "Vender"],
 ] as const;
 
@@ -23,7 +23,7 @@ export function ShowcasePanel({
   const [tab, setTab] = useState<(typeof TABS)[number][0]>("buscar");
   return (
     <section
-      aria-label="Buscar ou vender"
+      aria-label="Comprar ou vender"
       className="-mx-4 flex flex-col lg:mx-auto lg:w-full lg:max-w-5xl"
       data-testid="showcase-panel"
     >

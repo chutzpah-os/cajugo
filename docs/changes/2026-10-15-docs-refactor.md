@@ -1250,3 +1250,6 @@
 
 # 2026-11-24 · feat(site): página inicial, vitrine em /veiculos e menus do site [017]
 - / vira a página inicial (abertura 'A sua plataforma automotiva…', Buscar · Vender com a faixa de tipos, produtos); a vitrine vai para /veiculos (/?filtros → 308); filtro ?estado= (novo 0 km, seminovo até 3 anos, usado); menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir com Em breve, no desktop e no celular, em todas as páginas públicas; tipo na lateral e na folha com ~5 itens e rolagem; sem 'Marcas e cidades' no menu.
+
+# 2026-11-24 · feat(site): Rede Caju em /rede-caju, cabeçalho centralizado e menu nas páginas de erro [017]
+- Área do vendedor passa de /rede para /rede-caju (cadastro, painel, vitrine, extrato, conta, avisos), com 308 do endereço antigo; cabeçalho público numa coluna centralizada (max 1280 px); 404 e página de erro com o cabeçalho e os menus; docs (API, PRD, SEO) com o novo endereço.

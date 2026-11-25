@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 async function Form() {
   await connection();
   const session = await currentSession();
-  // Já é vendedor: o status ou o painel ficam em /rede.
-  if (session?.roles.includes("seller")) redirect("/rede");
+  // Já é vendedor: o status ou o painel ficam em /rede-caju.
+  if (session?.roles.includes("seller")) redirect("/rede-caju");
   return (
     <>
       {session && (

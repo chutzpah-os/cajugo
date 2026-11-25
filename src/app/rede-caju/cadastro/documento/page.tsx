@@ -17,10 +17,12 @@ async function Form() {
   await connection();
   const session = await currentSession();
   if (!session)
-    redirect(`/entrar?next=${encodeURIComponent("/rede/cadastro/documento")}`);
-  if (!session.roles.includes("seller")) redirect("/rede/cadastro");
+    redirect(
+      `/entrar?next=${encodeURIComponent("/rede-caju/cadastro/documento")}`,
+    );
+  if (!session.roles.includes("seller")) redirect("/rede-caju/cadastro");
   const sent = await sellerDocuments(getDb(), session);
-  if (!sent) redirect("/rede");
+  if (!sent) redirect("/rede-caju");
   return <DocumentForm sent={sent} />;
 }
 

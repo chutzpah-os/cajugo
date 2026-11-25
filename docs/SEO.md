@@ -11,7 +11,7 @@
 | Catálogo da loja [1a] | "auto center silva campinas", "seminovos campinas" | `/loja/{slug}` |
 | Vitrine [1a] | "carros usados", "seminovos à venda" | `/` |
 | Páginas de descoberta (marca, modelo, cidade, marca na cidade) e índice | "fiat 500 usado", "carros usados em campinas", "fiat usado campinas" | `/carros`, `/carros/fiat/500`, `/carros/campinas-sp`, `/carros/campinas-sp/fiat` (ADR 0014) |
-| Landing do lojista [5b], cadastro da Rede Caju [7a], cadastro do Caju Indica [9b], link de indicação [8c] | "catálogo de carros para loja", "vender carros como autônomo" | `/lojistas`, `/rede/cadastro`, `/indica/cadastro`, `/i/{codigo}` |
+| Landing do lojista [5b], cadastro da Rede Caju [7a], cadastro do Caju Indica [9b], link de indicação [8c] | "catálogo de carros para loja", "vender carros como autônomo" | `/lojistas`, `/rede-caju/cadastro`, `/indica/cadastro`, `/i/{codigo}` |
 
 ## 2. Regras técnicas 🤖
 - **Renderizado no servidor:** toda página pública chega com o conteúdo no HTML (SSR/ISR, nunca só no navegador). O que lê sessão fica atrás de `<Suspense>` e fora do conteúdo indexável.
@@ -27,7 +27,7 @@
 - **Imagens:** `alt` gerado a partir de marca, modelo, ano e cor; tamanhos responsivos pelo Cloudinary (`f_auto,q_auto`); capa com prioridade de carregamento; o resto com lazy-load.
 - **Indexação:**
   - um sitemap por tipo (`/sitemap/pages.xml`, `stores.xml`, `vehicles.xml`, `discovery.xml`), todos listados no `robots.txt` e atualizados a cada publicação/venda;
-  - `robots.txt` bloqueia `/painel`, `/rede` e `/indica` (áreas logadas; liberando `/rede/cadastro` e `/indica/cadastro`), `/lojistas/pagamento`, `/admin`, `/entrar`, `/nova-senha`, `/api`;
+  - `robots.txt` bloqueia `/painel`, `/rede-caju` e `/indica` (áreas logadas; liberando `/rede-caju/cadastro` e `/indica/cadastro`), `/lojistas/pagamento`, `/admin`, `/entrar`, `/nova-senha`, `/api`;
   - páginas logadas, de filtro sem resultado e de prévia da Vercel com `noindex`;
   - veículo **vendido**: continua respondendo (tela [12d] com parecidos), com `noindex` e `Offer` como `SoldOut`; sai do sitemap.
 - **Desempenho (Core Web Vitals):** LCP < 2,5 s em 4G, CLS < 0,1, INP < 200 ms nas páginas públicas. Fontes por `next/font`, sem layout shift.

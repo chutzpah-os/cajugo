@@ -81,6 +81,12 @@ export async function proxy(request: NextRequest) {
       redirect.cookies.set(cookie);
     return redirect;
   }
+  // Rede Caju mudou de endereço: /rede → /rede-caju (pedido do dono, 2026-11-25).
+  if (path === "/rede" || path.startsWith("/rede/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/rede-caju${path.slice("/rede".length)}`;
+    return NextResponse.redirect(url, 308);
+  }
   // Endereço antigo da vitrine com filtros: a `/` virou a página inicial (017).
   if (path === "/" && FILTER_PARAMS.some((p) => searchParams.has(p))) {
     const url = request.nextUrl.clone();

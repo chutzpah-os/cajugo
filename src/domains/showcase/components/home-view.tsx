@@ -19,7 +19,7 @@ const PRODUCTS = [
   {
     name: "Rede Caju",
     text: "Venda veículos das lojas parceiras e ganhe comissão por venda.",
-    href: "/rede/cadastro",
+    href: "/rede-caju/cadastro",
   },
   {
     name: "Caju Indica",

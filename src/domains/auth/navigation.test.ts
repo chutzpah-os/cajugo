@@ -59,11 +59,11 @@ describe("menu do vendedor", () => {
   it("[SEL-FR-015] Início · Vitrine · Extrato · Conta, todos na barra do celular", () => {
     // Assert
     expect(AREA_NAV.rede?.map((i) => [i.label, i.href])).toEqual([
-      ["Início", "/rede"],
-      ["Vitrine", "/rede/vitrine"],
-      ["Extrato", "/rede/extrato"],
-      ["Conta", "/rede/conta"],
-      ["Avisos", "/rede/avisos"],
+      ["Início", "/rede-caju"],
+      ["Vitrine", "/rede-caju/vitrine"],
+      ["Extrato", "/rede-caju/extrato"],
+      ["Conta", "/rede-caju/conta"],
+      ["Avisos", "/rede-caju/avisos"],
     ]);
     expect(AREA_NAV.rede?.filter((i) => i.mobile)).toHaveLength(4);
   });
@@ -71,7 +71,7 @@ describe("menu do vendedor", () => {
   it("[DSG-FR-020] cada painel tem o item Avisos, o único lugar dos avisos", () => {
     for (const area of ["painel", "rede", "indica", "admin"] as const)
       expect(AREA_NAV[area]?.find((i) => i.label === "Avisos")?.href).toBe(
-        `/${area}/avisos`,
+        `/${area === "rede" ? "rede-caju" : area}/avisos`,
       );
   });
 });

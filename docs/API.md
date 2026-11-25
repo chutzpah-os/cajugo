@@ -100,7 +100,7 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 | A | `updatePassword(password)` — tela Nova senha | 6b |
 | A | `checkSlugAvailability(slug)` · `checkReferralCode(code)` | 5c, 8d |
 | A | `registerStore(form)` → conta + loja `registered` (+ indicação, se houver código) | 5c |
-| página | `/rede/cadastro` · `/rede/cadastro/documento` (008) | 7a |
+| página | `/rede-caju/cadastro` · `/rede-caju/cadastro/documento` (008) | 7a |
 | A | `registerSellerAction(form)` → conta (ou papel na conta logada) + vendedor `in_review`; honeypot + rate limit · `sellerDocumentUploadAction({ side })` · `attachSellerDocumentAction({ side, publicId })` | 7a |
 | A | `registerReferrer(form)` → conta com papel indicador | 9b |
 
@@ -136,7 +136,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Vendedor (Rede Caju)
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| página | `/rede` (status ou painel) · `/rede/vitrine` · `/rede/extrato` (`?filtro=todas|a-receber|pagas`, 008b) · `/rede/conta` | 7b, 7c, 7d, 13c |
+| página | `/rede-caju` (status ou painel) · `/rede-caju/vitrine` · `/rede-caju/extrato` (`?filtro=todas|a-receber|pagas`, 008b) · `/rede-caju/conta` | 7b, 7c, 7d, 13c |
 | A | `requestPartnershipAction({ storeId })` · `loadMoreSellerShowcaseAction({ query, cursor })` (008) | 7c |
 | — | link do veículo: `/v/{id}?ref={code}` (montado por função única) | 7c |
 | A | `sellerClickAction({ vehicleId, code })` — pública, 1 por aparelho por dia, sem robôs (008) | 1b |

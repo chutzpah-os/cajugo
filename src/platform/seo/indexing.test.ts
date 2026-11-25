@@ -19,12 +19,12 @@ describe("indexação", () => {
       userAgent: "*",
       allow: expect.arrayContaining([
         "/",
-        "/rede/cadastro",
+        "/rede-caju/cadastro",
         "/indica/cadastro",
       ]),
       disallow: expect.arrayContaining([
         "/painel",
-        "/rede",
+        "/rede-caju",
         "/indica",
         "/admin",
         "/entrar",

@@ -17,7 +17,7 @@ describe("landingFor", () => {
     );
     expect(
       landingFor(account(["seller"]), { lastPanel: null, storeStatus: null }),
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
     expect(
       landingFor(account(["referrer"]), { lastPanel: null, storeStatus: null }),
     ).toBe("/indica");
@@ -35,7 +35,7 @@ describe("landingFor", () => {
         lastPanel: null,
         storeStatus: null,
       }),
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
     expect(
       landingFor(account(["referrer", "seller", "store_owner"]), {
         lastPanel: null,
@@ -59,7 +59,7 @@ describe("landingFor", () => {
         lastPanel: "store_owner",
         storeStatus: null,
       }),
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-008] lojista sem 1º pagamento vai para pagamento ou pagamento em análise", () => {
@@ -132,7 +132,7 @@ describe("landingFor", () => {
         lastPanel: "seller",
         storeStatus: "canceled",
       }),
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-015] com senha temporária vai para a nova senha antes de tudo", () => {

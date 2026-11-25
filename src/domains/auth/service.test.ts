@@ -117,16 +117,16 @@ describe("signIn", () => {
     const ok = await login({
       email: "vendedor@x.com",
       password: PASSWORD,
-      next: "/rede/extrato",
+      next: "/rede-caju/extrato",
     });
-    expect(ok.redirectTo).toBe("/rede/extrato");
+    expect(ok.redirectTo).toBe("/rede-caju/extrato");
 
     const external = await login({
       email: "vendedor@x.com",
       password: PASSWORD,
       next: "https://evil.com",
     });
-    expect(external.redirectTo).toBe("/rede");
+    expect(external.redirectTo).toBe("/rede-caju");
   });
 
   it("[AUT-FR-002] e-mail inexistente e senha errada dão o mesmo erro", async () => {
@@ -238,13 +238,13 @@ describe("signIn", () => {
     expect(
       (await login({ email: "b@x.com", password: PASSWORD }, "rede-y"))
         .redirectTo,
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
 
     now = new Date(NOW.getTime() + 15 * 60_000);
     expect(
       (await login({ email: "a@x.com", password: PASSWORD }, "rede-z"))
         .redirectTo,
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-003] login certo não conta como falha", async () => {
@@ -256,7 +256,7 @@ describe("signIn", () => {
     now = new Date(NOW.getTime() + 6 * 61_000);
     expect(
       (await login({ email: "a@x.com", password: PASSWORD })).redirectTo,
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-003] a mesma rede passando do limite por minuto é recusada", async () => {
@@ -272,7 +272,7 @@ describe("signIn", () => {
     expect(
       (await login({ email: "a@x.com", password: PASSWORD }, "outra-rede"))
         .redirectTo,
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-003] o bloqueio dura 15 min contados da 5ª falha", async () => {
@@ -295,7 +295,7 @@ describe("signIn", () => {
     expect(
       (await login({ email: "a@x.com", password: PASSWORD }, "rede-z"))
         .redirectTo,
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-003] 5 falhas que atravessam a virada do horário também bloqueiam", async () => {
@@ -328,7 +328,7 @@ describe("signIn", () => {
     expect(
       (await login({ email: "a@x.com", password: PASSWORD }, "rede-y"))
         .redirectTo,
-    ).toBe("/rede");
+    ).toBe("/rede-caju");
   });
 
   it("[AUT-FR-003] várias pessoas entrando certo pela mesma rede não são bloqueadas", async () => {
@@ -339,7 +339,7 @@ describe("signIn", () => {
         { email: `p${i}@x.com`, password: PASSWORD },
         "wifi-da-loja",
       );
-      expect(result.redirectTo).toBe("/rede");
+      expect(result.redirectTo).toBe("/rede-caju");
     }
   });
 
@@ -695,7 +695,7 @@ describe("signIn", () => {
       });
 
       // Assert
-      expect(result.redirectTo).toBe("/rede");
+      expect(result.redirectTo).toBe("/rede-caju");
       const [p] = await t.db
         .select()
         .from(profiles)
@@ -708,7 +708,7 @@ describe("signIn", () => {
       });
       expect(
         (await login({ email: "p@x.com", password: NEW }, "rede-c")).redirectTo,
-      ).toBe("/rede");
+      ).toBe("/rede-caju");
     });
 
     it("[AUT-FR-015] recusa senha curta ou confirmação diferente, sem trocar nada", async () => {
@@ -951,7 +951,7 @@ describe("signIn", () => {
       expect(
         (await login({ email: "lojista@x.com", password: NEW }, "rede-b"))
           .redirectTo,
-      ).toBe("/rede");
+      ).toBe("/rede-caju");
       const logs = await t.db.select().from(activityLog);
       expect(logs).toEqual([
         expect.objectContaining({
@@ -988,7 +988,7 @@ describe("signIn", () => {
       expect(
         (await login({ email: "lojista@x.com", password: PASSWORD }, "rede-z"))
           .redirectTo,
-      ).toBe("/rede");
+      ).toBe("/rede-caju");
     });
 
     it("[CFG-SEC-006] senha atual errada não troca e conta para o bloqueio da conta", async () => {
@@ -1064,7 +1064,7 @@ describe("signIn", () => {
         fullName: expect.stringMatching(/^Fulano/),
         email: "vr@x.com",
         panels: [
-          { label: "Rede Caju", href: "/rede" },
+          { label: "Rede Caju", href: "/rede-caju" },
           { label: "Caju Indica", href: "/indica" },
         ],
       });

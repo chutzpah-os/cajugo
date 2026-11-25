@@ -363,7 +363,7 @@ Viram requisitos e testes nas specs (`SDD.md`):
 | 6c | Pix manual: chave, QR estático, comprovante | Lojista | `/lojistas/pagamento/pix` |
 | 6d | Filtros e ordenação | Visitante | overlay em `/` e `/loja/{slug}` |
 | 6e · 6f · 6g | Editar veículo · Diálogos · Detalhe da loja | Lojista/Admin | `/painel/veiculos/{id}`, overlay, `/admin/lojas/{id}` |
-| 7a–7d | Cadastro · Painel · Vitrine/compartilhar · Extrato | Vendedor | `/rede/cadastro`, `/rede`, `/rede/vitrine`, `/rede/extrato` |
+| 7a–7d | Cadastro · Painel · Vitrine/compartilhar · Extrato | Vendedor | `/rede-caju/cadastro`, `/rede-caju`, `/rede-caju/vitrine`, `/rede-caju/extrato` |
 | 7e–7g | Comissão · Vendedores · Confirmar venda | Lojista | seções da `/painel/conta` (na própria tela), overlay |
 | 7h | Vendedores (aprovar, bloquear) | Admin | `/admin/vendedores` |
 | 8a–8e | Caju Indica: página · indicações · landing do link · cadastro com código · crédito | Lojista/Público | seções da `/painel/conta` (Meu link, Indicações, Crédito), `/i/{codigo}`, `/lojistas/cadastro?codigo=` |
@@ -378,8 +378,8 @@ Viram requisitos e testes nas specs (`SDD.md`):
 | 12a–12d | Busca sem resultado · Sem conexão · Carregando · Veículo indisponível | Visitante | estados |
 | 12e–12h | Comprovante recusado · Loja suspensa (lojista e público) · Cancelar assinatura | Lojista/Público | estados / overlay |
 | 12i | Termos e privacidade | Todos | `/termos` |
-| 13a · 13b · 13d | Vendedores disponíveis · Perfil · Denunciar vendedor | Lojista | `/painel/rede/disponiveis`, `/painel/rede/vendedores/{id}`, overlay |
-| 13c | Conta do vendedor | Vendedor | `/rede/conta` |
+| 13a · 13b · 13d | Vendedores disponíveis · Perfil · Denunciar vendedor | Lojista | `/painel/rede-caju/disponiveis`, `/painel/rede-caju/vendedores/{id}`, overlay |
+| 13c | Conta do vendedor | Vendedor | `/rede-caju/conta` |
 | 14a · 14b · 14d | Favoritos · Simulador · Denunciar anúncio | Visitante | `/favoritos`, overlay, overlay |
 | 14c · 14e | Aprovação prévia · Denúncias | Admin | `/admin/aprovacao`, `/admin/denuncias` |
 | 15a · 15b · 15c | Vitrine · Painel do lojista · Admin (desktop 1280) | — | mesmas rotas, ≥ 1024 px |
@@ -397,7 +397,7 @@ Navegação:
 **Página inicial `/`** (spec 017): abertura "A sua plataforma automotiva: compre, venda e cuide do seu veículo, tudo aqui", o quadro Buscar · Vender e os produtos da CajuGo, sem a lista. A vitrine fica em `/veiculos` (com os filtros na URL; `/?filtros` responde 308 para lá).
 
 **Modos**
-- **CajuGo** (`/veiculos`): cabeçalho com logo CajuGo; quadro com as abas Buscar (busca + faixa de tipos com ilustração, no lugar da barra de filtros até escolher o tipo) e Vender (chamada para `/lojistas`) (spec 014); título "Veículos novos e seminovos à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".
+- **CajuGo** (`/veiculos`): cabeçalho com logo CajuGo; quadro com as abas Comprar (busca + faixa de tipos com ilustração, no lugar da barra de filtros até escolher o tipo) e Vender (chamada para `/lojistas`) (spec 014); título "Veículos novos e seminovos à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".
 - **Lojista**: cabeçalho com logo/sigla, nome e cidade da loja + "catálogo CajuGo"; título "Estoque {loja}"; contador "X veículos disponíveis"; card sem linha de loja.
 
 **Elementos**

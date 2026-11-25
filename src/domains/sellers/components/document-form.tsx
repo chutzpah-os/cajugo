@@ -98,7 +98,7 @@ export function DocumentForm({ sent }: { sent: Record<Side, boolean> }) {
       )}
       <Button
         disabled={!done.front || !done.back || busy !== null}
-        onClick={() => router.push("/rede")}
+        onClick={() => router.push("/rede-caju")}
       >
         Concluir cadastro
       </Button>

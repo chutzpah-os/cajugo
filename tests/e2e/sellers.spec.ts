@@ -58,7 +58,7 @@ test.describe.serial("Rede Caju: vendedor", () => {
   test("[SEL-FR-001] [SEL-FR-002] [SEL-NFR-001] cadastro com a foto do documento fica Em análise", async ({
     page,
   }) => {
-    await page.goto("/rede/cadastro");
+    await page.goto("/rede-caju/cadastro");
     await expect(heading(page)).toHaveText("Seja vendedor da Rede Caju");
     await page.getByRole("button", { name: "Continuar" }).click();
     await expect(page.getByText("Informe seu nome.")).toBeVisible();
@@ -78,13 +78,13 @@ test.describe.serial("Rede Caju: vendedor", () => {
 
     await page.getByLabel("CPF", { exact: true }).fill(randomCpf());
     await page.getByRole("button", { name: "Continuar" }).click();
-    await page.waitForURL("**/rede/cadastro/documento");
+    await page.waitForURL("**/rede-caju/cadastro/documento");
     await page.getByTestId("document-front").setInputFiles(PNG);
     await expect(page.getByText("✓ Enviada")).toHaveCount(1);
     await page.getByTestId("document-back").setInputFiles(PDF);
     await expect(page.getByText("✓ Enviada")).toHaveCount(2);
     await page.getByRole("button", { name: "Concluir cadastro" }).click();
-    await page.waitForURL((u) => u.pathname === "/rede");
+    await page.waitForURL((u) => u.pathname === "/rede-caju");
     await expect(page.getByTestId("seller-status")).toContainText(
       "Cadastro em análise",
     );
@@ -133,7 +133,7 @@ test.describe.serial("Rede Caju: vendedor", () => {
       .filter({ hasText: name });
     await expect(blocked).toContainText("Cobrou sinal por fora");
 
-    const seller = await windowAs(browser, email, "/rede");
+    const seller = await windowAs(browser, email, "/rede-caju");
     await expect(seller.getByTestId("seller-status")).toContainText(
       "Cobrou sinal por fora",
     );
@@ -147,7 +147,7 @@ test.describe.serial("Rede Caju: vendedor", () => {
   test("[SEL-FR-007] [SEL-FR-008] [SEL-FR-009] [SEL-FR-006] vitrine com 'Você ganha', link do vendedor e pedir parceria", async ({
     page,
   }) => {
-    await enterAs(page, accounts.sellerReferrer.email, "/rede/vitrine");
+    await enterAs(page, accounts.sellerReferrer.email, "/rede-caju/vitrine");
     const full = page
       .getByTestId("seller-card")
       .filter({ has: page.locator(`a[href^="/v/${S.fullId}"]`) });
@@ -158,7 +158,7 @@ test.describe.serial("Rede Caju: vendedor", () => {
     );
     expect(await audit(page), "[7c] 390 px").toEqual(CLEAN);
 
-    await page.goto("/rede/vitrine?q=recife");
+    await page.goto("/rede-caju/vitrine?q=recife");
     const recife = page
       .getByTestId("seller-card")
       .filter({ hasText: S.recifeName })
@@ -167,10 +167,10 @@ test.describe.serial("Rede Caju: vendedor", () => {
     await recife.getByRole("button", { name: "Pedir parceria" }).click();
     await expect(recife).toContainText("aguardando a loja");
 
-    await page.goto("/rede/vitrine?marca=bmw");
+    await page.goto("/rede-caju/vitrine?marca=bmw");
     await expect(page.getByTestId("seller-card").first()).toContainText("BMW");
 
-    await page.goto("/rede");
+    await page.goto("/rede-caju");
     const stores = page.getByTestId("seller-store");
     await expect(stores.filter({ hasText: S.storeName })).toContainText(
       "Parceiro",
@@ -206,7 +206,7 @@ test.describe.serial("Rede Caju: vendedor", () => {
     const seller = await windowAs(
       browser,
       accounts.sellerReferrer.email,
-      "/rede",
+      "/rede-caju",
     );
     await expect(seller.getByTestId("seller-clicks")).not.toHaveText("0");
     await seller.context().close();
@@ -215,7 +215,7 @@ test.describe.serial("Rede Caju: vendedor", () => {
   test("[SEL-FR-014] [SEL-SEC-001] conta com CPF mascarado e troca da chave Pix", async ({
     page,
   }) => {
-    await enterAs(page, accounts.sellerReferrer.email, "/rede/conta");
+    await enterAs(page, accounts.sellerReferrer.email, "/rede-caju/conta");
     await expect(page.getByTestId("seller-cpf")).toHaveText(
       "CPF 529.***.***-25",
     );
@@ -234,7 +234,7 @@ test.describe("Rede Caju no desktop (1280 px)", () => {
   test("[SEL-FR-015] [SEL-NFR-001] menu do vendedor na barra lateral e vitrine sem problemas", async ({
     page,
   }) => {
-    await enterAs(page, accounts.sellerReferrer.email, "/rede/vitrine");
+    await enterAs(page, accounts.sellerReferrer.email, "/rede-caju/vitrine");
     const side = page.getByRole("navigation", {
       name: "Menu do painel",
       exact: true,
@@ -242,7 +242,7 @@ test.describe("Rede Caju no desktop (1280 px)", () => {
     for (const label of ["Início", "Vitrine", "Extrato", "Conta"])
       await expect(side.getByRole("link", { name: label })).toBeVisible();
     expect(await audit(page), "[7c] 1280 px").toEqual(CLEAN);
-    await page.goto("/rede/extrato");
+    await page.goto("/rede-caju/extrato");
     // As vendas do extrato (008b) vêm do seed.
     await expect(page.getByTestId("statement-sale").first()).toBeVisible();
   });

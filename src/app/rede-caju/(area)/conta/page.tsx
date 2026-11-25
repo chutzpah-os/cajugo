@@ -15,11 +15,15 @@ export const metadata: Metadata = { title: "Conta | Rede Caju" };
 const row = "flex min-h-11 items-center justify-between px-4 text-[15px]";
 
 async function Content() {
-  const { session, allowed, home } = await requireArea("rede", "/rede/conta");
+  const { session, allowed, home } = await requireArea(
+    "rede",
+    "/rede-caju/conta",
+  );
   if (!allowed) return <NoPermission home={home} />;
   // Só o vendedor ativo: em análise ou bloqueado vê o status (SEL-FR-002).
   const acc = await sellerAccount(getDb(), session).catch((error: unknown) => {
-    if (error instanceof AppError && error.status === 403) redirect("/rede");
+    if (error instanceof AppError && error.status === 403)
+      redirect("/rede-caju");
     throw error;
   });
   return (
@@ -78,7 +82,7 @@ async function Content() {
             </Link>
           </li>
           <li>
-            <Link href="/rede" className={row}>
+            <Link href="/rede-caju" className={row}>
               Lojas parceiras <span aria-hidden>›</span>
             </Link>
           </li>

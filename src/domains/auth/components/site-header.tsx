@@ -78,7 +78,7 @@ export function SiteHeader({
         joined ? "lg:border-b lg:border-line" : "border-b border-line",
       )}
     >
-      <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between gap-4 px-4 md:max-w-3xl lg:max-w-none lg:px-7">
+      <div className="mx-auto flex h-16 w-full max-w-[480px] items-center justify-between gap-4 px-4 md:max-w-3xl lg:max-w-6xl lg:px-6 xl:max-w-7xl">
         <div className="flex min-w-0 items-center gap-8">
           {brand ?? (
             <Link

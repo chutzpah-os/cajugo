@@ -26,7 +26,7 @@ export const SITE_NAV: NavSection[] = [
     label: "Vender",
     items: [
       { label: "Anunciar minha loja", href: "/lojistas" },
-      { label: "Ser vendedor da Rede Caju", href: "/rede/cadastro" },
+      { label: "Ser vendedor da Rede Caju", href: "/rede-caju/cadastro" },
       { label: "Indicar uma loja (Caju Indica)", href: "/indica/cadastro" },
     ],
   },

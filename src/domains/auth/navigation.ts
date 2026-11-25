@@ -37,11 +37,11 @@ export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
     { href: "/painel/avisos", label: "Avisos" },
   ],
   rede: [
-    { href: "/rede", label: "Início", mobile: true },
-    { href: "/rede/vitrine", label: "Vitrine", mobile: true },
-    { href: "/rede/extrato", label: "Extrato", mobile: true },
-    { href: "/rede/conta", label: "Conta", mobile: true },
-    { href: "/rede/avisos", label: "Avisos" },
+    { href: "/rede-caju", label: "Início", mobile: true },
+    { href: "/rede-caju/vitrine", label: "Vitrine", mobile: true },
+    { href: "/rede-caju/extrato", label: "Extrato", mobile: true },
+    { href: "/rede-caju/conta", label: "Conta", mobile: true },
+    { href: "/rede-caju/avisos", label: "Avisos" },
   ],
   indica: [
     { href: "/indica", label: "Início", mobile: true },

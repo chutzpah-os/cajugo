@@ -72,7 +72,7 @@ test.describe("login e painéis", () => {
   }) => {
     await page.goto("/entrar");
     await signIn(page, accounts.sellerReferrer.email);
-    await expect(page).toHaveURL(/\/rede$/);
+    await expect(page).toHaveURL(/\/rede-caju$/);
     await page.locator("[data-testid=account-menu]:visible").click();
     const select = page.getByRole("dialog").getByLabel("Trocar de painel");
     await expect(select.locator("option")).toHaveText([
@@ -134,13 +134,13 @@ test.describe("login e painéis", () => {
     await page.goto("/entrar");
     await signIn(page, accounts.temporary.email);
     await expect(page).toHaveURL(/\/nova-senha$/);
-    await page.goto("/rede");
+    await page.goto("/rede-caju");
     await expect(page).toHaveURL(/\/nova-senha$/);
     const nova = `${password()}-nova`;
     await page.getByLabel("Nova senha").fill(nova);
     await page.getByLabel("Confirmar senha").fill(nova);
     await page.getByRole("button", { name: "Salvar e entrar" }).click();
-    await expect(page).toHaveURL(/\/rede$/);
+    await expect(page).toHaveURL(/\/rede-caju$/);
     // `pnpm e2e:seed` volta esta conta para a senha temporária na próxima rodada.
   });
 });

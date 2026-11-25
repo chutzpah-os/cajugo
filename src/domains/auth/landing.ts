@@ -45,7 +45,7 @@ const PANEL_HOME: Record<
   Exclude<Role, "store_owner" | "store_staff">,
   string
 > = {
-  seller: "/rede",
+  seller: "/rede-caju",
   referrer: "/indica",
   admin: "/admin",
   support: "/admin",

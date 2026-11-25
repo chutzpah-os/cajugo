@@ -601,3 +601,6 @@
 
 # 2026-11-24 · feat(site): página inicial, vitrine em /veiculos e menus do site [017]
 - Pedidos do dono em 2026-11-25 (referências dos grandes classificados); ADR 0013 atualizada para a nova rota da vitrine.
+
+# 2026-11-24 · feat(site): Rede Caju em /rede-caju, cabeçalho centralizado e menu nas páginas de erro [017]
+- Pedidos do dono em 2026-11-25: 'rede' sozinho não diz o que é; menu em todas as páginas públicas, inclusive as de erro.

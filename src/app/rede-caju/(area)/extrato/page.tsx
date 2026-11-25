@@ -24,7 +24,10 @@ async function Content({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { session, allowed, home } = await requireArea("rede", "/rede/extrato");
+  const { session, allowed, home } = await requireArea(
+    "rede",
+    "/rede-caju/extrato",
+  );
   if (!allowed) return <NoPermission home={home} />;
   const view = await sellerStatement(getDb(), session, await searchParams);
   return (
@@ -42,8 +45,8 @@ async function Content({
                 key={value}
                 href={
                   value === "todas"
-                    ? "/rede/extrato"
-                    : `/rede/extrato?filtro=${value}`
+                    ? "/rede-caju/extrato"
+                    : `/rede-caju/extrato?filtro=${value}`
                 }
                 aria-current={view.filter === value ? "page" : undefined}
                 className={`inline-flex h-11 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold ${
@@ -74,7 +77,7 @@ async function Content({
 }
 
 /** Extrato do vendedor [7d] (EXT-FR-001, 002, 003, 008, 009): sem cache. */
-export default function Page(props: PageProps<"/rede/extrato">) {
+export default function Page(props: PageProps<"/rede-caju/extrato">) {
   return (
     <AreaPage>
       <Content searchParams={props.searchParams} />

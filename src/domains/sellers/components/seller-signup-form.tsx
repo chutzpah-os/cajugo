@@ -9,7 +9,7 @@ import { TextField } from "@/ui/text-field";
 import { registerSellerAction, type SellerSignupState } from "../actions";
 import { PIX_TYPE_OPTIONS } from "../status";
 
-const NEXT = encodeURIComponent("/rede/cadastro");
+const NEXT = encodeURIComponent("/rede-caju/cadastro");
 
 /**
  * Cadastro do vendedor [7a] (SEL-FR-001, 016): conta + dados do vendedor; conectado,
@@ -98,7 +98,7 @@ export function SellerSignupForm({ signedIn }: { signedIn: boolean }) {
         />
         {state?.errors.cpf === "CPF já cadastrado." && (
           <Link
-            href={`/entrar?next=${encodeURIComponent("/rede")}`}
+            href={`/entrar?next=${encodeURIComponent("/rede-caju")}`}
             className="flex min-h-11 items-center self-start text-sm font-bold text-caju-ink"
           >
             Entrar
