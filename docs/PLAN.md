@@ -165,7 +165,7 @@
 - Desktop: painel do lojista [15b] e admin [15c] com sidebar e filas inline.
 
 ## 014 · Tipos de veículo e o que a loja vende — telas 2a, 3b, 1a, 1b, 15a
-- 11 tipos (carro, moto, scooter, picape, van, ônibus, caminhão, trator, quadriciclo, motorhome, implemento); o lojista diz o que vende; ficha e campo obrigatório por tipo; filtro Tipo → Marca → Modelo na vitrine. Spec em `docs/specs/014-vehicle-types/` (clarified).
+- 11 tipos (carro, moto, scooter, picape, van, ônibus, caminhão, trator, quadriciclo, motorhome, implemento); o lojista diz o que vende; ficha e campo obrigatório por tipo; filtro Tipo → Marca → Modelo na vitrine. Spec em `docs/specs/014-vehicle-types/` (planned: plano e 17 tasks em 2026-11-25).
 
 ## 015 · Compare os preços (FIPE) e financiamento — tela 1b
 > ✅ **Implementada** em 2026-11-25 (`docs/specs/015-price-compare-financing/`): FIPE pela fipe.api.br v2; fim da parcela estimada e do simulador; página do veículo completa (galeria contida com setas, coluna da direita com preço, Ver parcelas, WhatsApp e mensagem, Sobre a loja com aberta agora, Compare os preços com a média CajuGo e a FIPE, Veja as parcelas com o aviso da integração com os bancos, Você também pode gostar), rodapé do site. Migrations `0024`, `0025` e `0026` aplicadas no staging e no prod em 2026-11-25 (autorizadas pelo dono).
@@ -175,10 +175,10 @@
 - Pedido com contato, veículo e Pix de R$ 70; fila do admin (Recebi, Enviei); página de vendas `/laudocaju`. Spec em `docs/specs/016-laudo-caju/` (in-progress, **pausada pelo dono em 2026-11-25**: feitas T001 e T002; a `0026` já está no prod).
 
 ## 018 · Indicação legítima — telas 4c (lojista), 8b, 8g
-- O lojista indicado vê quem indicou e contesta; o admin invalida ou mantém. Spec em `docs/specs/018-referral-legitimacy/` (clarified).
+- O lojista indicado vê quem indicou e contesta; o admin invalida ou mantém. Spec em `docs/specs/018-referral-legitimacy/` (planned: plano e 7 tasks em 2026-11-25).
 
 ## 019 · Procedência e situação do veículo — telas 2a, 1a, 1b, 14d
-- Leilão, sinistro, GNV, remarcação, gravame e restrições: livres, com aviso obrigatório ou bloqueados (no servidor); declaração de veracidade; selo Leilão; filtro Procedência. Spec em `docs/specs/019-vehicle-provenance/` (clarified).
+- Leilão, sinistro, GNV, remarcação, gravame e restrições: livres, com aviso obrigatório ou bloqueados (no servidor); declaração de veracidade; selo Leilão; filtro Procedência. Spec em `docs/specs/019-vehicle-provenance/` (planned: plano e 11 tasks em 2026-11-25).
 
 ## 017 · Página inicial e menu do site
 - `/` como página inicial, vitrine em `/veiculos`, páginas por tipo, menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir, páginas de vendas em `/conheca/*`, Entrar e cadastros com desktop. Spec em `docs/specs/017-home-menu/` (in-progress).

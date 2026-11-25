@@ -1344,3 +1344,6 @@
 
 # 2026-11-25 · feat(ui): barra do painel escura no celular e botão Sair claro [012]
 - Barra inferior das áreas logadas no celular passa a ser escura como a sidebar do desktop; o avatar "HA" vira botão com contorno, iniciais, "Sair" e o ícone (celular e pé da sidebar). e2e do menu do admin com a saudação nova.
+
+# 2026-11-25 · docs: planos da 014, 018 e 019
+- plan.md e tasks.md da 014 (tipos: enum e colunas da ficha, FIPE de motos e caminhões com id prefixado, 17 tasks), 018 (contestação da indicação, 7 tasks) e 019 (procedência em colunas, bloqueio no servidor, 11 tasks); specs em `planned`.

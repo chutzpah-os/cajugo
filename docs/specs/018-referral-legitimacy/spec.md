@@ -2,7 +2,7 @@
 id: 018
 slug: referral-legitimacy
 title: Indicação legítima · o lojista indicado vê e contesta
-status: clarified
+status: planned
 owner: dono do produto
 created: 2026-11-25
 ---

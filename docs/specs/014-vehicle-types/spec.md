@@ -2,7 +2,7 @@
 id: 014
 slug: vehicle-types
 title: Tipos de veículo e o que a loja vende
-status: clarified
+status: planned
 owner: dono do produto
 created: 2026-11-24
 ---

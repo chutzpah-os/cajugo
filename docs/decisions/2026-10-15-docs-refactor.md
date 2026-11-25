@@ -695,3 +695,6 @@
 
 # 2026-11-25 · Botão Sair visível e barra escura [012]
 - Pedido do dono: o avatar solto não parecia botão e escondia o Sair; o botão diz o que faz. A barra do celular segue a cor da sidebar do desktop, para as áreas logadas terem uma identidade só.
+
+# 2026-11-25 · Planos da 014, 018 e 019
+- Ficha por tipo e procedência em colunas (não jsonb) para filtrar com índice; FIPE de motos e caminhões na mesma cópia sob demanda, com prefixo no id para não mexer nos carros. Indicação contestada retém a recompensa e, mantida, paga as retidas uma vez (recompensa é por fatura).
