@@ -69,7 +69,8 @@ export function CatalogList({
       )}
       {list.items.some((c) => c.installmentCents !== null) && (
         <p className="text-xs text-text-3">
-          *Valor estimado. Simule a sua parcela.
+          *Parcela estimada. Abra o veículo e toque em Simular para calcular a
+          sua.
         </p>
       )}
     </>

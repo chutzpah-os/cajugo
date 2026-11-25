@@ -186,7 +186,7 @@ export function VehicleDetails({
         <ReportTrigger />
         {page.installmentCents !== null && (
           <p className="text-xs text-text-3">
-            *Valor estimado. Simule a sua parcela.
+            *Parcela estimada. Toque em Simular para calcular a sua.
           </p>
         )}
       </div>

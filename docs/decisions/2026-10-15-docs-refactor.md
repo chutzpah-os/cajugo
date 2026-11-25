@@ -577,3 +577,6 @@
 
 # 2026-11-24 · feat(admin): ocultados e mostrar de novo em Veículos [012b]
 - Pedido do dono: o admin precisa desfazer o ocultar e ter certeza antes de ocultar; o veículo oculto sumia da lista.
+
+# 2026-11-24 · fix(showcase): rodapé da parcela estimada diz onde simular [006c]
+- O dono leu 'Simule a sua parcela' como algo pendente: a lista não tem simulador, ele fica na página do veículo [14b].

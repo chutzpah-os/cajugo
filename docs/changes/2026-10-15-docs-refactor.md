@@ -1226,3 +1226,6 @@
 
 # 2026-11-24 · feat(admin): ocultados e mostrar de novo em Veículos [012b]
 - Veículos CajuGo ganha o filtro Ocultados (com contagem), o selo 'Oculto da vitrine' e o Mostrar de novo; o Ocultar vira botão discreto e segue pela confirmação com motivo ('Ocultar da vitrine'); e2e do ciclo ocultar → Ocultados → mostrar.
+
+# 2026-11-24 · fix(showcase): rodapé da parcela estimada diz onde simular [006c]
+- Vitrine e catálogo: '*Parcela estimada. Abra o veículo e toque em Simular para calcular a sua.'; página do veículo: '*Parcela estimada. Toque em Simular para calcular a sua.'; PRD alinhado.

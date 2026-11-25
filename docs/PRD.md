@@ -406,7 +406,7 @@ Navegação:
 - Ordenação: Mais relevantes (padrão), Menor preço, Maior preço, Mais recentes, Menor km, Ano mais novo.
 - Card do veículo: foto de capa (contador 1/N), favoritar, selo opcional (ex.: "Abaixo da FIPE", "Único dono"), MARCA MODELO, versão, ano fab/modelo, km, cidade (UF), [loja], preço, "a partir de R$ X/mês*", botão **Ver detalhes**.
 - **Carregar mais veículos** (paginação de 20 em 20; ou scroll infinito).
-- Rodapé: "*Valor estimado. Simule a sua parcela."
+- Rodapé: "*Parcela estimada. Abra o veículo e toque em Simular para calcular a sua." (na página do veículo: "*Parcela estimada. Toque em Simular para calcular a sua.")
 
 **Regras**
 - Selo "Abaixo da FIPE" só se `preco < valor_fipe` (quando FIPE disponível).
