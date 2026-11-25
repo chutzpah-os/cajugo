@@ -19,6 +19,7 @@ import { EmptyState } from "@/ui/empty-state";
 import { Initials } from "@/ui/initials";
 import { Kpi } from "@/ui/kpi";
 import { StoreCard } from "@/ui/store-card";
+import { SectionWithAction } from "./section-with-action";
 
 type Params = Record<string, string | undefined>;
 
@@ -162,8 +163,9 @@ export function StoresTab({
           label="Receita mensal"
         />
       </div>
-      <h2 className="pt-2 text-lg font-extrabold">Lojas</h2>
-      {newStore}
+      <SectionWithAction title="Lojas" action="Nova loja" testId="new-store">
+        {newStore}
+      </SectionWithAction>
       <SearchForm
         action={base}
         q={view.q}

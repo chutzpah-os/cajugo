@@ -580,3 +580,6 @@
 
 # 2026-11-24 · fix(showcase): rodapé da parcela estimada diz onde simular [006c]
 - O dono leu 'Simule a sua parcela' como algo pendente: a lista não tem simulador, ele fica na página do veículo [14b].
+
+# 2026-11-24 · feat(admin): nova loja dentro de Lojas [012b/T014]
+- ADM-FR-005, ADM-SEC-003; regra do dono: sem página própria, o formulário abre onde está o botão.

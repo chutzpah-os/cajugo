@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireArea } from "@/domains/auth/guards";
-import { accountMenu, usersAdmin } from "@/domains/auth/service";
+import { accountMenu, can, usersAdmin } from "@/domains/auth/service";
 import {
   ShowcaseTab,
   StoresTab,
@@ -10,7 +10,9 @@ import {
 } from "@/domains/admin/components/stores-admin";
 import { storesKpis } from "@/domains/admin/service";
 import { showcaseAdmin } from "@/domains/moderation/service";
+import { NewStoreForm } from "@/domains/stores/components/new-store-form";
 import { storesAdmin } from "@/domains/stores/service";
+import { appUrl } from "@/platform/http/urls";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
 import { getDb } from "@/platform/db/client";
 import { Avatar } from "@/ui/initials";
@@ -51,7 +53,17 @@ async function Content({ searchParams }: PageProps<"/admin/lojas">) {
       storesAdmin(db, session, params),
       storesKpis({ db }, session),
     ]);
-    body = <StoresTab view={view} kpis={kpis} />;
+    body = (
+      <StoresTab
+        view={view}
+        kpis={kpis}
+        newStore={
+          can(session, "stores.manage") ? (
+            <NewStoreForm appHost={new URL(appUrl()).host} />
+          ) : undefined
+        }
+      />
+    );
   }
 
   return (

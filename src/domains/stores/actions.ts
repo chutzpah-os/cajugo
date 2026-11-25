@@ -20,11 +20,13 @@ import { STORES_TAG } from "./tags";
 import { hoursFromForm } from "./hours-form";
 import {
   checkReferralCode,
+  createStoreByAdmin,
   registerStore,
   changeSlug,
   setStoreImage,
   storeImageUpload,
   updateStore,
+  updateStoreByAdmin,
   type CodeCheckView,
 } from "./service";
 import { checkSlug, type SlugCheck } from "./slug";
@@ -281,6 +283,87 @@ export async function changeSlugAction(
     );
     updateTag(STORES_TAG);
     return { ok: true, message: `Endereço alterado para ${slug}.`, errors: {} };
+  } catch (error) {
+    return formError(error);
+  }
+}
+
+export type NewStoreState =
+  | {
+      ok: true;
+      storeId: string;
+      storeName: string;
+      email: string;
+      temporaryPassword: string;
+    }
+  | { ok: false; message?: string; errors: Record<string, string> }
+  | null;
+
+/**
+ * **Nova loja** pelo admin [1d] (ADM-FR-005): a senha temporária volta só nesta
+ * resposta, para o admin copiar e passar ao dono (ADM-SEC-003).
+ */
+export async function createStoreByAdminAction(
+  _prev: NewStoreState,
+  form: FormData,
+): Promise<NewStoreState> {
+  const text = (k: string) => String(form.get(k) ?? "");
+  try {
+    const { storeId, temporaryPassword } = await createStoreByAdmin(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      {
+        storeName: text("storeName"),
+        city: text("city"),
+        state: text("state"),
+        whatsapp: text("whatsapp"),
+        slug: text("slug"),
+        name: text("name"),
+        email: text("email"),
+        ...(text("phone").trim() ? { phone: text("phone") } : {}),
+      },
+    );
+    updateTag(STORES_TAG);
+    return {
+      ok: true,
+      storeId,
+      storeName: text("storeName").trim(),
+      email: text("email").trim().toLowerCase(),
+      temporaryPassword,
+    };
+  } catch (error) {
+    const state = formError(error);
+    return { ok: false, message: state?.message, errors: state?.errors ?? {} };
+  }
+}
+
+/** **Editar dados da loja** pelo admin [6g] (ADM-FR-010). */
+export async function updateStoreByAdminAction(
+  _prev: StoreFormState,
+  form: FormData,
+): Promise<StoreFormState> {
+  const text = (k: string) => String(form.get(k) ?? "");
+  try {
+    await updateStoreByAdmin(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      {
+        storeId: text("storeId"),
+        name: text("name"),
+        whatsapp: text("whatsapp"),
+        city: text("city"),
+        state: text("state"),
+        about: text("about"),
+        instagram: text("instagram"),
+        addressStreet: text("addressStreet"),
+        addressNumber: text("addressNumber"),
+        addressComplement: text("addressComplement"),
+        addressDistrict: text("addressDistrict"),
+        addressZip: text("addressZip"),
+      },
+    );
+    updateTag(STORES_TAG);
+    return { ok: true, message: "Alterações salvas.", errors: {} };
   } catch (error) {
     return formError(error);
   }

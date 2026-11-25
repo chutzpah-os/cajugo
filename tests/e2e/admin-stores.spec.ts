@@ -85,3 +85,39 @@ test("[ADM-FR-006] ocultar pede confirmação com motivo, e o veículo volta por
     page.getByTestId("admin-vehicle").filter({ hasText: title }),
   ).toHaveCount(0);
 });
+
+test("[ADM-FR-005] [ADM-SEC-003] Nova loja: cadastrada, com a senha temporária uma vez e Copiar", async ({
+  page,
+}) => {
+  const stamp = Date.now().toString(36);
+  await page.goto("/entrar?next=%2Fadmin%2Flojas");
+  await signIn(page, accounts.admin.email);
+  await page.getByRole("button", { name: "Nova loja" }).click();
+
+  // erro no campo, sem perder o digitado
+  await page.getByRole("button", { name: "Criar loja" }).click();
+  await expect(page.getByText("Informe o nome do dono.")).toBeVisible();
+
+  await page.getByLabel("Nome da loja").fill(`E2E Admin ${stamp}`);
+  await expect(page.locator("#new-slug-status")).toHaveText("Disponível");
+  await page.getByRole("combobox", { name: "Cidade" }).fill("Aracaj");
+  await page.getByRole("option", { name: /Aracaju\/SE/ }).click();
+  await page.getByLabel("WhatsApp da loja").fill("(79) 99876-5432");
+  await page.getByLabel("Nome do dono").fill("Dono E2E");
+  await page
+    .getByLabel("E-mail do dono")
+    .fill(`e2e-cadastro-admin-${stamp}@cajugo.test`);
+  await page.getByRole("button", { name: "Criar loja" }).click();
+
+  const done = page.getByTestId("new-store-done");
+  await expect(done).toContainText(`E2E Admin ${stamp} cadastrada`);
+  await expect(
+    done.getByRole("button", { name: "Copiar senha temporária" }),
+  ).toBeVisible();
+  await page.screenshot({ path: "test-results/admin-nova-loja.png" });
+
+  // a loja aparece na lista como Cadastrada; a senha não volta ao recarregar
+  await page.goto(`/admin/lojas?filtro=cadastradas&q=${stamp}`);
+  await expect(page.getByTestId("admin-store")).toContainText("Cadastrada");
+  await expect(page.getByTestId("new-store-done")).toHaveCount(0);
+});

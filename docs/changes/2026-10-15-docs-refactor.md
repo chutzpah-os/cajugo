@@ -1229,3 +1229,6 @@
 
 # 2026-11-24 · fix(showcase): rodapé da parcela estimada diz onde simular [006c]
 - Vitrine e catálogo: '*Parcela estimada. Abra o veículo e toque em Simular para calcular a sua.'; página do veículo: '*Parcela estimada. Toque em Simular para calcular a sua.'; PRD alinhado.
+
+# 2026-11-24 · feat(admin): nova loja dentro de Lojas [012b/T014]
+- '+ Nova loja' ao lado do título Lojas abre o formulário na própria tela (loja: nome, cidade, WhatsApp, endereço checado ao vivo; dono: nome, e-mail, celular); ao criar, mostra e-mail e senha temporária com Copiar, uma vez. Actions createStoreByAdminAction e updateStoreByAdminAction (esta para a T015). e2e.
