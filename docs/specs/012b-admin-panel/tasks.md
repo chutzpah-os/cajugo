@@ -64,4 +64,4 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [ ] **T017** e2e do admin: painel, lojas, nova loja, detalhe, equipe e Log, suporte e lojista, em 390 e 1280 px com `audit()`. · _ADM-FR-001…015, ADM-SEC-001…005, ADM-NFR-001_
 
 ## Fase 4 — Fechamento
-- [ ] **T018** Verificação: rastreabilidade, suíte e2e e revisão; status `implemented` e `docs/PLAN.md`. A migration `0024` no prod só com a sua autorização. · _—_
+- [ ] **T018** Verificação: rastreabilidade, suíte e2e e revisão; status `implemented` e `docs/PLAN.md`. A migration `0024` foi aplicada no prod em 2026-11-25, com autorização do dono. · _—_

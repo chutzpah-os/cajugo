@@ -18,4 +18,4 @@ spec: 016
 - [ ] **T007** `/admin/laudos` e o item LaudoCaju no menu com contador. · _LAU-FR-005_
 
 ## Fase 4 — Fechamento
-- [ ] **T008** e2e em 390 e 1280 px, rastreabilidade, status `implemented`; migration no prod só com autorização. · _LAU-NFR-001_
+- [ ] **T008** e2e em 390 e 1280 px, rastreabilidade, status `implemented`; a migration `0026` já está no prod (2026-11-25). · _LAU-NFR-001_

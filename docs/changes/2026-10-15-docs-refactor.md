@@ -1331,3 +1331,6 @@
 
 # 2026-11-25 · fix(settings): regra nova sem valor no banco usa o valor inicial [002]
 - getSettings deixa de lançar erro quando uma regra ainda não tem linha em setting_values (deploy antes da migration): usa o initial da definição e registra settings.missing_value no log. Script design:shots com os endereços novos (/veiculos, /rede-caju, Conta, /admin/indica).
+
+# 2026-11-25 · docs: migrations 0024, 0025 e 0026 aplicadas no prod
+- Prod com as 27 migrations (0024 índices do registro, 0025 sem show_installment, 0026 pedidos do LaudoCaju e o preço R$ 70); conferido: coluna removida, tabela e índices criados, páginas públicas 200. PLAN e specs atualizados; 016 marcada como pausada.

@@ -168,10 +168,10 @@
 - 11 tipos (carro, moto, scooter, picape, van, ônibus, caminhão, trator, quadriciclo, motorhome, implemento); o lojista diz o que vende; ficha e campo obrigatório por tipo; filtro Tipo → Marca → Modelo na vitrine. Spec em `docs/specs/014-vehicle-types/` (clarified).
 
 ## 015 · Compare os preços (FIPE) e financiamento — tela 1b
-> ✅ **Implementada** em 2026-11-25 (`docs/specs/015-price-compare-financing/`): FIPE pela fipe.api.br v2; fim da parcela estimada e do simulador; página do veículo completa (galeria contida com setas, coluna da direita com preço, Ver parcelas, WhatsApp e mensagem, Sobre a loja com aberta agora, Compare os preços com a média CajuGo e a FIPE, Veja as parcelas com o aviso da integração com os bancos, Você também pode gostar), rodapé do site. Migration `0025` (remove `show_installment`) no staging; **prod pendente, com a `0024`, só com autorização**.
+> ✅ **Implementada** em 2026-11-25 (`docs/specs/015-price-compare-financing/`): FIPE pela fipe.api.br v2; fim da parcela estimada e do simulador; página do veículo completa (galeria contida com setas, coluna da direita com preço, Ver parcelas, WhatsApp e mensagem, Sobre a loja com aberta agora, Compare os preços com a média CajuGo e a FIPE, Veja as parcelas com o aviso da integração com os bancos, Você também pode gostar), rodapé do site. Migrations `0024`, `0025` e `0026` aplicadas no staging e no prod em 2026-11-25 (autorizadas pelo dono).
 
 ## 016 · LaudoCaju · consulta veicular por Pix — telas 1b, admin
-- Pedido com contato, veículo e Pix de R$ 70; fila do admin (Recebi, Enviei); página de vendas `/laudocaju`. Spec em `docs/specs/016-laudo-caju/` (clarified).
+- Pedido com contato, veículo e Pix de R$ 70; fila do admin (Recebi, Enviei); página de vendas `/laudocaju`. Spec em `docs/specs/016-laudo-caju/` (in-progress, **pausada pelo dono em 2026-11-25**: feitas T001 e T002; a `0026` já está no prod).
 
 ## 018 · Indicação legítima — telas 4c (lojista), 8b, 8g
 - O lojista indicado vê quem indicou e contesta; o admin invalida ou mantém. Spec em `docs/specs/018-referral-legitimacy/` (clarified).
