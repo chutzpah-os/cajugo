@@ -1304,3 +1304,6 @@
 
 # 2026-11-24 · feat(sellers): Rede Caju deixa claro que é vendedor independente [017]
 - Cadastro da Rede Caju e a página de vendas dizem que a pessoa atua como vendedor independente (texto de abertura, painel e uma pergunta frequente).
+
+# 2026-11-24 · feat(sellers): aprovação dupla e avaliação dos vendedores na Rede Caju [017]
+- Cadastro e página de vendas da Rede Caju: a CajuGo e cada loja parceira aprovam o vendedor; bloco 'Como avaliamos os vendedores' (prioridade para indicados pelas lojas, com histórico e referências; documentos de todos; novos vendedores com treinamento, acompanhados pela CajuGo, só veículos da CajuGo e protocolos); perguntas novas. PRD §5.7 registra a política.

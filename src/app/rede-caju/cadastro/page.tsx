@@ -39,6 +39,7 @@ const PANEL = {
     "Compartilhe com o seu link de vendedor",
     "A loja parceira paga a comissão da venda",
     "Você atua como vendedor independente, no seu tempo",
+    "A CajuGo e cada loja parceira aprovam o vendedor antes da parceria",
     "Você não paga nada para participar",
   ],
 } as const;
@@ -58,10 +59,18 @@ export default function SellerSignupPage() {
         panel={PANEL}
         steps={[
           "Faça o cadastro e envie a foto do documento",
-          "A equipe CajuGo confere e aprova",
+          "A CajuGo aprova o cadastro, e cada loja parceira aprova a parceria",
           "Divulgue os veículos e ganhe a comissão das vendas",
         ]}
         faq={[
+          {
+            q: "Quem tem prioridade na aprovação?",
+            a: "Vendedores indicados pelas lojas, com histórico de vendas, conhecidos no mercado e com boas referências. Mesmo assim, todos enviam os documentos para a avaliação prévia.",
+          },
+          {
+            q: "Sou novo em vendas. Posso participar?",
+            a: "Sim. Novos vendedores independentes podem receber treinamento e começam vendendo acompanhados pela CajuGo, só veículos anunciados na CajuGo e seguindo os protocolos recomendados.",
+          },
           {
             q: "Preciso pagar algo?",
             a: "Não. Ser vendedor da Rede Caju é grátis.",

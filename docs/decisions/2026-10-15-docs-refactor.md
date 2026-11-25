@@ -655,3 +655,6 @@
 
 # 2026-11-24 · feat(sellers): Rede Caju deixa claro que é vendedor independente [017]
 - Pedido do dono.
+
+# 2026-11-24 · feat(sellers): aprovação dupla e avaliação dos vendedores na Rede Caju [017]
+- Pedido do dono: deixar claro como os vendedores são escolhidos e acompanhados.

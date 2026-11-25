@@ -17,6 +17,7 @@ export default function RedeCajuLanding() {
     <>
       <SiteHeader active="descobrir" />
       <ProgramLanding
+        example={<SellerVetting />}
         c={{
           eyebrow: "Rede Caju",
           title: "Venda veículos das lojas e ganhe comissão",
@@ -52,8 +53,8 @@ export default function RedeCajuLanding() {
               text: "Com os seus dados, a chave Pix e a foto do documento.",
             },
             {
-              title: "A equipe aprova",
-              text: "A CajuGo confere o cadastro. Depois, você pede parceria às lojas.",
+              title: "Aprovação dupla",
+              text: "A CajuGo confere e aprova o seu cadastro. Depois, cada loja parceira aprova a parceria com você.",
             },
             {
               title: "Divulgue e ganhe",
@@ -104,5 +105,51 @@ export default function RedeCajuLanding() {
       />
       <SiteFooter />
     </>
+  );
+}
+
+const VETTING = [
+  {
+    title: "Prioridade para quem já é conhecido",
+    text: "Damos prioridade a vendedores indicados pelas lojas, com histórico de vendas, conhecidos no mercado e com boas referências.",
+  },
+  {
+    title: "Avaliação prévia de todos",
+    text: "Todo vendedor envia os documentos para a avaliação da CajuGo antes de começar. Depois, cada loja parceira aprova a parceria.",
+  },
+  {
+    title: "Começando agora? A gente acompanha",
+    text: "Novos vendedores independentes podem receber treinamento e começam vendendo acompanhados pela CajuGo, só veículos anunciados na CajuGo e seguindo os protocolos recomendados por nós.",
+  },
+] as const;
+
+/** Como a CajuGo avalia e acompanha os vendedores (pedido do dono, 2026-11-25). */
+function SellerVetting() {
+  return (
+    <section
+      aria-labelledby="avaliacao"
+      className="flex flex-col gap-5 rounded-card border border-line bg-surface p-5 lg:p-8"
+    >
+      <div className="flex flex-col gap-1">
+        <h2 id="avaliacao" className="text-[24px] font-extrabold">
+          Como avaliamos os vendedores
+        </h2>
+        <p className="text-sm text-text-2">
+          A Rede Caju é feita de vendedores de confiança: a CajuGo e cada loja
+          parceira aprovam quem vende os veículos.
+        </p>
+      </div>
+      <ol className="grid gap-4 md:grid-cols-3">
+        {VETTING.map((v, i) => (
+          <li key={v.title} className="flex flex-col gap-2">
+            <span className="flex size-8 items-center justify-center rounded-full bg-ink text-sm font-extrabold text-white">
+              {i + 1}
+            </span>
+            <h3 className="font-extrabold">{v.title}</h3>
+            <p className="text-sm text-text-2">{v.text}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
