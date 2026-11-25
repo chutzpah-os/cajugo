@@ -19,7 +19,7 @@
 
 **Avisos:** no MVP, aviso no painel + botão `wa.me` enviado por uma pessoa; sem SMS, WhatsApp automático ou e-mail obrigatório (PRD §11).
 
-**Ainda não definido:** e-mail transacional, fonte da FIPE. Não escolha sem perguntar.
+**Ainda não definido:** e-mail transacional. Não escolha sem perguntar. FIPE: API gratuita fipe.api.br v2, escolhida pelo dono em 2026-11-25 (ADR 0012, spec 015).
 
 ### O que usamos do Supabase (e o que não)
 - **Usamos:** Postgres (via Drizzle) e Auth.

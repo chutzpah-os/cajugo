@@ -16,7 +16,7 @@
 | D3 | Testes | Fase 0 | ✅ **Vitest** (serviços contra PGlite, sem Docker) + **Playwright** (e2e) |
 | D4 | Validação de schema | Fase 0 | ✅ **zod** |
 | D5 | CSS / componentes | Fase 0 | ✅ **Tailwind** com os tokens do `DESIGN.md` |
-| D6 | Fonte da FIPE | spec 005 | API pública gratuita da FIPE (parallelum) com cache no banco; ou lista manual |
+| D6 | Fonte da FIPE | spec 005 | API pública gratuita da FIPE com cache no banco: fipe.api.br v2 desde 2026-11-25 (spec 015; antes, Parallelum v1) |
 | D7 | E-mail transacional | **fase 2** (opcional antes) | Resend (plano gratuito); no MVP os avisos são no painel + `wa.me` |
 | D8 | Gateway de pagamento | **fase 2** | Stripe ou outro; MVP usa pagamento manual |
 | D9 | Pendências do PRD §12.1 | antes de cada spec afetada | — |

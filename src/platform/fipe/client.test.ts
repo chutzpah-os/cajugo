@@ -5,10 +5,7 @@ import { createFipeClient, FipeUnavailable } from "./client";
 function fake(routes: Record<string, unknown>, status = 200) {
   const calls: string[] = [];
   const fetchFn = (async (input: string | URL) => {
-    const path = new URL(String(input)).pathname.replace(
-      "/fipe/api/v1/carros",
-      "",
-    );
+    const path = new URL(String(input)).pathname.replace("/api/v2/cars", "");
     calls.push(path);
     if (!(path in routes)) return new Response("not found", { status: 404 });
     return Response.json(routes[path], { status });
@@ -16,16 +13,15 @@ function fake(routes: Record<string, unknown>, status = 200) {
   return { calls, fetchFn };
 }
 
-describe("cliente da API pública da FIPE", () => {
-  it("[VEH-FR-005] lista marcas, modelos e anos com códigos em texto", async () => {
+describe("cliente da API pública da FIPE (fipe.api.br v2)", () => {
+  it("[VEH-FR-005] [PRC-FR-002] lista marcas, modelos e anos com códigos em texto", async () => {
     const { fetchFn } = fake({
-      "/marcas": [{ codigo: "23", nome: "GM - Chevrolet" }],
-      "/marcas/23/modelos": {
-        modelos: [{ codigo: 5940, nome: "ONIX HATCH LT 1.0 12V Flex 5p Mec." }],
-        anos: [],
-      },
-      "/marcas/23/modelos/5940/anos": [
-        { codigo: "2020-1", nome: "2020 Gasolina" },
+      "/brands": [{ code: "23", name: "GM - Chevrolet" }],
+      "/brands/23/models": [
+        { code: "5940", name: "ONIX HATCH LT 1.0 12V Flex 5p Mec." },
+      ],
+      "/brands/23/models/5940/years": [
+        { code: "2020-1", name: "2020 Gasolina" },
       ],
     });
     const fipe = createFipeClient(fetchFn);
@@ -39,12 +35,18 @@ describe("cliente da API pública da FIPE", () => {
     ]);
   });
 
-  it("[VEH-FR-007] preço da versão em centavos, com código FIPE e mês de referência", async () => {
+  it("[VEH-FR-007] [PRC-FR-002] preço da versão em centavos, com código FIPE e mês de referência", async () => {
     const { fetchFn } = fake({
-      "/marcas/23/modelos/5940/anos/2020-1": {
-        Valor: "R$ 58.358,00",
-        CodigoFipe: "004413-0",
-        MesReferencia: "novembro de 2026",
+      "/brands/23/models/5940/years/2020-1": {
+        vehicleType: 1,
+        price: "R$ 58.358,00",
+        brand: "GM - Chevrolet",
+        model: "ONIX HATCH LT 1.0 12V Flex 5p Mec.",
+        modelYear: 2020,
+        fuel: "Gasolina",
+        codeFipe: "004413-0",
+        referenceMonth: "novembro de 2026",
+        fuelAcronym: "G",
       },
     });
 
@@ -58,10 +60,10 @@ describe("cliente da API pública da FIPE", () => {
   });
 
   it("[VEH-NFR-004] resposta fora do formato, erro ou demora viram FipeUnavailable", async () => {
-    const bad = createFipeClient(fake({ "/marcas": { erro: "x" } }).fetchFn);
+    const bad = createFipeClient(fake({ "/brands": { error: "x" } }).fetchFn);
     await expect(bad.brands()).rejects.toBeInstanceOf(FipeUnavailable);
 
-    const down = createFipeClient(fake({ "/marcas": [] }, 503).fetchFn);
+    const down = createFipeClient(fake({ "/brands": [] }, 503).fetchFn);
     await expect(down.brands()).rejects.toBeInstanceOf(FipeUnavailable);
 
     const slow = createFipeClient(

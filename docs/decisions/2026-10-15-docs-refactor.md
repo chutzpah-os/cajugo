@@ -586,3 +586,6 @@
 
 # 2026-11-24 · docs(price-compare): spec, plano e tasks [015]
 - Pedido do dono do produto em 2026-11-25, com as referências da Webmotors: nada de 'simulação imaginária'.
+
+# 2026-11-24 · feat(fipe): FIPE pela fipe.api.br v2 [015/T001]
+- PRC-FR-002: escolha do dono do produto (API gratuita, sem chave, 500 consultas/dia); a v2 também cobre motos e caminhões (spec 014).

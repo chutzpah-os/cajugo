@@ -1,24 +1,22 @@
 import { z } from "zod";
 
 /**
- * API pública gratuita da FIPE (Parallelum, não oficial; 500 consultas/dia), só
+ * API pública gratuita da FIPE (fipe.api.br v2, sem chave; 500 consultas/dia), só
  * leitura. Quem usa é o domínio `fipe`, que guarda tudo no nosso banco (ADR 0012).
  * Trocar de fonte muda só este arquivo.
  */
-const BASE = "https://parallelum.com.br/fipe/api/v1/carros";
+const BASE = "https://fipe.api.br/api/v2/cars";
 
 /** A API não respondeu a tempo, deu erro ou mudou de formato. */
 export class FipeUnavailable extends Error {}
 
 const code = z.union([z.string(), z.number()]).transform(String);
-const item = z.object({ codigo: code, nome: z.string() });
-const brandsSchema = z.array(item);
-const modelsSchema = z.object({ modelos: z.array(item) });
-const yearsSchema = z.array(item);
+const item = z.object({ code, name: z.string() });
+const listSchema = z.array(item);
 const priceSchema = z.object({
-  Valor: z.string().regex(/^R\$ [\d.]+,\d{2}$/),
-  CodigoFipe: z.string(),
-  MesReferencia: z.string(),
+  price: z.string().regex(/^R\$ [\d.]+,\d{2}$/),
+  codeFipe: z.string(),
+  referenceMonth: z.string(),
 });
 
 /** "R$ 58.358,00" → 5835800. */
@@ -52,32 +50,31 @@ export function createFipeClient(
 
   return {
     async brands() {
-      return (await get("/marcas", brandsSchema)).map((b) => ({
-        id: b.codigo,
-        name: b.nome,
+      return (await get("/brands", listSchema)).map((b) => ({
+        id: b.code,
+        name: b.name,
       }));
     },
     async models(brandId: string) {
-      const { modelos } = await get(`/marcas/${brandId}/modelos`, modelsSchema);
-      return modelos.map((m) => ({ id: m.codigo, name: m.nome }));
+      return (await get(`/brands/${brandId}/models`, listSchema)).map((m) => ({
+        id: m.code,
+        name: m.name,
+      }));
     },
     async years(brandId: string, modelId: string) {
       return (
-        await get(`/marcas/${brandId}/modelos/${modelId}/anos`, yearsSchema)
-      ).map((y) => ({
-        code: y.codigo,
-        label: y.nome,
-      }));
+        await get(`/brands/${brandId}/models/${modelId}/years`, listSchema)
+      ).map((y) => ({ code: y.code, label: y.name }));
     },
     async price(brandId: string, modelId: string, yearCode: string) {
       const p = await get(
-        `/marcas/${brandId}/modelos/${modelId}/anos/${yearCode}`,
+        `/brands/${brandId}/models/${modelId}/years/${yearCode}`,
         priceSchema,
       );
       return {
-        fipeCode: p.CodigoFipe,
-        priceCents: toCents(p.Valor),
-        month: p.MesReferencia,
+        fipeCode: p.codeFipe,
+        priceCents: toCents(p.price),
+        month: p.referenceMonth,
       };
     },
   };

@@ -2,7 +2,7 @@
 id: 015
 slug: price-compare-financing
 title: Compare os preços (FIPE) e financiamento na página do veículo
-status: clarified
+status: in-progress
 owner: dono do produto
 created: 2026-11-25
 ---

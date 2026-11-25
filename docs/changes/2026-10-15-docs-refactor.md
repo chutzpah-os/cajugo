@@ -1235,3 +1235,6 @@
 
 # 2026-11-24 · docs(price-compare): spec, plano e tasks [015]
 - Spec 015: Compare os preços (anunciado, média CajuGo com ≥ 3 iguais, Tabela FIPE) na página do veículo; FIPE pela fipe.api.br v2 gratuita; fim da parcela estimada e do simulador; bloco Veja as parcelas com aviso da integração com os bancos; Ver parcelas ao lado do preço e coluna da direita no desktop.
+
+# 2026-11-24 · feat(fipe): FIPE pela fipe.api.br v2 [015/T001]
+- createFipeClient passa a usar https://fipe.api.br/api/v2/cars (marcas, modelos, anos e preço; {code,name} e {price,codeFipe,referenceMonth}); mesmos códigos FIPE, então o que está no banco continua valendo. ADR 0012, ARCHITECTURE, PLAN, PRD e CLAUDE.md registram a fonte.

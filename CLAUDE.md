@@ -25,7 +25,7 @@
 - **Ferramentas:** pnpm, TypeScript, ESLint + Prettier, Vitest + Playwright, zod, Tailwind.
 - **Expo:** fase futura, não implementar. A saída da Vercel para uma VPS é futura; não use nada que só exista na Vercel (KV, Blob, Edge Config, Edge Runtime).
 
-**Ainda não definido:** gateway de pagamento, e-mail transacional, FIPE. **Não escolha, instale nem assuma nenhum deles sem me perguntar.**
+**Ainda não definido:** gateway de pagamento, e-mail transacional. **Não escolha, instale nem assuma nenhum deles sem me perguntar.** FIPE: API gratuita **fipe.api.br** (v2), escolhida pelo dono em 2026-11-25 (ADR 0012, spec 015).
 
 ## Regras que já valem
 - O navegador nunca acessa o banco nem o Supabase. Regra de negócio fica na camada de serviço do servidor, não em RLS.

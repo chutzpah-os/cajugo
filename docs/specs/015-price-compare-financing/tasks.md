@@ -5,7 +5,7 @@ spec: 015
 # Tasks · 015 Compare os preços (FIPE) e financiamento
 
 ## Fase 1 — Fundação
-- [ ] **T001** FIPE pela fipe.api.br v2 (`client.ts` e testes); ADR 0012, ARCHITECTURE, CLAUDE.md e PRD. · _PRC-FR-002_
+- [x] **T001** FIPE pela fipe.api.br v2 (`client.ts` e testes); ADR 0012, ARCHITECTURE, CLAUDE.md e PRD. · _PRC-FR-002_
 
 ## Fase 2 — Fatias verticais
 - [ ] **T002** Sem parcela estimada: card, página, simulador, toggle do cadastro e regras da Conta; PRD. · _PRC-FR-003_

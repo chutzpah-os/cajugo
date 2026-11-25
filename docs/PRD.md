@@ -862,7 +862,7 @@ Ver `API.md` §5 (mapa de rotas).
 
 ### 12.1 Pendências de decisão
 1. ~~Valores provisórios de `Config` (§5.14)~~ **Resolvido (spec 002):** lança com os valores provisórios do §5.14; a chave Pix começa vazia e o admin preenche em [4c]; o admin ajusta os demais quando quiser.
-2. ~~Fonte de dados FIPE~~ **Resolvido (spec 005):** API pública gratuita, copiada para o banco da CajuGo (listas sincronizadas; preço por versão uma vez por mês); o formulário não depende da API no ar.
+2. ~~Fonte de dados FIPE~~ **Resolvido (spec 005; fonte fipe.api.br v2 desde a spec 015):** API pública gratuita, copiada para o banco da CajuGo (listas sincronizadas; preço por versão uma vez por mês); o formulário não depende da API no ar.
 3. Usuários da loja: o lojista convida pelo [3c] (convite com senha temporária, sem e-mail no MVP)?
 4. ~~Documentos exigidos do vendedor na curadoria~~ **Resolvido (spec 008):** foto de um documento com foto (frente e verso) por upload privado no cadastro [7a]; antecedentes o admin consulta por fora, pelo CPF.
 5. Revisão jurídica dos termos [12i] (Rede Caju, Caju Indica, LGPD).
