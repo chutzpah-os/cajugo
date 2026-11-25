@@ -163,7 +163,11 @@ test.describe("página do veículo (390 px)", () => {
     await expect(specs).toContainText("IPVA pago");
     await expect(page.getByText("Abaixo da FIPE")).toBeVisible();
     await expect(page.getByText("Carro de garagem, revisado.")).toBeVisible();
-    const whatsapp = await page.getByTestId("whatsapp").getAttribute("href");
+    const whatsapp = await page
+      .getByTestId("whatsapp")
+      .filter({ visible: true })
+      .first()
+      .getAttribute("href");
     expect(whatsapp).toContain("5579999990000");
     expect(decodeURIComponent(whatsapp!)).toContain(`/v/${S.fullId}-fiat-argo`);
     const html = await page.content();

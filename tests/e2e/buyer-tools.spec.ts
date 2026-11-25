@@ -56,7 +56,11 @@ test.describe("ferramentas do comprador (390 px)", () => {
     await card.getByRole("heading").getByRole("link").click();
     await page.waitForURL(/\/v\//);
     // Na navegação do cliente, a vitrine fica escondida no DOM: só o coração visível.
-    const pageHeart = page.getByTestId("favorite").filter({ visible: true });
+    // O da galeria vem primeiro (os de "Você também pode gostar" ficam abaixo).
+    const pageHeart = page
+      .getByTestId("favorite")
+      .filter({ visible: true })
+      .first();
     await expect(pageHeart).toHaveAttribute("aria-pressed", "true");
     await pageHeart.click();
     await expect(pageHeart).toHaveAttribute("aria-pressed", "false");

@@ -634,3 +634,6 @@
 
 # 2026-11-24 · feat(site): cadastros com Como funciona e perguntas frequentes no lugar do painel fixo [017]
 - O dono não gostou do painel congelado: 'dá agonia'.
+
+# 2026-11-24 · fix(site): /lojistas sem a barra fixa; e2e ajustados ao novo layout [017]
+- Pedido do dono: a linha congelada não ficou boa.

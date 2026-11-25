@@ -57,7 +57,7 @@ test.describe("cadastro do lojista e Minha loja", () => {
     await expect(menu.getByRole("link", { name: "Entrar" })).toHaveCount(0);
   });
 
-  test("[STO-FR-002] [STO-NFR-001] landing com SEO no HTML do servidor e Prosseguir para o cadastro", async ({
+  test("[STO-FR-002] [STO-NFR-001] landing com SEO no HTML do servidor e Anunciar minha loja para o cadastro", async ({
     page,
     request,
   }) => {
@@ -70,7 +70,7 @@ test.describe("cadastro do lojista e Minha loja", () => {
     expect(html).toContain("R$ 100");
 
     await page.goto("/lojistas");
-    await page.getByRole("link", { name: "Prosseguir" }).click();
+    await page.getByTestId("plan-cta").click();
     await expect(page).toHaveURL(/\/lojistas\/cadastro$/);
   });
 

@@ -99,7 +99,7 @@ export default function MerchantLandingPage() {
         }}
       />
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-8 px-4 pt-6 pb-28 md:max-w-3xl">
+      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-8 px-4 pt-6 pb-12 md:max-w-3xl">
         <section className="flex flex-col gap-3 rounded-card bg-ink p-6 text-white">
           <span className="self-start rounded-badge bg-caju px-2 py-1 text-[11px] font-bold tracking-[0.03em] uppercase">
             Lojistas
@@ -163,6 +163,13 @@ export default function MerchantLandingPage() {
           <p className="text-sm text-text-2">
             Sem fidelidade. Cancele quando quiser.
           </p>
+          <ButtonLink
+            href="/lojistas/cadastro"
+            className="mt-1 self-start"
+            data-testid="plan-cta"
+          >
+            Anunciar minha loja
+          </ButtonLink>
         </section>
 
         <section aria-labelledby="perguntas" className="flex flex-col gap-2">
@@ -182,16 +189,7 @@ export default function MerchantLandingPage() {
           ))}
         </section>
       </main>
-      <div className="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)]">
-        <div className="mx-auto flex max-w-[480px] items-center justify-between gap-3 px-4 py-3 md:max-w-3xl">
-          <p className="text-sm">
-            <strong>R$ 100/mês</strong>
-            <span className="block text-text-3">Plano Catálogo</span>
-          </p>
-          <ButtonLink href="/lojistas/cadastro">Prosseguir</ButtonLink>
-        </div>
-      </div>
-      <SiteFooter barSpace />
+      <SiteFooter />
     </>
   );
 }

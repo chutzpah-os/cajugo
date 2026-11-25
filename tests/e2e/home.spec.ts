@@ -6,7 +6,9 @@ test("[HOM-FR-001] [HOM-NFR-001] página inicial: abertura, Buscar · Vender e p
   page,
 }) => {
   await page.goto("/");
-  await expect(page.getByText("A sua plataforma automotiva")).toBeVisible();
+  await expect(
+    page.getByText(/compre, venda e cuide do seu veículo/),
+  ).toBeVisible();
   await expect(page.getByTestId("showcase-panel")).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Produtos CajuGo" }),
@@ -23,7 +25,7 @@ test("[HOM-FR-003] [HOM-FR-005] menus do desktop: Comprar leva à vitrine filtra
 }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
-  const nav = page.getByRole("navigation", { name: "Site" });
+  const nav = page.getByRole("navigation", { name: "Site", exact: true });
 
   await nav.getByText("Financiar", { exact: true }).click();
   const soon = nav.getByText("Simular financiamento");
@@ -47,7 +49,9 @@ test("[HOM-FR-003] o menu aparece também nas páginas públicas de cadastro e l
   for (const path of ["/entrar", "/lojistas/cadastro", "/indica/cadastro"]) {
     await page.goto(path);
     await expect(
-      page.getByRole("navigation", { name: "Site" }).getByText("Comprar"),
+      page
+        .getByRole("navigation", { name: "Site", exact: true })
+        .getByText("Comprar"),
     ).toBeVisible();
   }
 });

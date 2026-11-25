@@ -1283,3 +1283,6 @@
 
 # 2026-11-24 · feat(site): cadastros com Como funciona e perguntas frequentes no lugar do painel fixo [017]
 - Sai o painel fixo na rolagem; abaixo dele entram Como funciona (3 passos) e Perguntas frequentes (abrem na própria tela) nos cadastros do lojista, do Caju Indica e da Rede Caju, com o que a CajuGo já definiu. O lado esquerdo acompanha a altura do formulário com conteúdo útil.
+
+# 2026-11-24 · fix(site): /lojistas sem a barra fixa; e2e ajustados ao novo layout [017]
+- Sai a barra fixa 'R$ 100/mês · Prosseguir' de /lojistas; a chamada vira 'Anunciar minha loja' no card do Plano Catálogo. e2e: menu do cabeçalho pelo nome exato (o rodapé tem o Mapa do site), WhatsApp e coração visíveis na página do veículo, botão do plano por data-testid.
