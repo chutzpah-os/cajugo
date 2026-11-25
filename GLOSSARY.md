@@ -228,6 +228,10 @@ _Evite_: excluída, desativada
 Endereço que a loja recebe quando não paga a 1ª mensalidade em 7 dias: o endereço escolhido fica livre para outra loja. A próxima troca em Minha loja não conta no limite de 30 dias.
 _Evite_: slug temporário
 
+**Equipe CajuGo** (`team`):
+Quem trabalha na operação: contas com papel Admin (decide) ou Suporte (só vê). O admin convida (conta com senha temporária) e remove; ninguém remove a si mesmo e o último admin fica.
+_Evite_: staff (que é o usuário da loja)
+
 **Status da loja**:
 `cadastrada`, `pagamento_em_analise`, `ativa`, `em_atraso`, `suspensa`, `cancelamento_agendado`, `cancelada`, `arquivada` (código: `registered`, `payment_review`, `active`, `past_due`, `suspended`, `cancel_scheduled`, `canceled`, `archived`).
 _Evite_: bloqueada, inativa

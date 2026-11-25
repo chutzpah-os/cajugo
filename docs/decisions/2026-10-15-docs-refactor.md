@@ -520,3 +520,6 @@
 
 # 2026-11-24 · 012/T013 Conta admin [4c]
 - Fidelidade ao [4c]; a Equipe CajuGo com Convidar fica na 012b.
+
+# 2026-11-24 · 012b/T001 documentos e permissões
+- Base da 012b; reaproveita admin.read em vez de criar admin.view (ajuste da D5).

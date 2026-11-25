@@ -73,6 +73,7 @@ src/
 │  │  ├─ components/       UI própria do domínio
 │  │  └─ *.test.ts         testes Vitest (IDs de requisito no nome)
 │  └─ auth/ stores/ billing/ (faturas, Pix) leads/ moderation/ sellers/ (Rede Caju) referrals/ (Caju Indica) buyers/ (favoritos no aparelho, alertas) settings/
+│     admin/ (012b: só leitura; monta o painel e os logs com os serviços dos outros domínios)
 ├─ ui/                     componentes base do DESIGN.md (botão, input, chip, selo, toggle, bottom sheet...)
 └─ platform/               infraestrutura comum
    ├─ db/                  cliente e schema do Drizzle

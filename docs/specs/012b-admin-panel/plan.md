@@ -129,7 +129,7 @@ Sem coluna nova: "cliente desde" é `stores.activated_at`; "total pago" é a som
 - **D2.** Migration `0024` só com os índices de `activity_log`.
 - **D3.** Painel com cache de 60 s (`'use cache'` + `cacheLife`), invalidado pelas actions que mudam as filas (as `updateTag` que já existem).
 - **D4.** Sai a página provisória `/admin/senha-temporaria`: a ação fica em [6g] e na busca de Usuários.
-- **D5.** Permissões novas `admin.view`, `stores.manage` e `team.manage` no mapa da `auth` (admin; o suporte só `admin.view`).
+- **D5.** Permissões no mapa da `auth`: `stores.manage` (nova, só admin), `team.manage` (já existia, só admin) e, para ver, a `admin.read` que já existia (admin e suporte), no lugar de uma `admin.view` nova (ajuste na implementação, 2026-11-25).
 
 ## Conformidade
 - [x] Todos os requisitos estão no mapa (15 FR, 3 NFR, 5 SEC)

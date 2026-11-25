@@ -153,3 +153,21 @@ describe("ações do admin", () => {
     expect(() => authorizeArea(sessionWith("store_owner"), "indica")).toThrow();
   });
 });
+
+describe("admin (012b)", () => {
+  it("[ADM-SEC-001] [ADM-SEC-002] admin e suporte veem o admin; só o admin cria loja, edita e mexe na equipe", () => {
+    const admin = sessionWith("admin");
+    const support = sessionWith("support");
+
+    expect(can(admin, "admin.read")).toBe(true);
+    expect(can(support, "admin.read")).toBe(true);
+    for (const p of ["stores.manage", "team.manage"] as Permission[]) {
+      expect(can(admin, p)).toBe(true);
+      expect(can(support, p)).toBe(false);
+      expect(can(sessionWith("store_owner"), p)).toBe(false);
+    }
+    expect(() => authorizeTo(sessionWith("store_owner"), "admin.read")).toThrow(
+      expect.objectContaining({ status: 403 }),
+    );
+  });
+});

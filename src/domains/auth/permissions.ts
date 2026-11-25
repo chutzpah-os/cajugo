@@ -53,7 +53,10 @@ export const PERMISSIONS = {
   "users.temporaryPassword": ["admin"],
   "payouts.markPaid": ["admin"],
   "settings.edit": ["admin"],
+  /** Convidar e remover gente da Equipe CajuGo (012b). */
   "team.manage": ["admin"],
+  /** Criar loja e editar os dados dela pelo admin [1d], [6g] (012b). */
+  "stores.manage": ["admin"],
 } as const satisfies Record<string, readonly Role[]>;
 
 export type Permission = keyof typeof PERMISSIONS;

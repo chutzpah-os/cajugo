@@ -2,7 +2,7 @@
 id: 012b
 slug: admin-panel
 title: Admin · painel, lojas, usuários e detalhe da loja
-status: clarified
+status: in-progress
 owner: dono do produto
 created: 2026-11-24
 ---

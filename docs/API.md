@@ -156,7 +156,11 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Admin
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| A | `createStore` (dono com senha temporária) · `updateStore` · `setTemporaryPassword` | 1d, 6g |
+| página | `/admin` — painel [4a] / visão geral [15c] (`admin.read`, 012b) | 4a, 15c |
+| página | `/admin/lojas?aba=lojas\|veiculos\|usuarios` · `/admin/lojas/nova` · `/admin/lojas/[id]` · `/admin/lojas/[id]/editar` · `/admin/lojas/[id]/historico` (012b) | 1d, 6g |
+| A | `createStoreByAdminAction(form)` → senha temporária uma vez · `updateStoreByAdminAction({ storeId, ... })` — `stores.manage` (só admin) · `setTemporaryPassword` (001) | 1d, 6g |
+| página | `/admin/conta/logs` — registro de atividade com filtros (`admin.read`, 012b) | 4c |
+| A | `inviteTeamMemberAction({ name, email, role })` · `removeTeamMemberAction({ profileId })` — `team.manage` (012b) | 4c |
 | página | `/admin/assinaturas` — MRR, contagens e filtros (`?filtro=`); admin e suporte veem (`subscriptions.view`), só o admin decide (011) | 4b |
 | A | `suspendStoreAction({ storeId })` · `reactivateStoreAction({ storeId, reason })` — `stores.suspend` (só admin, 011) | 4b, 6g |
 | A | `editPlanAction({ membershipCents, validFrom })` — `settings.edit` (só admin); data ≥ hoje + 30 dias (011b) | 4b |

@@ -1169,3 +1169,6 @@
 
 # 2026-11-24 · 012/T013 Conta admin [4c]
 - Perfil com sigla, nome, e-mail e selo Admin/Suporte; seções das regras em faixas brancas; Vitrine com nome e endereço em campos só de leitura; links Alterar senha e Avisos; Sair.
+
+# 2026-11-24 · 012b/T001 documentos e permissões
+- Tasks da 012b; ARCHITECTURE (domínio admin só leitura), API.md (rotas e actions do admin), GLOSSARY (Equipe CajuGo); permissão stores.manage (só admin) e teste de admin.read/team.manage.
