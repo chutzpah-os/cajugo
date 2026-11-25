@@ -13,6 +13,8 @@ import {
   changePassword,
   findAccountByEmail,
   getSession,
+  inviteTeamMember,
+  removeTeamMember,
   setTemporaryPassword,
   signIn,
   signOut,
@@ -222,5 +224,67 @@ export async function changePasswordAction(
       message: "Não foi possível salvar agora. Tente de novo em instantes.",
       errors: {},
     };
+  }
+}
+
+export type InviteState = {
+  ok: boolean;
+  /** Senha temporária da conta nova: aparece uma única vez (ADM-SEC-003). */
+  password?: string | null;
+  email?: string;
+  message?: string;
+  errors: Record<string, string>;
+} | null;
+
+/** **Convidar** para a Equipe CajuGo na Conta admin [4c] (ADM-FR-012): só admin. */
+export async function inviteTeamMemberAction(
+  _prev: InviteState,
+  form: FormData,
+): Promise<InviteState> {
+  const email = String(form.get("email") ?? "");
+  try {
+    const { temporaryPassword } = await inviteTeamMember(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      {
+        name: String(form.get("name") ?? ""),
+        email,
+        role: String(form.get("role") ?? ""),
+      },
+    );
+    return { ok: true, password: temporaryPassword, email, errors: {} };
+  } catch (error) {
+    if (error instanceof AppError)
+      return {
+        ok: false,
+        message: error.errors.length ? undefined : error.title,
+        errors: Object.fromEntries(
+          error.errors.map((e) => [e.field, e.message]),
+        ),
+      };
+    logUnexpected("auth.team_invite_failed", error);
+    return {
+      ok: false,
+      message: "Não foi possível convidar agora.",
+      errors: {},
+    };
+  }
+}
+
+/** **Remover** da Equipe CajuGo (ADM-FR-012): só admin; não a si mesmo nem o último admin. */
+export async function removeTeamMemberAction(input: {
+  profileId: string;
+}): Promise<{ ok: boolean; message?: string }> {
+  try {
+    await removeTeamMember(
+      { db: getDb(), auth: await requestAuthProvider() },
+      await currentSession(),
+      input,
+    );
+    return { ok: true };
+  } catch (error) {
+    if (error instanceof AppError) return { ok: false, message: error.title };
+    logUnexpected("auth.team_remove_failed", error);
+    return { ok: false, message: "Não foi possível remover agora." };
   }
 }

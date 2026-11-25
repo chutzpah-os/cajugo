@@ -704,3 +704,6 @@
 
 # 2026-11-25 · Senha temporária no detalhe da loja [012b/T015]
 - A senha do lojista é gerada no detalhe da loja (o admin já está com a loja aberta); a busca por e-mail continua, na Conta admin, para vendedor e indicador, que não têm loja. Loja inexistente mostra "Página não encontrada" (a área é transmitida, então o status já saiu como 200).
+
+# 2026-11-25 · Equipe e Log no admin [012b/T016]
+- O e2e do convite usa um e-mail que já está na equipe para não criar conta nova no staging a cada rodada; a criação com senha fica coberta pelos testes de serviço (PGlite).

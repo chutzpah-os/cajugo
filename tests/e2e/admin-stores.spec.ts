@@ -191,3 +191,50 @@ test("[ADM-SEC-005] loja inexistente no detalhe responde não encontrado", async
   await page.goto("/admin/lojas/01900000-0000-7000-8000-000000000000");
   await expect(page.getByText("Página não encontrada")).toBeVisible();
 });
+
+for (const width of [390, 1280]) {
+  test(`[ADM-FR-012] [ADM-FR-015] [ADM-FR-011] Equipe na Conta e Logs de atividade em ${width} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/entrar?next=%2Fadmin%2Fconta");
+    await signIn(page, accounts.admin.email);
+    const team = page.getByRole("region", { name: "Equipe CajuGo" });
+    await expect(team.getByTestId("team-member").first()).toBeVisible();
+    await expect(team.getByText(accounts.support.email)).toBeVisible();
+
+    await team.getByText("Convidar para a equipe").click();
+    await team.getByLabel("Nome").fill("Suporte repetido");
+    await team.getByLabel("E-mail").fill(accounts.support.email);
+    await team.getByRole("button", { name: "Convidar" }).click();
+    await expect(
+      team.getByText("Essa pessoa já está na equipe."),
+    ).toBeVisible();
+    expect(await audit(page)).toEqual({
+      horizontalScroll: false,
+      small: [],
+      unlabeled: [],
+    });
+
+    await page.goto("/admin/log?tipo=lojas");
+    const log = page.getByRole("region", { name: "Logs de atividade" });
+    await expect(log.getByLabel("Tipo")).toHaveValue("lojas");
+    await expect(log.getByTestId("activity-item").first()).toBeVisible();
+    expect(await audit(page)).toEqual({
+      horizontalScroll: false,
+      small: [],
+      unlabeled: [],
+    });
+  });
+}
+
+test("[ADM-SEC-002] suporte vê a Equipe sem Convidar nem Remover", async ({
+  page,
+}) => {
+  await page.goto("/entrar?next=%2Fadmin%2Fconta");
+  await signIn(page, accounts.support.email);
+  const team = page.getByRole("region", { name: "Equipe CajuGo" });
+  await expect(team.getByTestId("team-member").first()).toBeVisible();
+  await expect(team.getByText("Convidar para a equipe")).toHaveCount(0);
+  await expect(team.getByRole("button", { name: "Remover" })).toHaveCount(0);
+});

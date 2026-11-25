@@ -55,7 +55,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - sem histórico: ele fica no Log, filtrado pela loja.
 
   · _ADM-FR-008, ADM-FR-009, ADM-FR-010, ADM-FR-011_
-- [ ] **T016** Conta admin [4c] e Log:
+- [x] **T016** Conta admin [4c] e Log (2026-11-25):
   - Equipe CajuGo com Convidar e Remover, na própria Conta;
   - Log: histórico das regras (feito, 012) + logs de atividade com os filtros tipo, período e loja;
   - menu "Mais" no celular (com Log).

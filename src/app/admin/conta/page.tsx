@@ -11,7 +11,8 @@ import { maskPixKey } from "@/domains/settings/format";
 import { TemporaryPasswordTool } from "@/domains/auth/components/temporary-password-tool";
 import { ReadOnlyNotice } from "@/ui/read-only-notice";
 import { signOutAction } from "@/domains/auth/actions";
-import { accountMenu } from "@/domains/auth/service";
+import { TeamSection } from "@/domains/auth/components/team-section";
+import { accountMenu, teamView } from "@/domains/auth/service";
 import { getDb } from "@/platform/db/client";
 import { Badge } from "@/ui/badge";
 import { initialsOf } from "@/ui/initials";
@@ -46,6 +47,7 @@ async function Content() {
   );
 
   const me = await accountMenu(getDb(), session);
+  const team = await teamView({ db: getDb() }, session);
   return (
     <section className="flex flex-col gap-3 pt-6 pb-6 lg:max-w-3xl lg:pt-2">
       {/* Perfil [4c]: sigla, nome, e-mail e o selo do papel. */}
@@ -115,6 +117,8 @@ async function Content() {
       {form("approval", "Aprovação prévia")}
       {form("data", "Dados")}
       {form("laudo", "LaudoCaju")}
+
+      <TeamSection members={team.members} canManage={team.canManage} />
 
       {/* Busca por e-mail para contas sem loja (vendedor, indicador); a do lojista fica
           no detalhe da loja [6g]. Suporte vê a busca sem o botão (AUT-SEC-008). */}

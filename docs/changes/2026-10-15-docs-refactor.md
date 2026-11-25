@@ -1353,3 +1353,6 @@
 
 # 2026-11-25 · feat(admin): detalhe da loja [6g] [012b/T015]
 - /admin/lojas/{id}: cabeçalho, KPIs, cards Dono, Assinatura (faturas), Rede Caju e Veículos; ações Editar dados (recolhível), Ver catálogo, Definir senha temporária do dono, Histórico no Log e Suspender/Reativar. Suporte vê sem as ações. A busca de senha temporária saiu do Painel para a Conta admin.
+
+# 2026-11-25 · feat(admin): Equipe CajuGo na Conta e Logs de atividade [012b/T016]
+- Conta admin com Equipe CajuGo (lista, Convidar recolhível com a senha temporária uma vez e Copiar, Remover com confirmação; suporte só vê). Log com Logs de atividade (filtros tipo e período, 20 por vez, Carregar mais) e o histórico da loja por ?loja=.
