@@ -1338,3 +1338,6 @@
 # 2026-11-25 · feat(contacts): pedidos de contato no admin, sem número da equipe em público [017]
 - "Quero ser avisado" do leilão e "Esqueci a senha" viram formulários (nome, WhatsApp, aceite; e-mail da conta no de senha) que caem no admin em Contatos, com contador, wa.me da pessoa e Marcar como atendido (apaga os dados). Migration 0027 (contact_requests); job diário vence em 90 dias.
 - Vitrine: o filtro lateral aparece sempre no desktop, mesmo sem veículo. Número real trocado por fictício nos exemplos de erro e nos testes.
+
+# 2026-11-25 · feat(showcase): faixa do Caju Indica entre a lista e o rodapé [010]
+- Na vitrine (/veiculos e páginas de tipo), a faixa do Caju Indica sai de baixo do quadro Comprar · Vender e vai para o fim da página, com espaço antes do rodapé, no mesmo estilo; em 390 e 1440 px.

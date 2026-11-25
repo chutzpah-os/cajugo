@@ -689,3 +689,6 @@
 # 2026-11-25 · Pedidos de contato no admin [017]
 - Regra do dono: nenhum telefone ou dado pessoal da equipe/donos em página pública (HOM-SEC-001). Quem quer falar com a CajuGo deixa o contato e a equipe chama; o pedido fica em Contatos (admin e suporte), e não em Alertas, porque não depende de veículo.
 - O valor inicial do WhatsApp de atendimento continua igual ao da migration 0005 (já aplicada e no histórico do Git); ele só aparece em áreas logadas da loja. A vitrine sem veículo mantém o filtro lateral para a página não perder a estrutura (pedido do dono).
+
+# 2026-11-25 · Faixa do Caju Indica no fim da vitrine [010]
+- Pedido do dono: o rodapé não fica colado no fim do filtro lateral; o espaço recebe a faixa, e o topo fica só com a busca.

@@ -85,7 +85,7 @@ export async function ShowcaseView({
 }: {
   filters: Filters;
   result: SearchResult;
-  /** Faixa do Caju Indica ao lado do quadro Comprar · Vender (010, pedido do dono). */
+  /** Faixa do Caju Indica entre a lista e o rodapé (010, pedido do dono, 2026-11-25). */
   promo?: ReactNode;
 }) {
   const { makes, cities } = await cachedFacets("showcase");
@@ -130,7 +130,6 @@ export async function ShowcaseView({
               }
               sell={<SellPitch />}
             />
-            {promo}
           </div>
         }
         sidebar={
@@ -162,6 +161,11 @@ export async function ShowcaseView({
           )
         }
       />
+      {promo && (
+        <div className="border-t border-line py-8 lg:-mx-8 lg:px-8 lg:py-12">
+          <div className="lg:mx-auto lg:max-w-5xl">{promo}</div>
+        </div>
+      )}
     </main>
   );
 }
