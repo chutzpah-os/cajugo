@@ -589,3 +589,6 @@
 
 # 2026-11-24 · feat(fipe): FIPE pela fipe.api.br v2 [015/T001]
 - PRC-FR-002: escolha do dono do produto (API gratuita, sem chave, 500 consultas/dia); a v2 também cobre motos e caminhões (spec 014).
+
+# 2026-11-24 · docs(laudo-caju): rascunho da spec [016]
+- Pedido do dono em 2026-11-25, com a referência do Vistoriado da Webmotors; as decisões de negócio ficam como pendências para o /clarify.

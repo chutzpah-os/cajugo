@@ -1238,3 +1238,6 @@
 
 # 2026-11-24 · feat(fipe): FIPE pela fipe.api.br v2 [015/T001]
 - createFipeClient passa a usar https://fipe.api.br/api/v2/cars (marcas, modelos, anos e preço; {code,name} e {price,codeFipe,referenceMonth}); mesmos códigos FIPE, então o que está no banco continua valendo. ADR 0012, ARCHITECTURE, PLAN, PRD e CLAUDE.md registram a fonte.
+
+# 2026-11-24 · docs(laudo-caju): rascunho da spec [016]
+- Spec 016 (draft): LaudoCaju na página do veículo (faixa com o selo e Mais detalhes, bloco com os itens inspecionados, Visualizar laudo, Saiba mais e aviso de responsabilidade), página do produto e 8 pendências.
