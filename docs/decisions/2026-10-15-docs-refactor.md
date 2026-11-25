@@ -652,3 +652,6 @@
 
 # 2026-11-24 · docs(referrals): spec da indicação legítima [018]
 - Pedido do dono: indicações legítimas, contra golpe.
+
+# 2026-11-24 · feat(sellers): Rede Caju deixa claro que é vendedor independente [017]
+- Pedido do dono.

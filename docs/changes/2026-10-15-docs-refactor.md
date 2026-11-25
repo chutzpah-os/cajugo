@@ -1301,3 +1301,6 @@
 
 # 2026-11-24 · docs(referrals): spec da indicação legítima [018]
 - Spec 018: o lojista indicado vê quem indicou (só o nome) e pode contestar (recompensa suspensa, WhatsApp do atendimento); o admin invalida com motivo ou mantém; o indicador vê Contestada ou Não válida.
+
+# 2026-11-24 · feat(sellers): Rede Caju deixa claro que é vendedor independente [017]
+- Cadastro da Rede Caju e a página de vendas dizem que a pessoa atua como vendedor independente (texto de abertura, painel e uma pergunta frequente).

@@ -20,7 +20,7 @@ export default function RedeCajuLanding() {
         c={{
           eyebrow: "Rede Caju",
           title: "Venda veículos das lojas e ganhe comissão",
-          lead: "Escolha os veículos da vitrine CajuGo, divulgue com o seu link de vendedor e ganhe a comissão combinada com a loja quando a venda acontecer. Você não paga nada.",
+          lead: "Como vendedor independente, escolha os veículos da vitrine CajuGo, divulgue com o seu link e ganhe a comissão combinada com a loja quando a venda acontecer. Você não paga nada.",
           primary: { label: "Quero ser vendedor", href: "/rede-caju/cadastro" },
           signIn: {
             label: "Já sou vendedor: entrar",
@@ -82,6 +82,10 @@ export default function RedeCajuLanding() {
             {
               q: "Quem paga a comissão?",
               a: "A loja parceira, quando a venda é confirmada. O valor segue a comissão definida pela loja.",
+            },
+            {
+              q: "Viro funcionário da loja ou da CajuGo?",
+              a: "Não. Você atua como vendedor independente: escolhe o que divulgar e quando, e ganha a comissão das vendas que fizer.",
             },
             {
               q: "Preciso ter CNPJ?",

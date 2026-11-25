@@ -38,6 +38,7 @@ const PANEL = {
     "Escolha os veículos da vitrine que quer divulgar",
     "Compartilhe com o seu link de vendedor",
     "A loja parceira paga a comissão da venda",
+    "Você atua como vendedor independente, no seu tempo",
     "Você não paga nada para participar",
   ],
 } as const;
@@ -48,7 +49,7 @@ export default function SellerSignupPage() {
       <SiteHeader />
       <AuthLayout
         title="Seja vendedor da Rede Caju"
-        subtitle="Divulgue os carros da vitrine e ganhe comissão das lojas parceiras. Você não paga nada."
+        subtitle="Como vendedor independente, você divulga os veículos da vitrine e ganha comissão das lojas parceiras. Você não paga nada."
         progress={{
           label: "1 de 2 · depois, a foto do documento",
           step: 1,
