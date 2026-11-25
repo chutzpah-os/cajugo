@@ -1193,3 +1193,6 @@
 
 # 2026-11-24 · feat(admin): detalhe da loja [012b/T006]
 - adminStoreDetail compõe loja e dono (stores), assinatura e faturas (billing), estoque (showcase), leads do mês (leads) e Rede Caju (sellers); CNPJ mascarado ao suporte; id inválido → 404. A T005 (usersAdmin) entrou no commit da T004.
+
+# 2026-11-24 · docs(vehicle-types): máquinas pesadas [014]
+- TIP-FR-001 inclui Máquinas pesadas (retroescavadeira, pá carregadeira, escavadeira, empilhadeira etc.), com horas de uso, potência, tração e categoria; anexos de marcas e modelos; PRD alinhado.

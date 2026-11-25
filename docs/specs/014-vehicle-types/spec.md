@@ -45,21 +45,22 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   - Trator;
   - Quadriciclo e UTV;
   - Motorhome e trailer;
-  - Implemento (reboque, carreta, semirreboque).
+  - Implemento (reboque, carreta, semirreboque);
+  - Máquinas pesadas (retroescavadeira, pá carregadeira, escavadeira, empilhadeira, colheitadeira, motoniveladora), incluída a pedido do dono do produto em 2026-11-25.
 - **TIP-FR-002** Em Minha loja [3b], o lojista marca **o que a loja vende** (um ou mais tipos). Para as lojas que já existem, vale **Carro**.
 - **TIP-FR-003** No cadastro do veículo [2a], o **tipo** é o primeiro campo, com os tipos da loja, e já vem marcado quando a loja vende um só. Trocar o tipo de um rascunho limpa a marca, o modelo e a versão. O tipo não muda depois de publicado.
 - **TIP-FR-004** A **ficha técnica** [2a] mostra só os campos do tipo:
   - **carro e picape:** os de hoje;
   - **moto, scooter e quadriciclo:** cilindrada e partida, sem portas nem carroceria;
   - **caminhão, ônibus e implemento:** eixos, tração, capacidade de carga ou de passageiros e, no ônibus, carroceria;
-  - **trator:** horas de uso no lugar da quilometragem, potência e tração;
+  - **trator e máquinas pesadas:** horas de uso no lugar da quilometragem, potência e tração; nas máquinas, também a **categoria** (retroescavadeira, pá carregadeira, escavadeira, empilhadeira, colheitadeira, motoniveladora, outra);
   - **van, motorhome e trailer:** lugares e, no motorhome, camas.
 - **TIP-FR-005** Marca, modelo e versão vêm da lista FIPE do tipo quando ela existe:
   - carros, também para picape e van (o lojista escolhe o tipo; a FIPE não decide);
   - motos, também para scooter;
   - caminhões, também para ônibus.
 
-  Nos outros tipos (trator, quadriciclo, motorhome, implemento) e na carroceria do ônibus, o lojista escolhe a marca e o **modelo** de uma **lista da CajuGo** (anexo "Modelos sem FIPE") ou escreve o modelo em "Outro"; a versão é escrita. Para esses tipos não há referência FIPE nem o selo "Abaixo da FIPE".
+  Nos outros tipos (trator, máquinas pesadas, quadriciclo, motorhome, implemento) e na carroceria do ônibus, o lojista escolhe a marca e o **modelo** de uma **lista da CajuGo** (anexo "Modelos sem FIPE") ou escreve o modelo em "Outro"; a versão é escrita. Para esses tipos não há referência FIPE nem o selo "Abaixo da FIPE".
 - **TIP-FR-006** O tipo e os campos dele aparecem:
   - na página do veículo [1b], na ficha (ex.: "Cilindrada 160 cc", "Horas de uso 2.400 h");
   - no card [1a], no lugar de ano · km quando o tipo usa horas.
@@ -75,7 +76,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **TIP-FR-015** Para publicar, além do que já é obrigatório hoje, cada tipo exige o seu campo principal:
   - cilindrada: moto, scooter, quadriciclo;
   - eixos: caminhão, ônibus, implemento;
-  - horas de uso, no lugar da quilometragem: trator;
+  - horas de uso, no lugar da quilometragem: trator e máquinas pesadas;
   - lugares: van, motorhome.
 - **TIP-FR-016** As regras de fotos mínimas e de aprovação prévia (002) valem iguais para todos os tipos.
 - **TIP-FR-017** (pedido do dono do produto, 2026-11-24) O cadastro [2a] ganha a seção **Histórico do veículo**, para todos os tipos, com Sim/Não:
@@ -213,6 +214,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **Ônibus · chassi** (FIPE de caminhões): Mercedes-Benz, Volkswagen Caminhões e Ônibus, Volvo, Scania, Iveco, Agrale.
 - **Ônibus · carroceria** (lista da CajuGo): Marcopolo, Caio, Comil, Busscar, Mascarello, Neobus, Induscar.
 - **Caminhão** (FIPE de caminhões): Mercedes-Benz, Volkswagen Caminhões e Ônibus, Volvo, Scania, Iveco, DAF, Ford Trucks, Agrale, Foton, Shacman.
+- **Máquinas pesadas** (lista da CajuGo): Caterpillar, JCB, Case Construction, New Holland Construction, Komatsu, Volvo CE, John Deere, XCMG, LiuGong, SANY, Randon, Hyster, Toyota Material Handling, Still, Clark.
 - **Trator** (lista da CajuGo): John Deere, New Holland Agriculture, Massey Ferguson, Valtra, Case IH, Fendt, Agrale, LS Tractor, Mahindra, Kubota, Yanmar, Landini, Solis.
 
 ## Anexo · Modelos sem FIPE (lista inicial da CajuGo)
@@ -239,6 +241,15 @@ Carro, moto, caminhão e chassi de ônibus têm todos os modelos pela FIPE.
   - Mascarello: Roma 350, Roma 370, Gran Via, Gran Micro.
   - Neobus: New Road N10, New Road N12, Mega, Thunder.
   - Induscar: Apache, Millennium.
+- **Máquinas pesadas**
+  - Caterpillar: 416F2, 420F2, 924K, 320 GC, 140K.
+  - JCB: 3CX, 4CX, 422ZX, JS200.
+  - Case Construction: 580N, 580SN, 621G, CX220C, 845C.
+  - New Holland Construction: B95B, B110B, W130, E215C.
+  - Komatsu: WB146, PC200, WA200, GD555.
+  - Volvo CE: BL60, L60H, EC220D.
+  - Randon: RD406, RK406.
+  - Hyster, Toyota Material Handling, Still, Clark: modelo escrito (empilhadeiras).
 - **Quadriciclo, motorhome e implemento:** marca e modelo escritos no MVP (lista na fase 2).
 
 ## Pendências

@@ -544,3 +544,6 @@
 
 # 2026-11-24 · feat(admin): detalhe da loja [012b/T006]
 - ADM-FR-008, ADM-SEC-004/005; o domínio admin só compõe as leituras de cada domínio.
+
+# 2026-11-24 · docs(vehicle-types): máquinas pesadas [014]
+- Pedido do dono: o lojista também vende máquinas pesadas, que não têm FIPE.

@@ -501,7 +501,7 @@ Campos:
 - Regras: marcar vendido pede confirmação e desliga a divulgação; toggle desabilitado para rascunho e vendido.
 
 ### [2a] Novo / editar veículo
-**Tipo do veículo** (spec 014): o primeiro campo, entre os tipos que a loja vende (Carro, Moto, Scooter, Picape, Van e furgão, Ônibus e micro-ônibus, Caminhão, Trator, Quadriciclo e UTV, Motorhome e trailer, Implemento). A ficha técnica mostra só os campos do tipo (ex.: cilindrada na moto, eixos no caminhão, horas de uso no trator). FIPE nos tipos que ela cobre; nos outros, a marca vem de uma lista da CajuGo e o modelo é escrito. **Histórico do veículo** (Sim/Não): passagem por leilão, recuperado de financiamento, kit GNV, ex-táxi/frota/locadora, laudo cautelar aprovado, chave reserva, manual e nota fiscal; **Sinistro**: nenhum, pequena, média ou grande monta. A lista de marcas começa pelas mais procuradas no Brasil.
+**Tipo do veículo** (spec 014): o primeiro campo, entre os tipos que a loja vende (Carro, Moto, Scooter, Picape, Van e furgão, Ônibus e micro-ônibus, Caminhão, Trator, Quadriciclo e UTV, Motorhome e trailer, Implemento, Máquinas pesadas). A ficha técnica mostra só os campos do tipo (ex.: cilindrada na moto, eixos no caminhão, horas de uso no trator e nas máquinas). FIPE nos tipos que ela cobre; nos outros, a marca vem de uma lista da CajuGo e o modelo é escrito. **Histórico do veículo** (Sim/Não): passagem por leilão, recuperado de financiamento, kit GNV, ex-táxi/frota/locadora, laudo cautelar aprovado, chave reserva, manual e nota fiscal; **Sinistro**: nenhum, pequena, média ou grande monta. A lista de marcas começa pelas mais procuradas no Brasil.
 
 Seções e campos:
 
