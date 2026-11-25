@@ -661,3 +661,6 @@
 
 # 2026-11-24 · feat(showcase): vitrine vazia fala com o comprador; Rede Caju pela plataforma [017]
 - Pedidos do dono em 2026-11-25.
+
+# 2026-11-24 · fix(showcase): filtro sem marcas diz que ainda não há veículos [017]
+- Pedido do dono: a lista vazia parecia falta de marcas, mas é falta de veículos.

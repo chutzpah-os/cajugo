@@ -234,15 +234,21 @@ export function FiltersForm({
         )}
         {!lockMake && (
           <Group id={`${idPrefix}-marca`} title="Marca e modelo">
-            <div className={listClass}>
-              <CheckTree
-                label="Marca e modelo"
-                nodes={makeNodes}
-                isOn={(v) => draft.makes.includes(v) || models.includes(v)}
-                onToggleParent={toggleMake}
-                onToggleChild={toggleModel}
-              />
-            </div>
+            {makeNodes.length ? (
+              <div className={listClass}>
+                <CheckTree
+                  label="Marca e modelo"
+                  nodes={makeNodes}
+                  isOn={(v) => draft.makes.includes(v) || models.includes(v)}
+                  onToggleParent={toggleMake}
+                  onToggleChild={toggleModel}
+                />
+              </div>
+            ) : (
+              <p className="text-sm text-text-3">
+                Nenhum veículo anunciado ainda.
+              </p>
+            )}
           </Group>
         )}
         {stateNodes.length > 0 && (

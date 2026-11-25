@@ -1310,3 +1310,6 @@
 
 # 2026-11-24 · feat(showcase): vitrine vazia fala com o comprador; Rede Caju pela plataforma [017]
 - Vitrine sem veículos: 'Ainda não há {motos} anunciadas na CajuGo' (segue o tipo), Ver todos os veículos e o convite à loja só como link discreto. Rede Caju: textos e perguntas dizem que o vendedor encontra a oportunidade, o cliente fala com a CajuGo e a CajuGo passa para o lojista; PRD §5.7 registra a regra e a mudança de fluxo a especificar.
+
+# 2026-11-24 · fix(showcase): filtro sem marcas diz que ainda não há veículos [017]
+- Marca e modelo vazio passa a mostrar 'Nenhum veículo anunciado ainda.' em vez da lista vazia.
