@@ -1,6 +1,11 @@
 import { brDate } from "@/platform/br/date";
 import { and, eq, gt, inArray, like, lte } from "drizzle-orm";
-import { authorizeTo, grantRole, type AuthDeps } from "@/domains/auth/service";
+import {
+  authorizeTo,
+  generateTemporaryPassword,
+  grantRole,
+  type AuthDeps,
+} from "@/domains/auth/service";
 import {
   checkCode,
   codeOf,
@@ -21,6 +26,7 @@ import { authorizeStore, type Session } from "@/platform/http/session";
 import { storeUrl } from "@/platform/http/urls";
 import {
   addStoreSchema,
+  adminCreateStoreSchema,
   registerStoreSchema,
   storeUpdateSchema,
 } from "./schemas";
@@ -159,8 +165,14 @@ async function createStore(
   },
   code: string | null,
   now: Date,
+  /** Quem criou: o próprio dono (cadastro) ou o admin (Nova loja, ADM-FR-005). */
+  by: { via: "public-signup" | "admin"; actorId: string; action: string } = {
+    via: "public-signup",
+    actorId: userId,
+    action: "store.registered",
+  },
 ): Promise<string> {
-  await grantRole(tx, userId, "store_owner", "public-signup");
+  await grantRole(tx, userId, "store_owner", by.via);
   const [store] = await tx
     .insert(stores)
     .values({
@@ -182,12 +194,66 @@ async function createStore(
   await getOrCreateCode(tx, userId, personName);
   if (code) await registerReferral(tx, code, store.id);
   await logActivity(tx, {
-    userId,
-    action: "store.registered",
+    userId: by.actorId,
+    action: by.action,
     entity: "store",
     entityId: store.id,
   });
   return store.id;
+}
+
+/**
+ * Nova loja pelo admin (ADM-FR-005): conta do dono com senha temporária (24 h, troca
+ * no 1º login) e loja `registered`, numa transação; se falhar, a conta é apagada.
+ * A senha volta uma única vez e nunca vai para o registro (ADM-SEC-003). Só admin.
+ */
+export async function createStoreByAdmin(
+  deps: AuthDeps,
+  session: Session | null,
+  input: unknown,
+): Promise<{ storeId: string; temporaryPassword: string }> {
+  const admin = authorizeTo(session, "stores.manage");
+  const parsed = adminCreateStoreSchema.safeParse(input);
+  if (!parsed.success)
+    throw AppError.validation(fieldErrorsFromZod(parsed.error));
+  const data = parsed.data;
+  const now = deps.now?.() ?? new Date();
+
+  const [existing] = await deps.db
+    .select({ id: profiles.id })
+    .from(profiles)
+    .where(eq(profiles.email, data.email));
+  if (existing)
+    throw fieldError(
+      "email",
+      "account_exists",
+      "Já existe uma conta com esse e-mail.",
+    );
+  await assertSlugAvailable(deps, data.slug);
+
+  const temporaryPassword = generateTemporaryPassword();
+  const user = await deps.auth.adminCreateUser(data.email, temporaryPassword);
+  try {
+    const storeId = await deps.db.transaction(async (tx) => {
+      await tx.insert(profiles).values({
+        id: user.id,
+        name: data.name,
+        email: data.email,
+        phone: data.phone ?? null,
+        mustChangePassword: true,
+        tempPasswordExpiresAt: new Date(now.getTime() + DAY_MS),
+      });
+      return createStore(tx, user.id, data.name, data, null, now, {
+        via: "admin",
+        actorId: admin.userId,
+        action: "store.created_by_admin",
+      });
+    });
+    return { storeId, temporaryPassword };
+  } catch (error) {
+    await deps.auth.adminDeleteUser(user.id);
+    throw error;
+  }
 }
 
 /** Quem já tem conta (vendedor, indicador) abre a loja na mesma conta (STO-FR-015). */

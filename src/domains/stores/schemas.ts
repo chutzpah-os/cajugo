@@ -67,6 +67,26 @@ export const addStoreSchema = z
   .strict()
   .transform(withCity);
 
+/** Nova loja pelo admin (ADM-FR-005): loja + dono, sem senha, aceite nem indicação. */
+export const adminCreateStoreSchema = z
+  .object({
+    storeName: storeFields.storeName,
+    city: storeFields.city,
+    state: storeFields.state,
+    whatsapp: storeFields.whatsapp,
+    slug: storeFields.slug,
+    name: z.string().trim().min(2, "Informe o nome do dono.").max(80),
+    email: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .pipe(z.email("Informe um e-mail válido."))
+      .pipe(z.string().max(254)),
+    phone: brPhoneSchema.optional(),
+  })
+  .strict()
+  .transform(withCity);
+
 export type RegisterStoreInput = z.input<typeof registerStoreSchema>;
 
 /** Texto opcional: vazio vira `null`. */

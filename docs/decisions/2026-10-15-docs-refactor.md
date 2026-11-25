@@ -547,3 +547,6 @@
 
 # 2026-11-24 · docs(vehicle-types): máquinas pesadas [014]
 - Pedido do dono: o lojista também vende máquinas pesadas, que não têm FIPE.
+
+# 2026-11-24 · feat(stores): nova loja pelo admin [012b/T007]
+- ADM-FR-005, ADM-SEC-002/003; reaproveita o createStore do cadastro com a origem do papel e o autor do registro como parâmetro.

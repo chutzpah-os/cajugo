@@ -32,7 +32,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - id inválido → 404.
 
   · _ADM-FR-008, ADM-SEC-004, ADM-SEC-005_
-- [ ] **T007** `createStoreByAdmin`: loja cadastrada, conta do dono com a senha temporária devolvida uma vez, e-mail repetido → 422, registro sem a senha, suporte → 403. · _ADM-FR-005, ADM-SEC-002, ADM-SEC-003_
+- [x] **T007** `createStoreByAdmin`: loja cadastrada, conta do dono com a senha temporária devolvida uma vez, e-mail repetido → 422, registro sem a senha, suporte → 403. · _ADM-FR-005, ADM-SEC-002, ADM-SEC-003_
 - [ ] **T008** `updateStoreByAdmin`: as validações de Minha loja, sem endereço nem dono, posse conferida e registro. · _ADM-FR-010, ADM-SEC-002_
 - [ ] **T009** `activityLogView` com os filtros tipo, período e **loja** (o histórico da loja é o Log filtrado por ela): do mais recente ao mais antigo, 20 por vez, sem senha nem dado pessoal; com loja, nunca registros de outra. · _ADM-FR-011, ADM-FR-015, ADM-SEC-005_
 - [ ] **T010** Equipe:

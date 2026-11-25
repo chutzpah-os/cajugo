@@ -1196,3 +1196,6 @@
 
 # 2026-11-24 · docs(vehicle-types): máquinas pesadas [014]
 - TIP-FR-001 inclui Máquinas pesadas (retroescavadeira, pá carregadeira, escavadeira, empilhadeira etc.), com horas de uso, potência, tração e categoria; anexos de marcas e modelos; PRD alinhado.
+
+# 2026-11-24 · feat(stores): nova loja pelo admin [012b/T007]
+- createStoreByAdmin cria a conta do dono com senha temporária (24 h, troca no 1º login) e a loja cadastrada; e-mail repetido → 422; registro store.created_by_admin com o admin, sem a senha; só admin (stores.manage).
