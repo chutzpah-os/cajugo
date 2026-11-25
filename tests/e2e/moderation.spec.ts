@@ -167,9 +167,12 @@ test.describe.serial("denúncias de anúncio", () => {
       accounts.showcaseOwner.email,
       `/painel/veiculos/${S.reportedId}`,
     );
+    // Os avisos ficam só na tela Avisos do menu (DSG-FR-020).
+    await owner.goto("/painel/avisos");
     await expect(owner.getByRole("list", { name: "Avisos" })).toContainText(
       "foi ocultado da vitrine: Preço não real",
     );
+    await owner.goto(`/painel/veiculos/${S.reportedId}`);
     await expect(heading(owner)).toHaveText("Veículo oculto");
     await expect(owner.getByTestId("hidden-notice")).toContainText(
       "Para revisar, fale com a CajuGo",
@@ -202,6 +205,7 @@ test.describe.serial("denúncias de anúncio", () => {
       expect(await robots(visitor)).not.toContain("noindex");
     }).toPass({ timeout: 60_000 });
     await owner.reload();
+    await owner.goto("/painel/avisos");
     await expect(owner.getByRole("list", { name: "Avisos" })).toContainText(
       "voltou à vitrine CajuGo",
     );

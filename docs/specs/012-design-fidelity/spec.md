@@ -72,6 +72,8 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
 
 - **DSG-FR-019** (pedido do dono do produto, 2026-11-24) Leads [3a] tem também os filtros **Vendido** e **Perdido**, com a contagem, depois de Negociando: a soma dos chips bate com Todos.
 
+- **DSG-FR-020** (pedido do dono do produto, 2026-11-24) Os avisos aparecem **só** na tela **Avisos**, um item do menu de cada painel (lojista, vendedor, indicador e admin), com o número de avisos não dispensados; nenhuma outra página mostra avisos. O alerta da fatura (vence, atraso, suspensa) continua no topo do painel do lojista, porque pede ação.
+
 ## Requisitos não funcionais
 - **DSG-NFR-001** Para cada tela desta spec, fica registrada a comparação lado a lado (captura do design × tela entregue) em 390 px e, quando há versão desktop, em 1280 px, sem nenhuma diferença de estrutura, ordem ou componente que não esteja justificada por escrito.
 - **DSG-NFR-002** A adequação não piora a acessibilidade: alvos de toque ≥ 44 px, sem rolagem horizontal, campos com rótulo e contraste mínimo de 4,5:1 (`DESIGN.md` §7) continuam valendo em todas as telas.
@@ -186,6 +188,11 @@ Sucesso: cada tela entregue, lado a lado com a captura correspondente em 390 px 
 - **Dado** a loja com um lead Vendido
 - **Quando** o lojista abre Leads
 - **Então** vê o chip "Vendido 1" e, ao tocar, só o lead vendido
+
+### DSG-FR-020
+- **Dado** o admin com 3 avisos
+- **Quando** abre Lojas, Denúncias e depois Avisos
+- **Então** Lojas e Denúncias não mostram avisos, o menu mostra "Avisos 3", e a tela Avisos lista os 3 com o X para dispensar
 
 ## Pendências
 Nenhuma. Resolvidas no `/clarify` de 2026-11-24, com as opções recomendadas (instrução do dono do produto de seguir sem parar):

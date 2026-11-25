@@ -11,10 +11,17 @@ const SHOWN = 3;
 import type { NoticeView } from "../service";
 
 /** Avisos no topo do painel (GLOSSARY "Aviso", PIX-FR-013), com "Dispensar". */
-export function NoticeList({ notices }: { notices: NoticeView[] }) {
+export function NoticeList({
+  notices,
+  showAll = false,
+}: {
+  notices: NoticeView[];
+  /** Tela Avisos: todos à mostra, sem o "Ver todos". */
+  showAll?: boolean;
+}) {
   const router = useRouter();
   const [hidden, setHidden] = useState<string[]>([]);
-  const [all, setAll] = useState(false);
+  const [all, setAll] = useState(showAll);
   const visible = notices.filter((n) => !hidden.includes(n.id));
   if (!visible.length) return null;
   const extra = visible.length - SHOWN;

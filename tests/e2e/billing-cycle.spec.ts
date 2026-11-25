@@ -53,6 +53,8 @@ test.describe("ciclo de cobrança (011)", () => {
     await expect(
       page.getByText(`Loja suspensa · ${B.daysLate} dias de atraso · ${TOTAL}`),
     ).toBeVisible();
+    // O aviso da suspensão fica na tela Avisos (DSG-FR-020).
+    await page.goto("/painel/avisos");
     await expect(
       page.getByText("Sua loja foi suspensa por falta de pagamento."),
     ).toBeVisible();
@@ -193,10 +195,11 @@ test.describe("ciclo de cobrança (011)", () => {
 
     // Lojista: sem alerta, aviso da reativação; catálogo de volta
     await page.goto("/painel/veiculos");
+    await expect(page.getByText(/Loja suspensa ·/)).toHaveCount(0);
+    await page.goto("/painel/avisos");
     await expect(
       page.getByText("Pagamento confirmado. Sua loja está no ar."),
     ).toBeVisible();
-    await expect(page.getByText(/Loja suspensa ·/)).toHaveCount(0);
     await page.goto(`/loja/${B.slug}`);
     await expect(heading(page)).toHaveText(`Estoque ${B.storeName}`);
   });

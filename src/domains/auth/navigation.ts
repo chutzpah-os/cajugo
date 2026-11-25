@@ -34,12 +34,18 @@ export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
       mobile: true,
       permission: "billing.manage",
     },
+    { href: "/painel/avisos", label: "Avisos" },
   ],
   rede: [
     { href: "/rede", label: "Início", mobile: true },
     { href: "/rede/vitrine", label: "Vitrine", mobile: true },
     { href: "/rede/extrato", label: "Extrato", mobile: true },
     { href: "/rede/conta", label: "Conta", mobile: true },
+    { href: "/rede/avisos", label: "Avisos" },
+  ],
+  indica: [
+    { href: "/indica", label: "Início", mobile: true },
+    { href: "/indica/avisos", label: "Avisos", mobile: true },
   ],
   admin: [
     { href: "/admin", label: "Painel", mobile: true },
@@ -56,5 +62,6 @@ export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
     { href: "/admin/vendedores", label: "Rede Caju" },
     { href: "/admin/indica", label: "Caju Indica" },
     { href: "/admin/conta", label: "Conta", mobile: true },
+    { href: "/admin/avisos", label: "Avisos" },
   ],
 };

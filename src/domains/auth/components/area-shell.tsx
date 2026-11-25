@@ -6,8 +6,7 @@ import { accountMenu, rememberPanel } from "../service";
 import { PANEL_LABEL } from "../labels";
 import { AREA_NAV } from "../navigation";
 import type { Area } from "../permissions";
-import { noticesFor } from "@/domains/notices/service";
-import { NoticeList } from "@/domains/notices/components/notice-list";
+import { noticesCount } from "@/domains/notices/service";
 import type { AreaNavItem as NavItem } from "../navigation";
 import { can } from "../service";
 import type { Session } from "@/platform/http/session";
@@ -40,6 +39,9 @@ async function visibleNav(
     (i) => !i.permission || can(session, i.permission),
   );
   const counts = navCounts ? await navCounts(session) : {};
+  // Avisos não dispensados no item "Avisos" do menu (012): é o único lugar deles.
+  const avisos = items.find((i) => i.href.endsWith("/avisos"));
+  if (avisos) counts[avisos.href] = await noticesCount(getDb(), session);
   return allowedItems.map((item) => {
     const i: NavItem = {
       href: item.href,
@@ -53,8 +55,8 @@ async function visibleNav(
 /**
  * Moldura das áreas logadas (DESIGN.md §3, 012):
  * - celular: o cabeçalho é da página (escuro ou claro); a moldura põe o avatar com o
- *   menu da conta no canto dele, o alerta da fatura logo abaixo, os avisos no card
- *   "Atualizações" no fim da página e a barra inferior fixa;
+ *   menu da conta no canto dele, o alerta da fatura logo abaixo e a barra inferior
+ *   fixa; os avisos ficam só na tela Avisos do menu (012);
  * - desktop: a sidebar escura com o logo, a identidade, os itens com contadores e a
  *   conta no pé.
  * A página sempre renderiza e checa a própria permissão (AUT-FR-012).
@@ -79,8 +81,6 @@ export async function AreaShell({
   const nav = allowed
     ? await visibleNav(AREA_NAV[area], session, navCounts)
     : undefined;
-  // Avisos de quem está conectado, em qualquer área (ADR 0007, PIX-FR-013).
-  const notices = allowed ? await noticesFor(getDb(), session) : [];
   const banner = allowed && renderBanner ? await renderBanner(session) : null;
   const identity =
     allowed && renderIdentity ? await renderIdentity(session) : null;
@@ -116,19 +116,6 @@ export async function AreaShell({
             {banner}
           </div>
           {children}
-          {/* Avisos e alterações no fim da página, num card (pedido do dono, 012). */}
-          {notices.length > 0 && (
-            <section
-              data-updates
-              aria-labelledby="atualizacoes"
-              className="mt-6 flex flex-col gap-1 rounded-card border border-line bg-surface p-4"
-            >
-              <h2 id="atualizacoes" className="text-base font-extrabold">
-                Atualizações
-              </h2>
-              <NoticeList notices={notices} />
-            </section>
-          )}
         </main>
       </div>
     </div>

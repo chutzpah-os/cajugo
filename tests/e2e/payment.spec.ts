@@ -143,11 +143,14 @@ test.describe("Pix manual e ativação", () => {
     await expect(heading(page)).toHaveText("Comprovante recusado");
     await expect(page.getByText("Valor faltante: R$ 10,00")).toBeVisible();
     expect(await audit(page), "[12e]").toEqual(CLEAN);
+    // O aviso da recusa fica na tela Avisos (DSG-FR-020).
+    await page.goto("/painel/avisos");
     await expect(
       page.getByText(
         "Comprovante recusado: Valor divergente. Faltam R$ 10,00.",
       ),
     ).toBeVisible();
+    await page.goto("/lojistas/pagamento");
     // Reenvio sem redigitar o documento (fica o já informado).
     await page
       .getByRole("button", { name: /Pagar com Pix · R\$ 100,00/ })
@@ -182,12 +185,14 @@ test.describe("Pix manual e ativação", () => {
     ).toBeVisible();
     await expect(page.getByText("(1 de 3)")).toBeVisible();
     await expect(
-      page.getByText("Pagamento confirmado. Sua loja está no ar."),
-    ).toBeVisible();
-    await expect(
       page.getByRole("link", { name: "Cadastrar primeiro veículo" }),
     ).toHaveAttribute("href", "/painel/veiculos/novo");
     expect(await audit(page), "[5e]").toEqual(CLEAN);
+    // O aviso fica na tela Avisos do menu (DSG-FR-020).
+    await page.goto("/painel/avisos");
+    await expect(
+      page.getByText("Pagamento confirmado. Sua loja está no ar."),
+    ).toBeVisible();
     await page
       .getByRole("listitem")
       .filter({ hasText: "Pagamento confirmado. Sua loja está no ar." })

@@ -1163,3 +1163,6 @@
 
 # 2026-11-24 · 012/T012 Assinaturas [4b]
 - Cabeçalho escuro com o MRR e os contadores; card do plano com Editar plano em texto; chips; StoreCard com sigla, 'dono · desde', selo e rodapé (informação + Detalhes/Cobrar/Conferir); Suspender e Reativar abaixo.
+
+# 2026-11-24 · 012 avisos só na tela Avisos
+- Item Avisos no menu de cada painel (/painel, /admin, /rede, /indica) com o contador de não dispensados; tela Avisos com a lista e o X; nenhuma outra página mostra avisos (o alerta da fatura continua no topo do lojista); loja cadastrada ou cancelada também abre Avisos; e2e ajustados.

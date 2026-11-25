@@ -1,4 +1,4 @@
-import { and, arrayOverlaps, desc, eq, isNull } from "drizzle-orm";
+import { and, arrayOverlaps, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { authorize, type Session } from "@/platform/http/session";
 import { brl } from "@/platform/br/money";
@@ -204,6 +204,21 @@ export async function noticesFor(
     createdAt: r.createdAt,
     ...render({ kind: r.kind, ...(r.data as object) } as NoticeData),
   }));
+}
+
+/** Quantos avisos não dispensados a pessoa tem (contador do item Avisos do menu, 012). */
+export async function noticesCount(
+  db: Db,
+  session: Session | null,
+): Promise<number> {
+  if (!session) return 0;
+  const [row] = await db
+    .select({ n: count() })
+    .from(notices)
+    .where(
+      and(eq(notices.profileId, session.userId), isNull(notices.dismissedAt)),
+    );
+  return row?.n ?? 0;
 }
 
 /** "Dispensar": só o próprio aviso; de outra pessoa ou inexistente → 404. */

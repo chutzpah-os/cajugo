@@ -18,7 +18,7 @@ function allowedPaths(
   }
   switch (status) {
     case "registered":
-      return ["/lojistas/pagamento"];
+      return ["/lojistas/pagamento", "/painel/avisos"];
     case "payment_review":
     case "active":
     case "past_due":
@@ -26,7 +26,7 @@ function allowedPaths(
     case "cancel_scheduled":
       return "all";
     default:
-      return ["/painel/conta"];
+      return ["/painel/conta", "/painel/avisos"];
   }
 }
 

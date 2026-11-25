@@ -74,6 +74,8 @@ test.describe.serial("extrato do vendedor (008b)", () => {
     page,
   }) => {
     await enterAs(page, accounts.showcaseOwner.email, "/painel/veiculos");
+    // Os avisos ficam só na tela Avisos do menu (DSG-FR-020).
+    await page.goto("/painel/avisos");
 
     await expect(
       page.getByText(/confirmou o recebimento da comissão do Citroën C3/),

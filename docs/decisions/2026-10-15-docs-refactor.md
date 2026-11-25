@@ -514,3 +514,6 @@
 
 # 2026-11-24 · 012/T012 Assinaturas [4b]
 - Fidelidade ao [4b] (Turno 04).
+
+# 2026-11-24 · 012 avisos só na tela Avisos
+- Pedido do dono do produto: avisos num único lugar por painel (DSG-FR-020).

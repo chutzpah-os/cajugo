@@ -23,8 +23,11 @@ describe("menu do painel do lojista", () => {
       "Leads",
       "Minha loja",
       "Conta",
+      "Avisos",
     ]);
-    expect(AREA_NAV.painel?.every((i) => i.mobile)).toBe(true);
+    expect(
+      AREA_NAV.painel?.filter((i) => i.mobile).map((i) => i.label),
+    ).toEqual(["Veículos", "Leads", "Minha loja", "Conta"]);
     expect(AREA_NAV.painel?.find((i) => i.label === "Leads")?.href).toBe(
       "/painel/leads",
     );
@@ -32,7 +35,7 @@ describe("menu do painel do lojista", () => {
 
   it("[LED-FR-011] usuário da loja vê só o que pode abrir (AUT-SEC-007)", () => {
     // Act / Assert
-    expect(itemsFor("store_staff")).toEqual(["Veículos", "Leads"]);
+    expect(itemsFor("store_staff")).toEqual(["Veículos", "Leads", "Avisos"]);
   });
 });
 
@@ -60,7 +63,15 @@ describe("menu do vendedor", () => {
       ["Vitrine", "/rede/vitrine"],
       ["Extrato", "/rede/extrato"],
       ["Conta", "/rede/conta"],
+      ["Avisos", "/rede/avisos"],
     ]);
-    expect(AREA_NAV.rede?.every((i) => i.mobile)).toBe(true);
+    expect(AREA_NAV.rede?.filter((i) => i.mobile)).toHaveLength(4);
+  });
+
+  it("[DSG-FR-020] cada painel tem o item Avisos, o único lugar dos avisos", () => {
+    for (const area of ["painel", "rede", "indica", "admin"] as const)
+      expect(AREA_NAV[area]?.find((i) => i.label === "Avisos")?.href).toBe(
+        `/${area}/avisos`,
+      );
   });
 });
