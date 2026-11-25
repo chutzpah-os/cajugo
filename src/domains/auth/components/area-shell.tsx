@@ -53,7 +53,8 @@ async function visibleNav(
 /**
  * Moldura das áreas logadas (DESIGN.md §3, 012):
  * - celular: o cabeçalho é da página (escuro ou claro); a moldura põe o avatar com o
- *   menu da conta no canto dele, os avisos logo abaixo e a barra inferior fixa;
+ *   menu da conta no canto dele, o alerta da fatura logo abaixo, os avisos no card
+ *   "Atualizações" no fim da página e a barra inferior fixa;
  * - desktop: a sidebar escura com o logo, a identidade, os itens com contadores e a
  *   conta no pé.
  * A página sempre renderiza e checa a própria permissão (AUT-FR-012).
@@ -109,12 +110,25 @@ export async function AreaShell({
           />
         </div>
         {/* O cabeçalho da página vem primeiro, os avisos logo abaixo (012). */}
-        <main className="flex min-w-0 flex-1 flex-col *:order-2 [&>[data-header]]:order-0 [&>[data-notices]]:order-1">
+        <main className="flex min-w-0 flex-1 flex-col *:order-2 [&>[data-header]]:order-0 [&>[data-notices]]:order-1 [&>[data-updates]]:order-3">
+          {/* Alerta que pede ação (fatura) logo abaixo do cabeçalho. */}
           <div data-notices className="flex flex-col empty:hidden">
-            <NoticeList notices={notices} />
             {banner}
           </div>
           {children}
+          {/* Avisos e alterações no fim da página, num card (pedido do dono, 012). */}
+          {notices.length > 0 && (
+            <section
+              data-updates
+              aria-labelledby="atualizacoes"
+              className="mt-6 flex flex-col gap-1 rounded-card border border-line bg-surface p-4"
+            >
+              <h2 id="atualizacoes" className="text-base font-extrabold">
+                Atualizações
+              </h2>
+              <NoticeList notices={notices} />
+            </section>
+          )}
         </main>
       </div>
     </div>

@@ -19,7 +19,7 @@ export function NoticeList({ notices }: { notices: NoticeView[] }) {
   if (!visible.length) return null;
   const extra = visible.length - SHOWN;
   return (
-    <div className="mt-3 flex flex-col gap-1.5">
+    <div className="mt-2 flex flex-col gap-1.5">
       <ul aria-label="Avisos" className="flex flex-col gap-1.5">
         {visible.map((n, i) => (
           <li

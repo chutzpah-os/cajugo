@@ -10,13 +10,13 @@ export function CopyLine({ label, value }: { label: string; value: string }) {
     <div className="flex flex-col gap-1.5">
       <p className="text-[13px] font-semibold">{label}</p>
       <div className="flex items-center gap-2">
-        <code className="min-w-0 flex-1 truncate rounded-input bg-bg px-3 py-3 font-mono text-sm">
-          {value}
+        <code className="flex h-[50px] min-w-0 flex-1 items-center truncate rounded-input border border-field bg-surface px-3.5 font-mono text-[13px] text-text-2">
+          <span className="truncate">{value}</span>
         </code>
         <Button
           variant="dark"
           size="sm"
-          className="min-h-11"
+          className="h-[50px] rounded-input px-3.5 text-[13px]"
           onClick={async () => {
             await navigator.clipboard.writeText(value);
             setCopied(true);

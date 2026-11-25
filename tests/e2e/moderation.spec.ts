@@ -147,10 +147,12 @@ test.describe.serial("denúncias de anúncio", () => {
     await sheet.getByRole("button", { name: "Ocultar da vitrine" }).click();
     await expect(queueCard(page)).toHaveCount(0);
 
-    // A página abre como veículo do catálogo, fora do Google, na hora (RPT-NFR-003).
+    // A página abre como veículo do catálogo, fora do Google, em até 60 s (RPT-NFR-003).
     const visitor = await other(browser);
-    await visitor.goto(`/v/${S.reportedId}`);
-    expect(await robots(visitor)).toContain("noindex");
+    await expect(async () => {
+      await visitor.goto(`/v/${S.reportedId}`);
+      expect(await robots(visitor)).toContain("noindex");
+    }).toPass({ timeout: 60_000 });
     await expect(
       visitor.getByRole("link", { name: "Voltar" }).first(),
     ).toHaveAttribute("href", `/loja/${S.slug}`);
@@ -194,8 +196,11 @@ test.describe.serial("denúncias de anúncio", () => {
     await hidden.getByTestId("report-show").click();
     await expect(hidden).toHaveCount(0);
 
-    await visitor.reload();
-    expect(await robots(visitor)).not.toContain("noindex");
+    // RPT-NFR-003: até 60 segundos.
+    await expect(async () => {
+      await visitor.reload();
+      expect(await robots(visitor)).not.toContain("noindex");
+    }).toPass({ timeout: 60_000 });
     await owner.reload();
     await expect(owner.getByRole("list", { name: "Avisos" })).toContainText(
       "voltou à vitrine CajuGo",

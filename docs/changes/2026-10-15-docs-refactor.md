@@ -1154,3 +1154,6 @@
 
 # 2026-11-24 · 012 marcas de carro na ordem do dono e anexo de marcas na 014
 - Lista 'Mais procuradas' do cadastro [2a] na ordem enviada pelo dono (Fiat … GWM, Gurgel); spec 014 ganha TIP-FR-019 e o anexo com as marcas de moto, ônibus (chassi e carroceria), caminhão e trator.
+
+# 2026-11-24 · 012/T010 fatura e Pix; avisos em 'Atualizações'
+- Fatura [10c] com voltar, total a pagar e vencimento no topo, linhas da fatura e Pagar com Pix fixo; Pix [6c] com selo Aguardando pagamento, QR emoldurado, chave e copia e cola com Copiar e passos numerados; avisos dos painéis no card 'Atualizações' no fim da página (alerta da fatura continua no topo); spec 014 com os modelos sem FIPE; e2e de moderação espera até 60 s (RPT-NFR-003).

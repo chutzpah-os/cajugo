@@ -59,7 +59,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   - motos, também para scooter;
   - caminhões, também para ônibus.
 
-  Nos outros tipos (trator, quadriciclo, motorhome, implemento), o lojista escolhe a marca de uma **lista da CajuGo** e escreve o modelo e a versão. Para esses tipos não há referência FIPE nem o selo "Abaixo da FIPE".
+  Nos outros tipos (trator, quadriciclo, motorhome, implemento) e na carroceria do ônibus, o lojista escolhe a marca e o **modelo** de uma **lista da CajuGo** (anexo "Modelos sem FIPE") ou escreve o modelo em "Outro"; a versão é escrita. Para esses tipos não há referência FIPE nem o selo "Abaixo da FIPE".
 - **TIP-FR-006** O tipo e os campos dele aparecem:
   - na página do veículo [1b], na ficha (ex.: "Cilindrada 160 cc", "Horas de uso 2.400 h");
   - no card [1a], no lugar de ano · km quando o tipo usa horas.
@@ -214,6 +214,32 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **Ônibus · carroceria** (lista da CajuGo): Marcopolo, Caio, Comil, Busscar, Mascarello, Neobus, Induscar.
 - **Caminhão** (FIPE de caminhões): Mercedes-Benz, Volkswagen Caminhões e Ônibus, Volvo, Scania, Iveco, DAF, Ford Trucks, Agrale, Foton, Shacman.
 - **Trator** (lista da CajuGo): John Deere, New Holland Agriculture, Massey Ferguson, Valtra, Case IH, Fendt, Agrale, LS Tractor, Mahindra, Kubota, Yanmar, Landini, Solis.
+
+## Anexo · Modelos sem FIPE (lista inicial da CajuGo)
+Carro, moto, caminhão e chassi de ônibus têm todos os modelos pela FIPE.
+- **Trator**
+  - John Deere: 5075E, 5078E, 5090E, 6110J, 6125J, 6155J, 6175J, 7200J, 7230J, 8R 340.
+  - New Holland Agriculture: TL75E, TL95E, T6.110, T6.130, T7.190, T7.245, T8.385, TT4030.
+  - Massey Ferguson: 4275, 4283, 4292, 4707, 4709, 6713, 6715, 7415, 8737.
+  - Valtra: A750, A850, A950, A114, BH180, BH194, BH224, T250.
+  - Case IH: Farmall 80, Farmall 110A, Puma 185, Puma 230, Magnum 340.
+  - Fendt: 724 Vario, 828 Vario, 942 Vario.
+  - Agrale: 4100, 4230, 5075, 6150.
+  - LS Tractor: U60, Plus 80, Plus 90, R65.
+  - Mahindra: 4025, 6075, 7590.
+  - Kubota: L4028, L4508, M7040, M9540.
+  - Yanmar: 1155, 1175, 1145.
+  - Landini: Rex 80, Rex 100, Landpower 125.
+  - Solis: 26, 50, 75, 90.
+- **Ônibus · carroceria**
+  - Marcopolo: Paradiso G8 1050, Paradiso G8 1200, Paradiso G8 1350, Paradiso G8 1600 LD, Paradiso G8 1800 DD, Viaggio G8 900, Viaggio G8 1050, Torino, Senior, Volare V8, Volare W9, Volare Fly 10.
+  - Caio: Apache Vip, Millennium, Foz Super, Giro 3600, Solar.
+  - Comil: Campione, Invictus, Svelto, Versatile, Piá.
+  - Busscar: Vissta Buss 340, Vissta Buss 360, Vissta Buss 400, El Buss 340, Urbanuss.
+  - Mascarello: Roma 350, Roma 370, Gran Via, Gran Micro.
+  - Neobus: New Road N10, New Road N12, Mega, Thunder.
+  - Induscar: Apache, Millennium.
+- **Quadriciclo, motorhome e implemento:** marca e modelo escritos no MVP (lista na fase 2).
 
 ## Pendências
 Nenhuma. Resolvidas no `/clarify` de 2026-11-24 com as opções recomendadas (instrução do dono do produto de seguir sem parar):

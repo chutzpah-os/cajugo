@@ -32,7 +32,8 @@ describe("fatura do mês [10c]", () => {
     const t = text(html);
     expect(t).toContain("Mensalidade 12/2026");
     expect(t).toContain("Plano Catálogo R$ 100,00");
-    expect(t).toContain("Taxa CajuGo · Fiat ARGO · 05/12/2026 R$ 500,00");
+    expect(t).toContain("Taxa CajuGo · Fiat ARGO · 05/12/2026");
+    expect(t).toContain("Venda via vendedor da Rede Caju R$ 500,00");
     expect(t).toContain("Crédito R$ 0,00");
     expect(t).toContain("Total R$ 600,00");
     expect(t).toContain("Vencimento 10/12/2026");

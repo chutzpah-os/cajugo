@@ -505,3 +505,6 @@
 
 # 2026-11-24 · 012 marcas de carro na ordem do dono e anexo de marcas na 014
 - Pedido do dono do produto com as principais marcas do Brasil por tipo.
+
+# 2026-11-24 · 012/T010 fatura e Pix; avisos em 'Atualizações'
+- Fidelidade a [10c]/[6c]; pedido do dono de levar os avisos para baixo, num card.

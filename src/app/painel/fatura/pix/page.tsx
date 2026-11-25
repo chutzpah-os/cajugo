@@ -7,6 +7,7 @@ import { PixPayment } from "@/domains/billing/components/pix-payment";
 import { paymentInReview, pixView } from "@/domains/billing/service";
 import { getDb } from "@/platform/db/client";
 import { AppError } from "@/platform/http/errors";
+import { BackHeader } from "@/ui/page-header";
 
 export const metadata: Metadata = {
   title: "Pagar a fatura | CajuGo",
@@ -29,10 +30,8 @@ async function Content() {
   if (!view) redirect("/painel/fatura");
 
   return (
-    <section className="flex flex-col gap-5 py-6">
-      <h1 className="text-[24px] font-extrabold tracking-[-0.02em]">
-        Pagar a fatura
-      </h1>
+    <section className="flex flex-col gap-3 pb-6 lg:max-w-2xl">
+      <BackHeader href="/painel/fatura" label="Fatura" title="Pague com Pix" />
       {view === "unavailable" ? (
         <p role="status" className="rounded-card bg-warn-soft p-4 text-warn">
           O pagamento está indisponível no momento. Fale com a CajuGo pelo
