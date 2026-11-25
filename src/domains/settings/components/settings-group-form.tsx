@@ -28,7 +28,6 @@ export function SettingsGroupForm({
   fields,
   canEdit,
   children,
-  histories,
 }: {
   group: SettingGroup;
   title: string;
@@ -36,8 +35,6 @@ export function SettingsGroupForm({
   canEdit: boolean;
   /** Informações só de leitura no topo do grupo (ex.: nome e domínio da vitrine). */
   children?: ReactNode;
-  /** Histórico de cada regra, aberto na própria tela (montado no servidor). */
-  histories?: Record<string, ReactNode>;
 }) {
   const [state, action, pending] = useActionState<SaveSettingsState, FormData>(
     saveSettingsAction,
@@ -111,11 +108,6 @@ export function SettingsGroupForm({
             return null;
         }
       })}
-      {histories && (
-        <div className="flex flex-col gap-2">
-          {fields.map((f) => histories[f.key])}
-        </div>
-      )}
       {state?.message && (
         <p
           role={state.ok ? "status" : "alert"}

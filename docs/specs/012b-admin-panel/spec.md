@@ -60,12 +60,12 @@ Sucesso: o admin entende a saúde do negócio em 5 segundos e resolve qualquer p
   - Histórico de atividade;
   - **Suspender loja** em `caju-deep`, por último, que vira **Reativar** quando a loja está suspensa (as mesmas regras da 011).
 - **ADM-FR-010** Em [6g], **Editar dados da loja** altera os dados de Minha loja (nome, WhatsApp, cidade, endereço, sobre, Instagram), com as mesmas validações da 003. O endereço do catálogo (o lojista troca em Minha loja) e o dono da loja não mudam por aqui.
-- **ADM-FR-011** O **Histórico de atividade** da loja mostra os registros dela do mais recente ao mais antigo (data, quem fez e a ação em texto), 20 por vez, sem dados pessoais além do nome de quem fez.
+- **ADM-FR-011** O **Histórico de atividade** da loja fica na tela **Log** do admin, filtrado pela loja (o detalhe [6g] não mostra histórico), e mostra os registros dela do mais recente ao mais antigo (data, quem fez e a ação em texto), 20 por vez, sem dados pessoais além do nome de quem fez.
 - **ADM-FR-012** A Conta admin [4c] ganha **Equipe CajuGo**:
   - a lista de admins e suportes;
   - **Convidar** (nome, e-mail e papel Admin ou Suporte): a conta nasce com a senha temporária, mostrada uma vez;
   - **Remover da equipe**: a pessoa perde o papel e todas as sessões dela são encerradas. Ninguém remove a si mesmo, e o último admin não pode ser removido. Para trocar o papel, o admin remove e convida de novo.
-- **ADM-FR-015** A Conta admin ganha **Logs de atividade**: o registro geral, do mais recente ao mais antigo, 20 por vez, com os filtros **tipo de ação** e **período** (de/até). O registro fica visível por inteiro (é só de inclusão; sem limpeza no MVP).
+- **ADM-FR-015** O item **Log** do menu do admin (o único lugar dos históricos, 2026-11-25) reúne o histórico das regras (CFG-FR-006) e os **Logs de atividade**: o registro geral, do mais recente ao mais antigo, 20 por vez, com os filtros **tipo de ação** e **período** (de/até). O registro fica visível por inteiro (é só de inclusão; sem limpeza no MVP).
 - **ADM-FR-013** No desktop [15c], a Visão geral mostra os KPIs (Lojas ativas, Receita do mês, Em atraso, Veículos na vitrine) e as filas **Comprovantes Pix** e **Veículos aguardando aprovação**, com **Confirmar**/**Recusar** e **Aprovar**/**Recusar** inline (as mesmas regras de [10b] e [14c]) e **Ver todos**. A sidebar mostra os contadores de pendências.
 - **ADM-FR-014** A navegação do admin no celular é **Painel · Lojas · Assinaturas · Conta · Mais**; "Mais" abre a gaveta com Pagamentos Pix, Veículos, Alertas, Rede Caju e Caju Indica (PRD §7.2).
 
@@ -138,7 +138,7 @@ Sucesso: o admin entende a saúde do negócio em 5 segundos e resolve qualquer p
 
 ### ADM-FR-011
 - **Dado** a loja com a assinatura cancelada e desfeita e uma senha temporária definida
-- **Quando** o admin abre o Histórico de atividade
+- **Quando** o admin abre o Log filtrado pela loja
 - **Então** vê os três registros, do mais recente ao mais antigo, com a data, quem fez e a ação, sem a senha
 
 ### ADM-FR-012
@@ -149,7 +149,7 @@ Sucesso: o admin entende a saúde do negócio em 5 segundos e resolve qualquer p
 
 ### ADM-FR-015
 - **Dado** registros de cancelamento, convite e senha temporária na semana
-- **Quando** o admin abre Logs de atividade e filtra o tipo "Senha temporária" nos últimos 7 dias
+- **Quando** o admin abre o Log e filtra o tipo "Senha temporária" nos últimos 7 dias
 - **Então** vê só esses registros, do mais recente ao mais antigo, sem a senha
 
 ### ADM-FR-013

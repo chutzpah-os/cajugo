@@ -4,7 +4,6 @@ import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireArea } from "@/domains/auth/guards";
 import { can } from "@/domains/auth/permissions";
-import { historiesOf } from "@/domains/settings/components/setting-history";
 import { SettingsGroupForm } from "@/domains/settings/components/settings-group-form";
 import { currentSettings } from "@/domains/settings/current";
 import { groupFields } from "@/domains/settings/form";
@@ -43,7 +42,6 @@ async function Content() {
         title="Caju Indica"
         fields={groupFields(settings, "referral")}
         canEdit={canEdit}
-        histories={historiesOf(session, groupFields(settings, "referral"))}
       />
     </section>
   );

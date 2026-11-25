@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import type { Session } from "@/platform/http/session";
 import { getDb } from "@/platform/db/client";
 import { ChevronDownIcon } from "@/ui/icons";
@@ -16,27 +15,25 @@ const when = new Intl.DateTimeFormat("pt-BR", {
 });
 
 /**
- * Histórico de uma regra (CFG-FR-006) aberto na própria tela, logo abaixo do grupo,
- * sem ir para outra página (pedido do dono do produto, 2026-11-25). Admin e suporte.
+ * Histórico de uma regra (CFG-FR-006), recolhido, na tela Log do admin (012): os
+ * históricos ficam só lá para não poluir a Conta e as Regras. Admin e suporte.
  */
 export async function SettingHistory({
   session,
   settingKey,
-  label,
 }: {
   session: Session;
   settingKey: SettingKey;
-  label?: string;
 }) {
   const history = await settingHistory(getDb(), session, settingKey);
-  const name = label ?? SETTINGS[settingKey].label.replace(/ \(.*\)$/, "");
+  const name = SETTINGS[settingKey].label.replace(/ \(.*\)$/, "");
   return (
     <details
       data-testid={`history-${settingKey}`}
       className="group rounded-input border border-line-2"
     >
       <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-3 text-sm font-semibold text-caju-ink">
-        Histórico: {name}
+        {name}
         <ChevronDownIcon
           size={16}
           className="flex-none transition-transform group-open:rotate-180"
@@ -70,18 +67,5 @@ export async function SettingHistory({
         </p>
       )}
     </details>
-  );
-}
-
-/** Um histórico por regra do grupo, para o formulário mostrar embaixo dos campos. */
-export function historiesOf(
-  session: Session,
-  fields: { key: SettingKey }[],
-): Record<string, ReactNode> {
-  return Object.fromEntries(
-    fields.map((f) => [
-      f.key,
-      <SettingHistory key={f.key} session={session} settingKey={f.key} />,
-    ]),
   );
 }

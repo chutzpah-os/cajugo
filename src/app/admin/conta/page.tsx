@@ -4,10 +4,6 @@ import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireArea } from "@/domains/auth/guards";
 import { can } from "@/domains/auth/permissions";
 import { PixKeyEditor } from "@/domains/settings/components/pix-key-editor";
-import {
-  historiesOf,
-  SettingHistory,
-} from "@/domains/settings/components/setting-history";
 import { SettingsGroupForm } from "@/domains/settings/components/settings-group-form";
 import { currentSettings } from "@/domains/settings/current";
 import { groupFields } from "@/domains/settings/form";
@@ -45,7 +41,6 @@ async function Content() {
       title={title}
       fields={fieldsOf(group)}
       canEdit={canEdit}
-      histories={historiesOf(session, fieldsOf(group))}
     />
   );
 
@@ -82,7 +77,6 @@ async function Content() {
         title="Vitrine CajuGo"
         fields={fieldsOf("showcase")}
         canEdit={canEdit}
-        histories={historiesOf(session, fieldsOf("showcase"))}
       >
         <div className="flex flex-col gap-3">
           <TextField
@@ -104,13 +98,6 @@ async function Content() {
 
       <PixKeyEditor
         canEdit={canEdit}
-        history={
-          <SettingHistory
-            session={session}
-            settingKey="pix"
-            label="Chave Pix"
-          />
-        }
         current={
           settings.pix
             ? {

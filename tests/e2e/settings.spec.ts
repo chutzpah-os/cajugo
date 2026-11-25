@@ -36,11 +36,13 @@ test.describe("regras configuráveis", () => {
       page.getByLabel("Tolerância de atraso antes da suspensão (dias)"),
     ).toHaveValue("7");
 
-    // O histórico abre na própria tela, embaixo do grupo (sem ir a outra página).
-    const history = group(page, "Pagamento").getByTestId(
-      "history-past_due_tolerance_days",
-    );
-    await history.getByText(/Histórico: Tolerância de atraso/).click();
+    // Os históricos ficam só no Log do admin (012), não na Conta.
+    await expect(page.getByText(/Tolerância de atraso antes/)).toHaveCount(1);
+    await page.goto("/admin/log");
+    const history = page
+      .getByRole("region", { name: "Pagamento" })
+      .getByTestId("history-past_due_tolerance_days");
+    await history.getByText(/Tolerância de atraso/).click();
     await expect(history.locator("ol li").first()).toContainText("5 → 7");
     await expect(history.locator("ol li").first()).toContainText("E2E admin");
   });

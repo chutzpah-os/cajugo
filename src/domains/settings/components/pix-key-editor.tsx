@@ -1,7 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { useActionState, useState } from "react";
 import { Button } from "@/ui/button";
 import { TextField } from "@/ui/text-field";
@@ -25,7 +23,6 @@ const TYPES = [
 export function PixKeyEditor({
   current,
   canEdit,
-  history,
 }: {
   current: {
     masked: string;
@@ -34,8 +31,6 @@ export function PixKeyEditor({
     city?: string;
   } | null;
   canEdit: boolean;
-  /** Histórico da chave, aberto na própria tela (montado no servidor). */
-  history?: ReactNode;
 }) {
   const [state, action, pending] = useActionState<SavePixState, FormData>(
     savePixAction,
@@ -85,7 +80,6 @@ export function PixKeyEditor({
           lojista até você trocar a chave com a cidade.
         </p>
       )}
-      {history}
       {state?.ok && (
         <p role="status" className="text-sm text-ok">
           {state.message}

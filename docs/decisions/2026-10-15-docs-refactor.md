@@ -529,3 +529,6 @@
 
 # 2026-11-24 · feat(settings): histórico das regras na própria tela [012]
 - O dono do produto não quer abrir outra página para ver informação que cabe na tela anterior.
+
+# 2026-11-24 · feat(admin): item Log com o histórico das regras [012]
+- O dono do produto quer os históricos num só lugar, sem poluir as outras telas.

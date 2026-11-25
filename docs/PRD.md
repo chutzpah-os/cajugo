@@ -590,7 +590,7 @@ Validação para publicar: ≥1 foto, marca, modelo, versão, anos, km, câmbio,
 - **Rede Caju:** "Taxa CajuGo por carro vendido via vendedor (%)" + link para [7h]. Sem selos "em breve".
 - **Pagamento:** chave Pix e favorecido (troca com confirmação lado a lado e senha do admin), prazo de conferência, tolerância de atraso, taxa do simulador (`Config`, §5.14).
 - **Caju Indica:** link para as regras [8f].
-- Links: Dados pessoais, Alterar senha, Logs de atividade.
+- Links: Dados pessoais, Alterar senha. Os históricos (regras, logs de atividade, histórico de cada loja) ficam só no item **Log** do menu do admin.
 - **Sair**.
 
 ---
@@ -653,7 +653,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - **Assinatura**: plano, próxima cobrança, total pago, link **Faturas**, comprovantes enviados e **Registrar pagamento sem comprovante** (exceção, §5.6).
 - **Rede Caju:** aceita vendedores?, comissão padrão, parceiros, vendas no mês.
 - **Veículos**: primeiros itens com **Ocultar** (→ [6f]) e **Ver todos (N)**.
-- Ações: Editar dados da loja, Ver catálogo público, **Definir senha temporária** (mostra a senha uma única vez para o admin copiar; obriga a troca no próximo login), Histórico de atividade, **Suspender loja** (→ [6f]; vira **Reativar** quando suspensa).
+- Ações: Editar dados da loja, Ver catálogo público, **Definir senha temporária** (mostra a senha uma única vez para o admin copiar; obriga a troca no próximo login), **Suspender loja** (→ [6f]; vira **Reativar** quando suspensa).
 
 ### [7a] Cadastro do vendedor (Rede Caju)
 - Campos: nome, CPF (dígitos válidos, único), celular, e-mail, cidade, chave Pix, foto de um documento com foto (frente e verso, arquivo privado), senha, aceite dos termos [12i]. Quem já tem conta entra e ganha o papel de vendedor na mesma conta.

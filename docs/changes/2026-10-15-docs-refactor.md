@@ -1178,3 +1178,6 @@
 
 # 2026-11-24 · feat(settings): histórico das regras na própria tela [012]
 - Histórico de cada regra e da chave Pix abre em <details> embaixo do grupo na Conta admin e nas Regras do Caju Indica; rota /admin/conta/historico/[key] removida.
+
+# 2026-11-24 · feat(admin): item Log com o histórico das regras [012]
+- Novo item Log no menu do admin (/admin/log) com o histórico de cada regra e da chave Pix por grupo; Conta e Regras do Caju Indica sem históricos; spec 012b/PRD: logs de atividade e histórico da loja vão para o Log.

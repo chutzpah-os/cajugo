@@ -35,7 +35,7 @@ Sucesso: o admin muda qualquer regra sem pedir deploy, cada mudança fica regist
 - **CFG-FR-003** Toda regra existe desde o início com o valor provisório do PRD §5.14, exceto chave Pix e favorecido, que começam vazios até o admin preencher; o sistema nunca fica sem valor para as demais regras.
 - **CFG-FR-004** Valor fora do formato ou dos limites da regra é recusado, com a mensagem abaixo do campo e sem alterar o valor atual.
 - **CFG-FR-005** As regras e seus formatos são: chave Pix (tipo e chave) e favorecido; prazo de conferência do comprovante (dias úteis); tolerância de atraso antes da suspensão (dias); taxa CajuGo por venda via vendedor (%); Caju Indica: programa ativo, quem pode indicar (lojistas, vendedores, indicadores), recompensa (% da mensalidade), duração (meses) e resgate mínimo (R$); taxa do simulador (% ao mês); aprovação prévia (ligada/desligada) e mínimo de fotos; retenção de dados após cancelamento (dias); WhatsApp de atendimento.
-- **CFG-FR-006** Cada alteração fica no histórico da regra: quem alterou, quando, valor anterior e valor novo; o admin consulta o histórico de cada regra.
+- **CFG-FR-006** Cada alteração fica no histórico da regra: quem alterou, quando, valor anterior e valor novo; o admin consulta o histórico de cada regra na tela **Log** do admin (012).
 - **CFG-FR-007** A recuperação de senha [6b] passa a usar o WhatsApp de atendimento definido em [4c].
 - **CFG-FR-008** Antes de salvar uma nova chave Pix, o admin vê a chave atual e a nova lado a lado e confirma a troca digitando a própria senha.
 - **CFG-FR-009** Uma alteração vale só para o que acontecer depois dela: o sistema sabe qual valor de cada regra valia em qualquer data, para que faturas, comissões e recompensas já calculadas mantenham o valor da época.

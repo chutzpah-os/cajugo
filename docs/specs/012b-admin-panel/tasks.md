@@ -47,13 +47,12 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - cards e lista de ações;
   - Definir senha temporária;
   - Suspender e Reativar;
-  - Editar dados;
-  - Histórico.
+  - Editar dados (o histórico da loja fica no Log, T016).
 
   · _ADM-FR-008, ADM-FR-009, ADM-FR-010, ADM-FR-011_
 - [ ] **T016** Conta admin [4c]:
   - Equipe CajuGo com Convidar e Remover;
-  - Logs de atividade;
+  - Log no menu: histórico das regras (feito, 012), logs de atividade e histórico por loja;
   - menu "Mais";
   - sai a página provisória de senha temporária.
 
