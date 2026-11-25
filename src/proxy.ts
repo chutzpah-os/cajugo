@@ -17,6 +17,7 @@ import {
 const gate = createGate((path) => gateDecision(getDb(), path));
 
 const FILTER_PARAMS = [
+  "tipo",
   "marca",
   "preco_de",
   "preco_ate",

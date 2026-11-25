@@ -1244,3 +1244,6 @@
 
 # 2026-11-24 · docs(laudo-caju): consulta veicular por Pix, plano e tasks [016]
 - Spec 016 reescrita: LaudoCaju é a consulta veicular de R$ 70 (contato, veículo, Pix; o admin marca Recebi e Enviei e manda à mão); faixa e bloco na página do veículo; página de vendas /laudocaju com título próprio; preço editável; dados apagados em 2 anos. Plano e tasks.
+
+# 2026-11-24 · feat(showcase): faixa de tipos, Buscar e Vender e abertura da vitrine [014]
+- Vitrine: abertura em duas colunas (o que é a CajuGo + ilustração), quadro Buscar (busca + faixa de 12 tipos com as ilustrações em WebP de ~9 KB, sem barra de rolagem, setas no desktop) e Vender (→ /lojistas); filtro ?tipo= (proxy e URL), chip Tipo na barra, seção Tipo de veículo no filtro lateral e título por tipo. Até a 014 gravar o tipo, todo veículo é carro e os outros tipos vêm vazios.

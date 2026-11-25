@@ -1,4 +1,5 @@
 import type { DiscoveryKey } from "./discovery-urls";
+import { isVehicleType, type VehicleTypeSlug } from "./vehicle-types";
 
 /**
  * Filtros da vitrine na URL (SHW-FR-005), em português, e o que a consulta usa. Valor
@@ -34,6 +35,8 @@ const FUELS: Record<string, string> = {
 };
 
 export type Filters = {
+  /** Tipo de veículo (014, TIP-FR-007): `?tipo=moto`. */
+  type?: VehicleTypeSlug;
   makes: string[];
   /** Modelos escolhidos dentro de uma marca: "bmw--x1" (marca--modelo), 012. */
   models?: string[];
@@ -76,7 +79,9 @@ export function parseFilters(params: Params): Filters {
     return n === undefined ? undefined : n * 100;
   };
   const q = one(params.q).trim().slice(0, 60);
+  const type = one(params.tipo);
   return {
+    ...(isVehicleType(type) ? { type } : {}),
     makes: [
       ...new Set(
         one(params.marca)
@@ -137,6 +142,7 @@ const keyOf = (map: Record<string, string>, value: string) =>
 /** Filtros → query string, sem o que está no padrão. */
 export function filtersToQuery(f: Filters): string {
   const p = new URLSearchParams();
+  if (f.type) p.set("tipo", f.type);
   if (f.makes.length) p.set("marca", f.makes.join(","));
   if (f.models?.length) p.set("modelo", f.models.join(","));
   if (f.cities?.length) p.set("cidade", f.cities.join(","));

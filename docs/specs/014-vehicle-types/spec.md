@@ -95,7 +95,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   Tem também **Sinistro com indenização**: Nenhum, Pequena monta, Média monta ou Grande monta.
 - **TIP-FR-018** A página do veículo [1b] mostra o Histórico do veículo, com o que o lojista informou e "Não informado" no resto. A vitrine [1a] tem o filtro **Sem passagem por leilão** e **Sem sinistro**.
 
-- **TIP-FR-020** (pedido do dono do produto, 2026-11-25) O topo da vitrine [1a]/[15a] é um quadro com duas abas, **Buscar** e **Vender**:
+- **TIP-FR-020** (pedido do dono do produto, 2026-11-25) O topo da vitrine [1a]/[15a] abre com a apresentação da CajuGo em duas colunas no desktop (à esquerda, "Seu próximo veículo está aqui: a vitrine das lojas com N veículos à venda" e o texto do que é a CajuGo; à direita, a ilustração), e logo abaixo um quadro com duas abas, **Buscar** e **Vender**. A faixa de tipos rola sem barra de rolagem aparente (no desktop, setas nas pontas):
   - **Buscar** (aberta ao chegar): a busca por texto e, logo abaixo, a faixa de tipos (TIP-FR-007), com **uma ilustração por tipo, um veículo só em cada uma**;
   - **Vender**: "Venda seus veículos na CajuGo", um texto curto, a lista de vantagens do Catálogo (catálogo próprio, vitrine CajuGo, contato no WhatsApp, R$ 100/mês sem comissão sobre a venda) e o botão **Quero anunciar**, que leva para a página do lojista [`/lojistas`], com **Saiba mais** ao lado.
 - **TIP-FR-019** (pedido do dono do produto, 2026-11-24) Em cada tipo, a lista de marcas começa pelas **mais procuradas no Brasil**, nesta ordem, e depois traz todas as outras (anexo "Marcas por tipo"). No ônibus, o cadastro pede a **marca do chassi** e a **marca da carroceria**.

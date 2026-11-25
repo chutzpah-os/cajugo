@@ -10,9 +10,15 @@ import {
 import { JsonLd, pageMetadata } from "@/platform/seo/seo";
 import { ButtonLink } from "@/ui/button";
 import { cachedFacets } from "../current";
-import { filtersToQuery, type Filters } from "../filters";
+import { activeFilters, filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
-import { CatalogToolbar } from "./catalog-toolbar";
+import { FiltersSheet } from "./filters-sheet";
+import { SearchBox } from "./search-box";
+import { SellPitch } from "./sell-pitch";
+import { ShowcaseHero } from "./showcase-hero";
+import { ShowcasePanel } from "./showcase-panel";
+import { TypeChip, TypeStrip } from "./type-strip";
+import { vehicleType } from "../vehicle-types";
 import { CatalogView, showcaseCount } from "./catalog-view";
 import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
@@ -65,7 +71,7 @@ export async function ShowcaseView({
       )}
       <CatalogView
         promo={promo}
-        title={TITLE}
+        title={filters.type ? vehicleType(filters.type).title : TITLE}
         count={
           result.total || filtered
             ? showcaseCount(result.total, result.stores)
@@ -76,21 +82,46 @@ export async function ShowcaseView({
         source={null}
         cloudName={cloudName()}
         showStore
+        toolbarOnDesktop
         toolbar={
-          makes.length > 0 || filtered ? (
-            <CatalogToolbar
-              filters={filters}
-              makes={makes}
-              cities={cities}
-              total={result.total}
-              basePath={BASE_PATH}
-              source={null}
+          <div className="flex flex-col gap-4 lg:mx-auto lg:w-full lg:max-w-5xl lg:gap-7">
+            <ShowcaseHero total={makes.reduce((sum, m) => sum + m.count, 0)} />
+            <ShowcasePanel
+              search={
+                <>
+                  <SearchBox
+                    filters={filters}
+                    basePath={BASE_PATH}
+                    hidden={[
+                      ...new URLSearchParams(
+                        filtersToQuery({ ...filters, q: undefined }),
+                      ),
+                    ]}
+                  />
+                  {!filters.type && (
+                    <TypeStrip filters={filters} basePath={BASE_PATH} />
+                  )}
+                  {(filters.type || activeFilters(filters) > 0) && (
+                    <FiltersSheet
+                      lead={<TypeChip filters={filters} basePath={BASE_PATH} />}
+                      filters={filters}
+                      makes={makes}
+                      cities={cities}
+                      total={result.total}
+                      basePath={BASE_PATH}
+                      source={null}
+                    />
+                  )}
+                </>
+              }
+              sell={<SellPitch />}
             />
-          ) : undefined
+          </div>
         }
         sidebar={
           makes.length > 0 || filtered ? (
             <FiltersSide
+              types
               filters={filters}
               makes={makes}
               cities={cities}

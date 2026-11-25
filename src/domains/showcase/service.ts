@@ -15,6 +15,7 @@ import {
   sql,
   type SQL,
 } from "drizzle-orm";
+import { TYPE_OF_EVERY_VEHICLE } from "./vehicle-types";
 import { getSettings } from "@/domains/settings/service";
 import type { SimulatorSetup } from "./simulator";
 import {
@@ -85,6 +86,8 @@ function searchQuery(q: string): string | null {
 function filterConditions(f: Filters): (SQL | undefined)[] {
   const query = f.q ? searchQuery(f.q) : null;
   return [
+    // Até a 014 gravar o tipo, todo veículo é carro: os outros tipos vêm vazios.
+    f.type && f.type !== TYPE_OF_EVERY_VEHICLE ? sql`false` : undefined,
     query
       ? sql`${vehicles.search} @@ to_tsquery('simple', ${query})`
       : undefined,

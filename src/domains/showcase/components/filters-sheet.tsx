@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Chip } from "@/ui/chip";
 import { ChevronDownIcon, FilterIcon } from "@/ui/icons";
 import { activeFilters, type Filters } from "../filters";
@@ -47,7 +47,10 @@ export function FiltersSheet({
   source,
   lockMake = false,
   cities,
+  lead,
 }: {
+  /** Chip antes dos filtros (o Tipo escolhido na vitrine, 014). */
+  lead?: ReactNode;
   filters: Filters;
   makes: MakeOption[];
   total: number;
@@ -93,6 +96,7 @@ export function FiltersSheet({
             )}
           </span>
         </button>
+        {lead}
         {CHIPS.filter(
           (c) =>
             !(lockMake && c.section === "marca") &&

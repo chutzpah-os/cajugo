@@ -595,3 +595,6 @@
 
 # 2026-11-24 · docs(laudo-caju): consulta veicular por Pix, plano e tasks [016]
 - Decisões do dono em 2026-11-25 ('bem simples').
+
+# 2026-11-24 · feat(showcase): faixa de tipos, Buscar e Vender e abertura da vitrine [014]
+- Pedido do dono com as referências da Boat24; as ilustrações vêm dos SVGs enviados (os tipos sem desenho repetem o mais parecido).

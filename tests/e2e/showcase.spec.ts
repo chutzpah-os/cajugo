@@ -345,3 +345,25 @@ test.describe("desktop [15a] (1280 px)", () => {
     expect(await audit(page), "[1b] desktop").toEqual(CLEAN);
   });
 });
+
+test("[TIP-FR-007] [TIP-FR-020] faixa de tipos no lugar dos filtros, chip Tipo e aba Vender", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const panel = page.getByTestId("showcase-panel");
+  await expect(panel.getByTestId("type-carro")).toBeVisible();
+  await expect(page.getByTestId("filters-chip")).toHaveCount(0);
+
+  await panel.getByTestId("type-moto").click();
+  await expect(page).toHaveURL(/tipo=moto/);
+  await expect(heading(page)).toHaveText("Motos novas e seminovas à venda");
+  await expect(page.getByTestId("type-chip")).toBeVisible();
+  await expect(page.getByTestId("filters-chip")).toBeVisible();
+
+  await page.getByTestId("type-chip").click();
+  await expect(page.getByTestId("type-moto")).toBeVisible();
+
+  await page.getByRole("tab", { name: "Vender" }).click();
+  await page.getByRole("link", { name: "Quero anunciar" }).click();
+  await expect(page).toHaveURL(/\/lojistas$/);
+});

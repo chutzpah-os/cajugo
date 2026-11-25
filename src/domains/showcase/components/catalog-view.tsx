@@ -20,6 +20,7 @@ export function CatalogView({
   intro,
   empty,
   promo,
+  toolbarOnDesktop = false,
 }: {
   title: string;
   count: string;
@@ -36,12 +37,20 @@ export function CatalogView({
   empty: ReactNode;
   /** Card de divulgação na grade (Caju Indica). */
   promo?: ReactNode;
+  /** A vitrine mostra o quadro Buscar/Vender também no desktop (014). */
+  toolbarOnDesktop?: boolean;
 }) {
   const query = filtersToQuery(filters);
   return (
     <CatalogNavigation>
       {toolbar && (
-        <div className="-mx-4 border-b border-line bg-surface px-4 pb-3 lg:hidden">
+        <div
+          className={
+            toolbarOnDesktop
+              ? "-mx-4 border-b border-line bg-surface px-4 pb-3 lg:-mx-8 lg:bg-bg lg:px-8 lg:py-5"
+              : "-mx-4 border-b border-line bg-surface px-4 pb-3 lg:hidden"
+          }
+        >
           {toolbar}
         </div>
       )}
