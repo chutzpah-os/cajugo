@@ -78,9 +78,7 @@ test.describe("cancelamento da assinatura (011b)", () => {
         .getByTestId("subscription")
         .filter({ hasText: C.active.storeName });
       await expect(card).toBeVisible();
-      await expect(
-        card.getByText(/^Termina em \d{2}\/\d{2} · Vou parar de vender$/),
-      ).toBeVisible();
+      await expect(card.getByText("Vou parar de vender")).toBeVisible();
       await expect(
         admin.getByRole("link", { name: "Canceladas" }),
       ).toBeVisible();

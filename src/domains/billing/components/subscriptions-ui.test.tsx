@@ -65,10 +65,10 @@ describe("assinaturas do admin [4b]", () => {
     const html = renderToStaticMarkup(<SubscriptionsAdmin view={view(true)} />);
 
     const t = text(html);
-    expect(t).toContain("MRR R$ 500,00");
-    expect(t).toContain("Em dia 3");
-    expect(t).toContain("Atrasadas 1");
-    expect(t).toContain("Suspensas 1");
+    expect(t).toContain("R$ 500,00 receita mensal recorrente");
+    expect(t).toContain("3 Em dia");
+    expect(t).toContain("1 Atrasadas");
+    expect(t).toContain("1 Suspensas");
     expect(t).toContain("R$ 100,00/mês · 5 lojas");
     expect(html).toContain('href="/admin/assinaturas?filtro=atrasadas"');
   });
@@ -78,7 +78,7 @@ describe("assinaturas do admin [4b]", () => {
 
     const t = text(html);
     expect(t).toContain("Em atraso 2 dias · R$ 100,00");
-    expect(t).toContain("Catálogo e vitrine · Fora do ar");
+    expect(t).toContain("Catálogo e vitrine Fora do ar");
     expect(t).toContain("Comprovante enviado 11/12");
     expect(html).toContain('href="/admin/pagamentos"');
     expect(html).toContain('href="https://wa.me/5579999990000?text=oi"');
@@ -132,7 +132,7 @@ describe("assinaturas do admin [4b]", () => {
     expect(html).toContain('href="/admin/assinaturas?filtro=cancelamento"');
     expect(html).toContain('href="/admin/assinaturas?filtro=canceladas"');
     expect(t).toContain("Cancelamento agendado");
-    expect(t).toContain("Termina em 10/12 · Vou parar de vender");
+    expect(t).toContain("Termina em 10/12 Vou parar de vender");
     expect(t).toContain("Cancelada em 30/11");
   });
 

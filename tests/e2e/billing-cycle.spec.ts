@@ -117,9 +117,7 @@ test.describe("ciclo de cobrança (011)", () => {
     );
     await support.goto("/admin/assinaturas?filtro=suspensas");
     const seen = storeCard(support);
-    await expect(
-      seen.getByText("Catálogo e vitrine · Fora do ar"),
-    ).toBeVisible();
+    await expect(seen.getByText("Fora do ar", { exact: true })).toBeVisible();
     await expect(seen.getByRole("link", { name: /WhatsApp/ })).toHaveAttribute(
       "href",
       /^https:\/\/wa\.me\//,
@@ -150,7 +148,7 @@ test.describe("ciclo de cobrança (011)", () => {
     await admin.goto("/admin/assinaturas?filtro=atrasadas");
     const late = storeCard(admin);
     await expect(
-      late.getByText(`Em atraso ${B.daysLate} dias · ${TOTAL}`),
+      late.getByText(`${B.daysLate} dias · ${TOTAL}`, { exact: true }),
     ).toBeVisible();
 
     // Suspender com a confirmação

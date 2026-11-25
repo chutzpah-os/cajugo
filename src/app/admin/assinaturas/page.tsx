@@ -25,12 +25,7 @@ async function Content({
     session,
     await searchParams,
   );
-  return (
-    <section className="flex flex-col gap-4 py-6">
-      <h1 className="text-[22px] font-extrabold">Assinaturas</h1>
-      <SubscriptionsAdmin view={view} />
-    </section>
-  );
+  return <SubscriptionsAdmin view={view} />;
 }
 
 /** Assinaturas do admin [4b] (SUB-FR-011, 012, 013): sem cache. */

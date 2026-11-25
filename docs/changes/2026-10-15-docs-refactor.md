@@ -1160,3 +1160,6 @@
 
 # 2026-11-24 · 012/T011 cadastro de veículo [2a]
 - Cabeçalho branco com X e título; seções em faixas brancas; placa primeiro com o texto do design; Marca e Modelo lado a lado; anos na ordem fabricação → modelo; barra fixa com Salvar rascunho e Publicar. e2e de venda e moderação tolerantes até 60 s ao cache.
+
+# 2026-11-24 · 012/T012 Assinaturas [4b]
+- Cabeçalho escuro com o MRR e os contadores; card do plano com Editar plano em texto; chips; StoreCard com sigla, 'dono · desde', selo e rodapé (informação + Detalhes/Cobrar/Conferir); Suspender e Reativar abaixo.

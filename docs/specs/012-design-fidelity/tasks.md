@@ -24,7 +24,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [x] **T011** [2a] e [6e]. · _DSG-FR-011_
 
 ## Fase 3 — Admin já entregue
-- [ ] **T012** [4b] Assinaturas. · _DSG-FR-007_
+- [x] **T012** [4b] Assinaturas. · _DSG-FR-007_
 - [ ] **T013** [4c] Conta admin. · _DSG-FR-008_
 - [ ] **T014** [10b], [7h], [14c], [14e], [12a], [8f]. · _DSG-FR-008, DSG-FR-017_
 

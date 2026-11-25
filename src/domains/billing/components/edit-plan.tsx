@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button, ButtonLink } from "@/ui/button";
+import { ButtonLink } from "@/ui/button";
 import { ConfirmSheet } from "@/ui/confirm-sheet";
 import { MoneyField } from "@/ui/number-field";
 import { TextField } from "@/ui/text-field";
@@ -23,10 +23,9 @@ export function EditPlanButton({ earliest }: { earliest: string }) {
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="min-h-11 self-start"
+      <button
+        type="button"
+        className="flex min-h-11 flex-none items-center text-sm font-bold text-caju-ink"
         data-testid="edit-plan"
         onClick={() => {
           setResult(null);
@@ -34,7 +33,7 @@ export function EditPlanButton({ earliest }: { earliest: string }) {
         }}
       >
         Editar plano
-      </Button>
+      </button>
       <ConfirmSheet
         open={open}
         title="Editar plano"

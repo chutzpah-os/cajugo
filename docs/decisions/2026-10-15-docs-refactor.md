@@ -511,3 +511,6 @@
 
 # 2026-11-24 · 012/T011 cadastro de veículo [2a]
 - Fidelidade ao [2a] (Turno 02).
+
+# 2026-11-24 · 012/T012 Assinaturas [4b]
+- Fidelidade ao [4b] (Turno 04).
