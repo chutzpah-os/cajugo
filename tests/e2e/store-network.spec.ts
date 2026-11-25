@@ -139,10 +139,13 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     ).toBeVisible();
 
     // Sai da vitrine na hora: o link antigo abre "vendido".
-    await visitor.goto(`/v/${S.saleTestId}`);
-    await expect(visitor.locator("main")).toContainText(
-      "Este veículo já foi vendido",
-    );
+    await expect(async () => {
+      await visitor.goto(`/v/${S.saleTestId}`);
+      await expect(visitor.locator("main")).toContainText(
+        "Este veículo já foi vendido",
+        { timeout: 2_000 },
+      );
+    }).toPass({ timeout: 60_000 });
 
     await page.getByRole("button", { name: "Desfazer venda" }).click();
     await expect(

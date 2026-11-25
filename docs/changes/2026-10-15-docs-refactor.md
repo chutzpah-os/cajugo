@@ -1157,3 +1157,6 @@
 
 # 2026-11-24 · 012/T010 fatura e Pix; avisos em 'Atualizações'
 - Fatura [10c] com voltar, total a pagar e vencimento no topo, linhas da fatura e Pagar com Pix fixo; Pix [6c] com selo Aguardando pagamento, QR emoldurado, chave e copia e cola com Copiar e passos numerados; avisos dos painéis no card 'Atualizações' no fim da página (alerta da fatura continua no topo); spec 014 com os modelos sem FIPE; e2e de moderação espera até 60 s (RPT-NFR-003).
+
+# 2026-11-24 · 012/T011 cadastro de veículo [2a]
+- Cabeçalho branco com X e título; seções em faixas brancas; placa primeiro com o texto do design; Marca e Modelo lado a lado; anos na ordem fabricação → modelo; barra fixa com Salvar rascunho e Publicar. e2e de venda e moderação tolerantes até 60 s ao cache.

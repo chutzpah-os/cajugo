@@ -508,3 +508,6 @@
 
 # 2026-11-24 · 012/T010 fatura e Pix; avisos em 'Atualizações'
 - Fidelidade a [10c]/[6c]; pedido do dono de levar os avisos para baixo, num card.
+
+# 2026-11-24 · 012/T011 cadastro de veículo [2a]
+- Fidelidade ao [2a] (Turno 02).

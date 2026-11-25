@@ -116,7 +116,7 @@ export function PhotosSection({ cloudName }: { cloudName: string }) {
     <section
       id="fotos"
       aria-labelledby="fotos-title"
-      className="flex scroll-mt-4 flex-col gap-3 rounded-card border border-line bg-surface p-4"
+      className="-mx-4 flex scroll-mt-4 flex-col gap-3 border-y border-line bg-surface px-4 py-5 lg:mx-0 lg:rounded-card lg:border"
     >
       <div className="flex items-center justify-between">
         <h2 id="fotos-title" className="text-[17px] font-extrabold">

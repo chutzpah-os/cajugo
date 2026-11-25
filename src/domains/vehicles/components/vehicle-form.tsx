@@ -110,9 +110,9 @@ function Section({
     <section
       id={id}
       aria-labelledby={`${id}-title`}
-      className="flex scroll-mt-4 flex-col gap-4 rounded-card border border-line bg-surface p-4"
+      className="-mx-4 flex scroll-mt-4 flex-col gap-4 border-y border-line bg-surface px-4 py-5 lg:mx-0 lg:rounded-card lg:border"
     >
-      <h2 id={`${id}-title`} className="text-[17px] font-extrabold">
+      <h2 id={`${id}-title`} className="text-lg font-extrabold">
         {title}
       </h2>
       {children}
@@ -381,52 +381,65 @@ export function VehicleForm({
               {fipeError}
             </p>
           )}
-          <SelectField
-            id="fipeBrandId"
-            label="Marca"
-            placeholder="Escolha a marca"
-            groups={
-              popularBrands(brandList).length
-                ? [
-                    {
-                      label: "Mais procuradas",
-                      options: popularBrands(brandList),
-                    },
-                    { label: "Todas as marcas", options: brandList },
-                  ]
-                : undefined
-            }
-            options={popularBrands(brandList).length ? [] : brandList}
-            value={str("fipeBrandId")}
-            onChange={(e) => {
-              setFamily("");
-              setFamilies([]);
-              setYearList([]);
-              identify({
-                fipeBrandId: e.target.value || null,
-                fipeModelId: null,
-                fipeYearId: null,
-              });
-            }}
-            error={errors.fipeBrandId}
+          <TextField
+            id="plate"
+            label="Placa"
+            help="A placa não aparece no anúncio. Só o final é exibido."
+            className="font-mono tracking-[0.04em]"
+            autoCapitalize="characters"
+            maxLength={8}
+            value={str("plate")}
+            onChange={(e) => change({ plate: e.target.value.toUpperCase() })}
+            error={errors.plate}
           />
-          <SelectField
-            id="model"
-            label="Modelo"
-            placeholder="Escolha o modelo"
-            disabled={!brandId || !families.length}
-            options={families.map((f) => [f.family, f.family] as const)}
-            value={family}
-            onChange={(e) => {
-              setFamily(e.target.value);
-              setYearList([]);
-              identify({
-                fipeBrandId: brandId ?? null,
-                fipeModelId: null,
-                fipeYearId: null,
-              });
-            }}
-          />
+          <div className="grid grid-cols-2 gap-3">
+            <SelectField
+              id="fipeBrandId"
+              label="Marca"
+              placeholder="Escolha a marca"
+              groups={
+                popularBrands(brandList).length
+                  ? [
+                      {
+                        label: "Mais procuradas",
+                        options: popularBrands(brandList),
+                      },
+                      { label: "Todas as marcas", options: brandList },
+                    ]
+                  : undefined
+              }
+              options={popularBrands(brandList).length ? [] : brandList}
+              value={str("fipeBrandId")}
+              onChange={(e) => {
+                setFamily("");
+                setFamilies([]);
+                setYearList([]);
+                identify({
+                  fipeBrandId: e.target.value || null,
+                  fipeModelId: null,
+                  fipeYearId: null,
+                });
+              }}
+              error={errors.fipeBrandId}
+            />
+            <SelectField
+              id="model"
+              label="Modelo"
+              placeholder="Escolha o modelo"
+              disabled={!brandId || !families.length}
+              options={families.map((f) => [f.family, f.family] as const)}
+              value={family}
+              onChange={(e) => {
+                setFamily(e.target.value);
+                setYearList([]);
+                identify({
+                  fipeBrandId: brandId ?? null,
+                  fipeModelId: null,
+                  fipeYearId: null,
+                });
+              }}
+            />
+          </div>
           <SelectField
             id="fipeModelId"
             label="Versão"
@@ -445,58 +458,55 @@ export function VehicleForm({
             error={errors.fipeModelId}
           />
           <div className="grid grid-cols-2 gap-3">
-            <SelectField
-              id="fipeYearId"
-              label="Ano modelo"
-              placeholder="Ano"
-              disabled={!modelId || !yearList.length}
-              options={yearList}
-              value={str("fipeYearId")}
-              onChange={(e) => {
-                const fipeYearId = e.target.value || null;
-                const year = yearOf(fipeYearId);
-                const made = values.yearManufacture as
-                  number | null | undefined;
-                // Fabricação fora da janela do novo ano modelo vira o próprio ano.
-                if (year && made && (made > year || made < year - 1))
-                  change({ yearManufacture: year }, { yearManufacture: year });
-                identify({
-                  fipeBrandId: brandId ?? null,
-                  fipeModelId: modelId ?? null,
-                  fipeYearId,
-                });
-              }}
-              error={errors.fipeYearId}
-            />
-            <SelectField
-              id="yearManufacture"
-              label="Ano fabricação"
-              placeholder="Ano"
-              disabled={!yearModel}
-              options={manufactureOptions}
-              value={
-                values.yearManufacture ? String(values.yearManufacture) : ""
-              }
-              onChange={(e) =>
-                change({
-                  yearManufacture: e.target.value
-                    ? Number(e.target.value)
-                    : undefined,
-                })
-              }
-              error={errors.yearManufacture}
-            />
+            <div className="order-2">
+              <SelectField
+                id="fipeYearId"
+                label="Ano modelo"
+                placeholder="Ano"
+                disabled={!modelId || !yearList.length}
+                options={yearList}
+                value={str("fipeYearId")}
+                onChange={(e) => {
+                  const fipeYearId = e.target.value || null;
+                  const year = yearOf(fipeYearId);
+                  const made = values.yearManufacture as
+                    number | null | undefined;
+                  // Fabricação fora da janela do novo ano modelo vira o próprio ano.
+                  if (year && made && (made > year || made < year - 1))
+                    change(
+                      { yearManufacture: year },
+                      { yearManufacture: year },
+                    );
+                  identify({
+                    fipeBrandId: brandId ?? null,
+                    fipeModelId: modelId ?? null,
+                    fipeYearId,
+                  });
+                }}
+                error={errors.fipeYearId}
+              />
+            </div>
+            <div className="order-1">
+              <SelectField
+                id="yearManufacture"
+                label="Ano fabricação"
+                placeholder="Ano"
+                disabled={!yearModel}
+                options={manufactureOptions}
+                value={
+                  values.yearManufacture ? String(values.yearManufacture) : ""
+                }
+                onChange={(e) =>
+                  change({
+                    yearManufacture: e.target.value
+                      ? Number(e.target.value)
+                      : undefined,
+                  })
+                }
+                error={errors.yearManufacture}
+              />
+            </div>
           </div>
-          <TextField
-            id="plate"
-            label="Placa"
-            help="Não aparece no anúncio; só o final."
-            autoCapitalize="characters"
-            maxLength={8}
-            value={str("plate")}
-            onChange={(e) => change({ plate: e.target.value.toUpperCase() })}
-            error={errors.plate}
-          />
         </Section>
 
         <Section id="ficha" title="Ficha técnica">

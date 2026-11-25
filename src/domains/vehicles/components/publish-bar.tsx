@@ -62,16 +62,28 @@ export function PublishBar() {
   };
 
   return (
-    <div className="sticky bottom-0 -mx-4 flex flex-col gap-2 border-t border-line bg-bg px-4 py-3">
+    <div className="sticky bottom-[calc(72px+env(safe-area-inset-bottom))] z-10 -mx-4 flex flex-col gap-2 border-t border-line bg-surface px-4 py-3 lg:bottom-0 lg:mx-0 lg:rounded-card lg:border">
       {message && (
         <p role="alert" className="text-sm text-caju-deep">
           {message}
         </p>
       )}
       {status === "draft" ? (
-        <Button block disabled={busy || ctx.saving} onClick={publish}>
-          {busy ? "Publicando…" : "Publicar"}
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            variant="outline"
+            disabled={busy}
+            onClick={async () => {
+              await ctx.flush();
+              router.push("/painel/veiculos?status=draft");
+            }}
+          >
+            Salvar rascunho
+          </Button>
+          <Button disabled={busy || ctx.saving} onClick={publish}>
+            {busy ? "Publicando…" : "Publicar"}
+          </Button>
+        </div>
       ) : (
         ctx.view && (
           <ButtonLink block href={`/painel/veiculos/${ctx.view.vehicleId}`}>
