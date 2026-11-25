@@ -13,7 +13,8 @@ const OUT = "test-results/design";
 
 /** [tela, conta (null = visitante), endereço] */
 const SCREENS = [
-  ["1a", null, "/"],
+  ["1a", null, "/veiculos"],
+  ["home", null, "/"],
   ["1b", null, "/v/__primeiro__"],
   ["11a", null, "/?menu=1"],
   ["5b", null, "/lojistas"],
@@ -28,14 +29,14 @@ const SCREENS = [
   ["3c", "e2e-vitrine@cajugo.test", "/painel/conta"],
   ["10c", "e2e-fatura@cajugo.test", "/painel/fatura"],
   ["6c", "e2e-fatura@cajugo.test", "/painel/fatura/pix"],
-  ["7e", "e2e-vitrine@cajugo.test", "/painel/rede/comissao"],
-  ["7f", "e2e-vitrine@cajugo.test", "/painel/rede/vendedores"],
-  ["8a", "e2e-lojista@cajugo.test", "/painel/indica"],
-  ["8e", "e2e-lojista@cajugo.test", "/painel/indica/credito"],
-  ["7b", "e2e-vendedor@cajugo.test", "/rede"],
-  ["7c", "e2e-vendedor@cajugo.test", "/rede/vitrine"],
-  ["7d", "e2e-vendedor@cajugo.test", "/rede/extrato"],
-  ["13c", "e2e-vendedor@cajugo.test", "/rede/conta"],
+  ["7e", "e2e-vitrine@cajugo.test", "/painel/conta"],
+  ["7f", "e2e-vitrine@cajugo.test", "/painel/conta"],
+  ["8a", "e2e-lojista@cajugo.test", "/painel/conta"],
+  ["8e", "e2e-lojista@cajugo.test", "/painel/conta"],
+  ["7b", "e2e-vendedor@cajugo.test", "/rede-caju"],
+  ["7c", "e2e-vendedor@cajugo.test", "/rede-caju/vitrine"],
+  ["7d", "e2e-vendedor@cajugo.test", "/rede-caju/extrato"],
+  ["13c", "e2e-vendedor@cajugo.test", "/rede-caju/conta"],
   ["9d", "e2e-indicador@cajugo.test", "/indica"],
   ["4b", "e2e-admin@cajugo.test", "/admin/assinaturas"],
   ["4c", "e2e-admin@cajugo.test", "/admin/conta"],
@@ -43,7 +44,7 @@ const SCREENS = [
   ["7h", "e2e-admin@cajugo.test", "/admin/vendedores"],
   ["14e", "e2e-admin@cajugo.test", "/admin/denuncias"],
   ["12a", "e2e-admin@cajugo.test", "/admin/alertas"],
-  ["8f", "e2e-admin@cajugo.test", "/admin/indica/regras"],
+  ["8f", "e2e-admin@cajugo.test", "/admin/indica"],
 ];
 
 const filter = process.argv[2];
@@ -71,7 +72,7 @@ for (const [account, screens] of byAccount)
     for (const [id, , path] of screens) {
       let url = path;
       if (path === "/v/__primeiro__") {
-        await page.goto(`${BASE}/`);
+        await page.goto(`${BASE}/veiculos`);
         url =
           (await page.locator('a[href^="/v/"]').first().getAttribute("href")) ??
           "/";

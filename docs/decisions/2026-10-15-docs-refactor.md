@@ -679,3 +679,6 @@
 
 # 2026-11-25 · fix(site): página do leilão estática; build da Vercel volta a passar [017]
 - Deploy quebrado na Vercel (Cache Components não aceita connection() fora de Suspense); a página de vendas estática também é melhor para o SEO.
+
+# 2026-11-25 · fix(settings): regra nova sem valor no banco usa o valor inicial [002]
+- O build da Vercel quebrou no prerender: o prod ainda não tem a migration 0026 (laudo_price_cents). Uma regra nova nunca mais derruba o site.

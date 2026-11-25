@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, gt, lte } from "drizzle-orm";
+import { logger } from "@/platform/http/logger";
 import { z } from "zod";
 import {
   authorizeTo,
@@ -57,9 +58,14 @@ export async function getSettings(
 
   const settings: Record<string, unknown> = {};
   for (const key of SETTING_KEYS) {
-    if (!byKey.has(key)) throw new Error(`Regra sem valor: ${key}`);
+    // Regra nova antes da migration no banco (ex.: o deploy chega ao prod antes dela):
+    // vale o valor inicial da definição, com aviso no log, em vez de derrubar o site.
+    if (!byKey.has(key))
+      logger.warn("settings.missing_value", { key, using: "initial" });
     settings[key] = SETTINGS[key].schema.parse(
-      parseSettingValue(byKey.get(key) ?? null),
+      byKey.has(key)
+        ? parseSettingValue(byKey.get(key) ?? null)
+        : SETTINGS[key].initial,
     );
   }
   return settings as Settings;

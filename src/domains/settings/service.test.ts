@@ -1,3 +1,4 @@
+import { eq, sql } from "drizzle-orm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { activityLog, profiles, settingValues } from "@/platform/db/schema";
 import type { Role, Session } from "@/platform/http/session";
@@ -546,5 +547,24 @@ describe("settings", () => {
         settingHistory(t.db, admin, "regra_inventada"),
       ).rejects.toMatchObject({ status: 404 });
     });
+  });
+});
+
+describe("regra nova sem valor no banco", () => {
+  it("[CFG-FR-003] vale o valor inicial da definição, sem derrubar a leitura das regras", async () => {
+    // Arrange: o banco ainda sem a linha da regra (migration não aplicada)
+    const t = await createTestDb();
+    // Só no teste: o histórico é só de inclusão, então simula o banco sem a migration.
+    await t.db.execute(sql`alter table setting_values disable trigger user`);
+    await t.db
+      .delete(settingValues)
+      .where(eq(settingValues.key, "laudo_price_cents"));
+
+    // Act
+    const settings = await getSettings(t.db);
+
+    // Assert
+    expect(settings.laudo_price_cents).toBe(7000);
+    await t.close();
   });
 });

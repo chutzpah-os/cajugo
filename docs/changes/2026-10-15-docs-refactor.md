@@ -1328,3 +1328,6 @@
 
 # 2026-11-25 · fix(site): página do leilão estática; build da Vercel volta a passar [017]
 - /conheca/leilao deixa de ler as regras ao renderizar (o build da Vercel parava no pré-render); 'Quero ser avisado' vai para /conheca/leilao/avisar, que lê o WhatsApp do atendimento e redireciona; chamada com newTab. pnpm build local: 76/76 páginas.
+
+# 2026-11-25 · fix(settings): regra nova sem valor no banco usa o valor inicial [002]
+- getSettings deixa de lançar erro quando uma regra ainda não tem linha em setting_values (deploy antes da migration): usa o initial da definição e registra settings.missing_value no log. Script design:shots com os endereços novos (/veiculos, /rede-caju, Conta, /admin/indica).
