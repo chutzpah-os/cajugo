@@ -19,7 +19,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [x] **T002** Migration `0024` (índices de `activity_log`), teste de schema e a migration no staging. · _—_
 
 ## Fase 2 — Servidor
-- [ ] **T003** `adminDashboard`: KPIs com a variação, "Precisa de atenção" (só com pendência), origem dos leads e top lojas, a partir dos serviços dos outros domínios. · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-NFR-002_
+- [x] **T003** `adminDashboard`: KPIs com a variação, "Precisa de atenção" (só com pendência), origem dos leads e top lojas, a partir dos serviços dos outros domínios. · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-NFR-002_
 - [ ] **T004** `storesAdmin`: busca, filtros por situação, 20 por vez, KPIs. Lojista e visitante recusados. · _ADM-FR-004, ADM-NFR-003, ADM-SEC-001_
 - [ ] **T005** `usersAdmin`: busca por nome ou e-mail, selos de papel, destino de cada conta. · _ADM-FR-007_
 - [ ] **T006** `storeDetail` + `billing.storeBilling`:
@@ -40,7 +40,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 - [ ] **T011** Veículos CajuGo: na vitrine, com os filtros Denunciados e Aguardando aprovação. · _ADM-FR-006_
 
 ## Fase 3 — Telas
-- [ ] **T012** Painel [4a] no celular e Visão geral [15c] no desktop, com as filas inline de comprovantes e aprovação. · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-FR-013, ADM-NFR-001_
+- [ ] **T012** Painel [4a] no celular e Visão geral [15c] no desktop, com as filas inline de comprovantes e aprovação. _Feito em 2026-11-25: [4a], [15c] e a fila de comprovantes; falta a fila de aprovação, que espera o [14c] (não há aprovação de veículo no admin ainda)._ · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-FR-013, ADM-NFR-001_
 - [ ] **T013** Lojas [1d] com as abas Lojas, Veículos CajuGo e Usuários. · _ADM-FR-004, ADM-FR-006, ADM-FR-007, ADM-NFR-001_
 - [ ] **T014** Nova loja, com a senha mostrada uma vez e **Copiar**. · _ADM-FR-005_
 - [ ] **T015** Detalhe da loja [6g]:

@@ -2,7 +2,7 @@ import { randomInt } from "node:crypto";
 import type { Browser, Page } from "@playwright/test";
 import { E2E_SELLER as V } from "../../src/domains/sellers/testing/e2e-seed";
 import { E2E_SHOWCASE as S } from "../../src/domains/showcase/testing/e2e-seed";
-import { accounts, audit, expect, heading, signIn, test } from "./fixtures";
+import { accounts, audit, expect, signIn, test } from "./fixtures";
 
 const CLEAN = { horizontalScroll: false, small: [], unlabeled: [] };
 
@@ -31,8 +31,8 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     await enterAs(page, accounts.showcaseOwner.email, "/painel/conta");
     const block = page.getByTestId("network-block");
     await expect(block.getByTestId("network-pending")).toHaveText("1");
-    await block.getByRole("link", { name: "Comissão" }).click();
-    await expect(heading(page)).toHaveText("Comissão");
+    // Comissão e Vendedores abrem na própria Conta (012).
+    await block.getByTestId("network-commission").locator("summary").click();
     await expect(page.getByTestId("commission-preview")).toContainText(
       "Comissão do vendedor: R$ 1.200,00",
     );
@@ -46,7 +46,10 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     const label = page.getByText("Aceitar vendedores independentes");
     await label.click();
     await expect(toggle).not.toBeChecked();
-    await page.getByRole("button", { name: "Salvar" }).click();
+    await block
+      .getByTestId("network-commission")
+      .getByRole("button", { name: "Salvar", exact: true })
+      .click();
     await expect(page.getByText("Salvo.", { exact: true })).toBeVisible();
     const seller = await windowAs(
       browser,
@@ -61,7 +64,10 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
 
     await label.click();
     await expect(toggle).toBeChecked();
-    await page.getByRole("button", { name: "Salvar" }).click();
+    await block
+      .getByTestId("network-commission")
+      .getByRole("button", { name: "Salvar", exact: true })
+      .click();
     await expect(page.getByText("Salvo.", { exact: true })).toBeVisible();
     await seller.reload();
     await expect(card.getByTestId("seller-earn")).toContainText("Você ganha");
@@ -71,11 +77,8 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
   test("[RCL-FR-004] [RCL-FR-005] [RCL-FR-006] [RCL-SEC-004] aprovar o pedido e encerrar a parceria", async ({
     page,
   }) => {
-    await enterAs(
-      page,
-      accounts.showcaseOwner.email,
-      "/painel/rede/vendedores",
-    );
+    await enterAs(page, accounts.showcaseOwner.email, "/painel/conta");
+    // Com pedido pendente, Vendedores já vem aberto.
     const request = page
       .getByTestId("partner-request")
       .filter({ hasText: V.pendingName });
@@ -162,10 +165,8 @@ test.describe.serial("Rede Caju: lojista e venda", () => {
     page,
   }) => {
     await enterAs(page, accounts.staff.email, "/painel/veiculos");
-    for (const path of ["/painel/rede/comissao", "/painel/rede/vendedores"]) {
-      await page.goto(path);
-      await expect(heading(page)).toHaveText("Sem permissão");
-    }
+    await page.goto("/painel/conta");
+    await expect(page.getByTestId("network-block")).toHaveCount(0);
   });
 });
 
@@ -175,9 +176,8 @@ test.describe("Rede Caju do lojista no desktop (1280 px)", () => {
   test("[RCL-NFR-001] Comissão e Vendedores sem problemas de acessibilidade", async ({
     page,
   }) => {
-    await enterAs(page, accounts.showcaseOwner.email, "/painel/rede/comissao");
-    expect(await audit(page), "[7e] 1280 px").toEqual(CLEAN);
-    await page.goto("/painel/rede/vendedores");
-    expect(await audit(page), "[7f] 1280 px").toEqual(CLEAN);
+    await enterAs(page, accounts.showcaseOwner.email, "/painel/conta");
+    await page.getByTestId("network-commission").locator("summary").click();
+    expect(await audit(page), "[7e] [7f] 1280 px").toEqual(CLEAN);
   });
 });

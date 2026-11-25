@@ -24,15 +24,21 @@ test.describe("Caju Indica (010)", () => {
   test("[IND-FR-001] [IND-FR-003] [IND-FR-005] [IND-FR-009] [IND-NFR-001] lojista: link, landing, indicações e crédito", async ({
     page,
   }) => {
-    await enterAs(page, accounts.owner.email, "/painel/indica");
+    // Link, indicações e crédito ficam na própria Conta (012).
+    await enterAs(page, accounts.owner.email, "/painel/conta");
+    await page.getByTestId("referral-link").locator("summary").click();
     await expect(
       page.getByText("Ganhe 30% da mensalidade de cada loja indicada"),
     ).toBeVisible();
-    const url = await page.locator("code").nth(1).innerText();
+    const url = await page
+      .getByTestId("referral-link")
+      .locator("code")
+      .nth(1)
+      .innerText();
     expect(url).toMatch(/\/i\/[a-z0-9]+$/);
     expect(await audit(page), "[8a]").toEqual(CLEAN);
 
-    await page.goto("/painel/indica/indicacoes");
+    await page.getByTestId("referral-list").locator("summary").click();
     const recife = page
       .getByTestId("referral-item")
       .filter({ hasText: "Recife E2E" });
@@ -40,7 +46,7 @@ test.describe("Caju Indica (010)", () => {
     await expect(recife).toContainText("Rendeu R$ 30,00 · faltam 2 meses");
     expect(await audit(page), "[8b]").toEqual(CLEAN);
 
-    await page.goto("/painel/indica/credito");
+    await page.getByTestId("referral-credit").locator("summary").click();
     await expect(page.getByTestId("credit-available")).toHaveText("R$ 30,00");
     expect(await audit(page), "[8e]").toEqual(CLEAN);
 

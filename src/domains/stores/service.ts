@@ -994,3 +994,6 @@ export async function storeIdentity(
     caption: `Plano Catálogo · ${IDENTITY_STATUS[s.status] ?? s.status}`,
   };
 }
+
+/** Contagens do painel do admin (012b). */
+export { storesSnapshot } from "./snapshot";

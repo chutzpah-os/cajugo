@@ -532,3 +532,9 @@
 
 # 2026-11-24 · feat(admin): item Log com o histórico das regras [012]
 - O dono do produto quer os históricos num só lugar, sem poluir as outras telas.
+
+# 2026-11-24 · feat(painel): informações na própria tela [012]
+- O dono do produto não quer botões que só levam a outra página com informação que cabe na tela de origem.
+
+# 2026-11-24 · feat(admin): painel [4a]/[15c] [012b/T003]
+- Dar ao admin a saúde do negócio em 5 segundos (ADM-FR-001..003); o domínio admin só compõe, sem regra própria.

@@ -1120,3 +1120,6 @@ export async function subscriptionCard(
     nextDueAt: store.nextDueAt,
   };
 }
+
+/** Contagens do painel do admin (012b). */
+export { paymentsSnapshot } from "./snapshot";

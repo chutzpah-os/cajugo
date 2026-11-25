@@ -504,3 +504,6 @@ export async function removeStoreLeads(
     .returning({ id: leads.id });
   return gone.length;
 }
+
+/** Contagens do painel do admin (012b). */
+export { leadsSnapshot } from "./snapshot";

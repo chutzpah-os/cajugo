@@ -66,7 +66,7 @@ describe("telas do Caju Indica", () => {
   it("[IND-FR-005] [IND-FR-017] filtros com contagens; rendeu, meses que faltam e não válida", () => {
     const html = renderToStaticMarkup(
       <ReferralList
-        basePath="/painel/indica/indicacoes"
+        basePath="/painel/conta"
         filter="todas"
         counts={{ all: 2, earning: 1, registered: 0, paused: 0 }}
         items={[
@@ -90,7 +90,7 @@ describe("telas do Caju Indica", () => {
     expect(t).toContain("Rendendo 1");
     expect(t).toContain("Rendeu R$ 30,00 · faltam 2 meses");
     expect(t).toContain("Não válida");
-    expect(html).toContain('href="/painel/indica/indicacoes?filtro=pausadas"');
+    expect(html).toContain('href="/painel/conta?filtro=pausadas"');
   });
 
   it("[IND-FR-009] [IND-FR-010] movimentações com data e valor", () => {

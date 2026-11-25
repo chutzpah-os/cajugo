@@ -1606,3 +1606,6 @@ export {
   type StatementFilter,
   type StatementItem,
 } from "./statement";
+
+/** Contagens do painel do admin (012b). */
+export { sellersInReview } from "./snapshot";

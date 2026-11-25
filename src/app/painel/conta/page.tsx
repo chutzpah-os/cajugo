@@ -11,7 +11,19 @@ import { AccountSubscription } from "@/domains/billing/components/account-subscr
 import { CancelSubscription } from "@/domains/billing/components/cancellation";
 import { accountView, CANCEL_REASONS } from "@/domains/billing/service";
 import { NetworkBlock } from "@/domains/sellers/components/network-block";
-import { networkSummary } from "@/domains/sellers/service";
+import { networkSummary, storeNetwork } from "@/domains/sellers/service";
+import { CommissionForm } from "@/domains/sellers/components/commission-form";
+import { VehicleOverrides } from "@/domains/sellers/components/vehicle-overrides";
+import { PartnersView } from "@/domains/sellers/components/partners-view";
+import {
+  HowItWorks,
+  ReferralList,
+  ReferralShare,
+} from "@/domains/referrals/components/referral-views";
+import { StoreCredit } from "@/domains/referrals/components/store-credit";
+import { referralPanel, referralsList } from "@/domains/referrals/service";
+import { creditView } from "@/domains/billing/service";
+import { Disclosure } from "@/ui/disclosure";
 import { getDb } from "@/platform/db/client";
 
 export const metadata: Metadata = {
@@ -19,7 +31,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-async function Content() {
+type SearchParams = Record<string, string | string[] | undefined>;
+
+async function Content({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const { session, allowed, home } = await requireStorePage(
     "/painel/conta",
     "billing.manage",
@@ -31,7 +49,18 @@ async function Content() {
     accountMenu(db, session),
   ]);
   const network = can(session, "sellers.manage")
-    ? await networkSummary(db, session)
+    ? await Promise.all([
+        networkSummary(db, session),
+        storeNetwork(db, session),
+      ])
+    : null;
+  const params = await searchParams;
+  const referral = can(session, "store.referral")
+    ? await Promise.all([
+        referralPanel(db, session),
+        referralsList(db, session, params),
+        creditView({ db }, session),
+      ])
     : null;
   const cancelBlock =
     account.cancel && account.cancel.kind !== "available"
@@ -65,23 +94,59 @@ async function Content() {
           <AccountSubscription view={account} />
         </div>
         <div className="flex flex-col gap-5">
-          {network && <NetworkBlock {...network} />}
-          {can(session, "store.referral") && (
-            <section className="flex flex-col rounded-card border border-line bg-surface">
+          {network && (
+            <NetworkBlock
+              {...network[0]}
+              commission={
+                <>
+                  <CommissionForm
+                    acceptsSellers={network[1].acceptsSellers}
+                    commission={network[1].commission}
+                    feeBps={network[1].feeBps}
+                  />
+                  <VehicleOverrides
+                    overrides={network[1].overrides}
+                    vehicles={network[1].vehicleOptions}
+                  />
+                </>
+              }
+              partners={
+                <PartnersView
+                  pending={network[1].pending}
+                  partners={network[1].partners}
+                />
+              }
+            />
+          )}
+          {referral && (
+            <section
+              data-testid="referral-block"
+              className="flex flex-col rounded-card border border-line bg-surface"
+            >
               <div className="flex flex-col gap-1 p-4 pb-2">
                 <h2 className="text-[17px] font-extrabold">Caju Indica</h2>
                 <p className="text-sm text-text-2">
                   Indique lojas e ganhe crédito na sua fatura.
                 </p>
               </div>
-              <div className="border-t border-line-2 px-4">
-                <SettingsList
-                  items={[
-                    { href: "/painel/indica", label: "Meu link" },
-                    { href: "/painel/indica/indicacoes", label: "Indicações" },
-                    { href: "/painel/indica/credito", label: "Crédito" },
-                  ]}
-                />
+              {/* Link, indicações e crédito aqui mesmo, sem outra página (012). */}
+              <div className="divide-y divide-line-2 border-t border-line-2">
+                <Disclosure title="Meu link" testId="referral-link">
+                  <ReferralShare panel={referral[0]} />
+                  {referral[0].enabled && (
+                    <HowItWorks months={referral[0].months} />
+                  )}
+                </Disclosure>
+                <Disclosure
+                  title="Indicações"
+                  testId="referral-list"
+                  open={params.filtro !== undefined}
+                >
+                  <ReferralList basePath="/painel/conta" {...referral[1]} />
+                </Disclosure>
+                <Disclosure title="Crédito" testId="referral-credit">
+                  <StoreCredit view={referral[2]} />
+                </Disclosure>
               </div>
             </section>
           )}
@@ -120,10 +185,10 @@ async function Content() {
  * Conta do lojista [3c] (SUB-FR-010): assinatura, Como pagar, faturas e Rede Caju;
  * Cancelar assinatura [12h], o fim agendado e Reassinar (011b).
  */
-export default function Page() {
+export default function Page(props: PageProps<"/painel/conta">) {
   return (
     <AreaPage>
-      <Content />
+      <Content searchParams={props.searchParams} />
     </AreaPage>
   );
 }

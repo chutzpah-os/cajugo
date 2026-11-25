@@ -1181,3 +1181,9 @@
 
 # 2026-11-24 · feat(admin): item Log com o histórico das regras [012]
 - Novo item Log no menu do admin (/admin/log) com o histórico de cada regra e da chave Pix por grupo; Conta e Regras do Caju Indica sem históricos; spec 012b/PRD: logs de atividade e histórico da loja vão para o Log.
+
+# 2026-11-24 · feat(painel): informações na própria tela [012]
+- Comissão, Vendedores, Meu link, Indicações e Crédito viram seções recolhíveis na Conta do lojista; regras do Caju Indica dentro de /admin/indica; senha temporária no Painel admin; rotas filhas removidas; 'Quem pode indicar' com o título no tamanho das outras regras.
+
+# 2026-11-24 · feat(admin): painel [4a]/[15c] [012b/T003]
+- Domínio admin com adminDashboard (KPIs com variação, Precisa de atenção só com pendência, origem dos leads e top lojas) a partir de contagens de cada domínio (snapshot.ts); tela do Painel no celular e Visão geral no desktop com a fila de comprovantes.

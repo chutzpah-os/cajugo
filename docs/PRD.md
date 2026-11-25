@@ -364,10 +364,10 @@ Viram requisitos e testes nas specs (`SDD.md`):
 | 6d | Filtros e ordenação | Visitante | overlay em `/` e `/loja/{slug}` |
 | 6e · 6f · 6g | Editar veículo · Diálogos · Detalhe da loja | Lojista/Admin | `/painel/veiculos/{id}`, overlay, `/admin/lojas/{id}` |
 | 7a–7d | Cadastro · Painel · Vitrine/compartilhar · Extrato | Vendedor | `/rede/cadastro`, `/rede`, `/rede/vitrine`, `/rede/extrato` |
-| 7e–7g | Comissão · Vendedores · Confirmar venda | Lojista | `/painel/rede/comissao`, `/painel/rede/vendedores`, overlay |
+| 7e–7g | Comissão · Vendedores · Confirmar venda | Lojista | seções da `/painel/conta` (na própria tela), overlay |
 | 7h | Vendedores (aprovar, bloquear) | Admin | `/admin/vendedores` |
-| 8a–8e | Caju Indica: página · indicações · landing do link · cadastro com código · crédito | Lojista/Público | `/painel/indica`, `/painel/indica/indicacoes`, `/i/{codigo}`, `/lojistas/cadastro?codigo=`, `/painel/indica/credito` |
-| 8f · 8g | Regras do programa · Indicações e pagamentos | Admin | `/admin/indica/regras`, `/admin/indica` |
+| 8a–8e | Caju Indica: página · indicações · landing do link · cadastro com código · crédito | Lojista/Público | seções da `/painel/conta` (Meu link, Indicações, Crédito), `/i/{codigo}`, `/lojistas/cadastro?codigo=` |
+| 8f · 8g | Regras do programa · Indicações e pagamentos | Admin | `/admin/indica` (as regras na própria tela) |
 | 9a | Vitrine com banner e rodapé Caju Indica | Visitante | `/` |
 | 9b · 9d · 9e | Cadastro rápido · Painel · Resgate Pix | Indicador | `/indica/cadastro`, `/indica`, `/indica/resgate` |
 | 9c | Código por celular (**fase 2**) | — | — |

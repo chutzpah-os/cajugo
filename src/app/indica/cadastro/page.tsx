@@ -16,7 +16,7 @@ async function Form() {
   await connection();
   const session = await currentSession();
   // Já indica: o painel do lojista ou o do indicador/vendedor.
-  if (session?.roles.includes("store_owner")) redirect("/painel/indica");
+  if (session?.roles.includes("store_owner")) redirect("/painel/conta");
   if (session?.roles.some((r) => r === "referrer" || r === "seller"))
     redirect("/indica");
   return (

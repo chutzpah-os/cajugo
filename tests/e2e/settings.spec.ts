@@ -75,7 +75,7 @@ test.describe("regras configuráveis", () => {
   test("[CFG-SEC-002] lojista não abre as regras", async ({ page }) => {
     await enterAs(page, accounts.owner.email, "/admin/conta");
     await expect(heading(page)).toHaveText("Sem permissão");
-    await page.goto("/admin/indica/regras");
+    await page.goto("/admin/indica");
     await expect(heading(page)).toHaveText("Sem permissão");
   });
 
@@ -145,7 +145,7 @@ test.describe("regras configuráveis", () => {
     // `pnpm e2e:seed` volta a senha desta conta na próxima rodada.
   });
 
-  for (const path of ["/admin/conta", "/admin/indica/regras", "/conta/senha"]) {
+  for (const path of ["/admin/conta", "/admin/indica", "/conta/senha"]) {
     test(`[CFG-NFR-002] ${path} cabe em 390 px, com toque ≥ 44 px e campos com rótulo`, async ({
       page,
     }) => {

@@ -28,7 +28,7 @@ A 012b é quase toda **leitura**: as decisões (confirmar Pix, aprovar, ocultar,
 | `src/domains/auth/` | `usersAdmin`, `teamView`, `inviteTeamMember`, `removeTeamMember` (encerra as sessões com o `adminSignOutAll`) |
 | `src/domains/billing/` | Leitura para o painel: `billingSnapshot(db, now)` (MRR, mensalidades pagas no período e no mesmo período do mês anterior, comprovantes a conferir, vencimentos em 3 dias, atrasadas, cadastradas sem pagamento) e `storeBilling(db, storeId)` para o card Assinatura de [6g] |
 | `src/domains/leads/`, `vehicles/`, `sellers/`, `moderation/`, `buyers/` | Contagens para o painel: `leadsSnapshot` (mês, mês anterior no mesmo período, origem, top lojas); `vehiclesSnapshot` (na vitrine, publicados no mês, aguardando aprovação, primeiros da loja); `sellersInReview`; `openReportsCount` (já existe); `cachedPendingAlerts` (já existe) |
-| `src/app/admin/` | `/admin` ([4a]/[15c]); `/admin/lojas?aba=lojas\|veiculos\|usuarios` ([1d]); `/admin/lojas/nova`; `/admin/lojas/[id]` ([6g]); `/admin/lojas/[id]/editar`; `/admin/lojas/[id]/historico`; `/admin/conta` com Equipe e o link de Logs; `/admin/conta/logs`. Sai a página provisória `/admin/senha-temporaria` (a ação passa a ficar em [6g]; continua acessível pela busca de contas em Usuários) |
+| `src/app/admin/` | `/admin` ([4a]/[15c]); `/admin/lojas?aba=lojas\|veiculos\|usuarios` ([1d]); `/admin/lojas/nova`; `/admin/lojas/[id]` ([6g]); `/admin/lojas/[id]/editar`; `/admin/conta` com Equipe; `/admin/log` (item Log: regras, logs de atividade e histórico por loja, 012). Já saiu a página provisória `/admin/senha-temporaria`: a busca ficou no Painel admin e depois vai para [6g] e Usuários |
 | Navegação | `AREA_NAV.admin` no celular: Painel · Lojas · Assinaturas · Conta · Mais (já é assim); contadores da sidebar: Pagamentos Pix, Veículos (aprovação), Rede Caju (em análise), Assinaturas (atrasadas) |
 | Documentos | ARCHITECTURE §3 (domínio `admin`, só leitura); API.md §5 (rotas e actions novas); GLOSSARY (Equipe CajuGo) |
 
@@ -84,7 +84,7 @@ removeTeamMember(deps, session, raw: { profileId })          // ADM-FR-012
 | ADM-FR-012 | `/admin/conta`: bloco Equipe (`teamView`), **Convidar** (`inviteTeamMember`: conta nova ou existente sem papel de cliente, papel Admin ou Suporte, senha temporária uma vez) e **Remover** (`removeTeamMember`) |
 | ADM-FR-013 | `/admin` ≥ 1024 px: os 4 KPIs do [15c] e as filas Comprovantes Pix e Veículos aguardando aprovação (3 de cada), com os componentes de decisão de [10b] e [14c] inline e **Ver todos** |
 | ADM-FR-014 | `AREA_NAV.admin` (já tem "Mais"); a gaveta com Pagamentos Pix, Veículos, Alertas, Rede Caju e Caju Indica |
-| ADM-FR-015 | `/admin/conta/logs`: `activityLogView` com filtro por tipo (prefixo da ação: `store.`, `subscription.`, `auth.`, `team.`, `payment.`…) e período, 20 por vez |
+| ADM-FR-015 | `/admin/log` (filtro por loja atende ADM-FR-011): `activityLogView` com filtro por tipo (prefixo da ação: `store.`, `subscription.`, `auth.`, `team.`, `payment.`…) e período, 20 por vez |
 | ADM-NFR-001 | Base da 012; comparação em `comparacao.md`; `audit()` em 390 e 1280 |
 | ADM-NFR-002 | Contagens em consultas agregadas (sem N+1), com os índices que já existem e os novos de `activity_log`; teste de integração com 500 lojas mede o tempo; os números podem ter até 60 s de atraso (`'use cache'` com `cacheLife` de 60 s, só para o painel) |
 | ADM-NFR-003 | Cursor por `(created_at, id)` nas listas; `LoadMoreButton` |

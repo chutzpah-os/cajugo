@@ -91,13 +91,17 @@ export function SettingsGroupForm({
             );
           case "who":
             return (
-              <fieldset key={f.key} className="flex flex-col gap-1">
-                <legend className="text-[13px] font-semibold">{f.label}</legend>
+              <fieldset key={f.key} className="flex flex-col">
+                <legend className="mb-1 text-[15px] font-bold">
+                  {f.label}
+                </legend>
                 {Object.entries(WHO_LABELS).map(([role, label]) => (
                   <Toggle
                     key={role}
                     name={`${f.key}.${role}`}
                     title={label}
+                    option
+                    className="border-l-2 border-line-2 pl-3"
                     disabled={!canEdit}
                     defaultChecked={(f.value as Record<string, boolean>)[role]}
                   />

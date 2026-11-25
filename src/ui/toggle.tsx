@@ -4,6 +4,8 @@ import { cn } from "./cn";
 type Props = {
   title: string;
   caption?: string;
+  /** Opção dentro de um grupo (ex.: "Quem pode indicar"): texto normal, sem negrito. */
+  option?: boolean;
 } & Omit<ComponentProps<"input">, "type" | "role">;
 
 /**
@@ -13,6 +15,7 @@ type Props = {
 export function Toggle({
   title,
   caption,
+  option,
   className,
   disabled,
   ...props
@@ -26,7 +29,14 @@ export function Toggle({
       )}
     >
       <span className="flex flex-col">
-        <span className="text-[15px] font-bold">{title}</span>
+        <span
+          className={cn(
+            "text-[15px]",
+            option ? "font-medium text-text-2" : "font-bold",
+          )}
+        >
+          {title}
+        </span>
         {caption && <span className="text-xs text-text-3">{caption}</span>}
       </span>
       <input

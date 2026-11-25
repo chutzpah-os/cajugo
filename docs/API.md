@@ -127,7 +127,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | A | `moveLeadAction({ leadId, to: "next" \| "lost" })` — `leads.manage` (dono e usuário da loja) (007) | 3a |
 | A | `updateStore(form)` · `changeSlug(slug)` | 3b |
 | A | `cancelSubscriptionAction({ reason? })` · `undoCancelAction()` · `resubscribeAction()` — `billing.manage` (só o dono, 011b) | 12h, 3c |
-| página | `/painel/rede/comissao` · `/painel/rede/vendedores` (009) | 7e, 7f |
+| página | seções Comissão e Vendedores dentro de `/painel/conta` (009; na própria tela desde a 012) | 7e, 7f |
 | A | `setNetworkRulesAction({ acceptsSellers, commissionType, commissionValue })` · `setCommissionOverrideAction({ vehicleId, type, value })` — `sellers.manage` (009) | 7e |
 | A | `decidePartnershipAction({ partnershipId, decision: "approve" \| "decline" \| "end" })` — `sellers.manage` (009) · `inviteSeller(sellerId)` (009b) | 7f, 13a |
 | A | `saleTermsAction({ vehicleId, finalPriceCents, sellerId })` · `confirmSaleAction({ vehicleId, finalPriceCents, attribution, sellerId, commissionPaid })` · `undoSaleAction({ vehicleId })` — `sales.confirm` (009) | 7g |
@@ -147,7 +147,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 ### Caju Indica
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| página | `/painel/indica` · `/painel/indica/indicacoes` (`?filtro=`) · `/painel/indica/credito` — lojista (`store.referral`) (010) | 8a, 8b, 8e |
+| página | seções Meu link, Indicações (`?filtro=`) e Crédito dentro de `/painel/conta` — lojista (`store.referral`) (010; na própria tela desde a 012) | 8a, 8b, 8e |
 | página | `/indica` (indicador e vendedor) · `/indica/cadastro` (público) (010) | 9d, 9b |
 | A | `registerReferrerAction(form)` — pública, honeypot + rate limit (010) | 9b |
 | — | código pessoal criado no 1º acesso ao painel (`getOrCreateCode`, regras do programa) | 8a, 9d |
@@ -157,9 +157,9 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | Tipo | Rota / ação | Tela |
 |---|---|---|
 | página | `/admin` — painel [4a] / visão geral [15c] (`admin.read`, 012b) | 4a, 15c |
-| página | `/admin/lojas?aba=lojas\|veiculos\|usuarios` · `/admin/lojas/nova` · `/admin/lojas/[id]` · `/admin/lojas/[id]/editar` · `/admin/lojas/[id]/historico` (012b) | 1d, 6g |
+| página | `/admin/lojas?aba=lojas\|veiculos\|usuarios` · `/admin/lojas/nova` · `/admin/lojas/[id]` · `/admin/lojas/[id]/editar` (012b; o histórico da loja fica em `/admin/log`) | 1d, 6g |
 | A | `createStoreByAdminAction(form)` → senha temporária uma vez · `updateStoreByAdminAction({ storeId, ... })` — `stores.manage` (só admin) · `setTemporaryPassword` (001) | 1d, 6g |
-| página | `/admin/conta/logs` — registro de atividade com filtros (`admin.read`, 012b) | 4c |
+| página | `/admin/log` — históricos das regras e registro de atividade com filtros (`admin.read`, 012b) | 4c |
 | A | `inviteTeamMemberAction({ name, email, role })` · `removeTeamMemberAction({ profileId })` — `team.manage` (012b) | 4c |
 | página | `/admin/assinaturas` — MRR, contagens e filtros (`?filtro=`); admin e suporte veem (`subscriptions.view`), só o admin decide (011) | 4b |
 | A | `suspendStoreAction({ storeId })` · `reactivateStoreAction({ storeId, reason })` — `stores.suspend` (só admin, 011) | 4b, 6g |

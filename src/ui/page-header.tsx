@@ -91,6 +91,7 @@ export function AdminTag() {
 export function LightHeader({
   eyebrow,
   title,
+  desktop,
   avatar,
   action,
   tabs,
@@ -98,6 +99,8 @@ export function LightHeader({
 }: {
   eyebrow?: ReactNode;
   title?: ReactNode;
+  /** Título diferente no desktop (ex.: [4a] "Olá, Ana" × [15c] "Visão geral"). */
+  desktop?: { eyebrow?: ReactNode; title: ReactNode };
   avatar?: ReactNode;
   action?: ReactNode;
   tabs?: readonly { href: string; label: string; current: boolean }[];
@@ -127,7 +130,11 @@ export function LightHeader({
               {title}
             </h1>
           </div>
-          <DesktopTitle eyebrow={eyebrow} title={title} action={action} />
+          <DesktopTitle
+            eyebrow={desktop ? desktop.eyebrow : eyebrow}
+            title={desktop?.title ?? title}
+            action={action}
+          />
         </>
       )}
       {tabs && (

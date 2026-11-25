@@ -964,3 +964,6 @@ export {
   discoveryPage,
   type DiscoveryPage,
 } from "./discovery";
+
+/** Contagens do painel do admin (012b). */
+export { vehiclesSnapshot } from "./snapshot";
