@@ -48,6 +48,10 @@ export function ProgramLanding({
   /** Bloco de exemplo calculado com as regras reais (ex.: ganhos do Caju Indica). */
   example?: ReactNode;
 }) {
+  // Chamada para fora (ex.: WhatsApp do atendimento) abre em outra aba.
+  const external = c.primary.href.startsWith("http")
+    ? { target: "_blank", rel: "noopener noreferrer" }
+    : {};
   return (
     <main className="w-full flex-1">
       <section className="bg-[radial-gradient(120%_140%_at_85%_10%,#e8551e_0%,#b23c12_38%,#1c1b20_78%)] text-white">
@@ -63,7 +67,9 @@ export function ProgramLanding({
               {c.lead}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-4">
-              <ButtonLink href={c.primary.href}>{c.primary.label}</ButtonLink>
+              <ButtonLink href={c.primary.href} {...external}>
+                {c.primary.label}
+              </ButtonLink>
               <Link
                 href={c.signIn.href}
                 className="flex h-11 items-center text-sm font-bold text-white underline underline-offset-4"
@@ -208,7 +214,9 @@ export function ProgramLanding({
             <h2 className="text-[22px] font-extrabold">{c.closing.title}</h2>
             <p className="text-sm text-on-dark-2">{c.closing.text}</p>
           </div>
-          <ButtonLink href={c.primary.href}>{c.primary.label}</ButtonLink>
+          <ButtonLink href={c.primary.href} {...external}>
+            {c.primary.label}
+          </ButtonLink>
         </section>
       </div>
     </main>

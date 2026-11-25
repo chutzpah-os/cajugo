@@ -49,6 +49,7 @@ describe("indexação", () => {
       "https://cajugo.vercel.app/conheca/lojistas",
       "https://cajugo.vercel.app/conheca/caju-indica",
       "https://cajugo.vercel.app/conheca/rede-caju",
+      "https://cajugo.vercel.app/conheca/leilao",
       "https://cajugo.vercel.app/termos",
     ]);
   });

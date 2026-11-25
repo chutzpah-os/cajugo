@@ -45,7 +45,7 @@ export const SITE_NAV: NavSection[] = [
     items: [
       { label: "LaudoCaju · Laudo", href: null },
       { label: "Skipper · Entrega", href: null },
-      { label: "Leilão", href: null },
+      { label: "Leilão", href: "/conheca/leilao" },
     ],
   },
   {

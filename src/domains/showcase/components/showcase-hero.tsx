@@ -8,15 +8,13 @@ export function ShowcaseHero() {
     <div className="flex items-center gap-8 pt-4 lg:pt-6">
       <div className="flex max-w-2xl flex-col gap-2.5 lg:gap-4">
         <p className="text-[24px] leading-tight font-extrabold tracking-[-0.02em] text-ink lg:text-[40px]">
-          A sua plataforma automotiva: compre, venda e cuide do seu veículo,{" "}
+          Compre, venda e cuide do seu veículo{" "}
           <span className="underline decoration-castanha decoration-[5px] underline-offset-[6px]">
-            tudo aqui
+            num só lugar
           </span>
         </p>
         <p className="text-[15px] text-text-2 lg:text-[17px]">
-          Na CajuGo você encontra veículos novos e usados das lojas, coloca o
-          estoque da sua loja online, consulta o histórico de um veículo antes
-          de comprar e fala direto com a loja pelo WhatsApp, sem intermediário.
+          Veículos das lojas da sua região, com contato direto pelo WhatsApp.
         </p>
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element -- ilustração estática (WebP de 62 KB), só no desktop */}

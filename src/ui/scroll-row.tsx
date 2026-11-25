@@ -4,8 +4,9 @@ import { useRef, type ReactNode } from "react";
 import { cn } from "./cn";
 
 /**
- * Linha que rola na horizontal sem barra de rolagem aparente: no celular, com o dedo;
- * a partir de 768 px, com as setas redondas nas pontas (como na referência do dono).
+ * Linha que rola na horizontal sem barra de rolagem aparente, com o dedo ou pelas
+ * setas redondas nas pontas, visíveis também no celular (pedido do dono: a primeira
+ * vista precisa mostrar que dá para passar).
  */
 export function ScrollRow({
   label,
@@ -23,7 +24,7 @@ export function ScrollRow({
       behavior: "smooth",
     });
   const arrow =
-    "absolute top-1/2 z-10 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-lg font-bold text-ink shadow-md md:flex";
+    "absolute top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-lg font-bold text-ink shadow-md md:size-10";
   return (
     <div className={cn("relative", className)}>
       <div
@@ -36,7 +37,7 @@ export function ScrollRow({
         type="button"
         aria-label={`${label}: anteriores`}
         onClick={() => move(-1)}
-        className={cn(arrow, "-left-3")}
+        className={cn(arrow, "left-1 md:-left-3")}
       >
         ‹
       </button>
@@ -44,7 +45,7 @@ export function ScrollRow({
         type="button"
         aria-label={`${label}: próximos`}
         onClick={() => move(1)}
-        className={cn(arrow, "-right-3")}
+        className={cn(arrow, "right-1 md:-right-3")}
       >
         ›
       </button>

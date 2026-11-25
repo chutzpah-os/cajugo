@@ -1313,3 +1313,6 @@
 
 # 2026-11-24 · fix(showcase): filtro sem marcas diz que ainda não há veículos [017]
 - Marca e modelo vazio passa a mostrar 'Nenhum veículo anunciado ainda.' em vez da lista vazia.
+
+# 2026-11-24 · feat(site): abertura mais direta, setas no celular e página do leilão [017]
+- Abertura da página inicial: 'Compre, venda e cuide do seu veículo num só lugar' e uma linha. Setas ‹ › da faixa de tipos também no celular. Nova /conheca/leilao (em breve; Quero ser avisado pelo WhatsApp do atendimento), no menu Serviços e no sitemap; chamadas externas das páginas de vendas abrem em outra aba.

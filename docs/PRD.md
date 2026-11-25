@@ -391,7 +391,7 @@ Navegação:
 ## 7. Requisitos funcionais por tela
 
 ### [1a] Catálogo
-**Página inicial `/`** (spec 017): abertura "A sua plataforma automotiva: compre, venda e cuide do seu veículo, tudo aqui", o quadro Buscar · Vender e os produtos da CajuGo, sem a lista. A vitrine fica em `/veiculos` (com os filtros na URL; `/?filtros` responde 308 para lá).
+**Página inicial `/`** (spec 017): abertura "Compre, venda e cuide do seu veículo num só lugar", o quadro Buscar · Vender e os produtos da CajuGo, sem a lista. A vitrine fica em `/veiculos` (com os filtros na URL; `/?filtros` responde 308 para lá).
 
 **Modos**
 - **CajuGo** (`/veiculos`): cabeçalho com logo CajuGo; quadro com as abas Comprar (busca + faixa de tipos com ilustração, no lugar da barra de filtros até escolher o tipo) e Vender (chamada para `/lojistas`) (spec 014); título "Veículos novos e usados à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".

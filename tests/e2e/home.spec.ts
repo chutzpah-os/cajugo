@@ -6,9 +6,7 @@ test("[HOM-FR-001] [HOM-NFR-001] página inicial: abertura, Buscar · Vender e p
   page,
 }) => {
   await page.goto("/");
-  await expect(
-    page.getByText(/compre, venda e cuide do seu veículo/),
-  ).toBeVisible();
+  await expect(page.getByText(/venda e cuide do seu veículo/)).toBeVisible();
   await expect(page.getByTestId("showcase-panel")).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Produtos CajuGo" }),

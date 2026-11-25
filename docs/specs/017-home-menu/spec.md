@@ -26,6 +26,7 @@ Pedido do dono do produto em 2026-11-25: a `/` vira a página principal da CajuG
   - **Assinar**: Plano Catálogo para lojas, Carro por assinatura (Em breve);
   - **Descobrir**: Para lojistas (`/conheca/lojistas`), Caju Indica (`/conheca/caju-indica`) e Rede Caju (`/conheca/rede-caju`), cada um com a sua página de vendas (como funciona, o que ganha, perguntas e o link para entrar ou se cadastrar); Tabela FIPE (Em breve).
 - **HOM-FR-007** O rodapé traz o Instagram @caju.go (pedido do dono, 2026-11-25).
+- **HOM-FR-008** Serviços · **Leilão** leva à página de vendas `/conheca/leilao` (serviço que ajuda o comprador a escolher o veículo no leilão), marcada como em breve, com **Quero ser avisado** pelo WhatsApp do atendimento.
 - **HOM-FR-004** No celular, o menu [11a] traz as mesmas seções, cada uma abrindo as suas opções.
 - **HOM-FR-005** Item Em breve não é link: mostra o selo e não leva a lugar nenhum.
 
