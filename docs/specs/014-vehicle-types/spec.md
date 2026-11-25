@@ -94,7 +94,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   - manual e nota fiscal.
 
   Tem também **Sinistro com indenização**: Nenhum, Pequena monta, Média monta ou Grande monta.
-- **TIP-FR-018** A página do veículo [1b] mostra o Histórico do veículo, com o que o lojista informou e "Não informado" no resto. A vitrine [1a] tem o filtro **Sem passagem por leilão** e **Sem sinistro**.
+- **TIP-FR-018** (substituído pela spec 019, procedência e situação, em 2026-11-25) A página do veículo [1b] mostra o Histórico do veículo, com o que o lojista informou e "Não informado" no resto. A vitrine [1a] tem o filtro **Sem passagem por leilão** e **Sem sinistro**.
 
 - **TIP-FR-020** (pedido do dono do produto, 2026-11-25) O topo da vitrine [1a]/[15a] abre com a apresentação da CajuGo em duas colunas no desktop (à esquerda, "Compre, venda e cuide do seu veículo num só lugar" e o texto do que dá para fazer na CajuGo; à direita, a ilustração; na página inicial, spec 017), e logo abaixo um quadro com duas abas, **Buscar** e **Vender**. A faixa de tipos rola sem barra de rolagem aparente (no desktop, setas nas pontas):
   - **Buscar** (aberta ao chegar): a busca por texto e, logo abaixo, a faixa de tipos (TIP-FR-007), com **uma ilustração por tipo, um veículo só em cada uma**;

@@ -176,6 +176,9 @@
 ## 018 · Indicação legítima — telas 4c (lojista), 8b, 8g
 - O lojista indicado vê quem indicou e contesta; o admin invalida ou mantém. Spec em `docs/specs/018-referral-legitimacy/` (clarified).
 
+## 019 · Procedência e situação do veículo — telas 2a, 1a, 1b, 14d
+- Leilão, sinistro, GNV, remarcação, gravame e restrições: livres, com aviso obrigatório ou bloqueados (no servidor); declaração de veracidade; selo Leilão; filtro Procedência. Spec em `docs/specs/019-vehicle-provenance/` (clarified).
+
 ## 017 · Página inicial e menu do site
 - `/` como página inicial, vitrine em `/veiculos`, páginas por tipo, menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir, páginas de vendas em `/conheca/*`, Entrar e cadastros com desktop. Spec em `docs/specs/017-home-menu/` (in-progress).
 

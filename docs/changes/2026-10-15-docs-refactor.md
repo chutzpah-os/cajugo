@@ -1316,3 +1316,6 @@
 
 # 2026-11-24 · feat(site): abertura mais direta, setas no celular e página do leilão [017]
 - Abertura da página inicial: 'Compre, venda e cuide do seu veículo num só lugar' e uma linha. Setas ‹ › da faixa de tipos também no celular. Nova /conheca/leilao (em breve; Quero ser avisado pelo WhatsApp do atendimento), no menu Serviços e no sitemap; chamadas externas das páginas de vendas abrem em outra aba.
+
+# 2026-11-24 · docs(vehicles): spec da procedência e situação do veículo [019]
+- Spec 019: seção obrigatória no cadastro (procedência, sinistro, GNV, remarcação, gravame, restrições, roubo); três grupos (livre, aviso obrigatório, bloqueado no servidor); selo Leilão; filtro Procedência; declaração de veracidade; procedência sempre na ficha; motivo de denúncia; chamada do LaudoCaju. Substitui o TIP-FR-018 da 014.

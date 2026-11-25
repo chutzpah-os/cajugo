@@ -667,3 +667,6 @@
 
 # 2026-11-24 · feat(site): abertura mais direta, setas no celular e página do leilão [017]
 - Pedidos do dono em 2026-11-25.
+
+# 2026-11-24 · docs(vehicles): spec da procedência e situação do veículo [019]
+- Regras do dono do produto em 2026-11-25 contra golpe e desistência; ele pediu para completar como fosse melhor.
