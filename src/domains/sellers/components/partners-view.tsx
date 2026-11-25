@@ -124,7 +124,7 @@ export function PartnersView({
             ))}
           </ul>
         ) : (
-          <EmptyState icon="🤝" title="Nenhum parceiro ainda">
+          <EmptyState title="Nenhum parceiro ainda">
             Quando um vendedor pedir parceria, o pedido aparece aqui.
           </EmptyState>
         )}

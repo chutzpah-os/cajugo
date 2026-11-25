@@ -242,7 +242,6 @@ async function Content({ searchParams }: PageProps<"/painel/veiculos">) {
           </p>
         ) : (
           <EmptyState
-            icon="🚗"
             title="Seu catálogo está vazio"
             action={
               <ButtonLink href="/painel/veiculos/novo">

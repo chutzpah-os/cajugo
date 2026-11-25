@@ -14,7 +14,7 @@ export function HiddenList({
 }) {
   if (!cards.length)
     return (
-      <EmptyState icon="👁" title="Nenhum anúncio oculto">
+      <EmptyState title="Nenhum anúncio oculto">
         Os anúncios ocultados pela equipe aparecem aqui.
       </EmptyState>
     );

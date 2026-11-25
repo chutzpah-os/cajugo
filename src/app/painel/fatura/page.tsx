@@ -38,7 +38,6 @@ async function Content() {
       <section className="flex flex-col gap-4 pt-4 pb-24 lg:max-w-2xl">
         {view.open.length === 0 ? (
           <EmptyState
-            icon="🧾"
             title="Nenhuma fatura em aberto"
             action={
               <ButtonLink href="/painel/conta" variant="ghost">

@@ -154,7 +154,7 @@ export default async function VehiclePage({ params }: PageProps<"/v/[slug]">) {
           />
         }
       />
-      <SiteFooter barSpace />
+      <SiteFooter />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { brl } from "@/platform/br/money";
+import { brlWhole } from "@/platform/br/money";
 import type { VehiclePage } from "../service";
 import { VehicleDetails, VehicleSold } from "./vehicle-details";
 
@@ -47,7 +47,11 @@ const PAGE: Live = {
     citySlug: "aracaju-se",
     initials: "SA",
     logoPublicId: null,
+    hours: null,
+    since: null,
+    vehicleCount: 12,
   },
+  similar: [],
 };
 
 const render = (page: Live = PAGE) =>
@@ -63,21 +67,21 @@ describe("página do veículo [1b]", () => {
     expect(html).toContain("1/2");
     expect(html).toContain("Abaixo da FIPE");
     expect(html).toContain("Único dono");
-    expect(html).toContain(brl(6500000));
+    expect(html).toContain(brlWhole(6500000));
     expect(html).toContain("Final de placa");
     expect(html).toContain("IPVA pago");
     expect(html).toContain("Carro de garagem.");
     expect(html).toContain("Ar-condicionado");
   });
 
-  it("[SHW-FR-008] barra do WhatsApp abre a conversa do anúncio e o card leva ao estoque", () => {
+  it("[SHW-FR-008] WhatsApp abre a conversa do anúncio e Sobre a loja leva ao estoque", () => {
     // Act
     const html = render();
 
     // Assert
     expect(html).toContain(`href="${PAGE.whatsappUrl}"`);
     expect(html).toContain('href="/loja/silva-autos"');
-    expect(html).toContain("Ver estoque da loja");
+    expect(html).toContain("Ver todos os veículos da loja");
   });
 
   it("[PRC-FR-003] nenhuma parcela estimada nem simulador na página", () => {

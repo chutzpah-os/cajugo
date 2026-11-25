@@ -278,7 +278,7 @@ export function SubscriptionsAdmin({ view }: { view: SubscriptionsView }) {
             ))}
           </ul>
         ) : (
-          <EmptyState icon="🧾" title="Nenhuma loja aqui">
+          <EmptyState title="Nenhuma loja aqui">
             Nenhuma assinatura neste filtro.
           </EmptyState>
         )}

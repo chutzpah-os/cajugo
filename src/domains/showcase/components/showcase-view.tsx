@@ -30,7 +30,7 @@ const basePathOf = (f: Filters) =>
   f.type ? vehicleType(f.type).path : SHOWCASE_PATH;
 
 const CONDITION_TITLE = {
-  novo: "Veículos novos (0 km) à venda",
+  novo: "Veículos novos à venda",
   usado: "Veículos usados à venda",
 } as const;
 
@@ -42,7 +42,7 @@ function titleOf(f: Filters): string {
     const feminine = title.includes(" novas ");
     const noun = title.split(feminine ? " novas" : " novos")[0];
     const word = {
-      novo: feminine ? "novas (0 km)" : "novos (0 km)",
+      novo: feminine ? "novas" : "novos",
       usado: feminine ? "usadas" : "usados",
     }[f.condition];
     return `${noun} ${word} à venda`;

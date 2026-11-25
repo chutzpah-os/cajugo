@@ -21,7 +21,7 @@ export function ReportQueue({
 }) {
   if (!cards.length)
     return (
-      <EmptyState icon="✅" title="Nenhuma denúncia aberta">
+      <EmptyState title="Nenhuma denúncia aberta">
         Quando alguém denunciar um anúncio, ele aparece aqui.
       </EmptyState>
     );

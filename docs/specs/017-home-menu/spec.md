@@ -19,7 +19,7 @@ Pedido do dono do produto em 2026-11-25: a `/` vira a página principal da CajuG
 - **HOM-FR-001** A `/` mostra a abertura (o que é a CajuGo, com a ilustração no desktop), o quadro **Buscar · Vender** (a busca e a faixa de tipos levam à vitrine com o filtro) e os produtos da CajuGo (Catálogo para lojas, Rede Caju, Caju Indica, LaudoCaju), sem a lista de veículos.
 - **HOM-FR-002** A vitrine fica em `/veiculos`, com os mesmos filtros na URL (`/veiculos?tipo=moto`); o endereço antigo com filtros (`/?marca=bmw`) responde 308 para `/veiculos?marca=bmw`.
 - **HOM-FR-003** Em todas as páginas públicas (vitrine, veículo, loja, descoberta, lojistas, termos, favoritos, entrar, recuperar senha e os cadastros), o cabeçalho tem os menus que abrem com a lista de opções:
-  - **Comprar**: Veículos novos (0 km) e Usados (`?estado=`; o seminovo saiu a pedido do dono em 2026-11-25), Carros, Motos, Picapes, Caminhões, Todos os veículos, Favoritos;
+  - **Comprar**: Veículos novos e Usados (`?estado=`; o seminovo saiu a pedido do dono em 2026-11-25), Carros, Motos, Picapes, Caminhões, Todos os veículos, Favoritos;
   - **Vender**: Anunciar minha loja, Ser vendedor da Rede Caju, Indicar uma loja (Caju Indica);
   - **Financiar**: Simular financiamento (Em breve);
   - **Cuidar**: LaudoCaju · consulta veicular (Em breve até a 016), Seguro (Em breve);

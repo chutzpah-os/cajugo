@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { brl } from "@/platform/br/money";
+import { brlWhole } from "@/platform/br/money";
 import { IMAGE_WIDTHS, imageUrlFor } from "@/platform/cloudinary/urls";
 import { vehicleAlt } from "@/platform/seo/catalog";
 import { FavoriteButton } from "@/domains/buyers/components/favorite-button";
@@ -16,8 +16,8 @@ import type { PublicCard as Card, VehiclePage } from "../service";
 import { Gallery } from "./gallery";
 import { favoriteSnapshot, PublicCard } from "./public-card";
 import { ShareButton } from "./share-button";
-import { StoreIdentity } from "./store-identity";
 import { Unavailable } from "./unavailable";
+import { FinancingNotice, PriceCompare, StoreAbout } from "./vehicle-blocks";
 
 type Live = Extract<VehiclePage, { kind: "vehicle" }>;
 
@@ -75,116 +75,163 @@ export function VehicleDetails({
     storeSlug: page.store.slug,
     shared: page.shared,
   };
+  const whatsapp = (
+    <WhatsappButton
+      href={page.whatsappUrl}
+      lead={lead}
+      data-testid="whatsapp"
+      className="flex h-12 items-center justify-center rounded-button bg-whatsapp text-[15px] font-bold text-white"
+    >
+      WhatsApp
+    </WhatsappButton>
+  );
+  const parcelas = (
+    <a
+      href="#parcelas"
+      data-testid="see-installments"
+      className="flex h-12 flex-none items-center justify-center rounded-button bg-caju px-5 text-[15px] font-bold text-white"
+    >
+      Ver parcelas
+    </a>
+  );
   return (
-    <main className="mx-auto w-full max-w-[480px] flex-1 pb-24 md:max-w-3xl">
-      <Gallery
-        images={page.photos.map((id) =>
-          imageUrlFor(cloudName, id, IMAGE_WIDTHS.full),
-        )}
-        alt={alt}
-      >
-        <Link href={backHref} className={`${overlayButton} left-3`}>
-          Voltar
-        </Link>
-        <div className="absolute top-3 right-3 flex gap-2">
-          <ShareButton path={page.path} title={alt} className={overlayPill} />
-          <FavoriteButton
-            snapshot={favoriteSnapshot(page)}
-            className="bg-[rgba(28,27,32,.7)] text-white"
-          />
-        </div>
-      </Gallery>
-      <div className="relative -mt-5 flex flex-col gap-5 rounded-t-[20px] bg-surface p-4">
-        {page.badges.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {page.badges.map((b) => (
-              <Badge key={b} tone="ok">
-                {b}
-              </Badge>
-            ))}
-          </div>
-        )}
-        <div>
-          <h1 className="text-[24px] leading-tight tracking-[-0.02em]">
-            {page.make} <strong className="font-extrabold">{page.model}</strong>
-          </h1>
-          {page.version && (
-            <p className="text-sm text-text-3 uppercase">{page.version}</p>
+    <main className="w-full flex-1 pb-12">
+      {/* Galeria contida na coluna do conteúdo, para não esticar as fotos (pedido do dono). */}
+      <div className="mx-auto w-full max-w-[480px] md:max-w-3xl lg:mt-6 lg:max-w-6xl lg:px-6">
+        <Gallery
+          images={page.photos.map((id) =>
+            imageUrlFor(cloudName, id, IMAGE_WIDTHS.full),
           )}
-        </div>
-        {page.priceCents !== null && (
-          <div>
-            <p className="text-[28px] font-extrabold">{brl(page.priceCents)}</p>
-          </div>
-        )}
-        <dl
-          data-testid="vehicle-specs"
-          className="grid grid-cols-2 gap-x-3 gap-y-3 rounded-card border border-line p-3"
+          alt={alt}
         >
-          <Spec
-            wide
-            label="Cidade"
-            value={`${page.store.city}/${page.store.state}`}
-          />
-          {specs(page).map(([label, value]) =>
-            value === null || value === "" ? null : (
-              <Spec key={label} label={label} value={value} />
-            ),
-          )}
-          {page.conditions.map((c) => (
-            <Spec key={c} label={c} value="Sim" />
-          ))}
-        </dl>
-        {page.description && (
-          <section className="flex flex-col gap-1.5">
-            <h2 className="text-[17px] font-extrabold">Sobre este carro</h2>
-            <p className="text-[15px] whitespace-pre-line text-text-2">
-              {page.description}
-            </p>
-          </section>
-        )}
-        {page.features.length > 0 && (
-          <section className="flex flex-col gap-2">
-            <h2 className="text-[17px] font-extrabold">Itens do veículo</h2>
-            <ul className="flex flex-wrap gap-1.5">
-              {page.features.map((f) => (
-                <li
-                  key={f}
-                  className="rounded-full bg-neutral-soft px-3 py-1.5 text-[13px] font-semibold"
-                >
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-        <section className="flex flex-col gap-3 rounded-card border border-line p-3">
-          <StoreIdentity {...page.store} cloudName={cloudName} />
-          <ButtonLink
-            variant="ghost"
-            block
-            href={`/loja/${page.store.slug}`}
-            data-testid="store-link"
-          >
-            Ver estoque da loja
-          </ButtonLink>
-        </section>
-        <ContactForm {...lead} />
-        {related}
-        <ReportTrigger />
+          <Link href={backHref} className={`${overlayButton} left-3`}>
+            Voltar
+          </Link>
+          <div className="absolute top-3 right-3 flex gap-2">
+            <ShareButton path={page.path} title={alt} className={overlayPill} />
+            <FavoriteButton
+              snapshot={favoriteSnapshot(page)}
+              className="bg-[rgba(28,27,32,.7)] text-white"
+            />
+          </div>
+        </Gallery>
       </div>
-      <div className="fixed inset-x-0 bottom-0 border-t border-line bg-surface p-3">
-        <div className="mx-auto max-w-[480px] md:max-w-3xl">
-          <WhatsappButton
-            href={page.whatsappUrl}
-            lead={lead}
-            data-testid="whatsapp"
-            className="flex h-[50px] items-center justify-center rounded-button bg-whatsapp text-[15px] font-bold text-white"
+      {/* Desktop: blocos à esquerda e a coluna fixa à direita (015, PRC-FR-006). */}
+      <div className="relative mx-auto -mt-5 grid w-full max-w-[480px] gap-4 md:max-w-3xl lg:mt-6 lg:max-w-6xl lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-6 lg:px-6">
+        <div className="flex flex-col gap-5 rounded-t-[20px] bg-surface p-4 lg:col-start-1 lg:row-start-1 lg:rounded-card lg:border lg:border-line lg:p-8">
+          {page.badges.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {page.badges.map((b) => (
+                <Badge key={b} tone="ok">
+                  {b}
+                </Badge>
+              ))}
+            </div>
+          )}
+          <div>
+            <h1 className="text-[24px] leading-tight tracking-[-0.02em] uppercase lg:text-[32px]">
+              {page.make}{" "}
+              <strong className="font-extrabold text-caju">{page.model}</strong>
+            </h1>
+            {page.version && (
+              <p className="text-sm text-text-3 uppercase">{page.version}</p>
+            )}
+          </div>
+          {/* Celular: preço, Ver parcelas e WhatsApp logo abaixo do título. */}
+          <div className="flex flex-col gap-3 lg:hidden">
+            {page.priceCents !== null && (
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[28px] font-extrabold whitespace-nowrap">
+                  {brlWhole(page.priceCents)}
+                </p>
+                {parcelas}
+              </div>
+            )}
+            {whatsapp}
+          </div>
+          <dl
+            data-testid="vehicle-specs"
+            className="grid grid-cols-2 gap-x-3 gap-y-4 lg:grid-cols-4"
           >
-            WhatsApp
-          </WhatsappButton>
+            <Spec
+              wide
+              label="Cidade"
+              value={`${page.store.city} - ${page.store.state}`}
+            />
+            {specs(page).map(([label, value]) =>
+              value === null || value === "" ? null : (
+                <Spec key={label} label={label} value={value} />
+              ),
+            )}
+            {page.conditions.map((c) => (
+              <Spec key={c} label={c} value="Sim" />
+            ))}
+          </dl>
+          {page.description && (
+            <section className="flex flex-col gap-1.5 border-t border-line pt-5">
+              <h2 className="text-[13px] text-text-3">Sobre este veículo</h2>
+              <p className="text-[15px] whitespace-pre-line text-text-2">
+                {page.description}
+              </p>
+            </section>
+          )}
+          {page.features.length > 0 && (
+            <section className="flex flex-col gap-3 border-t border-line pt-5">
+              <h2 className="text-[13px] text-text-3">Itens do veículo</h2>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-3 text-[15px] font-semibold lg:grid-cols-4">
+                {page.features.map((f) => (
+                  <li key={f}>{f}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+        {/* Coluna da direita: acompanha a rolagem no desktop; no celular, o formulário. */}
+        <aside className="flex flex-col gap-4 bg-surface p-4 lg:sticky lg:top-6 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:rounded-card lg:border lg:border-line lg:p-6">
+          <div className="hidden flex-col gap-3 lg:flex">
+            {page.priceCents !== null && (
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[30px] font-extrabold tracking-[-0.02em] whitespace-nowrap">
+                  {brlWhole(page.priceCents)}
+                </p>
+                {parcelas}
+              </div>
+            )}
+            {whatsapp}
+          </div>
+          <ContactForm {...lead} />
+        </aside>
+        <div className="flex flex-col gap-4 px-4 lg:col-start-1 lg:row-start-2 lg:px-0">
+          <StoreAbout store={page.store} />
+          <PriceCompare compare={page.priceCompare} />
+          <FinancingNotice />
+          {related}
+          <ReportTrigger />
         </div>
       </div>
+      {page.similar.length > 0 && (
+        <section
+          aria-labelledby="parecidos"
+          className="mx-auto mt-10 flex w-full max-w-[480px] flex-col gap-4 px-4 md:max-w-3xl lg:max-w-6xl lg:px-6"
+        >
+          <h2 id="parecidos" className="text-[22px] font-extrabold">
+            Você também pode gostar
+          </h2>
+          <ul
+            data-testid="similar-list"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {page.similar.map((card) => (
+              <PublicCard
+                key={card.vehicleId}
+                card={card}
+                cloudName={cloudName}
+                showStore
+              />
+            ))}
+          </ul>
+        </section>
+      )}
       <ReportSheet vehicleId={page.vehicleId} />
     </main>
   );

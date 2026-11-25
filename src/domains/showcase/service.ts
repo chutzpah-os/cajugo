@@ -16,6 +16,7 @@ import {
   sql,
   type SQL,
 } from "drizzle-orm";
+import type { WeekHours as StoreHoursJson } from "@/platform/br/opening-hours";
 import { TYPE_OF_EVERY_VEHICLE } from "./vehicle-types";
 import {
   isStoreLive,
@@ -666,7 +667,13 @@ export type VehiclePage =
         citySlug: string | null;
         initials: string;
         logoPublicId: string | null;
+        /** Sobre a loja (015, PRC-FR-007): horário, desde quando e quantos anúncios. */
+        hours: StoreHoursJson | null;
+        since: Date | null;
+        vehicleCount: number;
       };
+      /** Você também pode gostar (015, PRC-FR-008). */
+      similar: PublicCard[];
     }
   | {
       kind: "unavailable";
@@ -724,13 +731,14 @@ async function sameVehicleAverage(
 async function similarTo(
   db: Db,
   v: { id: string; makeSlug: string | null; city: string },
+  limit = 4,
 ): Promise<PublicCard[]> {
   const others = ne(vehicles.id, v.id);
   const find = (extra: SQL | undefined) =>
     baseQuery(db)
       .where(and(publicVisible("showcase"), others, extra))
       .orderBy(desc(vehicles.rankScore), desc(vehicles.id))
-      .limit(4);
+      .limit(limit);
   let rows = v.makeSlug ? await find(eq(vehicles.makeSlug, v.makeSlug)) : [];
   if (!rows.length) rows = await find(eq(stores.city, v.city));
   return toCards(rows);
@@ -780,6 +788,9 @@ export async function vehiclePage(
       state: stores.state,
       storeWhatsapp: stores.whatsapp,
       logoPublicId: stores.logoPublicId,
+      storeId: stores.id,
+      storeHours: stores.hours,
+      storeSince: stores.activatedAt,
     })
     .from(vehicles)
     .innerJoin(stores, eq(stores.id, vehicles.storeId))
@@ -813,7 +824,15 @@ export async function vehiclePage(
     .from(vehiclePhotos)
     .where(eq(vehiclePhotos.vehicleId, v.id))
     .orderBy(asc(vehiclePhotos.position));
-  const averageCents = await sameVehicleAverage(db, v);
+  const [averageCents, [{ n: vehicleCount }], similar] = await Promise.all([
+    sameVehicleAverage(db, v),
+    db
+      .select({ n: count() })
+      .from(vehicles)
+      .innerJoin(stores, eq(stores.id, vehicles.storeId))
+      .where(publicVisible({ storeId: v.storeId })),
+    similarTo(db, v, 4),
+  ]);
   const path = vehiclePath({ ...v, id: v.id });
   const name = [v.make, v.version ?? v.model, v.yearModel]
     .filter(Boolean)
@@ -874,7 +893,11 @@ export async function vehiclePage(
       citySlug: v.citySlug,
       initials: initialsOf(v.storeName),
       logoPublicId: v.logoPublicId,
+      hours: (v.storeHours as StoreHoursJson | null) ?? null,
+      since: v.storeSince,
+      vehicleCount,
     },
+    similar,
   };
 }
 

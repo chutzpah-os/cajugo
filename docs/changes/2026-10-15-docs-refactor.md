@@ -1271,3 +1271,6 @@
 
 # 2026-11-24 · feat(site): rodapé do site em todas as páginas públicas [015/T008]
 - SiteFooter: logo, Topo ↑, as colunas dos menus (017) e os links institucionais; itens Em breve com um ponto amarelo na mesma linha e a legenda no topo; 4 colunas no desktop, 2 no celular; espaço extra onde há barra fixa embaixo. Entra em toda página com o cabeçalho do site (inclusive 404 e erro).
+
+# 2026-11-24 · feat(showcase): página do veículo completa [015/T003-T007]
+- Página do veículo: galeria contida na coluna (3 fotos no desktop, setas quando há várias), duas colunas no desktop com a coluna da direita fixa (preço, Ver parcelas, WhatsApp, mensagem à loja), ficha e itens em 4 colunas, Sobre a loja (aberta agora no navegador, conquistas, todos os veículos), Compare os preços (anunciado, média CajuGo, FIPE e a diferença), Veja as parcelas com o aviso e campos desabilitados, Você também pode gostar (4). Sem a barra flutuante do WhatsApp. Sem emojis no sistema (estados vazios sem ícone; conquistas com ícones desenhados).

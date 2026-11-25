@@ -34,7 +34,7 @@ async function Content({
     <section className="flex flex-col gap-4 py-6">
       <h1 className="text-[22px] font-extrabold">Extrato</h1>
       {view.counts.all === 0 ? (
-        <EmptyState icon="🧾" title="Nenhuma venda ainda">
+        <EmptyState title="Nenhuma venda ainda">
           Suas vendas aparecem aqui quando a loja confirmar.
         </EmptyState>
       ) : (

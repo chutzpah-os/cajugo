@@ -112,7 +112,7 @@ export function SellersAdminView({
               ))}
             </ul>
           ) : kind === "in_review" ? (
-            <EmptyState icon="✅" title="Nenhum cadastro em análise">
+            <EmptyState title="Nenhum cadastro em análise">
               Novos vendedores aparecem aqui para a curadoria.
             </EmptyState>
           ) : (

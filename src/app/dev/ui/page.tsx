@@ -81,7 +81,6 @@ export default function UiPreview() {
         <YesNo name="acceptsTrade" label="Aceita troca" defaultValue />
       </section>
       <EmptyState
-        icon="🚗"
         title="Seu catálogo está vazio"
         action={<Button>+ Cadastrar primeiro veículo</Button>}
       >

@@ -76,7 +76,6 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
   if (!entries.length)
     return (
       <EmptyState
-        icon="♡"
         title="Nenhum favorito ainda"
         action={<ButtonLink href="/veiculos">Ver a vitrine</ButtonLink>}
       >

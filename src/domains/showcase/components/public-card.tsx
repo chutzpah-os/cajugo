@@ -83,7 +83,7 @@ export function PublicCard({
         />
       </div>
       <div className="flex flex-1 flex-col gap-0.5 px-4 pt-3.5 pb-4">
-        <div className="flex items-end justify-between gap-3">
+        <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="flex min-w-0 flex-col gap-0.5">
             <h2 className="text-base leading-tight font-extrabold tracking-[-0.01em] uppercase">
               <Link

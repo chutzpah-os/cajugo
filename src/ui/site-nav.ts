@@ -10,7 +10,7 @@ export const SITE_NAV: NavSection[] = [
     key: "comprar",
     label: "Comprar",
     items: [
-      { label: "Veículos novos (0 km)", href: "/veiculos?estado=novo" },
+      { label: "Veículos novos", href: "/veiculos?estado=novo" },
       { label: "Veículos usados", href: "/veiculos?estado=usado" },
       { label: "Carros", href: "/carros" },
       { label: "Motos", href: "/motos" },

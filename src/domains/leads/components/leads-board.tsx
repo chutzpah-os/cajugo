@@ -193,7 +193,7 @@ export function LeadsBoardView({
             Nenhum lead com este status.
           </p>
         ) : (
-          <EmptyState icon="💬" title="Nenhum lead ainda">
+          <EmptyState title="Nenhum lead ainda">
             Quando alguém mandar mensagem ou tocar no WhatsApp de um veículo
             seu, o contato aparece aqui.
           </EmptyState>

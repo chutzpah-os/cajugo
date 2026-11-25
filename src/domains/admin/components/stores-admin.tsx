@@ -210,7 +210,7 @@ export function StoresTab({
           })}
         </ul>
       ) : (
-        <EmptyState icon="🏪" title="Nenhuma loja aqui">
+        <EmptyState title="Nenhuma loja aqui">
           Nenhuma loja com essa busca ou filtro.
         </EmptyState>
       )}
@@ -327,7 +327,7 @@ export function ShowcaseTab({
           ))}
         </ul>
       ) : (
-        <EmptyState icon="🚗" title="Nenhum veículo aqui">
+        <EmptyState title="Nenhum veículo aqui">
           Nenhum veículo com essa busca ou filtro.
         </EmptyState>
       )}
@@ -401,7 +401,7 @@ export function UsersTab({
           })}
         </ul>
       ) : (
-        <EmptyState icon="👤" title="Nenhuma conta aqui">
+        <EmptyState title="Nenhuma conta aqui">
           Nenhuma conta com essa busca.
         </EmptyState>
       )}

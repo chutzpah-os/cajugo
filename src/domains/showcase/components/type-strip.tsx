@@ -177,6 +177,6 @@ export function ConditionList({
 }
 
 const CONDITION_LABEL: Record<Condition, string> = {
-  novo: "Novo (0 km)",
+  novo: "Novo",
   usado: "Usado",
 };

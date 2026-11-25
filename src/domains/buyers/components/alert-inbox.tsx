@@ -15,7 +15,7 @@ const card =
 export function AlertInbox({ inbox }: { inbox: Inbox }) {
   if (!inbox.matched.length && !inbox.waiting.length)
     return (
-      <EmptyState icon="🔔" title="Nenhum alerta pendente">
+      <EmptyState title="Nenhum alerta pendente">
         Quando alguém pedir &quot;Avisar quando chegar&quot; numa busca sem
         resultado, o pedido aparece aqui.
       </EmptyState>

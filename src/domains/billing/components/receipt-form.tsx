@@ -107,7 +107,7 @@ export function ReceiptForm({ suggestedAmount }: { suggestedAmount: string }) {
           />
         ) : file ? (
           <span className="font-bold" data-testid="receipt-file">
-            📄 {file.name} · {(file.size / 1024).toFixed(0)} KB
+            {file.name} · {(file.size / 1024).toFixed(0)} KB
           </span>
         ) : (
           <>

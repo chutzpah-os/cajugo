@@ -622,3 +622,6 @@
 
 # 2026-11-24 · feat(site): rodapé do site em todas as páginas públicas [015/T008]
 - PRC-FR-009 e pedido do dono: footer em toda página com header, inspirado no da Webmotors e com o menu da CajuGo.
+
+# 2026-11-24 · feat(showcase): página do veículo completa [015/T003-T007]
+- PRC-FR-001/004–008 e pedidos do dono em 2026-11-25 (referência da Webmotors; imagem menor para não perder qualidade; sem emojis).

@@ -55,7 +55,7 @@ Sucesso: o comprador compara o preço com a FIPE sem sair da página, e a CajuGo
   - **desktop**: a galeria no topo, com 3 fotos lado a lado e as setas; abaixo, duas colunas: à esquerda os blocos (título e selos, ficha em 4 colunas, Sobre este veículo, Itens do veículo em 4 colunas, LaudoCaju (016), Sobre a loja, Compare os preços, Veja as parcelas e Denunciar); à direita, a coluna que acompanha a rolagem com o preço, **Ver parcelas**, o WhatsApp e "Envie uma mensagem à loja";
   - **celular**: uma coluna, na mesma ordem, com a barra fixa embaixo (Ver parcelas · WhatsApp) só no celular.
 - **PRC-FR-007** O bloco **Sobre a loja** mostra o nome, a cidade, se a loja está aberta agora ("Aberta agora · fecha às 18h" ou "Fechada · abre segunda às 8h", pelo horário de Minha loja), as conquistas ("Na CajuGo desde mm/aaaa" e "N veículos anunciados") e **Ver todos os veículos da loja**.
-- **PRC-FR-008** **Você também pode gostar**: até 5 veículos parecidos da vitrine (mesma marca e modelo, ou faixa de preço próxima), em cards.
+- **PRC-FR-008** **Você também pode gostar**: até 4 veículos parecidos da vitrine, numa linha só no desktop (mesma marca e modelo, ou faixa de preço próxima), em cards.
 - **PRC-FR-009** As páginas públicas terminam com o rodapé do site: o logo, **Topo ↑** e as colunas dos menus (017), com os itens Em breve.
 
 ## Requisitos não funcionais

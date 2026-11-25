@@ -89,7 +89,7 @@ export function ReferralList({
   ] as const;
   if (!counts.all)
     return (
-      <EmptyState icon="🤝" title="Nenhuma indicação ainda">
+      <EmptyState title="Nenhuma indicação ainda">
         Envie o seu link: a loja que se cadastrar com ele aparece aqui.
       </EmptyState>
     );
