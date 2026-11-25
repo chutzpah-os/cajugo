@@ -14,7 +14,7 @@ CajuGo é uma plataforma de veículos com três produtos sobre a **mesma base de
 |---|---|---|
 | **Catálogo** | Lojistas | Assinatura R$ 100/mês, sem fidelidade. Catálogo próprio com link e QR code + vitrine CajuGo + contatos no WhatsApp. |
 | **Rede Caju** | Vendedores independentes (e lojistas que querem mais canais) | Grátis para o vendedor. O lojista paga a comissão do vendedor (definida por ele) + **taxa CajuGo de 1%** por carro vendido via vendedor. |
-| **Comprar veículos** (vitrine CajuGo) | Compradores | Grátis. Busca unificada de várias lojas, simulador de parcela, favoritos, contato direto com a loja. |
+| **Comprar veículos** (vitrine CajuGo) | Compradores | Grátis. Busca unificada de várias lojas, comparação com a Tabela FIPE, favoritos, contato direto com a loja. |
 
 Programa transversal: **Caju Indica** — qualquer pessoa indica lojas para o Catálogo e ganha 30% da mensalidade da loja indicada por até 3 meses.
 
@@ -35,7 +35,7 @@ A CajuGo (admin e suporte) gerencia lojas, assinaturas, pagamentos, vendedores, 
 ### 1.3 Proposta de valor
 - **Lojista:** catálogo profissional + vitrine com tráfego da CajuGo, preço fixo e baixo, leads no WhatsApp e, se quiser, uma rede de vendedores que só custa quando vende.
 - **Vendedor:** vitrine inteira para divulgar, link por veículo que identifica a venda e comissão combinada com cada loja parceira; não paga nada.
-- **Comprador:** busca unificada de várias lojas, informações padronizadas, simulador e favoritos.
+- **Comprador:** busca unificada de várias lojas, informações padronizadas, Tabela FIPE e favoritos.
 - **CajuGo:** receita recorrente (assinaturas) + taxa por venda via Rede Caju; crescimento por indicação (Caju Indica).
 
 ### 1.4 Fase de teste (este MVP)
@@ -122,7 +122,7 @@ Login por **celular com código** (aba "Celular" de [9f], tela [9c]) é **fase 2
 ## 3. Escopo
 
 ### 3.1 No MVP (tudo pronto no lançamento)
-1. **Vitrine pública** com busca, filtros, ordenação, favoritos, simulador, denúncia e banner Caju Indica [1a, 1b, 6d, 9a, 11a, 14a, 14b, 14d, 15a].
+1. **Vitrine pública** com busca, filtros, ordenação, favoritos, Compare os preços (FIPE), denúncia e banner Caju Indica [1a, 1b, 6d, 9a, 11a, 14a, 14b, 14d, 15a].
 2. **Catálogo por loja** (mesmo layout da vitrine, com identidade da loja).
 3. **Onboarding do lojista:** landing → cadastro (com código Caju Indica opcional) → Pix manual com comprovante → em análise → ativo [5b, 5c, 5d, 6c, 8d, 10a, 5e].
 4. **Painel do lojista:** veículos, divulgação, leads, loja, conta, fatura, crédito Caju Indica [1c, 2a, 6e, 3a–3c, 8e, 10c, 15b].
@@ -141,7 +141,7 @@ Login por **celular com código** (aba "Celular" de [9f], tela [9c]) é **fase 2
 - Envio automático de WhatsApp/SMS/push (no MVP o aviso aparece no painel e uma pessoa envia pelo botão `wa.me`).
 - Recuperação de senha automática por e-mail.
 - Pagamento de comissão intermediado pela plataforma.
-- Financiamento real com banco (o simulador é estimativa).
+- Financiamento real com banco: até a integração, o bloco "Veja as parcelas" avisa que as simulações ainda não estão abertas (spec 015).
 - Chat interno; app nativo; impulsionamento pago de anúncios; múltiplos planos.
 - Consulta de placa; motos e caminhões (o modelo já prevê `tipo`).
 
@@ -152,7 +152,7 @@ Login por **celular com código** (aba "Celular" de [9f], tela [9c]) é **fase 2
 ### 4.1 Comprador — encontrar e contatar
 1. Acessa a vitrine (§1.7) [1a] ou o catálogo de uma loja.
 2. Busca, filtra [6d] ou cai em "busca sem resultado" [12a] (sugestões + "Avisar quando chegar").
-3. Abre o veículo [1b]: galeria, preço, ficha, itens, loja; **Simular** [14b]; ♡ favoritar [14a]; **Denunciar** [14d].
+3. Abre o veículo [1b]: galeria, preço, ficha, itens, loja; **Compare os preços** e **Ver parcelas** (spec 015); ♡ favoritar [14a]; **Denunciar** [14d].
 4. Contata a loja por **WhatsApp** ou **formulário** → vira **lead** [3a] com origem "via CajuGo", "Seu catálogo" ou "via vendedor {nome}".
 5. Link antigo de veículo vendido abre [12d] com parecidos; o de veículo oculto pela CajuGo abre a página do catálogo, fora do Google.
 
@@ -280,11 +280,9 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - **Antifraude:** CPF único por resgate; autoindicação bloqueada (mesmo CPF/CNPJ/celular).
 - CPF e chave Pix do indicador só são pedidos no primeiro resgate.
 
-### 5.9 Simulador de parcelas [14b]
-- Entrada 0/20/30/50%; prazo 24/36/48/60x; taxa padrão **1,79% a.m.** (`Config`); fórmula Price.
-- Mostra parcela, entrada, valor financiado e total, com o aviso "estimativa sem análise de crédito".
-- CTA: enviar a simulação à loja pelo WhatsApp (mensagem pronta).
-- Cards e página do veículo mostram "a partir de R$ X/mês" se o lojista ativar "Exibir parcela estimada"; a mesma opção controla **Simular** e **Ver parcelas** (sem ela, o simulador não aparece).
+### 5.9 Financiamento [14b] (spec 015)
+- Sem parcela estimada em lugar nenhum: o simulador por conta Price saiu em 2026-11-25 (o dono o chamou de "simulação imaginária").
+- A página do veículo mostra **Ver parcelas** ao lado do preço e o bloco **Veja as parcelas desse veículo** com os campos desabilitados e o aviso de que as simulações ainda não estão abertas, enquanto a CajuGo integra com os bancos; nada é enviado nem guardado.
 
 ### 5.10 Favoritos [14a]
 - Coração em cards e na página do veículo; salvos no aparelho. Sincronizar com conta: fase 2 (o comprador não tem conta no MVP).
@@ -325,10 +323,7 @@ Nenhuma regra numérica fica fixa no código; o admin edita em [4c] e [8f] (spec
 | Taxa CajuGo por venda via vendedor | 1% |
 | Caju Indica: % da mensalidade · meses · resgate mínimo | 30% · 3 · R$ 50 |
 | Caju Indica: programa ativo; quem pode indicar | sim; lojistas, vendedores, indicadores |
-| Taxa do simulador | 1,79% a.m. |
 | Validade do "Avisar quando chegar" | 90 dias |
-| Entrada da parcela estimada | 20% |
-| Prazo da parcela estimada | 48x |
 | Aprovação prévia · mínimo de fotos | desligada · 6 |
 | Retenção de dados após cancelamento | 90 dias |
 
@@ -406,13 +401,11 @@ Navegação:
 - Links **Buscar por marca** e **Buscar por cidade** (modo CajuGo) → índice `/carros` com as páginas de descoberta (`SEO.md`, ADR 0014).
 - Chips horizontais: **Filtros** (com contador de filtros ativos) + Marca, Preço, Ano, Km, Câmbio (cada um abre bottom sheet).
 - Ordenação: Mais relevantes (padrão), Menor preço, Maior preço, Mais recentes, Menor km, Ano mais novo.
-- Card do veículo: foto de capa (contador 1/N), favoritar, selo opcional (ex.: "Abaixo da FIPE", "Único dono"), MARCA MODELO, versão, ano fab/modelo, km, cidade (UF), [loja], preço, "a partir de R$ X/mês*", botão **Ver detalhes**.
+- Card do veículo: foto de capa (contador 1/N), favoritar, selo opcional (ex.: "Abaixo da FIPE", "Único dono"), MARCA MODELO, versão, ano fab/modelo, km, cidade (UF), [loja], preço, botão **Ver detalhes**.
 - **Carregar mais veículos** (paginação de 20 em 20; ou scroll infinito).
-- Rodapé: "*Parcela estimada. Abra o veículo e toque em Simular para calcular a sua." (na página do veículo: "*Parcela estimada. Toque em Simular para calcular a sua.")
 
 **Regras**
 - Selo "Abaixo da FIPE" só se `preco < valor_fipe` (quando FIPE disponível).
-- Parcela estimada, **Simular** e **Ver parcelas** exibidos somente se o lojista ativou "Exibir parcela estimada" [2a]; entrada, prazo e taxa são regras editáveis pelo admin (§5.14).
 - Selo: um por card, na ordem Abaixo da FIPE → Único dono → Aceita troca → Garantia de fábrica; na página do veículo aparecem todos.
 - Vitrine sem veículos: "Os primeiros veículos estão chegando" com convite para lojistas, fora do Google até ter pelo menos 1 veículo.
 - Favoritos: §5.10 (no aparelho).
@@ -426,14 +419,14 @@ Navegação:
 - Galeria em carrossel (swipe), contador 1/N, botões voltar, compartilhar (Web Share API; fallback copiar link), favoritar.
 - Selos (Abaixo da FIPE, Aceita troca…).
 - Título "MARCA **MODELO**" + versão em caixa alta.
-- Bloco de preço: preço, "a partir de R$ X/mês*", link **Simular** → simulador [14b].
+- Bloco de preço: preço e **Ver parcelas** (→ bloco de financiamento, spec 015).
 - Ficha: Cidade (linha inteira), Ano, KM, Câmbio, Carroceria, Combustível, Final de placa, Cor, Aceita troca, Único dono, IPVA pago (+ Licenciado, Revisões na concessionária, Garantia de fábrica, Blindado quando = Sim).
 - "Sobre este carro" (descrição livre).
 - "Itens do veículo" (chips).
 - Card da loja: sigla/logo, nome, cidade, **Ver estoque da loja**.
 - Formulário "Envie uma mensagem à loja": Nome*, E-mail*, Telefone*, Mensagem (pré-preenchida "Olá, tenho interesse no veículo. Por favor entre em contato.") → **Enviar mensagem**.
 - **Denunciar anúncio** → [14d].
-- Barra fixa inferior: **WhatsApp** (abre `wa.me/{numero}?text=` com mensagem contendo veículo e link) e **Ver parcelas** (→ [14b]).
+- Barra fixa inferior: **WhatsApp** (abre `wa.me/{numero}?text=` com mensagem contendo veículo e link) e **Ver parcelas** (→ bloco de financiamento); só no celular (no desktop, a coluna da direita, spec 015).
 - Aberta por link de vendedor (`?ref={codigo}`): o código é guardado e o lead criado leva o vendedor.
 
 **Regras**
@@ -521,7 +514,7 @@ Seções e campos:
 
 **Ficha técnica**: Quilometragem (número), Câmbio (Manual/Automático/CVT/Automatizado), Combustível (Flex/Gasolina/Etanol/Diesel/Elétrico/Híbrido/GNV), Carroceria (Hatchback/Sedã/SUV/Picape/Minivan/Cupê/Conversível/Perua), Cor, Portas (2/3/4/5), Motor (1.0, 1.3…), Final de placa (derivado da placa).
 
-**Preço**: Preço de venda (R$, obrigatório); referência FIPE com diferença percentual ("4,6% abaixo"); toggle **Exibir parcela estimada**.
+**Preço**: Preço de venda (R$, obrigatório); referência FIPE com diferença percentual ("4,6% abaixo").
 
 **Condições** (Sim/Não): Aceita troca, Único dono, IPVA pago, Licenciado, Revisões na concessionária, Garantia de fábrica, Blindado.
 
@@ -590,7 +583,7 @@ Validação para publicar: ≥1 foto, marca, modelo, versão, anos, km, câmbio,
 - Vitrine CajuGo: nome e endereço (domínio) só para leitura (mudam por deploy, por causa de links, QR codes e SEO); WhatsApp de atendimento editável.
 - Toggle **Aprovar veículos antes de publicar** + mínimo de fotos.
 - **Rede Caju:** "Taxa CajuGo por carro vendido via vendedor (%)" + link para [7h]. Sem selos "em breve".
-- **Pagamento:** chave Pix e favorecido (troca com confirmação lado a lado e senha do admin), prazo de conferência, tolerância de atraso, taxa do simulador (`Config`, §5.14).
+- **Pagamento:** chave Pix e favorecido (troca com confirmação lado a lado e senha do admin), prazo de conferência, tolerância de atraso (`Config`, §5.14).
 - **Caju Indica:** link para as regras [8f].
 - Links: Dados pessoais, Alterar senha. Os históricos (regras, logs de atividade, histórico de cada loja) ficam só no item **Log** do menu do admin.
 - **Sair**.
@@ -779,8 +772,8 @@ Todas as confirmações geram registro em `LogAtividade`.
 ### [14a] Favoritos
 - Lista dos favoritos com selos "Baixou R$ X" e "Vendido"; estado vazio.
 
-### [14b] Simulador de parcelas
-- Entrada 0/20/30/50%, prazo 24/36/48/60x, taxa de `Config`; parcela, entrada, financiado, total, aviso de estimativa; CTA enviar simulação à loja pelo WhatsApp.
+### [14b] Veja as parcelas (spec 015)
+- Campos (nome, nascimento, e-mail, CPF, celular, estado) desabilitados, com o aviso da integração com os bancos; **Ver parcelas** desabilitado. Nenhum dado é enviado.
 
 ### [14c] Aprovação prévia (admin)
 - Fila com checagens automáticas (fotos ≥ mínimo, preço vs. FIPE, placa/chassi). **Aprovar** · **Pedir ajuste** (motivo; loja avisada).

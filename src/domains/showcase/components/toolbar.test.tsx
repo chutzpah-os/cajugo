@@ -150,7 +150,6 @@ const CARD: PublicCard = {
   city: "Aracaju",
   state: "SE",
   priceCents: 5000000,
-  installmentCents: null,
   coverPublicId: null,
   photoCount: 1,
   badge: null,

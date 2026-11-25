@@ -36,9 +36,6 @@ describe("lista de regras", () => {
     expect([...SETTING_KEYS].sort()).toEqual(
       [
         "cajugo_fee_bps",
-        "installment_down_bps",
-        "installment_months",
-        "installment_rate_bps",
         "membership_cents",
         "min_photos",
         "past_due_tolerance_days",
@@ -99,7 +96,6 @@ describe("limites das regras", () => {
   it("[CFG-FR-004] aceita os extremos de cada faixa", () => {
     expect(parse("cajugo_fee_bps", 0).success).toBe(true);
     expect(parse("cajugo_fee_bps", 2000).success).toBe(true);
-    expect(parse("installment_rate_bps", 1000).success).toBe(true);
     expect(parse("referral_pct_bps", 10000).success).toBe(true);
     expect(parse("retention_days", 3650).success).toBe(true);
     expect(parse("payout_min_cents", 100000).success).toBe(true);

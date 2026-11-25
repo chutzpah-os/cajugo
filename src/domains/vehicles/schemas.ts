@@ -44,7 +44,6 @@ export const vehicleFields = {
     .int("Informe o preço.")
     .min(100_000, "Confira o preço (mínimo R$ 1.000).")
     .max(100_000_000, "Confira o preço."),
-  showInstallment: z.boolean(),
   conditions: z
     .object(
       Object.fromEntries(

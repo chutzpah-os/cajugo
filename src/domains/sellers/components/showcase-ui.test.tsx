@@ -26,7 +26,6 @@ const card = (over: Partial<SellerCard>, id: string): SellerCard => ({
     state: "SE",
     storeName: "Loja A",
     priceCents: 6_000_000,
-    installmentCents: null,
     badge: null,
     coverPublicId: null,
     photoCount: 1,

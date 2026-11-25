@@ -610,3 +610,6 @@
 
 # 2026-11-24 · feat(showcase): página de cada tipo (/carros, /motos…) e fim do índice de marcas e cidades [014]
 - Pedido do dono: caminhos em vez de filtro, melhor para o SEO; e não gostou do índice.
+
+# 2026-11-24 · feat(showcase): fim da parcela estimada e filtro de condição [015/T002]
+- PRC-FR-003 e pedido do dono: nada de 'simulação imaginária'; e saber se o veículo é novo, seminovo ou usado.

@@ -16,7 +16,6 @@ const CARD: Card = {
   state: "SE",
   storeName: "Silva Autos",
   priceCents: 7_632_000,
-  installmentCents: null,
   badge: null,
   coverPublicId: null,
   photoCount: 0,

@@ -11,7 +11,7 @@ const form = (entries: Record<string, string>) => {
 describe("formulário das regras", () => {
   it("[CFG-FR-001] mostra cada regra no formato da tela", () => {
     expect(settingFormValue("cajugo_fee_bps", 150)).toBe("1,5");
-    expect(settingFormValue("installment_rate_bps", 179)).toBe("1,79");
+    expect(settingFormValue("referral_pct_bps", 3050)).toBe("30,5");
     expect(settingFormValue("payout_min_cents", 5000)).toBe("50,00");
     expect(settingFormValue("min_photos", 6)).toBe("6");
     expect(settingFormValue("require_approval", true)).toBe(true);

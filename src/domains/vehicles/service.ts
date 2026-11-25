@@ -279,7 +279,6 @@ export type VehicleFormView = {
   priceCents: number | null;
   fipePriceCents: number | null;
   fipeMonth: string | null;
-  showInstallment: boolean;
   conditions: Record<string, boolean>;
   features: string[];
   description: string | null;
@@ -334,7 +333,6 @@ export async function vehicleForm(
     priceCents: v.priceCents,
     fipePriceCents: v.fipePriceCents,
     fipeMonth: v.fipeMonth,
-    showInstallment: v.showInstallment,
     conditions: v.conditions as Record<string, boolean>,
     features: v.features,
     description: v.description,

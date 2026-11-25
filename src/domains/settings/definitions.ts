@@ -156,27 +156,6 @@ export const SETTINGS = {
     schema: integer(0, 30, " dias"),
     initial: 5,
   }),
-  installment_rate_bps: define({
-    group: "payment",
-    input: "percent",
-    label: "Taxa do simulador (% a.m.)",
-    schema: percent(0, 1000),
-    initial: 179,
-  }),
-  installment_down_bps: define({
-    group: "payment",
-    input: "percent",
-    label: "Entrada da parcela estimada (%)",
-    schema: percent(0, 9000),
-    initial: 2000,
-  }),
-  installment_months: define({
-    group: "payment",
-    input: "int",
-    label: "Prazo da parcela estimada (meses)",
-    schema: integer(6, 96, " meses"),
-    initial: 48,
-  }),
   cajugo_fee_bps: define({
     group: "network",
     input: "percent",

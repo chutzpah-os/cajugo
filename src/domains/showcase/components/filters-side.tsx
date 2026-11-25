@@ -1,7 +1,7 @@
 import { filtersToQuery, type Filters } from "../filters";
 import { FiltersForm, type MakeOption } from "./filters-form";
 import type { ListSource } from "../list-source";
-import { TypeList } from "./type-strip";
+import { ConditionList, TypeList } from "./type-strip";
 
 /** Filtros em coluna lateral no desktop [15a]; a ordem fica ao lado do contador. */
 export function FiltersSide({
@@ -29,7 +29,12 @@ export function FiltersSide({
       <h2 id="filtros-lateral" className="text-lg font-extrabold">
         Filtros
       </h2>
-      {types && <TypeList filters={filters} basePath={basePath} />}
+      {types && (
+        <>
+          <TypeList filters={filters} basePath={basePath} />
+          <ConditionList filters={filters} basePath={basePath} />
+        </>
+      )}
       <FiltersForm
         key={filtersToQuery(filters)}
         filters={filters}

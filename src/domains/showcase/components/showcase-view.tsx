@@ -16,7 +16,7 @@ import { FiltersSheet } from "./filters-sheet";
 import { SearchBox } from "./search-box";
 import { SellPitch } from "./sell-pitch";
 import { ShowcasePanel } from "./showcase-panel";
-import { TypeChip, TypeList } from "./type-strip";
+import { ConditionList, TypeChip, TypeList } from "./type-strip";
 import { vehicleType } from "../vehicle-types";
 import { CatalogView, showcaseCount } from "./catalog-view";
 import type { MakeOption } from "./filters-form";
@@ -35,8 +35,20 @@ const CONDITION_TITLE = {
   usado: "Veículos usados à venda",
 } as const;
 
-/** Título da lista: o do tipo, o do estado (novo, seminovo, usado) ou o geral. */
+/** Título da lista: o do tipo, o do estado (novo, seminovo, usado), os dois juntos ou o geral. */
 function titleOf(f: Filters): string {
+  if (f.type && f.condition) {
+    const title = vehicleType(f.type).title;
+    // "Motos novas e seminovas à venda" → "Motos" e o gênero do adjetivo.
+    const feminine = title.includes(" novas ");
+    const noun = title.split(feminine ? " novas" : " novos")[0];
+    const word = {
+      novo: feminine ? "novas (0 km)" : "novos (0 km)",
+      seminovo: feminine ? "seminovas" : "seminovos",
+      usado: feminine ? "usadas" : "usados",
+    }[f.condition];
+    return `${noun} ${word} à venda`;
+  }
   if (f.type) return vehicleType(f.type).title;
   if (f.condition) return CONDITION_TITLE[f.condition];
   return TITLE;
@@ -190,11 +202,18 @@ function ShowcaseSearch({
       <FiltersSheet
         lead={<TypeChip filters={filters} basePath={basePathOf(filters)} />}
         top={
-          <TypeList
-            filters={filters}
-            basePath={basePathOf(filters)}
-            id="tipo-folha"
-          />
+          <>
+            <TypeList
+              filters={filters}
+              basePath={basePathOf(filters)}
+              id="tipo-folha"
+            />
+            <ConditionList
+              filters={filters}
+              basePath={basePathOf(filters)}
+              id="condicao-folha"
+            />
+          </>
         }
         filters={filters}
         makes={makes}

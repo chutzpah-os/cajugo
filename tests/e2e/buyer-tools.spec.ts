@@ -1,6 +1,5 @@
 import type { Page } from "@playwright/test";
-import { simulateInstallment } from "../../src/platform/br/installment";
-import { brl, brlWhole } from "../../src/platform/br/money";
+import { brlWhole } from "../../src/platform/br/money";
 import { E2E_SHOWCASE as S } from "../../src/domains/showcase/testing/e2e-seed";
 import { audit, expect, test } from "./fixtures";
 
@@ -8,9 +7,6 @@ const CLEAN = { horizontalScroll: false, small: [], unlabeled: [] };
 const KEY = "cajugo:favorites:v1";
 /** Preço do veículo completo no seed (i = 0). */
 const FULL_PRICE = 3_000_000;
-
-const sheet = (page: Page) =>
-  page.getByRole("dialog", { name: "Simular parcelas" });
 
 async function setFavorites(page: Page, items: object[]) {
   await page.goto("/termos");
@@ -23,72 +19,14 @@ async function setFavorites(page: Page, items: object[]) {
 test.describe("ferramentas do comprador (390 px)", () => {
   test.setTimeout(120_000);
 
-  test("[BUY-FR-001] [BUY-FR-002] [BUY-FR-003] simulador pelos dois botões, com recálculo e mensagem à loja", async ({
+  test("[PRC-FR-003] página do veículo sem parcela estimada nem simulador", async ({
     page,
   }) => {
     await page.goto(`/v/${S.fullId}`);
-
-    await page.getByRole("button", { name: "Simular", exact: true }).click();
-    const dialog = sheet(page);
-    await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("Estimativa sem análise de crédito");
-    for (const group of ["Entrada", "Prazo"])
-      await expect(
-        dialog
-          .getByRole("group", { name: group })
-          .locator('[aria-pressed="true"]'),
-      ).toHaveCount(1);
-    expect(await audit(page), "[14b]").toEqual(CLEAN);
-
-    await dialog.getByRole("button", { name: "30%" }).click();
-    await dialog.getByRole("button", { name: "36x" }).click();
-    const rate = Number(
-      (await dialog.getByText(/^[\d,]+% ao mês$/).textContent())!
-        .match(/([\d,]+)%/)![1]
-        .replace(",", "."),
-    );
-    const sim = simulateInstallment({
-      priceCents: FULL_PRICE,
-      downBps: 3000,
-      months: 36,
-      rateBps: Math.round(rate * 100),
-    });
-    const numbers = dialog.getByTestId("simulation");
-    for (const value of [
-      sim.installmentCents,
-      sim.downCents,
-      sim.financedCents,
-      sim.totalCents,
-    ])
-      await expect(numbers).toContainText(brl(value));
-
-    const href = decodeURIComponent(
-      (await dialog.getByTestId("send-simulation").getAttribute("href"))!,
-    );
-    expect(href).toMatch(/^https:\/\/wa\.me\/5579999990000\?text=/);
-    expect(href).toContain(`/v/${S.fullId}-fiat-argo`);
-    expect(href).toContain(
-      `entrada de 30% (${brl(sim.downCents)}) e 36x de ${brl(sim.installmentCents)}`,
-    );
-
-    await dialog.getByRole("button", { name: "Fechar" }).click();
-    await expect(dialog).toBeHidden();
-    // Pelo teclado: no `next dev`, o indicador do Next cobre o canto da barra fixa.
-    await page.getByRole("button", { name: "Ver parcelas" }).focus();
-    await page.keyboard.press("Enter");
-    await expect(sheet(page)).toBeVisible();
-  });
-
-  test("[BUY-FR-001] sem a parcela ativada, nem Simular nem Ver parcelas", async ({
-    page,
-  }) => {
-    await page.goto(`/v/${S.hiddenId}`);
-    await expect(page.getByTestId("whatsapp")).toBeVisible();
+    await expect(page.getByTestId("whatsapp").first()).toBeVisible();
+    await expect(page.getByText("/mês")).toHaveCount(0);
     await expect(
       page.getByRole("button", { name: "Simular", exact: true }),
-    ).toHaveCount(0);
-    await expect(
-      page.getByRole("button", { name: "Ver parcelas" }),
     ).toHaveCount(0);
   });
 
@@ -229,12 +167,7 @@ test.describe("ferramentas do comprador (390 px)", () => {
 test.describe("ferramentas do comprador no desktop [15a] (1280 px)", () => {
   test.use({ viewport: { width: 1280, height: 800 } });
 
-  test("[BUY-NFR-001] simulador e favoritos no desktop", async ({ page }) => {
-    await page.goto(`/v/${S.fullId}`);
-    await page.getByRole("button", { name: "Simular", exact: true }).click();
-    await expect(sheet(page)).toBeVisible();
-    expect(await audit(page), "[14b] desktop").toEqual(CLEAN);
-
+  test("[BUY-NFR-001] favoritos no desktop", async ({ page }) => {
     await setFavorites(page, [
       {
         id: S.fullId,

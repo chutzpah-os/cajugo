@@ -11,13 +11,11 @@ import {
   ReportTrigger,
 } from "@/domains/moderation/components/report-sheet";
 import { Badge } from "@/ui/badge";
-import { cn } from "@/ui/cn";
 import { ButtonLink } from "@/ui/button";
 import type { PublicCard as Card, VehiclePage } from "../service";
 import { Gallery } from "./gallery";
 import { favoriteSnapshot, PublicCard } from "./public-card";
 import { ShareButton } from "./share-button";
-import { SimulatorSheet, SimulatorTrigger } from "./simulator";
 import { StoreIdentity } from "./store-identity";
 import { Unavailable } from "./unavailable";
 
@@ -117,16 +115,6 @@ export function VehicleDetails({
         {page.priceCents !== null && (
           <div>
             <p className="text-[28px] font-extrabold">{brl(page.priceCents)}</p>
-            {page.installmentCents !== null && (
-              <p className="text-sm text-text-2">
-                a partir de {brl(page.installmentCents)}/mês*
-              </p>
-            )}
-            {page.simulator && (
-              <SimulatorTrigger className="flex min-h-11 items-center text-sm font-semibold text-caju-deep underline">
-                Simular
-              </SimulatorTrigger>
-            )}
           </div>
         )}
         <dl
@@ -184,24 +172,9 @@ export function VehicleDetails({
         <ContactForm {...lead} />
         {related}
         <ReportTrigger />
-        {page.installmentCents !== null && (
-          <p className="text-xs text-text-3">
-            *Parcela estimada. Toque em Simular para calcular a sua.
-          </p>
-        )}
       </div>
       <div className="fixed inset-x-0 bottom-0 border-t border-line bg-surface p-3">
-        <div
-          className={cn(
-            "mx-auto max-w-[480px] md:max-w-3xl",
-            page.simulator && "grid grid-cols-2 gap-2",
-          )}
-        >
-          {page.simulator && (
-            <SimulatorTrigger className="flex h-[50px] items-center justify-center rounded-button border-[1.5px] border-ink text-[15px] font-bold text-ink">
-              Ver parcelas
-            </SimulatorTrigger>
-          )}
+        <div className="mx-auto max-w-[480px] md:max-w-3xl">
           <WhatsappButton
             href={page.whatsappUrl}
             lead={lead}
@@ -212,18 +185,6 @@ export function VehicleDetails({
           </WhatsappButton>
         </div>
       </div>
-      {page.simulator && (
-        <SimulatorSheet
-          setup={page.simulator}
-          lead={lead}
-          cover={
-            page.photos[0]
-              ? imageUrlFor(cloudName, page.photos[0], IMAGE_WIDTHS.thumb)
-              : null
-          }
-          storeName={page.store.name}
-        />
-      )}
       <ReportSheet vehicleId={page.vehicleId} />
     </main>
   );

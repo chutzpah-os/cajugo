@@ -1259,3 +1259,6 @@
 
 # 2026-11-24 · feat(showcase): página de cada tipo (/carros, /motos…) e fim do índice de marcas e cidades [014]
 - Cada tipo tem a sua página com título, canônica e trilha (rota interna /vitrine-tipo/[tipo] pelo proxy); filtros com tipo levam a ela; /veiculos?tipo= → 308; tipo sem veículo fica fora do Google; /carros vira a vitrine de carros e o índice de marcas e cidades sai (página, componente, consulta e testes); menu aponta para /carros, /motos, /picapes, /caminhoes. e2e de descoberta passa a seguir o link pelo teclado (o aviso do Next cobre o canto em dev).
+
+# 2026-11-24 · feat(showcase): fim da parcela estimada e filtro de condição [015/T002]
+- Sai a parcela estimada do card e da página, o simulador [14b] (componente, conta Price e testes), o toggle 'Exibir parcela estimada' do cadastro e as regras de taxa, entrada e prazo; coluna show_installment e linhas antigas de setting_values ficam sem uso (remoção futura com migration autorizada). Filtro lateral e folha ganham Condição (novo 0 km, seminovo, usado), e o título segue tipo e condição. Spec 015 com o layout completo da página do veículo (T006–T008).

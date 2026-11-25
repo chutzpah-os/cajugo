@@ -621,11 +621,6 @@ export function VehicleForm({
               {vsFipe && <> · {vsFipe}</>}
             </p>
           ) : null}
-          <Toggle
-            title="Exibir parcela estimada"
-            checked={!!values.showInstallment}
-            onChange={(e) => change({ showInstallment: e.target.checked })}
-          />
         </Section>
 
         <Section id="condicoes" title="Condições">

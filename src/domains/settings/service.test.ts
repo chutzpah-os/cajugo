@@ -35,9 +35,6 @@ describe("settings", () => {
         membership_cents: 10000,
         review_business_days: 1,
         past_due_tolerance_days: 5,
-        installment_down_bps: 2000,
-        installment_months: 48,
-        installment_rate_bps: 179,
         cajugo_fee_bps: 100,
         require_approval: false,
         min_photos: 6,
@@ -117,7 +114,6 @@ describe("settings", () => {
       // Assert
       expect(pub).toEqual({
         supportWhatsapp: "557981360206",
-        installmentRateBps: 179,
         referral: { enabled: true, pctBps: 3000, months: 3 },
       });
       expect(JSON.stringify(pub)).not.toContain("52998224725");

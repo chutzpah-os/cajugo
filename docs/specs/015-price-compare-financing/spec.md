@@ -51,6 +51,13 @@ Sucesso: o comprador compara o preço com a FIPE sem sair da página, e a CajuGo
   - no celular, junto do preço, no topo da página;
   - no desktop, na coluna da direita (como a Webmotors): preço, **Ver parcelas** e o formulário "Envie uma mensagem à loja", que acompanha a rolagem.
 
+- **PRC-FR-006** (pedido do dono, 2026-11-25, na referência da Webmotors) A página do veículo [1b] fica mais completa e responsiva:
+  - **desktop**: a galeria no topo, com 3 fotos lado a lado e as setas; abaixo, duas colunas: à esquerda os blocos (título e selos, ficha em 4 colunas, Sobre este veículo, Itens do veículo em 4 colunas, LaudoCaju (016), Sobre a loja, Compare os preços, Veja as parcelas e Denunciar); à direita, a coluna que acompanha a rolagem com o preço, **Ver parcelas**, o WhatsApp e "Envie uma mensagem à loja";
+  - **celular**: uma coluna, na mesma ordem, com a barra fixa embaixo (Ver parcelas · WhatsApp) só no celular.
+- **PRC-FR-007** O bloco **Sobre a loja** mostra o nome, a cidade, se a loja está aberta agora ("Aberta agora · fecha às 18h" ou "Fechada · abre segunda às 8h", pelo horário de Minha loja), as conquistas ("Na CajuGo desde mm/aaaa" e "N veículos anunciados") e **Ver todos os veículos da loja**.
+- **PRC-FR-008** **Você também pode gostar**: até 5 veículos parecidos da vitrine (mesma marca e modelo, ou faixa de preço próxima), em cards.
+- **PRC-FR-009** As páginas públicas terminam com o rodapé do site: o logo, **Topo ↑** e as colunas dos menus (017), com os itens Em breve.
+
 ## Requisitos não funcionais
 - **PRC-NFR-001** Os blocos novos funcionam em 390 e 1280 px, sem rolagem horizontal e com alvos de toque de pelo menos 44 px.
 - **PRC-NFR-002** A página do veículo continua com LCP ≤ 2,5 s e CLS ≤ 0,1 em 4G (SEO.md): a FIPE e a média vêm do banco, nunca da API na hora da visita.

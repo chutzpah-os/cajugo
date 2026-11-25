@@ -61,12 +61,6 @@ export function CatalogList({
           onClick={list.load}
         />
       )}
-      {list.items.some((c) => c.installmentCents !== null) && (
-        <p className="text-xs text-text-3">
-          *Parcela estimada. Abra o veículo e toque em Simular para calcular a
-          sua.
-        </p>
-      )}
     </>
   );
 }

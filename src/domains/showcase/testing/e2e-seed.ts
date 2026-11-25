@@ -146,7 +146,6 @@ export async function seedShowcase(
             features: ["airConditioning", "abs"],
             description: "Carro de garagem, revisado.",
             // Simulador [14b] (006c): só com a parcela ativada pelo lojista.
-            showInstallment: true,
           }
         : i === S.total - 1
           ? { ...v, id: S.hiddenId, shareOnCajugo: false }

@@ -16,8 +16,6 @@ import {
   type SQL,
 } from "drizzle-orm";
 import { TYPE_OF_EVERY_VEHICLE } from "./vehicle-types";
-import { getSettings } from "@/domains/settings/service";
-import type { SimulatorSetup } from "./simulator";
 import {
   isStoreLive,
   LIVE_STATUSES,
@@ -33,7 +31,6 @@ import {
 import { brl } from "@/platform/br/money";
 import { appUrl } from "@/platform/http/urls";
 import { whatsappLink } from "@/platform/whatsapp/link";
-import { estimatedInstallment } from "@/platform/br/installment";
 import { plainText } from "@/platform/br/slug";
 import { STATE_NAME } from "@/platform/geo/states";
 import { stores, vehiclePhotos, vehicles } from "@/platform/db/schema";
@@ -65,7 +62,6 @@ export type PublicCard = {
   state: string;
   storeName: string;
   priceCents: number | null;
-  installmentCents: number | null;
   badge: string | null;
   coverPublicId: string | null;
   photoCount: number;
@@ -165,7 +161,6 @@ const cardColumns = {
   mileageKm: vehicles.mileageKm,
   priceCents: vehicles.priceCents,
   fipePriceCents: vehicles.fipePriceCents,
-  showInstallment: vehicles.showInstallment,
   conditions: vehicles.conditions,
   city: stores.city,
   state: stores.state,
@@ -189,7 +184,6 @@ type CardRow = {
   mileageKm: number | null;
   priceCents: number | null;
   fipePriceCents: number | null;
-  showInstallment: boolean;
   conditions: unknown;
   city: string;
   state: string;
@@ -198,8 +192,7 @@ type CardRow = {
   photoCount: number;
 };
 
-async function toCards(db: Db, rows: CardRow[]): Promise<PublicCard[]> {
-  const s = await getSettings(db);
+function toCards(rows: CardRow[]): PublicCard[] {
   return rows.map((r) => ({
     vehicleId: r.vehicleId,
     path: vehiclePath({
@@ -220,15 +213,6 @@ async function toCards(db: Db, rows: CardRow[]): Promise<PublicCard[]> {
     state: r.state,
     storeName: r.storeName,
     priceCents: r.priceCents,
-    installmentCents:
-      r.showInstallment && r.priceCents !== null
-        ? estimatedInstallment({
-            priceCents: r.priceCents,
-            downBps: s.installment_down_bps,
-            months: s.installment_months,
-            rateBps: s.installment_rate_bps,
-          })
-        : null,
     badge: pickBadges(r)[0] ?? null,
     coverPublicId: r.coverPublicId,
     photoCount: r.photoCount,
@@ -350,7 +334,7 @@ export async function searchShowcase(
   const page = rows.slice(0, PAGE);
   const last = page.at(-1);
   return {
-    items: await toCards(db, page),
+    items: toCards(page),
     total: totals.total,
     stores: totals.stores,
     nextCursor:
@@ -370,7 +354,7 @@ export async function favoriteCards(
 ): Promise<PublicCard[]> {
   if (!ids.length) return [];
   const rows = await baseQuery(db).where(publicVisible({ vehicleIds: ids }));
-  return toCards(db, rows);
+  return toCards(rows);
 }
 
 /**
@@ -451,7 +435,7 @@ export async function firstMatch(
     )
     .orderBy(asc(vehicles.publishedAt), asc(vehicles.id))
     .limit(1);
-  const [card] = await toCards(db, rows);
+  const [card] = toCards(rows);
   return card ?? null;
 }
 
@@ -656,7 +640,6 @@ export type VehiclePage =
       yearModel: number | null;
       mileageKm: number | null;
       priceCents: number | null;
-      installmentCents: number | null;
       transmission: string | null;
       fuel: string | null;
       body: string | null;
@@ -671,7 +654,6 @@ export type VehiclePage =
       features: string[];
       whatsappUrl: string;
       /** Simulador [14b]; `null` sem "Exibir parcela estimada" ou sem preço (BUY-FR-001). */
-      simulator: SimulatorSetup | null;
       /** Marca e modelo nos endereços de descoberta (DSC-FR-008). */
       makeSlug: string | null;
       modelSlug: string | null;
@@ -718,7 +700,7 @@ async function similarTo(
       .limit(4);
   let rows = v.makeSlug ? await find(eq(vehicles.makeSlug, v.makeSlug)) : [];
   if (!rows.length) rows = await find(eq(stores.city, v.city));
-  return toCards(db, rows);
+  return toCards(rows);
 }
 
 /**
@@ -745,7 +727,6 @@ export async function vehiclePage(
       mileageKm: vehicles.mileageKm,
       priceCents: vehicles.priceCents,
       fipePriceCents: vehicles.fipePriceCents,
-      showInstallment: vehicles.showInstallment,
       transmission: vehicles.transmission,
       fuel: vehicles.fuel,
       body: vehicles.body,
@@ -797,7 +778,6 @@ export async function vehiclePage(
     .from(vehiclePhotos)
     .where(eq(vehiclePhotos.vehicleId, v.id))
     .orderBy(asc(vehiclePhotos.position));
-  const s = await getSettings(db);
   const path = vehiclePath({ ...v, id: v.id });
   const name = [v.make, v.version ?? v.model, v.yearModel]
     .filter(Boolean)
@@ -819,15 +799,6 @@ export async function vehiclePage(
     yearModel: v.yearModel,
     mileageKm: v.mileageKm,
     priceCents: v.priceCents,
-    installmentCents:
-      v.showInstallment && v.priceCents !== null
-        ? estimatedInstallment({
-            priceCents: v.priceCents,
-            downBps: s.installment_down_bps,
-            months: s.installment_months,
-            rateBps: s.installment_rate_bps,
-          })
-        : null,
     transmission: v.transmission
       ? ((TRANSMISSIONS as Record<string, string>)[v.transmission] ?? null)
       : null,
@@ -849,18 +820,6 @@ export async function vehiclePage(
       contact,
       `Olá! Tenho interesse no ${name}${price}, anunciado na CajuGo: ${appUrl()}${path}`,
     ),
-    simulator:
-      v.showInstallment && v.priceCents !== null
-        ? {
-            priceCents: v.priceCents,
-            downBps: s.installment_down_bps,
-            months: s.installment_months,
-            rateBps: s.installment_rate_bps,
-            whatsappNumber: contact,
-            title: name,
-            url: `${appUrl()}${path}`,
-          }
-        : null,
     makeSlug: v.makeSlug,
     modelSlug: v.modelSlug,
     store: {

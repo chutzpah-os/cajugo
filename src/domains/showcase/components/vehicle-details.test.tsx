@@ -19,7 +19,6 @@ const PAGE: Live = {
   yearModel: 2022,
   mileageKm: 12000,
   priceCents: 6500000,
-  installmentCents: 150000,
   transmission: "Manual",
   fuel: "Flex",
   body: "Hatch",
@@ -33,7 +32,6 @@ const PAGE: Live = {
   conditions: ["Único dono", "IPVA pago"],
   features: ["Ar-condicionado"],
   whatsappUrl: "https://wa.me/5579999990000?text=oi",
-  simulator: null,
   makeSlug: "fiat",
   modelSlug: "argo",
   store: {
@@ -77,43 +75,9 @@ describe("página do veículo [1b]", () => {
     expect(html).toContain("Ver estoque da loja");
   });
 
-  it("[SHW-FR-008] sem parcela ativada, não mostra a estimativa", () => {
-    expect(render({ ...PAGE, installmentCents: null })).not.toContain("/mês");
-  });
-
-  it("[BUY-FR-001] [BUY-FR-002] Simular e Ver parcelas abrem o simulador com as regras marcadas", () => {
-    // Arrange
-    const simulator = {
-      priceCents: 6_000_000,
-      downBps: 2000,
-      months: 48,
-      rateBps: 179,
-      whatsappNumber: "5579999990000",
-      title: "Fiat Argo 2022",
-      url: "https://cajugo.test/v/v1",
-    };
-
-    // Act
-    const html = render({ ...PAGE, simulator });
-
-    // Assert
-    expect(html).toContain(">Simular<");
-    expect(html).toContain(">Ver parcelas<");
-    expect(html).toContain('id="simulador"');
-    // Abre antes do JavaScript carregar (Invoker Commands do HTML)
-    expect(html).toContain('commandfor="simulador" command="show-modal"');
-    expect(html).toMatch(/aria-pressed="true"[^>]*>.*?20%/);
-    expect(html).toMatch(/aria-pressed="true"[^>]*>.*?48x/);
-    expect(html).toContain("Estimativa sem análise de crédito");
-    expect(html).toContain(brl(1_200_000)); // entrada de 20%
-    expect(html).toContain(brl(4_800_000)); // financiado
-    expect(html).toContain("https://wa.me/5579999990000?text=");
-  });
-
-  it("[BUY-FR-001] sem a parcela ativada, nem Simular nem Ver parcelas", () => {
-    const html = render({ ...PAGE, simulator: null });
-    expect(html).not.toContain("Simular<");
-    expect(html).not.toContain("Ver parcelas");
+  it("[PRC-FR-003] nenhuma parcela estimada nem simulador na página", () => {
+    const html = render();
+    expect(html).not.toContain("/mês");
     expect(html).not.toContain('id="simulador"');
   });
 

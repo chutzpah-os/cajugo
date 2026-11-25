@@ -38,18 +38,17 @@ describe("vitrine [1a]", () => {
     ]);
   });
 
-  it("[SHW-FR-003] card com capa, número de fotos, endereço, cidade, selo e parcela só quando ativada", async () => {
+  it("[SHW-FR-003] card com capa, número de fotos, endereço, cidade e selo, sem parcela estimada (PRC-FR-003)", async () => {
     const a = await liveStore(t.db, "loja-a");
     const v = await car(
       t.db,
       a.storeId,
-      { priceCents: 7632000, fipePriceCents: 8000000, showInstallment: true },
+      { priceCents: 7632000, fipePriceCents: 8000000 },
       3,
     );
     await car(t.db, a.storeId, {
       priceCents: 9000000,
       fipePriceCents: 8000000,
-      showInstallment: false,
     });
 
     const { items } = await searchShowcase(t.db, {
@@ -65,13 +64,12 @@ describe("vitrine [1a]", () => {
       city: "Aracaju",
       state: "SE",
       badge: "Abaixo da FIPE",
-      installmentCents: expect.any(Number),
     });
     expect(cheap.path).toMatch(
       new RegExp(`^/v/${v.id}-gm-chevrolet-onix-2020-aracaju-se$`),
     );
     expect(other.badge).toBeNull();
-    expect(other.installmentCents).toBeNull();
+    expect(cheap).not.toHaveProperty("installmentCents");
   });
 
   it("[SHW-FR-003] um selo por card, na ordem de prioridade", () => {

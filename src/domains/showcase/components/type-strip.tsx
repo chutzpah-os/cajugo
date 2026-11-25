@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { filterHref, type Filters } from "../filters";
+import { filterHref, type Condition, type Filters } from "../filters";
 import { typeImage, VEHICLE_TYPES, vehicleType } from "../vehicle-types";
 import { cn } from "@/ui/cn";
 import { ScrollRow } from "@/ui/scroll-row";
@@ -131,3 +131,53 @@ export function TypeList({
     </nav>
   );
 }
+
+/** Seção **Condição** logo depois do tipo: novo (0 km), seminovo ou usado (017). */
+export function ConditionList({
+  filters,
+  basePath,
+  id = "condicao-lateral",
+}: {
+  filters: Filters;
+  basePath: string;
+  id?: string;
+}) {
+  return (
+    <nav aria-labelledby={id} className="flex flex-col gap-1">
+      <h3 id={id} className="text-[15px] font-extrabold">
+        Condição
+      </h3>
+      <ul className="flex flex-col">
+        {(Object.keys(CONDITION_LABEL) as Condition[]).map((c) => {
+          const on = filters.condition === c;
+          return (
+            <li key={c}>
+              <Link
+                href={filterHref(basePath, {
+                  ...filters,
+                  condition: on ? undefined : c,
+                })}
+                aria-current={on ? "true" : undefined}
+                className="flex min-h-11 items-center gap-2.5 rounded-input px-1 text-sm text-text-2 hover:bg-bg aria-[current=true]:font-bold aria-[current=true]:text-ink"
+              >
+                <span
+                  aria-hidden
+                  className="flex size-5 flex-none items-center justify-center rounded-full border border-field group-aria-[current=true]:border-ink"
+                >
+                  {on && <span className="size-2.5 rounded-full bg-ink" />}
+                </span>
+                {CONDITION_LABEL[c]}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
+const CONDITION_LABEL: Record<Condition, string> = {
+  novo: "Novo (0 km)",
+  seminovo: "Seminovo",
+  usado: "Usado",
+};

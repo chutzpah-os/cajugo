@@ -99,11 +99,6 @@ export function PublicCard({
             {brlWhole(card.priceCents)}
           </p>
         )}
-        {card.installmentCents !== null && (
-          <p className="text-[13px] text-text-2">
-            ou {brlWhole(card.installmentCents)}/mês*
-          </p>
-        )}
         <p className="mt-2.5 border-t border-line-2 pt-2.5 text-xs text-text-3">
           {meta}
         </p>
