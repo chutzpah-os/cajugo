@@ -1175,3 +1175,6 @@
 
 # 2026-11-24 · 012b/T002 migration 0024
 - Índices activity_log_created e activity_log_entity_created; aplicada no staging.
+
+# 2026-11-24 · feat(settings): histórico das regras na própria tela [012]
+- Histórico de cada regra e da chave Pix abre em <details> embaixo do grupo na Conta admin e nas Regras do Caju Indica; rota /admin/conta/historico/[key] removida.

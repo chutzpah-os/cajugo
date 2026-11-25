@@ -526,3 +526,6 @@
 
 # 2026-11-24 · 012b/T002 migration 0024
 - Logs e histórico da loja paginados sem varrer a tabela.
+
+# 2026-11-24 · feat(settings): histórico das regras na própria tela [012]
+- O dono do produto não quer abrir outra página para ver informação que cabe na tela anterior.

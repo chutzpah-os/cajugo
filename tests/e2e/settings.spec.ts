@@ -36,11 +36,13 @@ test.describe("regras configuráveis", () => {
       page.getByLabel("Tolerância de atraso antes da suspensão (dias)"),
     ).toHaveValue("7");
 
-    await group(page, "Pagamento")
-      .getByRole("link", { name: /Histórico: Tolerância de atraso/ })
-      .click();
-    await expect(page.locator("main ol li").first()).toContainText("5 → 7");
-    await expect(page.locator("main ol li").first()).toContainText("E2E admin");
+    // O histórico abre na própria tela, embaixo do grupo (sem ir a outra página).
+    const history = group(page, "Pagamento").getByTestId(
+      "history-past_due_tolerance_days",
+    );
+    await history.getByText(/Histórico: Tolerância de atraso/).click();
+    await expect(history.locator("ol li").first()).toContainText("5 → 7");
+    await expect(history.locator("ol li").first()).toContainText("E2E admin");
   });
 
   test("[CFG-FR-004] valor fora da faixa mostra o erro e mantém o que foi digitado", async ({
@@ -96,7 +98,9 @@ test.describe("regras configuráveis", () => {
     await page.getByLabel("Sua senha").fill(password());
     await page.getByRole("button", { name: "Confirmar troca" }).click();
     await expect(page.getByText("Chave Pix atualizada.")).toBeVisible();
-    await expect(page.getByText("p***@cajugo.test")).toBeVisible();
+    await expect(
+      page.getByText("p***@cajugo.test", { exact: true }),
+    ).toBeVisible();
   });
 
   test("[CFG-FR-007] recuperar senha usa o WhatsApp definido nas regras", async ({

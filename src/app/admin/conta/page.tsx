@@ -4,6 +4,10 @@ import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireArea } from "@/domains/auth/guards";
 import { can } from "@/domains/auth/permissions";
 import { PixKeyEditor } from "@/domains/settings/components/pix-key-editor";
+import {
+  historiesOf,
+  SettingHistory,
+} from "@/domains/settings/components/setting-history";
 import { SettingsGroupForm } from "@/domains/settings/components/settings-group-form";
 import { currentSettings } from "@/domains/settings/current";
 import { groupFields } from "@/domains/settings/form";
@@ -33,12 +37,15 @@ async function Content() {
   if (!allowed) return <NoPermission home={home} />;
   const settings = await currentSettings();
   const canEdit = can(session, "settings.edit");
+  const fieldsOf = (group: Parameters<typeof groupFields>[1]) =>
+    groupFields(settings, group);
   const form = (group: Parameters<typeof groupFields>[1], title: string) => (
     <SettingsGroupForm
       group={group}
       title={title}
-      fields={groupFields(settings, group)}
+      fields={fieldsOf(group)}
       canEdit={canEdit}
+      histories={historiesOf(session, fieldsOf(group))}
     />
   );
 
@@ -73,8 +80,9 @@ async function Content() {
       <SettingsGroupForm
         group="showcase"
         title="Vitrine CajuGo"
-        fields={groupFields(settings, "showcase")}
+        fields={fieldsOf("showcase")}
         canEdit={canEdit}
+        histories={historiesOf(session, fieldsOf("showcase"))}
       >
         <div className="flex flex-col gap-3">
           <TextField
@@ -96,6 +104,13 @@ async function Content() {
 
       <PixKeyEditor
         canEdit={canEdit}
+        history={
+          <SettingHistory
+            session={session}
+            settingKey="pix"
+            label="Chave Pix"
+          />
+        }
         current={
           settings.pix
             ? {

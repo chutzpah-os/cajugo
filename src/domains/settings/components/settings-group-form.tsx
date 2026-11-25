@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, type ReactNode } from "react";
 import { Button } from "@/ui/button";
 import { MoneyField, PercentField } from "@/ui/number-field";
@@ -29,6 +28,7 @@ export function SettingsGroupForm({
   fields,
   canEdit,
   children,
+  histories,
 }: {
   group: SettingGroup;
   title: string;
@@ -36,6 +36,8 @@ export function SettingsGroupForm({
   canEdit: boolean;
   /** Informações só de leitura no topo do grupo (ex.: nome e domínio da vitrine). */
   children?: ReactNode;
+  /** Histórico de cada regra, aberto na própria tela (montado no servidor). */
+  histories?: Record<string, ReactNode>;
 }) {
   const [state, action, pending] = useActionState<SaveSettingsState, FormData>(
     saveSettingsAction,
@@ -109,18 +111,11 @@ export function SettingsGroupForm({
             return null;
         }
       })}
-      <ul className="flex flex-wrap gap-x-4 text-sm">
-        {fields.map((f) => (
-          <li key={f.key}>
-            <Link
-              href={`/admin/conta/historico/${f.key}`}
-              className="flex min-h-11 items-center font-semibold text-caju-ink"
-            >
-              Histórico: {f.label.replace(/ \(.*\)$/, "")}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {histories && (
+        <div className="flex flex-col gap-2">
+          {fields.map((f) => histories[f.key])}
+        </div>
+      )}
       {state?.message && (
         <p
           role={state.ok ? "status" : "alert"}
