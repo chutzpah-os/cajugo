@@ -649,3 +649,6 @@
 
 # 2026-11-24 · test(showcase): e2e da página do veículo e do rodapé; 015 implementada [015/T005]
 - Fechamento da 015: todo FR e SEC com teste nomeado pelo ID.
+
+# 2026-11-24 · docs(referrals): spec da indicação legítima [018]
+- Pedido do dono: indicações legítimas, contra golpe.

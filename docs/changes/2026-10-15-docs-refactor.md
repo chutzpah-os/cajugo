@@ -1298,3 +1298,6 @@
 
 # 2026-11-24 · test(showcase): e2e da página do veículo e do rodapé; 015 implementada [015/T005]
 - e2e da página do veículo em 390 e 1280 px (Compare os preços, Ver parcelas → bloco sem envio, Sobre a loja, até 4 parecidos, sem /mês, auditoria) e do rodapé (menus, Em breve, Instagram) nas páginas públicas. Spec 015 implemented; PLAN com 015, 016 e 017.
+
+# 2026-11-24 · docs(referrals): spec da indicação legítima [018]
+- Spec 018: o lojista indicado vê quem indicou (só o nome) e pode contestar (recompensa suspensa, WhatsApp do atendimento); o admin invalida com motivo ou mantém; o indicador vê Contestada ou Não válida.

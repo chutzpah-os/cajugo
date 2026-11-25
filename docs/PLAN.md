@@ -173,6 +173,9 @@
 ## 016 · LaudoCaju · consulta veicular por Pix — telas 1b, admin
 - Pedido com contato, veículo e Pix de R$ 70; fila do admin (Recebi, Enviei); página de vendas `/laudocaju`. Spec em `docs/specs/016-laudo-caju/` (clarified).
 
+## 018 · Indicação legítima — telas 4c (lojista), 8b, 8g
+- O lojista indicado vê quem indicou e contesta; o admin invalida ou mantém. Spec em `docs/specs/018-referral-legitimacy/` (clarified).
+
 ## 017 · Página inicial e menu do site
 - `/` como página inicial, vitrine em `/veiculos`, páginas por tipo, menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir, páginas de vendas em `/conheca/*`, Entrar e cadastros com desktop. Spec em `docs/specs/017-home-menu/` (in-progress).
 
