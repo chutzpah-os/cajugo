@@ -7,7 +7,8 @@ export type ProgramLandingContent = {
   eyebrow: string;
   title: string;
   lead: string;
-  primary: { label: string; href: string };
+  /** `newTab`: a chamada sai do site (ex.: WhatsApp do atendimento). */
+  primary: { label: string; href: string; newTab?: boolean };
   /** Quem já participa: entrar no painel. */
   signIn: { label: string; href: string };
   /** Números em destaque logo abaixo da abertura. */
@@ -49,9 +50,10 @@ export function ProgramLanding({
   example?: ReactNode;
 }) {
   // Chamada para fora (ex.: WhatsApp do atendimento) abre em outra aba.
-  const external = c.primary.href.startsWith("http")
-    ? { target: "_blank", rel: "noopener noreferrer" }
-    : {};
+  const external =
+    c.primary.newTab || c.primary.href.startsWith("http")
+      ? { target: "_blank", rel: "noopener noreferrer" }
+      : {};
   return (
     <main className="w-full flex-1">
       <section className="bg-[radial-gradient(120%_140%_at_85%_10%,#e8551e_0%,#b23c12_38%,#1c1b20_78%)] text-white">

@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { connection } from "next/server";
 import { SiteHeader } from "@/domains/auth/components/site-header";
-import { currentSettings } from "@/domains/settings/current";
-import { publicSettings } from "@/domains/settings/service";
 import { pageMetadata } from "@/platform/seo/seo";
-import { whatsappLink } from "@/platform/whatsapp/link";
 import { SiteFooter } from "@/ui/site-footer";
 import { ProgramLanding } from "@/ui/program-landing";
 
@@ -15,18 +11,12 @@ export const metadata: Metadata = pageMetadata({
   path: "/conheca/leilao",
 });
 
-const MESSAGE =
-  "Olá! Quero ser avisado quando o serviço de leilão da CajuGo estiver disponível.";
-
 /**
  * Página de vendas do serviço de leilão (Serviços, 017): ajuda o comprador a escolher o
- * veículo no leilão. Ainda não existe: a chamada avisa pelo WhatsApp do atendimento.
+ * veículo no leilão. Ainda não existe: a chamada (`/conheca/leilao/avisar`) abre o
+ * WhatsApp do atendimento; a página fica estática.
  */
-export default async function AuctionLanding() {
-  // Número do atendimento nas regras [4c], lido por requisição (como em /recuperar).
-  await connection();
-  const { supportWhatsapp } = publicSettings(await currentSettings());
-  const notify = whatsappLink(supportWhatsapp, MESSAGE);
+export default function AuctionLanding() {
   return (
     <>
       <SiteHeader active="servicos" />
@@ -35,7 +25,11 @@ export default async function AuctionLanding() {
           eyebrow: "Leilão CajuGo · em breve",
           title: "Compre em leilão com segurança e ajuda de quem entende",
           lead: "A CajuGo vai ajudar você a escolher o veículo certo no leilão: avaliamos os lotes, consultamos o histórico e orientamos o seu lance.",
-          primary: { label: "Quero ser avisado", href: notify },
+          primary: {
+            label: "Quero ser avisado",
+            href: "/conheca/leilao/avisar",
+            newTab: true,
+          },
           signIn: { label: "Ver veículos à venda", href: "/veiculos" },
           highlights: [
             { value: "Seleção", label: "dos lotes que valem a pena" },

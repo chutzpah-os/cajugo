@@ -1325,3 +1325,6 @@
 
 # 2026-11-25 · feat(laudos): pedido do LaudoCaju e tela do Pix [016/T002]
 - Domínio laudos: requestLaudo (limite por rede, campo isca, schema estrito, placa normalizada, preço da época, código LC-XXXX sem caracteres ambíguos) e laudoPix (valor, chave, favorecido e BR Code com o código do pedido como identificador; nunca contatos nem placa). brCode aceita o txid.
+
+# 2026-11-25 · fix(site): página do leilão estática; build da Vercel volta a passar [017]
+- /conheca/leilao deixa de ler as regras ao renderizar (o build da Vercel parava no pré-render); 'Quero ser avisado' vai para /conheca/leilao/avisar, que lê o WhatsApp do atendimento e redireciona; chamada com newTab. pnpm build local: 76/76 páginas.
