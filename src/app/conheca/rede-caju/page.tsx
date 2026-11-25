@@ -57,8 +57,8 @@ export default function RedeCajuLanding() {
               text: "A CajuGo confere e aprova o seu cadastro. Depois, cada loja parceira aprova a parceria com você.",
             },
             {
-              title: "Divulgue e ganhe",
-              text: "Compartilhe os veículos com o seu link. Venda confirmada, a loja paga a sua comissão.",
+              title: "Encontre o cliente e ganhe",
+              text: "Você encontra o cliente e compartilha o veículo com o seu link. O cliente fala com a CajuGo, e a CajuGo passa a oportunidade para a loja. Venda confirmada, você recebe a comissão.",
             },
           ],
           benefits: [
@@ -80,6 +80,10 @@ export default function RedeCajuLanding() {
             },
           ],
           faq: [
+            {
+              q: "Eu falo direto com a loja?",
+              a: "Não. Você encontra a oportunidade, o cliente entra em contato pela CajuGo, e a CajuGo passa para o lojista. Assim ninguém fica no meio de um desencontro, e a venda fica registrada como sua.",
+            },
             {
               q: "Quem paga a comissão?",
               a: "A loja parceira, quando a venda é confirmada. O valor segue a comissão definida pela loja.",

@@ -1307,3 +1307,6 @@
 
 # 2026-11-24 · feat(sellers): aprovação dupla e avaliação dos vendedores na Rede Caju [017]
 - Cadastro e página de vendas da Rede Caju: a CajuGo e cada loja parceira aprovam o vendedor; bloco 'Como avaliamos os vendedores' (prioridade para indicados pelas lojas, com histórico e referências; documentos de todos; novos vendedores com treinamento, acompanhados pela CajuGo, só veículos da CajuGo e protocolos); perguntas novas. PRD §5.7 registra a política.
+
+# 2026-11-24 · feat(showcase): vitrine vazia fala com o comprador; Rede Caju pela plataforma [017]
+- Vitrine sem veículos: 'Ainda não há {motos} anunciadas na CajuGo' (segue o tipo), Ver todos os veículos e o convite à loja só como link discreto. Rede Caju: textos e perguntas dizem que o vendedor encontra a oportunidade, o cliente fala com a CajuGo e a CajuGo passa para o lojista; PRD §5.7 registra a regra e a mudança de fluxo a especificar.

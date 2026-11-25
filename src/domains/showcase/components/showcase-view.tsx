@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { cloudName } from "@/platform/cloudinary/cloudinary";
@@ -158,15 +159,7 @@ export async function ShowcaseView({
               alert={{ source: null }}
             />
           ) : (
-            <div className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-5">
-              <p className="text-[17px] font-extrabold">
-                Os primeiros veículos estão chegando
-              </p>
-              <p className="text-sm text-text-2">
-                Tem uma loja de veículos? Coloque o seu estoque na CajuGo.
-              </p>
-              <ButtonLink href="/lojistas">Anunciar minha loja</ButtonLink>
-            </div>
+            <EmptyShowcase filters={filters} />
           )
         }
       />
@@ -221,5 +214,45 @@ function ShowcaseSearch({
         source={null}
       />
     </>
+  );
+}
+
+/**
+ * Vitrine sem nenhum veículo (sem filtro, ou só com o tipo): fala com quem quer
+ * comprar; o convite à loja fica num link discreto (pedido do dono, 2026-11-25).
+ */
+function EmptyShowcase({ filters }: { filters: Filters }) {
+  const type = filters.type ? vehicleType(filters.type) : null;
+  // "Motos novas e usadas à venda" → "Motos": o substantivo do título do tipo.
+  const noun = type
+    ? type.title.split(type.title.includes(" novas ") ? " novas" : " novos")[0]
+    : "Veículos";
+  const feminine = type?.title.includes(" novas ") ?? false;
+  return (
+    <div
+      data-testid="empty-showcase"
+      className="flex flex-col items-start gap-3 rounded-card border border-line bg-surface p-6"
+    >
+      <p className="text-[19px] font-extrabold">
+        Ainda não há {noun.toLowerCase()}{" "}
+        {feminine ? "anunciadas" : "anunciados"}{" "}
+        {type ? "na CajuGo" : "pelas lojas"}
+      </p>
+      <p className="text-sm text-text-2">
+        Assim que as lojas cadastrarem,{" "}
+        {feminine ? "elas aparecem" : "eles aparecem"} aqui. Volte em breve.
+      </p>
+      {type && (
+        <ButtonLink href={SHOWCASE_PATH} variant="ghost">
+          Ver todos os veículos
+        </ButtonLink>
+      )}
+      <Link
+        href="/conheca/lojistas"
+        className="mt-1 text-[13px] text-text-3 underline underline-offset-2"
+      >
+        Tem uma loja de veículos? Anuncie aqui
+      </Link>
+    </div>
   );
 }

@@ -256,6 +256,7 @@ No MVP não há gateway: nenhum dado de cartão, nenhuma cobrança automática, 
 - Recibo e nota fiscal: fora do sistema no MVP.
 
 ### 5.7 Rede Caju
+- **Comunicação (2026-11-25):** o vendedor não fala direto com a loja nem com o lojista. Ele encontra a oportunidade, o cliente entra em contato pela plataforma da CajuGo, e a CajuGo passa para o lojista, evitando desencontros. (Mudança de fluxo a especificar: hoje o contato do cliente pelo link do vendedor vai para a loja pelo WhatsApp com o vendedor marcado, 008.)
 - **Avaliação dos vendedores (2026-11-25):** a CajuGo aprova o cadastro e cada loja parceira aprova a parceria. Prioridade para vendedores indicados pelas lojas, com histórico de vendas, conhecidos no mercado e com boas referências; todos enviam os documentos para a avaliação prévia. Novos vendedores independentes podem receber treinamento e começam vendendo acompanhados pela CajuGo, só veículos anunciados na CajuGo, seguindo os protocolos recomendados. O vendedor atua como independente.
 - Vendedor **não paga**.
 - **Curadoria:** cadastro [7a] entra "Em análise"; o admin verifica CPF, antecedentes (consulta por fora, pelo CPF) e a foto do documento enviada no cadastro e **aprova** [7h]; o suporte só consulta. Só aprovados aparecem para as lojas. Admin pode bloquear/desbloquear.

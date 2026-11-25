@@ -658,3 +658,6 @@
 
 # 2026-11-24 · feat(sellers): aprovação dupla e avaliação dos vendedores na Rede Caju [017]
 - Pedido do dono: deixar claro como os vendedores são escolhidos e acompanhados.
+
+# 2026-11-24 · feat(showcase): vitrine vazia fala com o comprador; Rede Caju pela plataforma [017]
+- Pedidos do dono em 2026-11-25.

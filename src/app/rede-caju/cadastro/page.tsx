@@ -36,7 +36,7 @@ const PANEL = {
   title: "Venda veículos das lojas e ganhe comissão",
   perks: [
     "Escolha os veículos da vitrine que quer divulgar",
-    "Compartilhe com o seu link de vendedor",
+    "Você encontra o cliente; ele fala com a CajuGo, que passa para a loja",
     "A loja parceira paga a comissão da venda",
     "Você atua como vendedor independente, no seu tempo",
     "A CajuGo e cada loja parceira aprovam o vendedor antes da parceria",
@@ -63,6 +63,10 @@ export default function SellerSignupPage() {
           "Divulgue os veículos e ganhe a comissão das vendas",
         ]}
         faq={[
+          {
+            q: "Eu falo direto com a loja?",
+            a: "Não. Você encontra a oportunidade, o cliente entra em contato pela CajuGo, e a CajuGo passa para o lojista.",
+          },
           {
             q: "Quem tem prioridade na aprovação?",
             a: "Vendedores indicados pelas lojas, com histórico de vendas, conhecidos no mercado e com boas referências. Mesmo assim, todos enviam os documentos para a avaliação prévia.",
