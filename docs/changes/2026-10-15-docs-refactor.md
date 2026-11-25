@@ -1223,3 +1223,6 @@
 
 # 2026-11-24 · feat(admin): lojas [1d] com as abas [012b/T013]
 - /admin/lojas com as abas Lojas (KPIs, busca, filtros, cards com Gerenciar), Veículos CajuGo (filtros Denunciados e Aguardando aprovação, Ocultar) e Usuários (busca, selos); /admin/veiculos mostra a mesma lista; 20 por vez com Ver mais; e2e em 390 e 1280 px. Obs.: a T011 (showcaseAdmin) entrou por engano no commit e73720d, das ilustrações.
+
+# 2026-11-24 · feat(admin): ocultados e mostrar de novo em Veículos [012b]
+- Veículos CajuGo ganha o filtro Ocultados (com contagem), o selo 'Oculto da vitrine' e o Mostrar de novo; o Ocultar vira botão discreto e segue pela confirmação com motivo ('Ocultar da vitrine'); e2e do ciclo ocultar → Ocultados → mostrar.

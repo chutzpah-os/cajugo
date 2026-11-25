@@ -18,7 +18,7 @@ describe("Veículos CajuGo do admin [1d] (012b)", () => {
     await t.close();
   });
 
-  it("[ADM-FR-006] lista os da vitrine com loja e preço; filtros Denunciados e Aguardando aprovação", async () => {
+  it("[ADM-FR-006] lista os da vitrine com loja e preço; filtros Denunciados, Aguardando aprovação e Ocultados", async () => {
     // Arrange
     const silva = await liveStore(t.db, "auto-silva");
     const onix = await car(t.db, silva.storeId, { model: "ONIX" });
@@ -27,6 +27,7 @@ describe("Veículos CajuGo do admin [1d] (012b)", () => {
       model: "HB20",
     });
     await car(t.db, silva.storeId, { shareOnCajugo: false });
+    const hidden = await car(t.db, silva.storeId, { status: "hidden" });
     const pending = await car(t.db, silva.storeId, {
       status: "pending_approval",
       model: "KWID",
@@ -46,6 +47,9 @@ describe("Veículos CajuGo do admin [1d] (012b)", () => {
     const waiting = await showcaseAdmin(t.db, support, {
       filtro: "aguardando",
     });
+    const hiddenOnes = await showcaseAdmin(t.db, support, {
+      filtro: "ocultados",
+    });
 
     // Assert
     expect(all.items.map((i) => i.vehicle.id)).toEqual([hb20.id, onix.id]);
@@ -53,12 +57,16 @@ describe("Veículos CajuGo do admin [1d] (012b)", () => {
       openReports: 1,
       vehicle: { storeName: "Loja auto-silva", priceCents: 5000000 },
     });
-    expect(all.counts).toEqual({ reported: 1, pending: 1 });
+    expect(all.counts).toEqual({ reported: 1, pending: 1, hidden: 1 });
     expect(reported.items.map((i) => i.vehicle.id)).toEqual([hb20.id]);
     expect(waiting.items).toEqual([
       expect.objectContaining({ pendingApproval: true }),
     ]);
     expect(waiting.items[0].vehicle.id).toBe(pending.id);
+    expect(hiddenOnes.items).toEqual([
+      expect.objectContaining({ hidden: true }),
+    ]);
+    expect(hiddenOnes.items[0].vehicle.id).toBe(hidden.id);
   });
 
   it("[ADM-FR-006] busca por marca, modelo ou loja, 20 por vez", async () => {

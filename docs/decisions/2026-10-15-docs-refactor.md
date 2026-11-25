@@ -574,3 +574,6 @@
 
 # 2026-11-24 · feat(admin): lojas [1d] com as abas [012b/T013]
 - ADM-FR-004, 006, 007, ADM-NFR-001; o título some no celular como na captura [1d], e fica para leitor de tela.
+
+# 2026-11-24 · feat(admin): ocultados e mostrar de novo em Veículos [012b]
+- Pedido do dono: o admin precisa desfazer o ocultar e ter certeza antes de ocultar; o veículo oculto sumia da lista.

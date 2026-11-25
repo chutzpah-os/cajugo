@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { AdminUserItem } from "@/domains/auth/service";
 import { HideSheet } from "@/domains/moderation/components/hide-sheet";
 import { ModeratedVehicle } from "@/domains/moderation/components/moderated-vehicle";
+import { ShowButton } from "@/domains/moderation/components/show-button";
 import type {
   ShowcaseAdminItem,
   ShowcaseFilter,
@@ -229,7 +230,7 @@ export type ShowcaseAdminView = {
   next: string | null;
   filter: ShowcaseFilter;
   q: string;
-  counts: { reported: number; pending: number };
+  counts: { reported: number; pending: number; hidden: number };
 };
 
 const reports = (n: number) => `${n} ${n === 1 ? "denúncia" : "denúncias"}`;
@@ -255,13 +256,15 @@ export function ShowcaseTab({
     ["todos", "Na vitrine"],
     ["denunciados", `Denunciados ${view.counts.reported}`],
     ["aguardando", `Aguardando aprovação ${view.counts.pending}`],
+    ["ocultados", `Ocultados ${view.counts.hidden}`],
   ] as const;
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm text-text-2">
         Os veículos que as lojas divulgam na vitrine CajuGo. Oculte o que
-        quebrar as regras: a loja é avisada com o motivo, e o veículo continua
-        no catálogo dela.
+        quebrar as regras: você confirma com o motivo, a loja é avisada, e o
+        veículo continua no catálogo dela. Em Ocultados, ele volta com Mostrar
+        de novo.
       </p>
       <SearchForm
         action={base}
@@ -290,7 +293,7 @@ export function ShowcaseTab({
               className="flex flex-col gap-3 rounded-card border border-line bg-surface p-3.5"
             >
               <ModeratedVehicle vehicle={i.vehicle} cloudName={cloudName} />
-              {(i.openReports > 0 || i.pendingApproval) && (
+              {(i.openReports > 0 || i.pendingApproval || i.hidden) && (
                 <div className="flex flex-wrap gap-1.5">
                   {i.openReports > 0 && (
                     <Link href="/admin/denuncias" className="flex h-8">
@@ -299,6 +302,11 @@ export function ShowcaseTab({
                       </Badge>
                     </Link>
                   )}
+                  {i.hidden && (
+                    <Badge tone="neutral" size="sm">
+                      Oculto da vitrine
+                    </Badge>
+                  )}
                   {i.pendingApproval && (
                     <Badge tone="warn" size="sm">
                       Aguardando aprovação
@@ -306,7 +314,13 @@ export function ShowcaseTab({
                   )}
                 </div>
               )}
-              {!i.pendingApproval && <HideSheet vehicleId={i.vehicle.id} />}
+              {i.hidden ? (
+                <ShowButton vehicleId={i.vehicle.id} />
+              ) : (
+                !i.pendingApproval && (
+                  <HideSheet vehicleId={i.vehicle.id} variant="soft" />
+                )
+              )}
             </li>
           ))}
         </ul>

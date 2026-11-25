@@ -50,3 +50,38 @@ for (const width of [390, 1280]) {
     });
   });
 }
+
+test("[ADM-FR-006] ocultar pede confirmação com motivo, e o veículo volta por Ocultados", async ({
+  page,
+}) => {
+  await page.goto("/entrar?next=%2Fadmin%2Fveiculos");
+  await signIn(page, accounts.admin.email);
+  await expect(heading(page)).toHaveText("Veículos");
+
+  const card = page.getByTestId("admin-vehicle").first();
+  const title = (await card.getByRole("link").first().textContent())!.trim();
+  await card.getByRole("button", { name: "Ocultar" }).click();
+
+  // nada muda antes de confirmar: a confirmação pede o motivo
+  const sheet = page.getByRole("dialog", { name: "Ocultar veículo" });
+  await expect(sheet).toBeVisible();
+  await sheet.getByRole("button", { name: "Ocultar da vitrine" }).click();
+  await expect(sheet.getByRole("alert")).toHaveText("Escolha um motivo.");
+  await sheet.getByRole("radio").first().check();
+  await sheet.getByRole("button", { name: "Ocultar da vitrine" }).click();
+  await expect(sheet).toBeHidden();
+
+  // em Ocultados, com Mostrar de novo
+  await page.getByRole("link", { name: /^Ocultados/ }).click();
+  const hidden = page
+    .getByTestId("admin-vehicle")
+    .filter({ hasText: "Oculto da vitrine" })
+    .filter({ hasText: title })
+    .first();
+  await expect(hidden).toBeVisible();
+  await page.screenshot({ path: "test-results/admin-veiculos-ocultados.png" });
+  await hidden.getByRole("button", { name: "Mostrar de novo" }).click();
+  await expect(
+    page.getByTestId("admin-vehicle").filter({ hasText: title }),
+  ).toHaveCount(0);
+});

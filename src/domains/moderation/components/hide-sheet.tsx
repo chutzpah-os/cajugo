@@ -12,7 +12,14 @@ import { HIDE_REASONS, REASON_LABEL, type HideReason } from "../reasons";
  * **Ocultar** em [14e] com a confirmação de [6f] "Ocultar veículo" (RPT-FR-004): motivo
  * obrigatório ("Outro" pede o texto) e o efeito escrito antes de confirmar.
  */
-export function HideSheet({ vehicleId }: { vehicleId: string }) {
+export function HideSheet({
+  vehicleId,
+  variant = "primary",
+}: {
+  vehicleId: string;
+  /** `soft`: botão discreto nas listas ([1d]); a decisão continua na confirmação. */
+  variant?: "primary" | "soft";
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState<HideReason | null>(null);
@@ -44,7 +51,12 @@ export function HideSheet({ vehicleId }: { vehicleId: string }) {
 
   return (
     <>
-      <Button block data-testid="report-hide" onClick={() => setOpen(true)}>
+      <Button
+        block
+        variant={variant}
+        data-testid="report-hide"
+        onClick={() => setOpen(true)}
+      >
         Ocultar
       </Button>
       <ConfirmSheet

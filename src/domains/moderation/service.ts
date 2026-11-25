@@ -404,7 +404,12 @@ export async function show(
   });
 }
 
-export const SHOWCASE_FILTERS = ["todos", "denunciados", "aguardando"] as const;
+export const SHOWCASE_FILTERS = [
+  "todos",
+  "denunciados",
+  "aguardando",
+  "ocultados",
+] as const;
 export type ShowcaseFilter = (typeof SHOWCASE_FILTERS)[number];
 export const SHOWCASE_PAGE_SIZE = 20;
 
@@ -419,6 +424,8 @@ export type ShowcaseAdminItem = {
   /** Denúncias abertas (0 quando não há). */
   openReports: number;
   pendingApproval: boolean;
+  /** Ocultado pela CajuGo: volta com **Mostrar de novo** (RPT-FR-008). */
+  hidden: boolean;
 };
 
 /**
@@ -435,7 +442,7 @@ export async function showcaseAdmin(
   next: string | null;
   filter: ShowcaseFilter;
   q: string;
-  counts: { reported: number; pending: number };
+  counts: { reported: number; pending: number; hidden: number };
 }> {
   authorizeTo(session, "admin.moderate");
   const q = showcaseQuery.parse(
@@ -447,9 +454,11 @@ export async function showcaseAdmin(
   const scope =
     q.filtro === "aguardando"
       ? eq(vehicles.status, "pending_approval")
-      : q.filtro === "denunciados"
-        ? and(publicVisible("showcase"), reported)
-        : publicVisible("showcase");
+      : q.filtro === "ocultados"
+        ? eq(vehicles.status, "hidden")
+        : q.filtro === "denunciados"
+          ? and(publicVisible("showcase"), reported)
+          : publicVisible("showcase");
   const search = q.q
     ? or(
         ilike(vehicles.make, `%${q.q}%`),
@@ -472,6 +481,7 @@ export async function showcaseAdmin(
       .select({
         reported: sql<number>`count(*) filter (where ${and(publicVisible("showcase"), reported)})::int`,
         pending: sql<number>`count(*) filter (where ${vehicles.status} = 'pending_approval')::int`,
+        hidden: sql<number>`count(*) filter (where ${vehicles.status} = 'hidden')::int`,
       })
       .from(vehicles)
       .innerJoin(stores, eq(stores.id, vehicles.storeId)),
@@ -500,9 +510,7 @@ export async function showcaseAdmin(
       : [],
   ]);
   const openBy = new Map(reports.map((r) => [r.vehicleId, r.n]));
-  const pendingIds = new Set(
-    statuses.filter((s) => s.status === "pending_approval").map((s) => s.id),
-  );
+  const statusOf = new Map(statuses.map((s) => [s.id, s.status]));
   return {
     items: ids.flatMap((id) => {
       const vehicle = cards.get(id);
@@ -511,7 +519,8 @@ export async function showcaseAdmin(
             {
               vehicle,
               openReports: openBy.get(id) ?? 0,
-              pendingApproval: pendingIds.has(id),
+              pendingApproval: statusOf.get(id) === "pending_approval",
+              hidden: statusOf.get(id) === "hidden",
             },
           ]
         : [];
