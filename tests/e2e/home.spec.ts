@@ -15,7 +15,7 @@ test("[HOM-FR-001] [HOM-NFR-001] página inicial: abertura, Buscar · Vender e p
   expect(await audit(page)).toEqual(CLEAN);
 
   await page.getByTestId("type-moto").click();
-  await expect(page).toHaveURL(/\/veiculos\?tipo=moto$/);
+  await expect(page).toHaveURL(/\/motos$/);
 });
 
 test("[HOM-FR-003] [HOM-FR-005] menus do desktop: Comprar leva à vitrine filtrada; Em breve não é link (1280 px)", async ({

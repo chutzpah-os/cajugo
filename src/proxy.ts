@@ -1,4 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
+import {
+  isVehicleType,
+  typeByPath,
+  vehicleType,
+} from "@/domains/showcase/vehicle-types";
 import { gateDecision } from "@/domains/showcase/service";
 import { parseRefCode, REF_COOKIE, REF_MAX_AGE } from "@/domains/showcase/urls";
 import { getDb } from "@/platform/db/client";
@@ -85,6 +90,26 @@ export async function proxy(request: NextRequest) {
   if (path === "/rede" || path.startsWith("/rede/")) {
     const url = request.nextUrl.clone();
     url.pathname = `/rede-caju${path.slice("/rede".length)}`;
+    return NextResponse.redirect(url, 308);
+  }
+  // Página de cada tipo (`/carros`, `/motos`…) numa rota interna (014); o `?tipo=`
+  // antigo vai para a página do tipo, para cada tipo ter um endereço só.
+  const pageType = typeByPath(path);
+  if (pageType) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/vitrine-tipo/${pageType.slug}`;
+    url.searchParams.delete("tipo");
+    const rewrite = NextResponse.rewrite(url);
+    for (const cookie of response.cookies.getAll()) rewrite.cookies.set(cookie);
+    return rewrite;
+  }
+  if (path.startsWith("/vitrine-tipo"))
+    return NextResponse.rewrite(new URL("/_nao-encontrado", request.url));
+  const queryType = searchParams.get("tipo");
+  if (path === "/veiculos" && queryType && isVehicleType(queryType)) {
+    const url = request.nextUrl.clone();
+    url.pathname = vehicleType(queryType).path;
+    url.searchParams.delete("tipo");
     return NextResponse.redirect(url, 308);
   }
   // Endereço antigo da vitrine com filtros: a `/` virou a página inicial (017).

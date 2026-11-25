@@ -1256,3 +1256,6 @@
 
 # 2026-11-24 · feat(showcase): Comprar · Vender, faixa do Caju Indica abaixo do quadro e abertura sem contagem [017]
 - Aba Buscar vira Comprar; a faixa do Caju Indica sai da grade e fica numa linha abaixo do quadro (inteira clicável, com a recompensa das regras); some o rodapé do Caju Indica e o espaço de divulgação da grade; a abertura da / perde a contagem de anúncios.
+
+# 2026-11-24 · feat(showcase): página de cada tipo (/carros, /motos…) e fim do índice de marcas e cidades [014]
+- Cada tipo tem a sua página com título, canônica e trilha (rota interna /vitrine-tipo/[tipo] pelo proxy); filtros com tipo levam a ela; /veiculos?tipo= → 308; tipo sem veículo fica fora do Google; /carros vira a vitrine de carros e o índice de marcas e cidades sai (página, componente, consulta e testes); menu aponta para /carros, /motos, /picapes, /caminhoes. e2e de descoberta passa a seguir o link pelo teclado (o aviso do Next cobre o canto em dev).

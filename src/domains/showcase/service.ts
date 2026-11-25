@@ -975,12 +975,7 @@ export { publicVisible, type Scope } from "./visibility";
 export { parseRefCode, REF_COOKIE, vehiclePath } from "./urls";
 export { savedSearch, searchLabel, type SavedSearch } from "./saved-search";
 export { listSourceSchema, type ListSource } from "./list-source";
-export {
-  discoveryIndex,
-  discoveryLinks,
-  discoveryPage,
-  type DiscoveryPage,
-} from "./discovery";
+export { discoveryLinks, discoveryPage, type DiscoveryPage } from "./discovery";
 
 /** Contagens do painel do admin (012b). */
 export { storeStock, vehiclesSnapshot } from "./snapshot";

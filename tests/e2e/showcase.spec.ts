@@ -352,7 +352,7 @@ test("[TIP-FR-007] [TIP-FR-020] faixa de tipos só na página inicial; na vitrin
 }) => {
   await page.goto("/");
   await page.getByTestId("showcase-panel").getByTestId("type-moto").click();
-  await expect(page).toHaveURL(/\/veiculos\?tipo=moto$/);
+  await expect(page).toHaveURL(/\/motos$/);
   await expect(heading(page)).toHaveText("Motos novas e seminovas à venda");
   // O Next guarda a página anterior oculta no DOM: o que vale é não estar visível.
   await expect(page.getByTestId("type-carro")).toBeHidden();
@@ -363,7 +363,7 @@ test("[TIP-FR-007] [TIP-FR-020] faixa de tipos só na página inicial; na vitrin
   await page.getByTestId("filters-chip").filter({ visible: true }).click();
   const sheet = page.getByTestId("filters-sheet").filter({ visible: true });
   await sheet.getByRole("link", { name: "Carro" }).click();
-  await expect(page).toHaveURL(/\/veiculos\?tipo=carro$/);
+  await expect(page).toHaveURL(/\/carros$/);
 
   await page
     .getByRole("tab", { name: "Vender" })

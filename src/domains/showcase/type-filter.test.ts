@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTestDb } from "@/platform/db/testing/test-db";
-import { filtersToQuery, parseFilters } from "./filters";
+import { filterHref, filtersToQuery, parseFilters } from "./filters";
 import { searchShowcase } from "./service";
 import { car, liveStore } from "./testing/fixtures";
 
@@ -76,5 +76,20 @@ describe("filtro novo, seminovo e usado (017)", () => {
     expect(
       filtersToQuery(parseFilters({ estado: "novo", tipo: "carro" })),
     ).toBe("tipo=carro&estado=novo");
+  });
+});
+
+describe("página de cada tipo (SEO)", () => {
+  it("[TIP-FR-007] com tipo, o link vai para a página do tipo; sem tipo, para a vitrine", () => {
+    const moto = parseFilters({ tipo: "moto", marca: "honda" });
+    expect(filterHref("/veiculos", moto)).toBe("/motos?marca=honda");
+    expect(filterHref("/motos", { ...moto, type: undefined })).toBe(
+      "/veiculos?marca=honda",
+    );
+    expect(filterHref("/carros", parseFilters({ tipo: "carro" }))).toBe(
+      "/carros",
+    );
+    // Catálogo da loja e descoberta não mudam.
+    expect(filterHref("/loja/x", moto)).toBe("/loja/x?tipo=moto&marca=honda");
   });
 });

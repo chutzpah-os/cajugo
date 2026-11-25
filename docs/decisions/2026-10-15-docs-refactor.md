@@ -607,3 +607,6 @@
 
 # 2026-11-24 · feat(showcase): Comprar · Vender, faixa do Caju Indica abaixo do quadro e abertura sem contagem [017]
 - Pedidos do dono em 2026-11-25 (preferiu a faixa simples ao carrossel).
+
+# 2026-11-24 · feat(showcase): página de cada tipo (/carros, /motos…) e fim do índice de marcas e cidades [014]
+- Pedido do dono: caminhos em vez de filtro, melhor para o SEO; e não gostou do índice.

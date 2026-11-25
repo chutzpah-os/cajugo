@@ -158,8 +158,6 @@ export async function discoveryPage(
   };
 }
 
-type Entry = { path: string; name: string; count: number };
-
 /**
  * Marcas pelo nome conhecido, em ordem alfabética. Dois nomes da FIPE podem dar a
  * mesma marca ("Caoa Chery/Chery" e "Caoa Chery"): as contagens somam.
@@ -185,52 +183,6 @@ export function knownMakes(
   return [...bySlug.values()].sort((a, b) =>
     a.name.localeCompare(b.name, "pt-BR"),
   );
-}
-
-/** Índice `/carros` (DSC-FR-013): marcas e cidades com veículos na vitrine. */
-export async function discoveryIndex(
-  db: Db,
-): Promise<{ makes: Entry[]; cities: Entry[] }> {
-  const visible = publicVisible("showcase");
-  const makeRows = await db
-    .select({ slug: vehicles.makeSlug, name: vehicles.make, count: count() })
-    .from(vehicles)
-    .innerJoin(stores, eq(stores.id, vehicles.storeId))
-    .where(visible)
-    .groupBy(vehicles.makeSlug, vehicles.make);
-  const cityRows = await db
-    .select({
-      slug: stores.citySlug,
-      city: stores.city,
-      state: stores.state,
-      count: count(),
-    })
-    .from(vehicles)
-    .innerJoin(stores, eq(stores.id, vehicles.storeId))
-    .where(visible)
-    .groupBy(stores.citySlug, stores.city, stores.state);
-
-  const byName = (a: Entry, b: Entry) => a.name.localeCompare(b.name, "pt-BR");
-  return {
-    makes: knownMakes(makeRows).map((m) => ({
-      path: discoveryPath({ makeSlug: m.slug }),
-      name: m.name,
-      count: m.count,
-    })),
-    cities: cityRows
-      .flatMap((r) =>
-        r.slug
-          ? [
-              {
-                path: discoveryPath({ citySlug: r.slug }),
-                name: `${r.city}/${r.state}`,
-                count: r.count,
-              },
-            ]
-          : [],
-      )
-      .sort(byName),
-  };
 }
 
 const countWhere = (cond: SQL | undefined) =>

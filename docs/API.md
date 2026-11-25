@@ -83,7 +83,7 @@ A coluna "Tipo" diz se é Route Handler (**R**) ou Server Action (**A**). Cada s
 ### Público e comprador
 | Tipo | Rota / ação | Tela |
 |---|---|---|
-| página | `/` — página inicial (017) · `/veiculos` — vitrine (filtros na query string: `tipo`, `estado`, `marca`…; `/?filtros` → 308) · `/loja/{slug}` — catálogo da loja | 1a, 6d, 9a, 15a |
+| página | `/` — página inicial (017) · `/veiculos` — vitrine (filtros na query string: `estado`, `marca`…; `/?filtros` → 308) · `/carros`, `/motos`, `/caminhoes`… — página de cada tipo (014; `/veiculos?tipo=` → 308; rota interna `/vitrine-tipo/[tipo]`) · `/loja/{slug}` — catálogo da loja | 1a, 6d, 9a, 15a |
 | página | `/v/{id}-{make}-{model}` — detalhe, uma URL só para vitrine e catálogo (a origem do lead vem da marca da aba, 007/D1; guarda `?ref=` do vendedor na 008) | 1b, 12d |
 | página | `/i/{codigo}` — landing do Caju Indica, `noindex` (010) | 8c |
 | A | `contactLeadAction({ requestId, vehicleId, origin, name, email, phone, message })` — honeypot + rate limit · `whatsappClickAction({ requestId, vehicleId, origin })` · `viewAction({ vehicleId })` (007); `requestId` é um uuid v7 gerado na tela e vira o id do lead (idempotência, §2.6) | 1b, 14b |

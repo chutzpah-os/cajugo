@@ -93,26 +93,16 @@ test.describe("páginas de descoberta (390 px)", () => {
     expect(await audit(page), "descoberta: vazia").toEqual(CLEAN);
   });
 
-  test("[DSC-FR-013] [DSG-FR-018] índice /carros no ar para o Google, sem link a partir da vitrine", async ({
+  test("[DSC-FR-013] [TIP-FR-007] /carros é a vitrine de carros, no ar para o Google", async ({
     page,
   }) => {
-    // A busca por marca e por cidade é filtro da própria vitrine (DSG-FR-018).
-    await page.goto("/veiculos");
-    await expect(
-      page.getByRole("link", { name: "Buscar por marca" }),
-    ).toHaveCount(0);
-
-    await page.goto("/carros#cidades");
-    const cities = page.locator("#cidades");
-    await expect(
-      cities.getByRole("link", { name: /Recife\/PE/ }),
-    ).toBeVisible();
-    await expect(
-      cities.getByRole("link", { name: /Aracaju\/SE/ }),
-    ).toContainText(String(ARACAJU));
-    await expect(
-      page.locator("#marcas").getByRole("link", { name: /Fiat/ }),
-    ).toContainText(String(FIAT));
+    await page.goto("/carros");
+    await expect(heading(page)).toHaveText("Carros novos e seminovos à venda");
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      /\/carros$/,
+    );
+    await expect(page.getByTestId("catalog-list")).toBeVisible();
     expect(await audit(page), "/carros").toEqual(CLEAN);
   });
 
@@ -130,9 +120,10 @@ test.describe("páginas de descoberta (390 px)", () => {
     await expect(page).toHaveURL(/\/carros\/fiat\/argo$/);
 
     await page.goto(`/loja/${S.slug}`);
+    // Pelo teclado: no modo de desenvolvimento, o aviso do Next cobre o canto da tela.
     await page
       .getByRole("link", { name: "Carros usados em Aracaju/SE" })
-      .click();
+      .press("Enter");
     await expect(page).toHaveURL(/\/carros\/aracaju-se$/);
   });
 

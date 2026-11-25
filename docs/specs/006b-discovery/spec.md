@@ -35,7 +35,7 @@ O SEO é o principal ativo da CajuGo (`SEO.md` §1): boa parte das buscas é por
 - **DSC-FR-010** As páginas de descoberta com veículos entram no sitemap, num arquivo próprio listado no `robots.txt`, e saem dele quando ficam sem veículos.
 - **DSC-FR-011** O nome da marca na página e no endereço é o nome que o comprador conhece, por uma lista de correções dos nomes da tabela FIPE ("GM - Chevrolet" → "Chevrolet", "VW - VolksWagen" → "Volkswagen", "ASTON MARTIN" → "Aston Martin"); o nome do modelo fica como na FIPE.
 - **DSC-FR-012** Os endereços são `/carros/{marca}`, `/carros/{marca}/{modelo}`, `/carros/{cidade}-{uf}` e `/carros/{cidade}-{uf}/{marca}`, em minúsculas, sem acento e com hífen; a cidade sempre termina com uma das 27 UFs, e nenhuma marca tem esse formato.
-- **DSC-FR-013** A página `/carros` lista todas as marcas e cidades com veículos na vitrine, com a contagem de cada uma, e a vitrine [1a] leva a ela ("Buscar por marca" e "Buscar por cidade").
+- **DSC-FR-013** ~~A página `/carros` lista todas as marcas e cidades…~~ Substituído em 2026-11-25 (pedido do dono, specs 014/017): `/carros` passou a ser a vitrine de carros, como `/motos` e as outras páginas de tipo; o índice de marcas e cidades saiu. As páginas `/carros/{marca}` e `/carros/{cidade}` continuam.
 
 ## Requisitos não funcionais
 - **DSC-NFR-001** As páginas funcionam em 390 px e em 1280 px no mesmo layout da vitrine [15a].

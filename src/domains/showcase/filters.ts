@@ -1,5 +1,10 @@
 import type { DiscoveryKey } from "./discovery-urls";
-import { isVehicleType, type VehicleTypeSlug } from "./vehicle-types";
+import {
+  isVehicleType,
+  typeByPath,
+  vehicleType,
+  type VehicleTypeSlug,
+} from "./vehicle-types";
 
 /**
  * Filtros da vitrine na URL (SHW-FR-005), em português, e o que a consulta usa. Valor
@@ -189,7 +194,15 @@ export function activeFilters(f: Filters): number {
 }
 
 /** Endereço com os filtros; sem filtro, o caminho puro (canônica limpa). */
+/** Vitrine sem tipo; com tipo, a página do tipo (`/motos`), melhor para o SEO. */
+export const SHOWCASE_PATH = "/veiculos";
+
 export function filterHref(basePath: string, f: Filters): string {
+  if (basePath === SHOWCASE_PATH || typeByPath(basePath)) {
+    const base = f.type ? vehicleType(f.type).path : SHOWCASE_PATH;
+    const rest = filtersToQuery({ ...f, type: undefined });
+    return rest ? `${base}?${rest}` : base;
+  }
   const query = filtersToQuery(f);
   return query ? `${basePath}?${query}` : basePath;
 }

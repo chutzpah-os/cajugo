@@ -8,7 +8,6 @@ import type { DiscoveryKey } from "./discovery-urls";
 import type { Filters } from "./filters";
 import {
   countMatches,
-  discoveryIndex,
   discoveryLinks,
   discoveryPage,
   facets,
@@ -74,12 +73,6 @@ export async function cachedDiscoveryPage(key: DiscoveryKey) {
   "use cache";
   tagged();
   return discoveryPage(getDb(), key);
-}
-
-export async function cachedDiscoveryIndex() {
-  "use cache";
-  tagged();
-  return discoveryIndex(getDb());
 }
 
 export async function cachedDiscoveryLinks(

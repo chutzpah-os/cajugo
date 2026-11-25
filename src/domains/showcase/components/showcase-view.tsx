@@ -10,7 +10,7 @@ import {
 import { JsonLd, pageMetadata } from "@/platform/seo/seo";
 import { ButtonLink } from "@/ui/button";
 import { cachedFacets } from "../current";
-import { filtersToQuery, type Filters } from "../filters";
+import { SHOWCASE_PATH, filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
 import { FiltersSheet } from "./filters-sheet";
 import { SearchBox } from "./search-box";
@@ -25,7 +25,9 @@ import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
 const TITLE = "Veículos novos e seminovos à venda";
-const BASE_PATH = "/veiculos";
+/** A vitrine, ou a página do tipo quando há tipo (`/motos`, 014). */
+const basePathOf = (f: Filters) =>
+  f.type ? vehicleType(f.type).path : SHOWCASE_PATH;
 
 const CONDITION_TITLE = {
   novo: "Veículos novos (0 km) à venda",
@@ -41,16 +43,20 @@ function titleOf(f: Filters): string {
 }
 
 /**
- * Metadados da vitrine, com ou sem filtros: canônica sempre `/` (SEO.md) e fora do
- * Google quando a lista vem vazia (SHW-FR-001, SHW-FR-012).
+ * Metadados da vitrine ou da página do tipo, com ou sem filtros: canônica sempre o
+ * endereço sem filtros (SEO.md) e fora do Google quando a lista vem vazia
+ * (SHW-FR-001, SHW-FR-012).
  */
-export function showcaseMetadata(result: SearchResult): Metadata {
+export function showcaseMetadata(
+  result: SearchResult,
+  filters?: Filters,
+): Metadata {
   const cover = result.items[0]?.coverPublicId;
+  const type = filters?.type ? vehicleType(filters.type) : null;
   const meta = pageMetadata({
-    title: TITLE,
-    description:
-      "Encontre veículos novos e seminovos das melhores lojas, com preço, fotos e contato direto pelo WhatsApp.",
-    path: BASE_PATH,
+    title: type ? type.title : TITLE,
+    description: `Encontre ${type ? type.label.toLowerCase() : "veículos"} novos e seminovos das melhores lojas, com preço, fotos e contato direto pelo WhatsApp.`,
+    path: type ? type.path : SHOWCASE_PATH,
     image: cover
       ? imageUrlFor(cloudName(), cover, IMAGE_WIDTHS.full)
       : undefined,
@@ -72,14 +78,16 @@ export async function ShowcaseView({
   promo?: ReactNode;
 }) {
   const { makes, cities } = await cachedFacets("showcase");
-  const filtered = filtersToQuery(filters) !== "";
+  const filtered = filtersToQuery({ ...filters, type: undefined }) !== "";
+  const type = filters.type ? vehicleType(filters.type) : null;
   return (
     <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 pb-8 md:max-w-3xl lg:max-w-none lg:px-8 lg:pb-0">
       <JsonLd data={websiteJsonLd()} />
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Início", path: "/" },
-          { name: "Veículos", path: BASE_PATH },
+          { name: "Veículos", path: SHOWCASE_PATH },
+          ...(type ? [{ name: type.label, path: type.path }] : []),
         ])}
       />
       {result.total > 0 && (
@@ -122,21 +130,21 @@ export async function ShowcaseView({
               makes={makes}
               cities={cities}
               total={result.total}
-              basePath={BASE_PATH}
+              basePath={basePathOf(filters)}
               source={null}
             />
           ) : undefined
         }
         sort={
           result.total > 1 ? (
-            <SortSelect filters={filters} basePath={BASE_PATH} />
+            <SortSelect filters={filters} basePath={basePathOf(filters)} />
           ) : undefined
         }
         empty={
           filtered ? (
             <NoResults
               filters={filters}
-              basePath={BASE_PATH}
+              basePath={basePathOf(filters)}
               alert={{ source: null }}
             />
           ) : (
@@ -172,21 +180,27 @@ function ShowcaseSearch({
     <>
       <SearchBox
         filters={filters}
-        basePath={BASE_PATH}
+        basePath={basePathOf(filters)}
         hidden={[
-          ...new URLSearchParams(filtersToQuery({ ...filters, q: undefined })),
+          ...new URLSearchParams(
+            filtersToQuery({ ...filters, q: undefined, type: undefined }),
+          ),
         ]}
       />
       <FiltersSheet
-        lead={<TypeChip filters={filters} basePath={BASE_PATH} />}
+        lead={<TypeChip filters={filters} basePath={basePathOf(filters)} />}
         top={
-          <TypeList filters={filters} basePath={BASE_PATH} id="tipo-folha" />
+          <TypeList
+            filters={filters}
+            basePath={basePathOf(filters)}
+            id="tipo-folha"
+          />
         }
         filters={filters}
         makes={makes}
         cities={cities}
         total={total}
-        basePath={BASE_PATH}
+        basePath={basePathOf(filters)}
         source={null}
       />
     </>
