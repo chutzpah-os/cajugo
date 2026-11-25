@@ -32,6 +32,11 @@ const PAGE: Live = {
   conditions: ["Único dono", "IPVA pago"],
   features: ["Ar-condicionado"],
   whatsappUrl: "https://wa.me/5579999990000?text=oi",
+  priceCompare: {
+    priceCents: 6500000,
+    averageCents: null,
+    fipe: { priceCents: 7000000, month: "novembro de 2026" },
+  },
   makeSlug: "fiat",
   modelSlug: "argo",
   store: {

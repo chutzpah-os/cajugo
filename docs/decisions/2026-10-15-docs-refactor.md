@@ -613,3 +613,6 @@
 
 # 2026-11-24 · feat(showcase): fim da parcela estimada e filtro de condição [015/T002]
 - PRC-FR-003 e pedido do dono: nada de 'simulação imaginária'; e saber se o veículo é novo, seminovo ou usado.
+
+# 2026-11-24 · feat(showcase): Conversar no card e dados do Compare os preços [015]
+- Pedido do dono (botão no card) e PRC-FR-001/PRC-SEC-002; o bloco na tela vem com o novo layout da página do veículo.

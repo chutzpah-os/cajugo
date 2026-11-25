@@ -108,6 +108,14 @@ export function PublicCard({
             <span className="font-semibold text-ink">{card.storeName}</span>
           </p>
         )}
+        {/* O card inteiro é o link da página do veículo; o botão só o deixa à vista. */}
+        <span
+          aria-hidden
+          data-testid="card-talk"
+          className="mt-3 flex h-11 items-center justify-center rounded-button bg-ink text-sm font-bold text-white"
+        >
+          Conversar
+        </span>
       </div>
     </li>
   );

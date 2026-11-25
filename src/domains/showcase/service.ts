@@ -1,6 +1,7 @@
 import {
   and,
   count,
+  isNotNull,
   countDistinct,
   desc,
   eq,
@@ -653,7 +654,12 @@ export type VehiclePage =
       conditions: string[];
       features: string[];
       whatsappUrl: string;
-      /** Simulador [14b]; `null` sem "Exibir parcela estimada" ou sem preço (BUY-FR-001). */
+      /** Compare os preços (015, PRC-FR-001): média só com 3 ou mais iguais na vitrine. */
+      priceCompare: {
+        priceCents: number | null;
+        averageCents: number | null;
+        fipe: { priceCents: number; month: string | null } | null;
+      };
       /** Marca e modelo nos endereços de descoberta (DSC-FR-008). */
       makeSlug: string | null;
       modelSlug: string | null;
@@ -686,6 +692,38 @@ export type VehiclePage =
 
 const labels = (keys: string[], map: Record<string, string>) =>
   keys.flatMap((k) => (map[k] ? [map[k]] : []));
+
+/** Mínimo de anúncios iguais para a média CajuGo: menos que isso expõe um preço só. */
+const MIN_SAME_FOR_AVERAGE = 3;
+
+/**
+ * Média dos preços dos veículos iguais (mesma versão e ano da FIPE) na vitrine, sem o
+ * próprio (PRC-FR-001, PRC-SEC-002); `null` com menos de 3.
+ */
+async function sameVehicleAverage(
+  db: Db,
+  v: { id: string; fipeYearId: string | null },
+): Promise<number | null> {
+  if (!v.fipeYearId) return null;
+  const [r] = await db
+    .select({
+      n: count(),
+      avg: sql<string | null>`avg(${vehicles.priceCents})`,
+    })
+    .from(vehicles)
+    .innerJoin(stores, eq(stores.id, vehicles.storeId))
+    .where(
+      and(
+        publicVisible("showcase"),
+        eq(vehicles.fipeYearId, v.fipeYearId),
+        ne(vehicles.id, v.id),
+        isNotNull(vehicles.priceCents),
+      ),
+    );
+  return r.n >= MIN_SAME_FOR_AVERAGE && r.avg
+    ? Math.round(Number(r.avg) / 100) * 100
+    : null;
+}
 
 /** Veículos parecidos para [12d]: da mesma marca, senão da mesma cidade. */
 async function similarTo(
@@ -727,6 +765,8 @@ export async function vehiclePage(
       mileageKm: vehicles.mileageKm,
       priceCents: vehicles.priceCents,
       fipePriceCents: vehicles.fipePriceCents,
+      fipeMonth: vehicles.fipeMonth,
+      fipeYearId: vehicles.fipeYearId,
       transmission: vehicles.transmission,
       fuel: vehicles.fuel,
       body: vehicles.body,
@@ -778,6 +818,7 @@ export async function vehiclePage(
     .from(vehiclePhotos)
     .where(eq(vehiclePhotos.vehicleId, v.id))
     .orderBy(asc(vehiclePhotos.position));
+  const averageCents = await sameVehicleAverage(db, v);
   const path = vehiclePath({ ...v, id: v.id });
   const name = [v.make, v.version ?? v.model, v.yearModel]
     .filter(Boolean)
@@ -820,6 +861,14 @@ export async function vehiclePage(
       contact,
       `Olá! Tenho interesse no ${name}${price}, anunciado na CajuGo: ${appUrl()}${path}`,
     ),
+    priceCompare: {
+      priceCents: v.priceCents,
+      averageCents,
+      fipe:
+        v.fipePriceCents !== null
+          ? { priceCents: v.fipePriceCents, month: v.fipeMonth }
+          : null,
+    },
     makeSlug: v.makeSlug,
     modelSlug: v.modelSlug,
     store: {

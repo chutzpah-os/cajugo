@@ -1262,3 +1262,6 @@
 
 # 2026-11-24 · feat(showcase): fim da parcela estimada e filtro de condição [015/T002]
 - Sai a parcela estimada do card e da página, o simulador [14b] (componente, conta Price e testes), o toggle 'Exibir parcela estimada' do cadastro e as regras de taxa, entrada e prazo; coluna show_installment e linhas antigas de setting_values ficam sem uso (remoção futura com migration autorizada). Filtro lateral e folha ganham Condição (novo 0 km, seminovo, usado), e o título segue tipo e condição. Spec 015 com o layout completo da página do veículo (T006–T008).
+
+# 2026-11-24 · feat(showcase): Conversar no card e dados do Compare os preços [015]
+- Card da vitrine ganha o botão Conversar (o card inteiro já é o link da página do veículo). vehiclePage devolve priceCompare: preço, média CajuGo dos iguais (mesma versão e ano FIPE, só vitrine, sem o próprio, com 3 ou mais) e a FIPE com o mês.
