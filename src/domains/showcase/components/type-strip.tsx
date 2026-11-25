@@ -86,16 +86,22 @@ export function TypeChip({
 export function TypeList({
   filters,
   basePath,
+  id = "tipo-lateral",
 }: {
   filters: Filters;
   basePath: string;
+  /** Lateral e folha estão na mesma página: cada uma com o seu id. */
+  id?: string;
 }) {
   return (
-    <nav aria-labelledby="tipo-lateral" className="flex flex-col gap-1">
-      <h3 id="tipo-lateral" className="text-[15px] font-extrabold">
+    <nav aria-labelledby={id} className="flex flex-col gap-1">
+      <h3 id={id} className="text-[15px] font-extrabold">
         Tipo de veículo
       </h3>
-      <ul className="flex flex-col">
+      {!filters.type && (
+        <p className="text-[13px] text-text-3">Comece pelo tipo de veículo.</p>
+      )}
+      <ul className="flex max-h-[228px] flex-col overflow-y-auto overscroll-contain pr-1">
         {VEHICLE_TYPES.map((t) => {
           const on = filters.type === t.slug;
           return (

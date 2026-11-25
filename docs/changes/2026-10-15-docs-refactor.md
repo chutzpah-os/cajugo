@@ -1247,3 +1247,6 @@
 
 # 2026-11-24 · feat(showcase): faixa de tipos, Buscar e Vender e abertura da vitrine [014]
 - Vitrine: abertura em duas colunas (o que é a CajuGo + ilustração), quadro Buscar (busca + faixa de 12 tipos com as ilustrações em WebP de ~9 KB, sem barra de rolagem, setas no desktop) e Vender (→ /lojistas); filtro ?tipo= (proxy e URL), chip Tipo na barra, seção Tipo de veículo no filtro lateral e título por tipo. Até a 014 gravar o tipo, todo veículo é carro e os outros tipos vêm vazios.
+
+# 2026-11-24 · feat(site): página inicial, vitrine em /veiculos e menus do site [017]
+- / vira a página inicial (abertura 'A sua plataforma automotiva…', Buscar · Vender com a faixa de tipos, produtos); a vitrine vai para /veiculos (/?filtros → 308); filtro ?estado= (novo 0 km, seminovo até 3 anos, usado); menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir com Em breve, no desktop e no celular, em todas as páginas públicas; tipo na lateral e na folha com ~5 itens e rolagem; sem 'Marcas e cidades' no menu.

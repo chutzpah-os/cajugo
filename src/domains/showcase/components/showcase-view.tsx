@@ -10,22 +10,35 @@ import {
 import { JsonLd, pageMetadata } from "@/platform/seo/seo";
 import { ButtonLink } from "@/ui/button";
 import { cachedFacets } from "../current";
-import { activeFilters, filtersToQuery, type Filters } from "../filters";
+import { filtersToQuery, type Filters } from "../filters";
 import type { SearchResult } from "../service";
 import { FiltersSheet } from "./filters-sheet";
 import { SearchBox } from "./search-box";
 import { SellPitch } from "./sell-pitch";
-import { ShowcaseHero } from "./showcase-hero";
 import { ShowcasePanel } from "./showcase-panel";
-import { TypeChip, TypeStrip } from "./type-strip";
+import { TypeChip, TypeList } from "./type-strip";
 import { vehicleType } from "../vehicle-types";
 import { CatalogView, showcaseCount } from "./catalog-view";
+import type { MakeOption } from "./filters-form";
 import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
 const TITLE = "Veículos novos e seminovos à venda";
-const BASE_PATH = "/";
+const BASE_PATH = "/veiculos";
+
+const CONDITION_TITLE = {
+  novo: "Veículos novos (0 km) à venda",
+  seminovo: "Veículos seminovos à venda",
+  usado: "Veículos usados à venda",
+} as const;
+
+/** Título da lista: o do tipo, o do estado (novo, seminovo, usado) ou o geral. */
+function titleOf(f: Filters): string {
+  if (f.type) return vehicleType(f.type).title;
+  if (f.condition) return CONDITION_TITLE[f.condition];
+  return TITLE;
+}
 
 /**
  * Metadados da vitrine, com ou sem filtros: canônica sempre `/` (SEO.md) e fora do
@@ -65,13 +78,18 @@ export async function ShowcaseView({
   return (
     <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-4 px-4 pb-8 md:max-w-3xl lg:max-w-none lg:px-8 lg:pb-0">
       <JsonLd data={websiteJsonLd()} />
-      <JsonLd data={breadcrumbJsonLd([{ name: "Início", path: BASE_PATH }])} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Início", path: "/" },
+          { name: "Veículos", path: BASE_PATH },
+        ])}
+      />
       {result.total > 0 && (
         <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
       )}
       <CatalogView
         promo={promo}
-        title={filters.type ? vehicleType(filters.type).title : TITLE}
+        title={titleOf(filters)}
         count={
           result.total || filtered
             ? showcaseCount(result.total, result.stores)
@@ -84,39 +102,17 @@ export async function ShowcaseView({
         showStore
         toolbarOnDesktop
         toolbar={
-          <div className="flex flex-col gap-4 lg:mx-auto lg:w-full lg:max-w-5xl lg:gap-7">
-            <ShowcaseHero total={makes.reduce((sum, m) => sum + m.count, 0)} />
-            <ShowcasePanel
-              search={
-                <>
-                  <SearchBox
-                    filters={filters}
-                    basePath={BASE_PATH}
-                    hidden={[
-                      ...new URLSearchParams(
-                        filtersToQuery({ ...filters, q: undefined }),
-                      ),
-                    ]}
-                  />
-                  {!filters.type && (
-                    <TypeStrip filters={filters} basePath={BASE_PATH} />
-                  )}
-                  {(filters.type || activeFilters(filters) > 0) && (
-                    <FiltersSheet
-                      lead={<TypeChip filters={filters} basePath={BASE_PATH} />}
-                      filters={filters}
-                      makes={makes}
-                      cities={cities}
-                      total={result.total}
-                      basePath={BASE_PATH}
-                      source={null}
-                    />
-                  )}
-                </>
-              }
-              sell={<SellPitch />}
-            />
-          </div>
+          <ShowcasePanel
+            search={
+              <ShowcaseSearch
+                filters={filters}
+                makes={makes}
+                cities={cities}
+                total={result.total}
+              />
+            }
+            sell={<SellPitch />}
+          />
         }
         sidebar={
           makes.length > 0 || filtered ? (
@@ -158,5 +154,42 @@ export async function ShowcaseView({
       />
       <div className="lg:hidden">{promoFooter}</div>
     </main>
+  );
+}
+
+/** Aba Buscar: a busca e a faixa de tipos (sem tipo) ou a barra de filtros. */
+function ShowcaseSearch({
+  filters,
+  makes,
+  cities,
+  total,
+}: {
+  filters: Filters;
+  makes: MakeOption[];
+  cities: MakeOption[];
+  total: number;
+}) {
+  return (
+    <>
+      <SearchBox
+        filters={filters}
+        basePath={BASE_PATH}
+        hidden={[
+          ...new URLSearchParams(filtersToQuery({ ...filters, q: undefined })),
+        ]}
+      />
+      <FiltersSheet
+        lead={<TypeChip filters={filters} basePath={BASE_PATH} />}
+        top={
+          <TypeList filters={filters} basePath={BASE_PATH} id="tipo-folha" />
+        }
+        filters={filters}
+        makes={makes}
+        cities={cities}
+        total={total}
+        basePath={BASE_PATH}
+        source={null}
+      />
+    </>
   );
 }

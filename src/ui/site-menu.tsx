@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { Drawer } from "./drawer";
+import { ChevronDownIcon } from "./icons";
+import { NavOption } from "./menu-bar";
+import { SITE_NAV } from "./site-nav";
 
 export type MenuAccount = {
   name: string;
@@ -28,23 +31,33 @@ export function SiteMenu({ account }: { account: MenuAccount }) {
     >
       <nav aria-label="Menu principal" className="mt-2 flex flex-col">
         <Link href="/" className={linkClass}>
-          Comprar veículos
+          Início
         </Link>
-        <p className="mt-4 text-xs font-bold tracking-wide text-text-3 uppercase">
-          Produtos
-        </p>
-        <Link href="/lojistas" className={linkClass}>
-          Catálogo para lojas
-        </Link>
-        <Link href="/rede/cadastro" className={linkClass}>
-          Rede Caju
-        </Link>
-        <Link href="/indica/cadastro" className={`${linkClass} mt-4`}>
-          Caju Indica
-        </Link>
-        <Link href="/favoritos" className={linkClass}>
-          Favoritos
-        </Link>
+        {SITE_NAV.map((section) => (
+          <details
+            key={section.key}
+            className="group border-b border-line-2"
+            data-testid={`menu-${section.key}`}
+          >
+            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-[15px] font-bold [&::-webkit-details-marker]:hidden">
+              {section.label}
+              <ChevronDownIcon
+                size={16}
+                className="text-text-3 transition-transform group-open:rotate-180"
+              />
+            </summary>
+            <ul className="flex flex-col pb-2 pl-3">
+              {section.items.map((i) => (
+                <li key={i.label}>
+                  <NavOption
+                    item={i}
+                    className="flex min-h-11 items-center text-[15px] text-text-2"
+                  />
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))}
         {account ? (
           <div className="mt-4 flex flex-col">
             <p className="text-sm text-text-2">

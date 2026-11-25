@@ -71,7 +71,7 @@ export function VehicleDetails({
   related?: ReactNode;
 }) {
   const alt = vehicleAlt(page);
-  const backHref = page.shared ? "/" : `/loja/${page.store.slug}`;
+  const backHref = page.shared ? "/veiculos" : `/loja/${page.store.slug}`;
   const lead = {
     vehicleId: page.vehicleId,
     storeSlug: page.store.slug,
@@ -257,7 +257,7 @@ export function VehicleSold({
           </ul>
         </>
       )}
-      <ButtonLink href="/" variant="ghost">
+      <ButtonLink href="/veiculos" variant="ghost">
         Ver mais veículos
       </ButtonLink>
     </Unavailable>

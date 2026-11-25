@@ -598,3 +598,6 @@
 
 # 2026-11-24 · feat(showcase): faixa de tipos, Buscar e Vender e abertura da vitrine [014]
 - Pedido do dono com as referências da Boat24; as ilustrações vêm dos SVGs enviados (os tipos sem desenho repetem o mais parecido).
+
+# 2026-11-24 · feat(site): página inicial, vitrine em /veiculos e menus do site [017]
+- Pedidos do dono em 2026-11-25 (referências dos grandes classificados); ADR 0013 atualizada para a nova rota da vitrine.

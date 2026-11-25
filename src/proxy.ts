@@ -18,6 +18,7 @@ const gate = createGate((path) => gateDecision(getDb(), path));
 
 const FILTER_PARAMS = [
   "tipo",
+  "estado",
   "marca",
   "preco_de",
   "preco_ate",
@@ -80,8 +81,14 @@ export async function proxy(request: NextRequest) {
       redirect.cookies.set(cookie);
     return redirect;
   }
-  // Vitrine com filtros numa rota interna: a `/` fica pré-renderizada (ADR 0013).
+  // Endereço antigo da vitrine com filtros: a `/` virou a página inicial (017).
   if (path === "/" && FILTER_PARAMS.some((p) => searchParams.has(p))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/veiculos";
+    return NextResponse.redirect(url, 308);
+  }
+  // Vitrine com filtros numa rota interna: `/veiculos` fica pré-renderizada (ADR 0013).
+  if (path === "/veiculos" && FILTER_PARAMS.some((p) => searchParams.has(p))) {
     const url = request.nextUrl.clone();
     url.pathname = "/vitrine";
     const rewrite = NextResponse.rewrite(url);

@@ -59,7 +59,10 @@ test("[ADM-FR-006] ocultar pede confirmação com motivo, e o veículo volta por
   await expect(heading(page)).toHaveText("Veículos");
 
   const card = page.getByTestId("admin-vehicle").first();
-  const title = (await card.getByRole("link").first().textContent())!.trim();
+  // O endereço do anúncio é único (vários anúncios têm o mesmo nome).
+  const href = (await card.getByRole("link").first().getAttribute("href"))!;
+  const byHref = (list: ReturnType<typeof page.getByTestId>) =>
+    list.filter({ has: page.locator(`a[href="${href}"]`) });
   await card.getByRole("button", { name: "Ocultar" }).click();
 
   // nada muda antes de confirmar: a confirmação pede o motivo
@@ -73,17 +76,11 @@ test("[ADM-FR-006] ocultar pede confirmação com motivo, e o veículo volta por
 
   // em Ocultados, com Mostrar de novo
   await page.getByRole("link", { name: /^Ocultados/ }).click();
-  const hidden = page
-    .getByTestId("admin-vehicle")
-    .filter({ hasText: "Oculto da vitrine" })
-    .filter({ hasText: title })
-    .first();
+  const hidden = byHref(page.getByTestId("admin-vehicle"));
   await expect(hidden).toBeVisible();
   await page.screenshot({ path: "test-results/admin-veiculos-ocultados.png" });
   await hidden.getByRole("button", { name: "Mostrar de novo" }).click();
-  await expect(
-    page.getByTestId("admin-vehicle").filter({ hasText: title }),
-  ).toHaveCount(0);
+  await expect(byHref(page.getByTestId("admin-vehicle"))).toHaveCount(0);
 });
 
 test("[ADM-FR-005] [ADM-SEC-003] Nova loja: cadastrada, com a senha temporária uma vez e Copiar", async ({

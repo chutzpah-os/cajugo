@@ -34,9 +34,18 @@ const FUELS: Record<string, string> = {
   gnv: "cng",
 };
 
+export const CONDITIONS = {
+  novo: "Novos",
+  seminovo: "Seminovos",
+  usado: "Usados",
+} as const;
+export type Condition = keyof typeof CONDITIONS;
+
 export type Filters = {
   /** Tipo de veículo (014, TIP-FR-007): `?tipo=moto`. */
   type?: VehicleTypeSlug;
+  /** Novo (0 km), seminovo (até 3 anos) ou usado (017, HOM-FR-003): `?estado=`. */
+  condition?: Condition;
   makes: string[];
   /** Modelos escolhidos dentro de uma marca: "bmw--x1" (marca--modelo), 012. */
   models?: string[];
@@ -80,8 +89,10 @@ export function parseFilters(params: Params): Filters {
   };
   const q = one(params.q).trim().slice(0, 60);
   const type = one(params.tipo);
+  const condition = one(params.estado);
   return {
     ...(isVehicleType(type) ? { type } : {}),
+    ...(condition in CONDITIONS ? { condition: condition as Condition } : {}),
     makes: [
       ...new Set(
         one(params.marca)
@@ -143,6 +154,7 @@ const keyOf = (map: Record<string, string>, value: string) =>
 export function filtersToQuery(f: Filters): string {
   const p = new URLSearchParams();
   if (f.type) p.set("tipo", f.type);
+  if (f.condition) p.set("estado", f.condition);
   if (f.makes.length) p.set("marca", f.makes.join(","));
   if (f.models?.length) p.set("modelo", f.models.join(","));
   if (f.cities?.length) p.set("cidade", f.cities.join(","));

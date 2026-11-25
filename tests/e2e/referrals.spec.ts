@@ -81,7 +81,7 @@ test.describe("Caju Indica (010)", () => {
   test("[IND-FR-004] [IND-FR-014] banner da vitrine leva ao cadastro do indicador, que abre o painel", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/veiculos");
     // Card escuro do Caju Indica dentro da grade ([15a], [9a]).
     await page
       .getByTestId("referral-banner")

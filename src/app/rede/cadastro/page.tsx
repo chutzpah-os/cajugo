@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { SiteHeader } from "@/domains/auth/components/site-header";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { currentSession } from "@/domains/auth/service";
 import { SellerSignupForm } from "@/domains/sellers/components/seller-signup-form";
-import { Logo } from "@/ui/logo";
 
 export const metadata: Metadata = {
   title: "Cadastro de vendedor | CajuGo",
@@ -32,32 +31,25 @@ async function Form() {
 /** Cadastro do vendedor [7a] (1/2): conta e dados (SEL-FR-001, 016). */
 export default function SellerSignupPage() {
   return (
-    <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-5 px-4 pt-4 pb-8">
-      <header className="flex items-center gap-2">
-        <Link
-          href="/"
-          aria-label="Voltar para a vitrine"
-          className="-ml-2 flex size-11 items-center justify-center text-xl"
-        >
-          ‹
-        </Link>
-        <Logo />
-      </header>
-      <div className="flex flex-col gap-2">
-        <h1 className="text-[24px] font-extrabold tracking-[-0.02em]">
-          Seja vendedor da Rede Caju
-        </h1>
-        <p className="text-sm text-text-2">
-          Divulgue os carros da vitrine e ganhe comissão das lojas parceiras.
-          Você não paga nada.
-        </p>
-        <p className="text-sm text-text-3">
-          1 de 2 · depois, a foto do documento
-        </p>
-      </div>
-      <Suspense fallback={null}>
-        <Form />
-      </Suspense>
-    </main>
+    <>
+      <SiteHeader />
+      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-5 px-4 pt-4 pb-8">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-[24px] font-extrabold tracking-[-0.02em]">
+            Seja vendedor da Rede Caju
+          </h1>
+          <p className="text-sm text-text-2">
+            Divulgue os carros da vitrine e ganhe comissão das lojas parceiras.
+            Você não paga nada.
+          </p>
+          <p className="text-sm text-text-3">
+            1 de 2 · depois, a foto do documento
+          </p>
+        </div>
+        <Suspense fallback={null}>
+          <Form />
+        </Suspense>
+      </main>
+    </>
   );
 }

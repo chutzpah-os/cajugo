@@ -132,7 +132,7 @@ function fallbackOf(key: DiscoveryKey, n: DiscoveryNames) {
     const up = { citySlug: key.citySlug };
     return { key: up, path: discoveryPath(up), name: cityLabel(n) };
   }
-  return { key: null, path: "/", name: "a vitrine CajuGo" };
+  return { key: null, path: "/veiculos", name: "a vitrine CajuGo" };
 }
 
 /**

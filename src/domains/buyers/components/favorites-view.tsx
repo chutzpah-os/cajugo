@@ -78,7 +78,7 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
       <EmptyState
         icon="♡"
         title="Nenhum favorito ainda"
-        action={<ButtonLink href="/">Ver a vitrine</ButtonLink>}
+        action={<ButtonLink href="/veiculos">Ver a vitrine</ButtonLink>}
       >
         Toque no coração de um veículo para guardar aqui. Os favoritos ficam
         neste aparelho.
@@ -113,7 +113,7 @@ export function FavoritesView({ cloudName }: { cloudName: string }) {
             <Unavailable
               key={entry.id}
               entry={entry}
-              similarPath={load.similar[entry.id] ?? "/"}
+              similarPath={load.similar[entry.id] ?? "/veiculos"}
             />
           );
         const drop = priceDrop(entry, card);

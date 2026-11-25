@@ -44,6 +44,7 @@ describe("indexação", () => {
 
     expect(urls).toEqual([
       "https://cajugo.vercel.app/",
+      "https://cajugo.vercel.app/veiculos",
       "https://cajugo.vercel.app/lojistas",
       "https://cajugo.vercel.app/termos",
     ]);

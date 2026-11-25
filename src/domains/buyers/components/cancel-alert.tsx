@@ -28,7 +28,7 @@ export function CancelAlert({ token }: { token: string }) {
         <p role="status" data-testid="cancel-outcome" className="font-bold">
           {MESSAGES[outcome]}
         </p>
-        <ButtonLink href="/" variant="ghost">
+        <ButtonLink href="/veiculos" variant="ghost">
           Ver a vitrine
         </ButtonLink>
       </div>

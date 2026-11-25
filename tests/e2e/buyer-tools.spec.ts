@@ -99,7 +99,7 @@ test.describe("ferramentas do comprador (390 px)", () => {
     page.on("request", (r) => {
       if (r.method() === "POST") posts.push(r.url());
     });
-    await page.goto("/");
+    await page.goto("/veiculos");
     const card = page.locator('[data-testid="catalog-list"] > li').first();
     const heart = card.getByTestId("favorite");
     await expect(heart).toHaveAttribute("aria-pressed", "false");
@@ -178,6 +178,7 @@ test.describe("ferramentas do comprador (390 px)", () => {
         await page.getByRole("button", { name: "Abrir menu" }).click();
       await expect(menu).toBeVisible({ timeout: 2_000 });
     }).toPass({ timeout: 20_000 });
+    await menu.getByText("Comprar", { exact: true }).click();
     await menu.getByRole("link", { name: "Favoritos" }).click();
     await expect(page).toHaveURL(/\/favoritos$/);
 
@@ -211,7 +212,7 @@ test.describe("ferramentas do comprador (390 px)", () => {
 
     await expect(page.getByText("Nenhum favorito ainda")).toBeVisible();
     await page.getByRole("link", { name: "Ver a vitrine" }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/veiculos$/);
   });
 
   test("[BUY-NFR-002] HTML de /favoritos fora do Google e igual para todos", async ({

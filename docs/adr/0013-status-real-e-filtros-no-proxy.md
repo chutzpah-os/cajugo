@@ -1,3 +1,6 @@
 # Status HTTP real e filtros da vitrine resolvidos no proxy
 
 Medido no build de produção (2026-11-09): com Next 16, uma página de `/loja/*` ou `/v/*` que chama `notFound()` ou `permanentRedirect()` responde 200, mesmo como rota bloqueante, porque o cabeçalho sai antes de ela decidir. Como o Google precisa de 301/308 e 404 de verdade (o SEO é o principal ativo), o `proxy.ts` decide o status dessas rotas com uma consulta indexada, guardando a resposta em memória por 60 s para não ir ao banco a cada acesso. A página continua decidindo também, como segunda barreira. O proxy também reescreve `/?filtros` para a rota interna `/vitrine`: assim a `/` sem filtros fica pré-renderizada, que é a página mais importante para velocidade e SEO, sem mudar o endereço visível, e grava o cookie do `?ref=`, para que as páginas não precisem ler a query string. O custo é uma lógica a mais no proxy, com atraso de até 60 s para um redirecionamento novo, o mesmo limite de atualização das páginas (PRD §5.3).
+
+
+**Atualização (2026-11-25, spec 017):** a `/` virou a página inicial, sem a lista. A vitrine pré-renderizada passou para `/veiculos`; o proxy reescreve `/veiculos?filtros` para `/vitrine` (mesma lógica) e responde 308 de `/?filtros` para `/veiculos?filtros`, para os links antigos (alertas, buscas salvas, Google) não quebrarem.

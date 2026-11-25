@@ -394,8 +394,10 @@ Navegação:
 ## 7. Requisitos funcionais por tela
 
 ### [1a] Catálogo
+**Página inicial `/`** (spec 017): abertura "A sua plataforma automotiva: compre, venda e cuide do seu veículo, tudo aqui", o quadro Buscar · Vender e os produtos da CajuGo, sem a lista. A vitrine fica em `/veiculos` (com os filtros na URL; `/?filtros` responde 308 para lá).
+
 **Modos**
-- **CajuGo**: cabeçalho com logo CajuGo; quadro com as abas Buscar (busca + faixa de tipos com ilustração, no lugar da barra de filtros até escolher o tipo) e Vender (chamada para `/lojistas`) (spec 014); título "Veículos novos e seminovos à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".
+- **CajuGo** (`/veiculos`): cabeçalho com logo CajuGo; quadro com as abas Buscar (busca + faixa de tipos com ilustração, no lugar da barra de filtros até escolher o tipo) e Vender (chamada para `/lojistas`) (spec 014); título "Veículos novos e seminovos à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".
 - **Lojista**: cabeçalho com logo/sigla, nome e cidade da loja + "catálogo CajuGo"; título "Estoque {loja}"; contador "X veículos disponíveis"; card sem linha de loja.
 
 **Elementos**
@@ -741,7 +743,7 @@ Todas as confirmações geram registro em `LogAtividade`.
 - Mensalidade R$ 100 + taxas CajuGo de vendas via vendedor − crédito Caju Indica = total; vencimento; status; **Pagar com Pix** → [6c].
 
 ### [11a] Menu da home
-- Comprar veículos · Produtos (Catálogo, Rede Caju) · Caju Indica · Favoritos · Entrar (logado: avatar + painéis disponíveis).
+- Em todas as páginas públicas (spec 017), no cabeçalho do desktop e no menu do celular: **Comprar** (novos 0 km, seminovos, usados, carros, motos, picapes, caminhões, todos, favoritos) · **Vender** (anunciar a loja, Rede Caju, Caju Indica) · **Financiar** · **Cuidar** (LaudoCaju) · **Assinar** (Plano Catálogo) · **Descobrir** (marcas e cidades, Tabela FIPE, Caju Indica). O que ainda não existe aparece com o selo **Em breve**. Entrar (logado: avatar + painéis disponíveis).
 
 ### [12a]–[12d] Estados públicos
 - **[12a] Busca sem resultado:** sugestões (limpar filtros, buscar só a marca) + **Avisar quando chegar** (§5.11).

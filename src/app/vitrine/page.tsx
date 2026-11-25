@@ -14,7 +14,7 @@ import { parseFilters } from "@/domains/showcase/filters";
 export const instant = false;
 
 /**
- * Vitrine com filtros (`/?marca=…`): o `proxy.ts` reescreve para cá e o endereço visível
+ * Vitrine com filtros (`/veiculos?marca=…`): o `proxy.ts` reescreve para cá e o endereço visível
  * não muda; o cache é por filtros normalizados (ADR 0013, SHW-NFR-005).
  */
 export async function generateMetadata({
@@ -33,7 +33,8 @@ export default async function FilteredShowcase({
     <>
       <SiteHeader
         joined
-        search={<HeaderSearch filters={filters} basePath="/" />}
+        active="comprar"
+        search={<HeaderSearch filters={filters} basePath="/veiculos" />}
       />
       <ShowcaseView
         promo={

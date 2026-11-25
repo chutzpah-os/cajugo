@@ -128,7 +128,7 @@ describe("página de descoberta", () => {
     // Assert
     expect(page).toMatchObject({
       kind: "empty",
-      fallback: { key: null, path: "/", name: "a vitrine CajuGo" },
+      fallback: { key: null, path: "/veiculos", name: "a vitrine CajuGo" },
     });
   });
 

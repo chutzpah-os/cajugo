@@ -4,17 +4,10 @@ import { Suspense, type ReactNode } from "react";
 import { getDb } from "@/platform/db/client";
 import { cn } from "@/ui/cn";
 import { Logo } from "@/ui/logo";
+import { MenuBar } from "@/ui/menu-bar";
 import { SiteMenu, type MenuAccount } from "@/ui/site-menu";
 import { currentSession } from "../current";
 import { accountMenu } from "../service";
-
-/** Links do cabeçalho do desktop [15a]; "Comprar veículos" ativo na vitrine. */
-const LINKS = [
-  ["/", "Comprar veículos"],
-  ["/lojistas", "Produtos"],
-  ["/indica/cadastro", "Caju Indica"],
-  ["/favoritos", "Favoritos"],
-] as const;
 
 function Account({ account }: { account: MenuAccount }) {
   const panel = account?.panels[0];
@@ -61,14 +54,14 @@ async function AccountSlot() {
 /**
  * Cabeçalho das páginas públicas (STO-FR-001, BUY-FR-005), como no design:
  * - celular [9a]: branco, logo, **Entrar** e o menu [11a];
- * - desktop [15a]: logo, a busca, Comprar veículos · Produtos · Caju Indica ·
- *   Favoritos e **Entrar**.
+ * - desktop [15a]: logo, a busca (a partir de 1536 px; abaixo, a busca fica no quadro), os menus Comprar · Vender ·
+ *   Financiar · Cuidar · Assinar · Descobrir (017) e **Entrar**.
  * `search`: a busca da vitrine no desktop; `joined`: a faixa de busca do celular vem
  * logo abaixo, sem divisória.
  */
 export function SiteHeader({
   search,
-  active = "/",
+  active = null,
   joined = false,
   brand,
 }: {
@@ -96,21 +89,10 @@ export function SiteHeader({
               <Logo />
             </Link>
           )}
-          {search && <div className="hidden w-[270px] lg:block">{search}</div>}
+          {search && <div className="hidden w-[240px] 2xl:block">{search}</div>}
         </div>
         <div className="flex items-center gap-2 lg:gap-7">
-          <nav aria-label="Site" className="hidden items-center gap-6 lg:flex">
-            {LINKS.map(([href, label]) => (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active === href ? "page" : undefined}
-                className="flex min-h-11 items-center text-sm font-bold text-ink aria-[current=page]:text-caju"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+          <MenuBar active={active} />
           <Suspense fallback={<Account account={null} />}>
             <AccountSlot />
           </Suspense>

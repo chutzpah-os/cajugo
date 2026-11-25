@@ -40,15 +40,14 @@ test.describe("cadastro do lojista e Minha loja", () => {
   }) => {
     await page.goto("/");
     let menu = await openMenu(page);
-    for (const item of [
-      "Comprar veículos",
-      "Catálogo para lojas",
-      "Rede Caju",
-      "Caju Indica",
-      "Favoritos",
-      "Entrar",
-    ])
-      await expect(menu.getByRole("link", { name: item })).toBeVisible();
+    // Seções do menu (017): Comprar · Vender · Financiar · Cuidar · Assinar · Descobrir.
+    for (const section of ["Comprar", "Vender", "Financiar", "Descobrir"])
+      await expect(menu.getByText(section, { exact: true })).toBeVisible();
+    await menu.getByText("Vender", { exact: true }).click();
+    await expect(
+      menu.getByRole("link", { name: "Anunciar minha loja" }),
+    ).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Entrar" })).toBeVisible();
 
     await enterAs(page, accounts.owner.email, "/painel");
     await page.goto("/");

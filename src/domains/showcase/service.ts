@@ -83,11 +83,25 @@ function searchQuery(q: string): string | null {
 }
 
 /** Filtros da URL como condições da consulta (SHW-FR-004, 005). */
+/** Seminovo: ano modelo até 3 anos antes do ano corrente (017). */
+const SEMINOVO_YEARS = 3;
+
+function conditionWhere(c: Filters["condition"]): SQL | undefined {
+  if (!c) return undefined;
+  const since = new Date().getUTCFullYear() - SEMINOVO_YEARS;
+  if (c === "novo") return eq(vehicles.mileageKm, 0);
+  const used = sql`coalesce(${vehicles.mileageKm}, 1) > 0`;
+  return c === "seminovo"
+    ? and(used, gte(vehicles.yearModel, since))
+    : and(used, sql`coalesce(${vehicles.yearModel}, 0) < ${since}`);
+}
+
 function filterConditions(f: Filters): (SQL | undefined)[] {
   const query = f.q ? searchQuery(f.q) : null;
   return [
     // Até a 014 gravar o tipo, todo veículo é carro: os outros tipos vêm vazios.
     f.type && f.type !== TYPE_OF_EVERY_VEHICLE ? sql`false` : undefined,
+    conditionWhere(f.condition),
     query
       ? sql`${vehicles.search} @@ to_tsquery('simple', ${query})`
       : undefined,

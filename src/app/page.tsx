@@ -1,42 +1,25 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
-import {
-  ShowcaseView,
-  showcaseMetadata,
-} from "@/domains/showcase/components/showcase-view";
-import { HeaderSearch } from "@/domains/showcase/components/catalog-toolbar";
-import { cachedSearch } from "@/domains/showcase/current";
-import { ReferralBanner } from "@/domains/referrals/components/referral-banner";
-import { cachedProgramBanner } from "@/domains/referrals/current";
-import { parseFilters } from "@/domains/showcase/filters";
+import { HomeView } from "@/domains/showcase/components/home-view";
+import { cachedFacets } from "@/domains/showcase/current";
+import { JsonLd, pageMetadata } from "@/platform/seo/seo";
+import { websiteJsonLd } from "@/platform/seo/catalog";
 
-const NONE = parseFilters({});
+export const metadata: Metadata = pageMetadata({
+  title: "CajuGo: a sua plataforma automotiva",
+  description:
+    "Compre, venda e cuide do seu veículo num só lugar: veículos novos e seminovos das lojas, catálogo para lojistas e consulta veicular. Fale direto com a loja pelo WhatsApp.",
+  path: "/",
+});
 
-export async function generateMetadata(): Promise<Metadata> {
-  return showcaseMetadata(await cachedSearch("showcase", NONE));
-}
-
-/** Vitrine sem filtros: pré-renderizada, a principal página de SEO. */
+/** Página inicial (017): pré-renderizada; a lista de veículos fica em `/veiculos`. */
 export default async function Home() {
+  const { makes } = await cachedFacets("showcase");
   return (
     <>
-      <SiteHeader
-        joined
-        search={<HeaderSearch filters={NONE} basePath="/" />}
-      />
-      <ShowcaseView
-        promo={
-          <ReferralBanner banner={await cachedProgramBanner()} variant="card" />
-        }
-        promoFooter={
-          <ReferralBanner
-            banner={await cachedProgramBanner()}
-            variant="footer"
-          />
-        }
-        filters={NONE}
-        result={await cachedSearch("showcase", NONE)}
-      />
+      <JsonLd data={websiteJsonLd()} />
+      <SiteHeader active="inicio" />
+      <HomeView total={makes.reduce((sum, m) => sum + m.count, 0)} />
     </>
   );
 }

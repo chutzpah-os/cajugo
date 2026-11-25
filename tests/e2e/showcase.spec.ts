@@ -14,7 +14,7 @@ test.describe("vitrine e catálogo (390 px)", () => {
   test("[SHW-FR-001] [SHW-FR-003] vitrine mostra contador, cards e quem anuncia", async ({
     page,
   }) => {
-    await page.goto("/");
+    await page.goto("/veiculos");
 
     await expect(heading(page)).toHaveText(
       "Veículos novos e seminovos à venda",
@@ -37,7 +37,7 @@ test.describe("vitrine e catálogo (390 px)", () => {
     );
     expect(await audit(page), "[1a] catálogo").toEqual(CLEAN);
 
-    await page.goto("/?q=c3+v44");
+    await page.goto("/veiculos?q=c3+v44");
     await expect(page.getByTestId("no-results")).toBeVisible();
     await page.goto(`${CATALOG}?q=c3+v44`);
     await expect(cards(page)).toHaveCount(1);
@@ -76,7 +76,8 @@ test.describe("vitrine e catálogo (390 px)", () => {
     page,
   }) => {
     await page.goto("/?marca=bmw");
-    await expect(page).toHaveURL(/\/\?marca=bmw$/);
+    // Endereço antigo: 308 para a vitrine em /veiculos (017).
+    await expect(page).toHaveURL(/\/veiculos\?marca=bmw$/);
     await expect(cards(page).first()).toContainText("BMW");
 
     await page.getByTestId("filters-chip").click();
@@ -86,7 +87,7 @@ test.describe("vitrine e catálogo (390 px)", () => {
       /^Ver \d+ veículos$/,
     );
     await sheet.getByTestId("filters-apply").click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/veiculos$/);
   });
 
   test("[SHW-FR-004] busca ignora acento e maiúscula", async ({ page }) => {
@@ -346,24 +347,31 @@ test.describe("desktop [15a] (1280 px)", () => {
   });
 });
 
-test("[TIP-FR-007] [TIP-FR-020] faixa de tipos no lugar dos filtros, chip Tipo e aba Vender", async ({
+test("[TIP-FR-007] [TIP-FR-020] faixa de tipos só na página inicial; na vitrine, o tipo vem pelo chip e pela folha", async ({
   page,
 }) => {
   await page.goto("/");
-  const panel = page.getByTestId("showcase-panel");
-  await expect(panel.getByTestId("type-carro")).toBeVisible();
-  await expect(page.getByTestId("filters-chip")).toHaveCount(0);
-
-  await panel.getByTestId("type-moto").click();
-  await expect(page).toHaveURL(/tipo=moto/);
+  await page.getByTestId("showcase-panel").getByTestId("type-moto").click();
+  await expect(page).toHaveURL(/\/veiculos\?tipo=moto$/);
   await expect(heading(page)).toHaveText("Motos novas e seminovas à venda");
-  await expect(page.getByTestId("type-chip")).toBeVisible();
-  await expect(page.getByTestId("filters-chip")).toBeVisible();
+  // O Next guarda a página anterior oculta no DOM: o que vale é não estar visível.
+  await expect(page.getByTestId("type-carro")).toBeHidden();
 
+  // Tirar o tipo pelo chip; a escolha volta pela folha de Filtros.
   await page.getByTestId("type-chip").click();
-  await expect(page.getByTestId("type-moto")).toBeVisible();
+  await expect(page).toHaveURL(/\/veiculos$/);
+  await page.getByTestId("filters-chip").filter({ visible: true }).click();
+  const sheet = page.getByTestId("filters-sheet").filter({ visible: true });
+  await sheet.getByRole("link", { name: "Carro" }).click();
+  await expect(page).toHaveURL(/\/veiculos\?tipo=carro$/);
 
-  await page.getByRole("tab", { name: "Vender" }).click();
-  await page.getByRole("link", { name: "Quero anunciar" }).click();
+  await page
+    .getByRole("tab", { name: "Vender" })
+    .filter({ visible: true })
+    .click();
+  await page
+    .getByRole("link", { name: "Quero anunciar" })
+    .filter({ visible: true })
+    .click();
   await expect(page).toHaveURL(/\/lojistas$/);
 });

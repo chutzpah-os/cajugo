@@ -60,10 +60,13 @@ const chipRow = "flex flex-wrap gap-x-2 gap-y-0";
 const LAYOUT = {
   sheet: {
     scroll: "flex flex-1 flex-col gap-5 overflow-y-auto px-4 py-3",
+    list: "",
     footer: "grid shrink-0 grid-cols-[auto_1fr] gap-2 border-t border-line p-4",
   },
   side: {
     scroll: "flex flex-col gap-4",
+    /** Lateral: uns 5 itens à vista; o resto rola dentro da seção (pedido do dono). */
+    list: "max-h-[228px] overflow-y-auto overscroll-contain pr-1",
     footer: "mt-4 grid grid-cols-[auto_1fr] gap-2",
   },
 };
@@ -82,7 +85,10 @@ export function FiltersForm({
   lockMake = false,
   cities = [],
   onApply,
+  top,
 }: {
+  /** Seção antes das outras (Tipo de veículo na vitrine, 014). */
+  top?: ReactNode;
   filters: Filters;
   makes: MakeOption[];
   total: number;
@@ -104,6 +110,7 @@ export function FiltersForm({
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const latest = useRef(0);
   const scrollClass = LAYOUT[layout].scroll;
+  const listClass = LAYOUT[layout].list;
   const footerClass = LAYOUT[layout].footer;
 
   useEffect(() => {
@@ -208,6 +215,7 @@ export function FiltersForm({
   return (
     <>
       <div className={scrollClass}>
+        {top}
         {showSort && (
           <Group title="Ordenar por">
             <div className={chipRow}>
@@ -226,26 +234,30 @@ export function FiltersForm({
         )}
         {!lockMake && (
           <Group id={`${idPrefix}-marca`} title="Marca e modelo">
-            <CheckTree
-              label="Marca e modelo"
-              nodes={makeNodes}
-              isOn={(v) => draft.makes.includes(v) || models.includes(v)}
-              onToggleParent={toggleMake}
-              onToggleChild={toggleModel}
-            />
+            <div className={listClass}>
+              <CheckTree
+                label="Marca e modelo"
+                nodes={makeNodes}
+                isOn={(v) => draft.makes.includes(v) || models.includes(v)}
+                onToggleParent={toggleMake}
+                onToggleChild={toggleModel}
+              />
+            </div>
           </Group>
         )}
         {stateNodes.length > 0 && (
           <Group id={`${idPrefix}-cidade`} title="Estado e cidade">
-            <CheckTree
-              label="Estado e cidade"
-              nodes={stateNodes}
-              isOn={(v) => chosenCities.includes(v)}
-              onToggleParent={toggleState}
-              onToggleChild={(_, c) =>
-                update({ ...draft, cities: toggled(chosenCities, c.value) })
-              }
-            />
+            <div className={listClass}>
+              <CheckTree
+                label="Estado e cidade"
+                nodes={stateNodes}
+                isOn={(v) => chosenCities.includes(v)}
+                onToggleParent={toggleState}
+                onToggleChild={(_, c) =>
+                  update({ ...draft, cities: toggled(chosenCities, c.value) })
+                }
+              />
+            </div>
           </Group>
         )}
         <Group id={`${idPrefix}-preco`} title="Preço">

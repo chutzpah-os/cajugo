@@ -166,7 +166,7 @@ describe("SEO do catálogo", () => {
       "WebSite",
     ]);
     expect(JSON.stringify(site)).toContain(
-      "https://cajugo.test/?q={search_term_string}",
+      "https://cajugo.test/veiculos?q={search_term_string}",
     );
   });
 });

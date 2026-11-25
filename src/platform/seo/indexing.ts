@@ -47,6 +47,7 @@ export function staticSitemap(): MetadataRoute.Sitemap {
   const base = appUrl();
   return [
     { url: `${base}/`, changeFrequency: "daily", priority: 1 },
+    { url: `${base}/veiculos`, changeFrequency: "daily", priority: 1 },
     { url: `${base}/lojistas`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/termos`, changeFrequency: "yearly", priority: 0.2 },
   ];

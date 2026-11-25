@@ -97,7 +97,7 @@ test.describe("páginas de descoberta (390 px)", () => {
     page,
   }) => {
     // A busca por marca e por cidade é filtro da própria vitrine (DSG-FR-018).
-    await page.goto("/");
+    await page.goto("/veiculos");
     await expect(
       page.getByRole("link", { name: "Buscar por marca" }),
     ).toHaveCount(0);

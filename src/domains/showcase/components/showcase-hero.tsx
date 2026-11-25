@@ -1,30 +1,28 @@
 const count = new Intl.NumberFormat("pt-BR");
 
 /**
- * Abertura da vitrine (pedido do dono, 2026-11-25, na referência de duas colunas): o
- * que é a CajuGo à esquerda e a ilustração à direita; o quadro Buscar/Vender vem logo
- * abaixo. O título da página continua sendo o `h1` da lista (SEO.md).
+ * Abertura da página inicial (017, pedido do dono em 2026-11-25): a CajuGo como a
+ * plataforma automotiva, com o texto à esquerda e a ilustração à direita no desktop;
+ * o quadro Buscar · Vender vem logo abaixo.
  */
 export function ShowcaseHero({ total }: { total: number }) {
   return (
-    <div className="flex items-center gap-8 pt-2 lg:pt-4">
+    <div className="flex items-center gap-8 pt-4 lg:pt-6">
       <div className="flex max-w-2xl flex-col gap-2.5 lg:gap-4">
-        <p className="text-[22px] leading-tight font-extrabold tracking-[-0.02em] text-ink lg:text-[38px]">
-          Seu próximo veículo está aqui: a vitrine das lojas com{" "}
+        <p className="text-[24px] leading-tight font-extrabold tracking-[-0.02em] text-ink lg:text-[40px]">
+          A sua plataforma automotiva: compre, venda e cuide do seu veículo,{" "}
           <span className="underline decoration-castanha decoration-[5px] underline-offset-[6px]">
-            {total > 0
-              ? `${count.format(total)} ${total === 1 ? "veículo" : "veículos"} à venda`
-              : "veículos à venda"}
+            tudo aqui
           </span>
         </p>
         <p className="text-[15px] text-text-2 lg:text-[17px]">
-          A CajuGo reúne o estoque das lojas de veículos num só lugar: carros,
-          motos, picapes e muito mais, com fotos, preço e a referência da Tabela
-          FIPE. Achou o seu? Fale direto com a loja pelo WhatsApp, sem
-          intermediário e sem custo para você.
+          Na CajuGo você encontra veículos novos e seminovos das lojas
+          {total > 0 ? ` (${count.format(total)} à venda agora)` : ""}, coloca o
+          estoque da sua loja online, consulta o histórico de um veículo antes
+          de comprar e fala direto com a loja pelo WhatsApp, sem intermediário.
         </p>
       </div>
-      {/* eslint-disable-next-line @next/next/no-img-element -- ilustração estática (WebP de 59 KB), só no desktop */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- ilustração estática (WebP de 62 KB), só no desktop */}
       <img
         src="/tipos/hero.webp"
         alt=""

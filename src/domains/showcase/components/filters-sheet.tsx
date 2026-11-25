@@ -48,7 +48,10 @@ export function FiltersSheet({
   lockMake = false,
   cities,
   lead,
+  top,
 }: {
+  /** Seção do topo da folha (Tipo de veículo, 014). */
+  top?: ReactNode;
   /** Chip antes dos filtros (o Tipo escolhido na vitrine, 014). */
   lead?: ReactNode;
   filters: Filters;
@@ -162,6 +165,7 @@ export function FiltersSheet({
           layout="sheet"
           section={opening.section}
           onApply={close}
+          top={top}
         />
       </dialog>
     </>

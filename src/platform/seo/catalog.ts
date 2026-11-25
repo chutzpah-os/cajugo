@@ -192,7 +192,7 @@ export function websiteJsonLd() {
         url: abs("/"),
         potentialAction: {
           "@type": "SearchAction",
-          target: `${abs("/")}?q={search_term_string}`,
+          target: `${abs("/veiculos")}?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       },
