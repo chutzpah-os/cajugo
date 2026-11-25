@@ -1,11 +1,22 @@
+import { z } from "zod";
 import { authorizeTo, can } from "@/domains/auth/service";
-import { paymentsSnapshot } from "@/domains/billing/service";
+import {
+  paymentsSnapshot,
+  saoPauloMonthStart,
+  storeBilling,
+} from "@/domains/billing/service";
 import { subscriptionsView } from "@/domains/billing/subscriptions";
-import { leadsSnapshot } from "@/domains/leads/service";
+import { leadsSnapshot, storeLeadsThisMonth } from "@/domains/leads/service";
 import { openReportsCount } from "@/domains/moderation/service";
-import { sellersInReview } from "@/domains/sellers/service";
-import { vehiclesSnapshot } from "@/domains/showcase/service";
-import { storesSnapshot } from "@/domains/stores/service";
+import {
+  sellersInReview,
+  storeNetworkForAdmin,
+} from "@/domains/sellers/service";
+import { getSettings } from "@/domains/settings/service";
+import { storeStock, vehiclesSnapshot } from "@/domains/showcase/service";
+import { storeForAdmin, storesSnapshot } from "@/domains/stores/service";
+import { formatTaxId, maskTaxId } from "@/platform/br/tax-id";
+import { AppError } from "@/platform/http/errors";
 import type { Db } from "@/platform/db/types";
 import type { Session } from "@/platform/http/session";
 
@@ -179,5 +190,83 @@ export async function adminDashboard(
     attention: items.filter((i) => i.count > 0),
     leadOrigin: leads.origin,
     topStores: leads.topStores,
+  };
+}
+
+export type AdminStoreDetail = NonNullable<
+  Awaited<ReturnType<typeof adminStoreDetail>>
+>;
+
+/**
+ * Detalhe da loja [6g] (ADM-FR-008): cabeçalho, KPIs, Dono, Assinatura, Rede Caju e
+ * Veículos. O CPF/CNPJ sai inteiro só para quem cuida das lojas (ADM-SEC-004); id
+ * inválido ou loja inexistente → 404 (ADM-SEC-005). Admin e suporte.
+ */
+export async function adminStoreDetail(
+  deps: AdminDeps,
+  session: Session | null,
+  rawId: unknown,
+) {
+  const s = authorizeTo(session, "admin.read");
+  const id = z.uuid().safeParse(rawId);
+  if (!id.success) throw AppError.notFound();
+  const db = deps.db;
+  const now = deps.now?.() ?? new Date();
+  const store = await storeForAdmin(db, id.data);
+  if (!store || store.status === "archived") throw AppError.notFound();
+
+  const [billing, stock, leads, network, settings] = await Promise.all([
+    storeBilling(db, store.id),
+    storeStock(db, store.id),
+    storeLeadsThisMonth(db, store.id, now),
+    storeNetworkForAdmin(db, store.id, saoPauloMonthStart(now)),
+    getSettings(db, now),
+  ]);
+  const manage = can(s, "stores.manage");
+  const taxId =
+    store.taxId && store.taxIdType
+      ? (manage ? formatTaxId : maskTaxId)(store.taxIdType, store.taxId)
+      : null;
+
+  return {
+    store: {
+      id: store.id,
+      name: store.name,
+      slug: store.slug,
+      city: `${store.city} (${store.state})`,
+      status: store.status,
+      since: store.activatedAt,
+    },
+    kpis: {
+      vehicles: stock.total,
+      onCajugo: stock.onCajugo,
+      leadsThisMonth: leads,
+    },
+    owner: {
+      profileId: store.ownerId,
+      name: store.ownerName,
+      email: store.ownerEmail,
+      phone: store.ownerPhone,
+      taxIdLabel: store.taxIdType === "cnpj" ? "CNPJ" : "CPF",
+      taxId,
+    },
+    subscription: {
+      plan: "Catálogo",
+      membershipCents: settings.membership_cents,
+      nextDueAt: store.nextDueAt,
+      totalPaidCents: billing.totalPaidCents,
+      invoices: billing.invoices,
+    },
+    network: {
+      acceptsSellers: store.acceptsSellers,
+      commission:
+        store.commissionType && store.commissionValue !== null
+          ? { type: store.commissionType, value: store.commissionValue }
+          : null,
+      partners: network.partners,
+      salesThisMonth: network.salesThisMonth,
+    },
+    vehicles: stock.first,
+    canManage: manage,
   };
 }

@@ -1,6 +1,7 @@
-import { and, count, eq, gte, lt, sum } from "drizzle-orm";
-import { payments } from "@/platform/db/schema";
+import { and, count, desc, eq, gte, lt, sum } from "drizzle-orm";
+import { invoices, payments } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
+import { periodLabel } from "./account";
 import { saoPauloMonthStart } from "./due-date";
 
 /**
@@ -38,5 +39,36 @@ export async function paymentsSnapshot(db: Db, now: Date) {
     paidThisMonthCents: cur.cents ?? 0,
     paidPrevCents: prev.cents ?? 0,
     receiptsToReview: review.n,
+  };
+}
+
+/**
+ * Card Assinatura do detalhe da loja no admin [6g] (012b, ADM-FR-008): próxima
+ * cobrança, total pago (pagamentos confirmados) e as últimas faturas.
+ */
+export async function storeBilling(db: Db, storeId: string) {
+  const [[paid], last] = await Promise.all([
+    db
+      .select({ cents: sum(payments.amountCents).mapWith(Number) })
+      .from(payments)
+      .where(
+        and(eq(payments.storeId, storeId), eq(payments.status, "confirmed")),
+      ),
+    db
+      .select({
+        id: invoices.id,
+        period: invoices.period,
+        totalCents: invoices.totalCents,
+        status: invoices.status,
+        dueAt: invoices.dueAt,
+      })
+      .from(invoices)
+      .where(eq(invoices.storeId, storeId))
+      .orderBy(desc(invoices.dueAt))
+      .limit(12),
+  ]);
+  return {
+    totalPaidCents: paid.cents ?? 0,
+    invoices: last.map((i) => ({ ...i, label: periodLabel(i.period) })),
   };
 }

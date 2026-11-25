@@ -1608,4 +1608,4 @@ export {
 } from "./statement";
 
 /** Contagens do painel do admin (012b). */
-export { sellersInReview } from "./snapshot";
+export { sellersInReview, storeNetworkForAdmin } from "./snapshot";

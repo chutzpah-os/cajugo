@@ -506,4 +506,4 @@ export async function removeStoreLeads(
 }
 
 /** Contagens do painel do admin (012b). */
-export { leadsSnapshot } from "./snapshot";
+export { leadsSnapshot, storeLeadsThisMonth } from "./snapshot";

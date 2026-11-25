@@ -25,8 +25,8 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 ## Fase 2 — Servidor
 - [x] **T003** `adminDashboard`: KPIs com a variação, "Precisa de atenção" (só com pendência), origem dos leads e top lojas, a partir dos serviços dos outros domínios. · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-NFR-002_
 - [x] **T004** `storesAdmin`: busca, filtros por situação, 20 por vez, KPIs. Lojista e visitante recusados. · _ADM-FR-004, ADM-NFR-003, ADM-SEC-001_
-- [ ] **T005** `usersAdmin`: busca por nome ou e-mail, selos de papel, destino de cada conta. · _ADM-FR-007_
-- [ ] **T006** `storeDetail` + `billing.storeBilling`:
+- [x] **T005** `usersAdmin`: busca por nome ou e-mail, selos de papel, destino de cada conta. · _ADM-FR-007_
+- [x] **T006** `storeDetail` + `billing.storeBilling`:
   - cabeçalho, KPIs, Dono, Assinatura, Rede Caju e Veículos;
   - CPF/CNPJ mascarado ao suporte;
   - id inválido → 404.

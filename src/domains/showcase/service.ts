@@ -966,4 +966,4 @@ export {
 } from "./discovery";
 
 /** Contagens do painel do admin (012b). */
-export { vehiclesSnapshot } from "./snapshot";
+export { storeStock, vehiclesSnapshot } from "./snapshot";

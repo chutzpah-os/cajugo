@@ -46,3 +46,18 @@ export async function leadsSnapshot(db: Db, now: Date) {
     topStores: top,
   };
 }
+
+/** Leads da loja no mês (do dia 1 até agora), para o detalhe do admin [6g] (012b). */
+export async function storeLeadsThisMonth(db: Db, storeId: string, now: Date) {
+  const [row] = await db
+    .select({ n: count() })
+    .from(leads)
+    .where(
+      and(
+        eq(leads.storeId, storeId),
+        gte(leads.createdAt, saoPauloMonthStart(now)),
+        lt(leads.createdAt, now),
+      ),
+    );
+  return row.n;
+}

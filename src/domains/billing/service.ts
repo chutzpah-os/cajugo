@@ -1122,4 +1122,4 @@ export async function subscriptionCard(
 }
 
 /** Contagens do painel do admin (012b). */
-export { paymentsSnapshot } from "./snapshot";
+export { paymentsSnapshot, storeBilling } from "./snapshot";

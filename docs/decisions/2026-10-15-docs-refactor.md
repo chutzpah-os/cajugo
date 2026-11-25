@@ -541,3 +541,6 @@
 
 # 2026-11-24 · feat(stores): lista de lojas do admin [012b/T004]
 - ADM-FR-004 e ADM-NFR-003; regra do dono do produto de manter a informação na tela de origem.
+
+# 2026-11-24 · feat(admin): detalhe da loja [012b/T006]
+- ADM-FR-008, ADM-SEC-004/005; o domínio admin só compõe as leituras de cada domínio.

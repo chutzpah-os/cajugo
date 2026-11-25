@@ -996,7 +996,7 @@ export async function storeIdentity(
 }
 
 /** Contagens do painel do admin (012b). */
-export { storesSnapshot } from "./snapshot";
+export { storeForAdmin, storesSnapshot } from "./snapshot";
 
 /** Lojas do admin [1d] (012b). */
 export {
