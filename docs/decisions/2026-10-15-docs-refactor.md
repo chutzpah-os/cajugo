@@ -559,3 +559,6 @@
 
 # 2026-11-24 · feat(admin): logs de atividade com filtros [012b/T009]
 - ADM-FR-011, ADM-FR-015, ADM-SEC-005; o histórico da loja é o Log filtrado por ela (regra do dono, 2026-11-25).
+
+# 2026-11-24 · feat(showcase): veículos novos e seminovos; abas Buscar e Vender na spec [014]
+- Pedidos do dono do produto em 2026-11-25, com a referência visual das abas Buscar/Vender.

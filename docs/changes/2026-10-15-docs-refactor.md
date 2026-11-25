@@ -1208,3 +1208,6 @@
 
 # 2026-11-24 · feat(admin): logs de atividade com filtros [012b/T009]
 - activityLogView: filtros tipo (grupos de ações), período de/até (dia de São Paulo) e loja (a própria loja ou data.storeId), 20 por vez com cursor, ação em texto e o nome de quem fez ('Sistema' sem autor); nunca devolve data. readActivity na plataforma e profileNames no auth.
+
+# 2026-11-24 · feat(showcase): veículos novos e seminovos; abas Buscar e Vender na spec [014]
+- Título da vitrine: 'Veículos novos e seminovos à venda'. Spec 014: Tipo de veículo como 1ª seção do filtro lateral e da folha; TIP-FR-020 com as abas Buscar (busca + faixa de tipos, um veículo por ilustração) e Vender (vantagens + Quero anunciar → /lojistas).

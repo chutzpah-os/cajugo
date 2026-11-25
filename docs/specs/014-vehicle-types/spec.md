@@ -65,10 +65,11 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   - na página do veículo [1b], na ficha (ex.: "Cilindrada 160 cc", "Horas de uso 2.400 h");
   - no card [1a], no lugar de ano · km quando o tipo usa horas.
 - **TIP-FR-007** A vitrine [1a]/[15a] tem o filtro **Tipo** no topo da árvore de filtros: **Tipo → Marca → Modelo**. Marcar um tipo mostra só as marcas dele, com a contagem. Além disso:
-  - sem tipo escolhido, o lugar da barra de filtros (abaixo da busca) mostra a **faixa de tipos**: um cartão por tipo, com uma ilustração vetorial (SVG) do veículo, fornecida pelo dono do produto, e o nome embaixo, na ordem de TIP-FR-001 (Carro, Moto, Scooter, Picape, Van e furgão, Ônibus e micro-ônibus, Caminhão, Trator, Quadriciclo e UTV, Máquinas pesadas, Motorhome e trailer, Implementos), rolando na horizontal;
+  - sem tipo escolhido, o lugar da barra de filtros (abaixo da busca) mostra a **faixa de tipos**: um cartão por tipo, com uma ilustração vetorial (SVG) de um veículo só, fornecida pelo dono do produto, e o nome embaixo, na ordem de TIP-FR-001 (Carro, Moto, Scooter, Picape, Van e furgão, Ônibus e micro-ônibus, Caminhão, Trator, Quadriciclo e UTV, Máquinas pesadas, Motorhome e trailer, Implementos), rolando na horizontal;
   - tocar num cartão filtra pelo tipo, e a faixa dá lugar à barra de filtros daquele tipo: **Filtros**, o chip **Tipo** com o tipo escolhido (para trocar ou tirar; sem tipo, a faixa volta) e os filtros do tipo;
+  - na folha de **Filtros** e no filtro lateral do desktop [15a], a primeira seção é **Tipo de veículo**, com todos os tipos e a contagem, antes de Marca;
   - escolhido um tipo, aparecem os filtros dele (ex.: Km e Câmbio para carro e picape; Km e Cilindrada para moto e scooter; Horas de uso e Tração para trator e máquinas pesadas), tanto nos chips quanto na folha de **Filtros**.
-- **TIP-FR-008** A vitrine sem filtro mostra todos os tipos. O título passa a "Veículos usados e seminovos à venda" e, com um tipo só, vira o do tipo ("Motos usadas e seminovas à venda").
+- **TIP-FR-008** A vitrine sem filtro mostra todos os tipos. O título passa a "Veículos novos e seminovos à venda" e, com um tipo só, vira o do tipo ("Motos novas e seminovas à venda").
 - **TIP-FR-009** A busca por texto [1a] também acha pelo tipo ("moto", "caminhão", "trator") e pelos campos novos (ex.: "160 cc").
 - ~~**TIP-FR-010**~~ Movido para a 014b (páginas de descoberta por tipo), no `/clarify` de 2026-11-24.
 - **TIP-FR-011** O catálogo da loja [1a modo Lojista] mostra o filtro Tipo só quando a loja vende mais de um tipo.
@@ -94,6 +95,9 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   Tem também **Sinistro com indenização**: Nenhum, Pequena monta, Média monta ou Grande monta.
 - **TIP-FR-018** A página do veículo [1b] mostra o Histórico do veículo, com o que o lojista informou e "Não informado" no resto. A vitrine [1a] tem o filtro **Sem passagem por leilão** e **Sem sinistro**.
 
+- **TIP-FR-020** (pedido do dono do produto, 2026-11-25) O topo da vitrine [1a]/[15a] é um quadro com duas abas, **Buscar** e **Vender**:
+  - **Buscar** (aberta ao chegar): a busca por texto e, logo abaixo, a faixa de tipos (TIP-FR-007), com **uma ilustração por tipo, um veículo só em cada uma**;
+  - **Vender**: "Venda seus veículos na CajuGo", um texto curto, a lista de vantagens do Catálogo (catálogo próprio, vitrine CajuGo, contato no WhatsApp, R$ 100/mês sem comissão sobre a venda) e o botão **Quero anunciar**, que leva para a página do lojista [`/lojistas`], com **Saiba mais** ao lado.
 - **TIP-FR-019** (pedido do dono do produto, 2026-11-24) Em cada tipo, a lista de marcas começa pelas **mais procuradas no Brasil**, nesta ordem, e depois traz todas as outras (anexo "Marcas por tipo"). No ônibus, o cadastro pede a **marca do chassi** e a **marca da carroceria**.
 
 ## Requisitos não funcionais
@@ -150,7 +154,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 ### TIP-FR-008
 - **Dado** a vitrine
 - **Quando** o visitante abre sem filtro e depois filtra só Caminhão
-- **Então** o título é "Veículos usados e seminovos à venda" e depois "Caminhões usados e seminovos à venda"
+- **Então** o título é "Veículos novos e seminovos à venda" e depois "Caminhões novos e seminovos à venda"
 
 ### TIP-FR-009
 - **Dado** uma moto Honda CG 160 publicada
@@ -205,6 +209,11 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **Dado** a Loja A, que vende só Carro
 - **Quando** alguém envia um veículo do tipo Trator, ou um carro com "Horas de uso", por fora da tela
 - **Então** o cadastro recusa com o erro no campo e nada é salvo
+
+### TIP-FR-020
+- **Dado** a vitrine
+- **Quando** o visitante toca na aba Vender
+- **Então** vê a chamada para vender, as vantagens e **Quero anunciar**, que abre `/lojistas`; voltando para Buscar, aparecem a busca e a faixa de tipos
 
 ### TIP-FR-019
 - **Dado** o cadastro de uma moto

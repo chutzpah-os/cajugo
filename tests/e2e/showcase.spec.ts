@@ -17,7 +17,7 @@ test.describe("vitrine e catálogo (390 px)", () => {
     await page.goto("/");
 
     await expect(heading(page)).toHaveText(
-      "Veículos usados e seminovos à venda",
+      "Veículos novos e seminovos à venda",
     );
     await expect(page.getByTestId("catalog-count")).toHaveText(
       /\d+ anúncios de \d+ lojas?/,

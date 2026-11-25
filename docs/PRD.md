@@ -395,7 +395,7 @@ Navegação:
 
 ### [1a] Catálogo
 **Modos**
-- **CajuGo**: cabeçalho com logo CajuGo; faixa de tipos com ilustração no lugar da barra de filtros até escolher o tipo (spec 014); título "Veículos usados e seminovos à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".
+- **CajuGo**: cabeçalho com logo CajuGo; quadro com as abas Buscar (busca + faixa de tipos com ilustração, no lugar da barra de filtros até escolher o tipo) e Vender (chamada para `/lojistas`) (spec 014); título "Veículos novos e seminovos à venda"; contador "X anúncios de Y lojas"; cada card mostra "Anunciado por {loja}".
 - **Lojista**: cabeçalho com logo/sigla, nome e cidade da loja + "catálogo CajuGo"; título "Estoque {loja}"; contador "X veículos disponíveis"; card sem linha de loja.
 
 **Elementos**
