@@ -1241,3 +1241,6 @@
 
 # 2026-11-24 · docs(laudo-caju): rascunho da spec [016]
 - Spec 016 (draft): LaudoCaju na página do veículo (faixa com o selo e Mais detalhes, bloco com os itens inspecionados, Visualizar laudo, Saiba mais e aviso de responsabilidade), página do produto e 8 pendências.
+
+# 2026-11-24 · docs(laudo-caju): consulta veicular por Pix, plano e tasks [016]
+- Spec 016 reescrita: LaudoCaju é a consulta veicular de R$ 70 (contato, veículo, Pix; o admin marca Recebi e Enviei e manda à mão); faixa e bloco na página do veículo; página de vendas /laudocaju com título próprio; preço editável; dados apagados em 2 anos. Plano e tasks.

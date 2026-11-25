@@ -592,3 +592,6 @@
 
 # 2026-11-24 · docs(laudo-caju): rascunho da spec [016]
 - Pedido do dono em 2026-11-25, com a referência do Vistoriado da Webmotors; as decisões de negócio ficam como pendências para o /clarify.
+
+# 2026-11-24 · docs(laudo-caju): consulta veicular por Pix, plano e tasks [016]
+- Decisões do dono em 2026-11-25 ('bem simples').
