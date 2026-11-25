@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/domains/auth/components/site-header";
@@ -45,6 +46,7 @@ export default async function DiscoverySecondPage({
     <>
       <SiteHeader />
       {view}
+      <SiteFooter />
     </>
   );
 }

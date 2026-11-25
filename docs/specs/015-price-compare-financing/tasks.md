@@ -14,7 +14,7 @@ spec: 015
 
 - [ ] **T006** Layout da página [1b]: galeria de 3 fotos no desktop, duas colunas com a coluna da direita fixa, ficha e itens em 4 colunas, barra de baixo só no celular. · _PRC-FR-006_
 - [ ] **T007** Sobre a loja (aberta agora, conquistas) e Você também pode gostar. · _PRC-FR-007, PRC-FR-008_
-- [ ] **T008** Rodapé do site com as colunas dos menus. · _PRC-FR-009_
+- [x] **T008** Rodapé do site com as colunas dos menus. · _PRC-FR-009_
 
 ## Fase 3 — Fechamento
 - [ ] **T005** e2e em 390 e 1280 px, rastreabilidade e status `implemented`. · _PRC-NFR-001, PRC-NFR-002_

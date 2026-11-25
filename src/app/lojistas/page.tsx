@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteHeader } from "@/domains/auth/components/site-header";
@@ -190,6 +191,7 @@ export default function MerchantLandingPage() {
           <ButtonLink href="/lojistas/cadastro">Prosseguir</ButtonLink>
         </div>
       </div>
+      <SiteFooter barSpace />
     </>
   );
 }

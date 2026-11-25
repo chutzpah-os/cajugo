@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { connection } from "next/server";
@@ -59,6 +60,7 @@ export default function StoreSignupPage(
           <Form {...props} />
         </Suspense>
       </main>
+      <SiteFooter />
     </>
   );
 }

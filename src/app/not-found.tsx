@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -52,6 +53,7 @@ export default function NotFound() {
           Voltar para o início
         </Link>
       </main>
+      <SiteFooter />
     </>
   );
 }

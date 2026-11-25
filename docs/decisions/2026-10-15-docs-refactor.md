@@ -619,3 +619,6 @@
 
 # 2026-11-24 · feat(showcase): só novo e usado; Conversar ao lado do modelo e preço [017]
 - Pedidos do dono em 2026-11-25.
+
+# 2026-11-24 · feat(site): rodapé do site em todas as páginas públicas [015/T008]
+- PRC-FR-009 e pedido do dono: footer em toda página com header, inspirado no da Webmotors e com o menu da CajuGo.

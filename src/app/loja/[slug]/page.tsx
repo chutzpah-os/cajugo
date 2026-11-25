@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { SiteHeader } from "@/domains/auth/components/site-header";
@@ -197,6 +198,7 @@ export default async function StorePage({
           <RelatedLinks links={cityLinks} title="Mais carros na cidade" />
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

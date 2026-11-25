@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { cachedLanding } from "@/domains/referrals/current";
@@ -64,6 +65,7 @@ export default async function ReferralLanding({
           </ButtonLink>
         </section>
       </main>
+      <SiteFooter />
     </>
   );
 }

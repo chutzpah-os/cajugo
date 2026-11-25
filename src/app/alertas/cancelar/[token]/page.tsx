@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SiteHeader } from "@/domains/auth/components/site-header";
@@ -33,6 +34,7 @@ export default function Page({
           <Token params={params} />
         </Suspense>
       </main>
+      <SiteFooter />
     </>
   );
 }

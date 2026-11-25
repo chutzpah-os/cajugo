@@ -1268,3 +1268,6 @@
 
 # 2026-11-24 · feat(showcase): só novo e usado; Conversar ao lado do modelo e preço [017]
 - Sai o seminovo: filtro, menu e títulos ficam com novo (0 km) e usado (com km), 'Veículos novos e usados à venda'; ?estado=seminovo antigo vale como usado. Conversar fica à direita do modelo e do preço no card.
+
+# 2026-11-24 · feat(site): rodapé do site em todas as páginas públicas [015/T008]
+- SiteFooter: logo, Topo ↑, as colunas dos menus (017) e os links institucionais; itens Em breve com um ponto amarelo na mesma linha e a legenda no topo; 4 colunas no desktop, 2 no celular; espaço extra onde há barra fixa embaixo. Entra em toda página com o cabeçalho do site (inclusive 404 e erro).

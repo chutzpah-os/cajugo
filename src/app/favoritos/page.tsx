@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { FavoritesView } from "@/domains/buyers/components/favorites-view";
@@ -25,6 +26,7 @@ export default function FavoritesPage() {
         </h1>
         <FavoritesView cloudName={cloudName()} />
       </main>
+      <SiteFooter />
     </>
   );
 }

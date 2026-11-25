@@ -1,5 +1,6 @@
 "use client";
 
+import { SiteFooter } from "@/ui/site-footer";
 import { useEffect } from "react";
 import { Unavailable } from "@/domains/showcase/components/unavailable";
 import { BasicSiteHeader } from "@/ui/basic-site-header";
@@ -25,6 +26,7 @@ export default function ErrorPage({
         </p>
         <Button onClick={() => retry()}>Tentar de novo</Button>
       </Unavailable>
+      <SiteFooter />
     </>
   );
 }

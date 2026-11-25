@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import Link from "next/link";
@@ -54,6 +55,7 @@ export default function SignInPage() {
           </ul>
         </nav>
       </main>
+      <SiteFooter />
     </>
   );
 }

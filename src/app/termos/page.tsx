@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { pageMetadata } from "@/platform/seo/seo";
@@ -125,6 +126,7 @@ export default function TermsPage() {
           items={PRIVACY}
         />
       </main>
+      <SiteFooter />
     </>
   );
 }

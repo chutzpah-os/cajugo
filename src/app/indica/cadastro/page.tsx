@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { redirect } from "next/navigation";
@@ -49,6 +50,7 @@ export default function ReferrerSignupPage() {
           <Form />
         </Suspense>
       </main>
+      <SiteFooter />
     </>
   );
 }

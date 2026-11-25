@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import {
@@ -41,6 +42,7 @@ export default async function FilteredShowcase({
         filters={filters}
         result={await cachedSearch("showcase", filters)}
       />
+      <SiteFooter />
     </>
   );
 }

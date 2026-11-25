@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { HomeView } from "@/domains/showcase/components/home-view";
@@ -18,6 +19,7 @@ export default function Home() {
       <JsonLd data={websiteJsonLd()} />
       <SiteHeader active="inicio" />
       <HomeView />
+      <SiteFooter />
     </>
   );
 }
