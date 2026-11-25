@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
+import { AuthLayout } from "@/ui/auth-layout";
 import Link from "next/link";
 import { SignInForm } from "@/domains/auth/components/sign-in-form";
 
@@ -17,26 +18,28 @@ const SIGN_UPS = [
 ];
 
 /** Login único [9f]: e-mail e senha (AUT-FR-001, AUT-NFR-002). */
+const PANEL = {
+  eyebrow: "CajuGo",
+  title: "A sua plataforma automotiva, numa conta só",
+  perks: [
+    "Lojista: catálogo da loja, vitrine CajuGo e interessados no WhatsApp",
+    "Vendedor da Rede Caju: comissão por cada venda",
+    "Indicador do Caju Indica: ganhe por loja indicada",
+    "A mesma conta para tudo, com um painel para cada papel",
+  ],
+} as const;
+
 export default function SignInPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pt-4 pb-6">
-        <h1 className="mt-8 text-[28px] font-extrabold tracking-[-0.02em]">
-          Entrar
-        </h1>
-        <p className="mt-1 text-[15px] text-text-2">
-          Lojista, vendedor ou indicador: a mesma conta.
-        </p>
-
-        <div className="mt-6">
-          <SignInForm />
-        </div>
-
-        <nav
-          aria-label="Criar conta"
-          className="mt-auto border-t border-line pt-4"
-        >
+      <AuthLayout
+        title="Entrar"
+        subtitle="Lojista, vendedor ou indicador: a mesma conta."
+        panel={PANEL}
+      >
+        <SignInForm />
+        <nav aria-label="Criar conta" className="border-t border-line pt-4">
           <p className="text-sm text-text-3">Ainda não tem conta?</p>
           <ul>
             {SIGN_UPS.map((s) => (
@@ -54,7 +57,7 @@ export default function SignInPage() {
             ))}
           </ul>
         </nav>
-      </main>
+      </AuthLayout>
       <SiteFooter />
     </>
   );

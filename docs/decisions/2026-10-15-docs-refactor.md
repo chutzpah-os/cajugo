@@ -625,3 +625,6 @@
 
 # 2026-11-24 · feat(showcase): página do veículo completa [015/T003-T007]
 - PRC-FR-001/004–008 e pedidos do dono em 2026-11-25 (referência da Webmotors; imagem menor para não perder qualidade; sem emojis).
+
+# 2026-11-24 · feat(site): entrar e cadastros com versão para desktop [017]
+- Pedido do dono: melhorar essas telas, com desktop e ajustes no celular.

@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
+import { AuthLayout } from "@/ui/auth-layout";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { currentSession } from "@/domains/auth/service";
@@ -37,29 +38,36 @@ async function Form({ searchParams }: PageProps<"/lojistas/cadastro">) {
 }
 
 /** Cadastro do lojista [5c] (1/2): conta + loja (STO-FR-003…007, 015). */
+const PANEL = {
+  eyebrow: "Catálogo para lojas",
+  title: "Sua loja online hoje, na vitrine da CajuGo",
+  perks: [
+    "Catálogo com o nome da sua loja, com link e QR code",
+    "Seus veículos também na vitrine CajuGo",
+    "Interessados direto no seu WhatsApp",
+    "R$ 100/mês, sem comissão na venda e sem fidelidade",
+  ],
+} as const;
+
 export default function StoreSignupPage(
   props: PageProps<"/lojistas/cadastro">,
 ) {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-5 px-4 pt-4 pb-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-[24px] font-extrabold tracking-[-0.02em]">
-            Criar conta da loja
-          </h1>
-          <p className="text-sm text-text-3">
-            1 de 2 · depois, o pagamento por Pix
-          </p>
-          <div aria-hidden className="grid grid-cols-2 gap-1">
-            <span className="h-1 rounded-full bg-caju" />
-            <span className="h-1 rounded-full bg-line" />
-          </div>
-        </div>
+      <AuthLayout
+        title="Criar conta da loja"
+        progress={{
+          label: "1 de 2 · depois, o pagamento por Pix",
+          step: 1,
+          total: 2,
+        }}
+        panel={PANEL}
+      >
         <Suspense fallback={null}>
           <Form {...props} />
         </Suspense>
-      </main>
+      </AuthLayout>
       <SiteFooter />
     </>
   );

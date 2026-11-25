@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
+import { AuthLayout } from "@/ui/auth-layout";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -30,27 +31,35 @@ async function Form() {
 }
 
 /** Cadastro do vendedor [7a] (1/2): conta e dados (SEL-FR-001, 016). */
+const PANEL = {
+  eyebrow: "Rede Caju",
+  title: "Venda veículos das lojas e ganhe comissão",
+  perks: [
+    "Escolha os veículos da vitrine que quer divulgar",
+    "Compartilhe com o seu link de vendedor",
+    "A loja parceira paga a comissão da venda",
+    "Você não paga nada para participar",
+  ],
+} as const;
+
 export default function SellerSignupPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-5 px-4 pt-4 pb-8">
-        <div className="flex flex-col gap-2">
-          <h1 className="text-[24px] font-extrabold tracking-[-0.02em]">
-            Seja vendedor da Rede Caju
-          </h1>
-          <p className="text-sm text-text-2">
-            Divulgue os carros da vitrine e ganhe comissão das lojas parceiras.
-            Você não paga nada.
-          </p>
-          <p className="text-sm text-text-3">
-            1 de 2 · depois, a foto do documento
-          </p>
-        </div>
+      <AuthLayout
+        title="Seja vendedor da Rede Caju"
+        subtitle="Divulgue os carros da vitrine e ganhe comissão das lojas parceiras. Você não paga nada."
+        progress={{
+          label: "1 de 2 · depois, a foto do documento",
+          step: 1,
+          total: 2,
+        }}
+        panel={PANEL}
+      >
         <Suspense fallback={null}>
           <Form />
         </Suspense>
-      </main>
+      </AuthLayout>
       <SiteFooter />
     </>
   );

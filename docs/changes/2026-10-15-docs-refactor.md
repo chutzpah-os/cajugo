@@ -1274,3 +1274,6 @@
 
 # 2026-11-24 · feat(showcase): página do veículo completa [015/T003-T007]
 - Página do veículo: galeria contida na coluna (3 fotos no desktop, setas quando há várias), duas colunas no desktop com a coluna da direita fixa (preço, Ver parcelas, WhatsApp, mensagem à loja), ficha e itens em 4 colunas, Sobre a loja (aberta agora no navegador, conquistas, todos os veículos), Compare os preços (anunciado, média CajuGo, FIPE e a diferença), Veja as parcelas com o aviso e campos desabilitados, Você também pode gostar (4). Sem a barra flutuante do WhatsApp. Sem emojis no sistema (estados vazios sem ícone; conquistas com ícones desenhados).
+
+# 2026-11-24 · feat(site): entrar e cadastros com versão para desktop [017]
+- AuthLayout: no desktop, painel escuro com o título, o que a pessoa ganha e a ilustração à esquerda, e o formulário num card à direita; no celular, formulário primeiro e o painel embaixo. Aplicado a Entrar, Recuperar senha, cadastro do lojista, Caju Indica e Rede Caju (os formulários não mudam).

@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
+import { AuthLayout } from "@/ui/auth-layout";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { currentSettings } from "@/domains/settings/current";
@@ -39,22 +40,29 @@ async function SupportButton() {
 }
 
 /** Recuperar senha [6b], manual no MVP: suporte pelo WhatsApp (AUT-FR-013, ADR 0004). */
+const PANEL = {
+  eyebrow: "Suporte CajuGo",
+  title: "A gente ajuda você a voltar para a sua conta",
+  perks: [
+    "Confirmamos que a conta é sua",
+    "Você recebe uma senha temporária",
+    "No primeiro acesso, cria a sua senha nova",
+  ],
+} as const;
+
 export default function RecoverPasswordPage() {
   return (
     <>
       <SiteHeader />
-      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pt-4 pb-6">
-        <h1 className="mt-8 text-[28px] font-extrabold tracking-[-0.02em]">
-          Recuperar senha
-        </h1>
-        <p className="mt-1 text-[15px] text-text-2">
-          Para criar uma nova senha, fale com o suporte CajuGo. Vamos confirmar
-          que a conta é sua e enviar uma senha temporária.
-        </p>
-        <Suspense fallback={<div className="mt-6 h-[50px]" aria-hidden />}>
+      <AuthLayout
+        title="Recuperar senha"
+        subtitle="Para criar uma nova senha, fale com o suporte CajuGo. Vamos confirmar que a conta é sua e enviar uma senha temporária."
+        panel={PANEL}
+      >
+        <Suspense fallback={<div className="h-[50px]" aria-hidden />}>
           <SupportButton />
         </Suspense>
-      </main>
+      </AuthLayout>
       <SiteFooter />
     </>
   );

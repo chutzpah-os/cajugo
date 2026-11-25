@@ -28,6 +28,8 @@ Pedido do dono do produto em 2026-11-25: a `/` vira a página principal da CajuG
 - **HOM-FR-004** No celular, o menu [11a] traz as mesmas seções, cada uma abrindo as suas opções.
 - **HOM-FR-005** Item Em breve não é link: mostra o selo e não leva a lugar nenhum.
 
+- **HOM-FR-006** (pedido do dono, 2026-11-25) Entrar, Recuperar senha e os cadastros do lojista, do Caju Indica e da Rede Caju têm versão para desktop: o painel com o que a pessoa ganha à esquerda e o formulário num card à direita; no celular, o formulário primeiro e o painel embaixo.
+
 ## Requisitos não funcionais
 - **HOM-NFR-001** `/` e `/veiculos` pré-renderizadas, com título, descrição, canônica e JSON-LD (SEO.md); os menus abrem sem JavaScript (`<details>`), com alvos ≥ 44 px, em 390 e 1280 px.
 
