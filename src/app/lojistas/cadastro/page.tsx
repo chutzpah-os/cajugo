@@ -63,6 +63,29 @@ export default function StoreSignupPage(
           total: 2,
         }}
         panel={PANEL}
+        steps={[
+          "Crie a conta e escolha o endereço do catálogo",
+          "Pague o primeiro mês por Pix",
+          "Cadastre os veículos e receba os interessados no WhatsApp",
+        ]}
+        faq={[
+          {
+            q: "Tem fidelidade?",
+            a: "Não. Você cancela quando quiser, pelo painel.",
+          },
+          {
+            q: "Quantos veículos posso anunciar?",
+            a: "Quantos quiser: o Catálogo não limita o estoque.",
+          },
+          {
+            q: "Como eu pago?",
+            a: "Por Pix, com o comprovante enviado no painel. A equipe confere e a loja entra no ar.",
+          },
+          {
+            q: "A CajuGo cobra comissão na venda?",
+            a: "Não. A mensalidade é o único valor.",
+          },
+        ]}
       >
         <Suspense fallback={null}>
           <Form {...props} />

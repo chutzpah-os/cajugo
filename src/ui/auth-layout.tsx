@@ -3,8 +3,9 @@ import { CheckIcon } from "./icons";
 
 /**
  * Telas de entrar e de cadastro (login, lojista, Caju Indica, Rede Caju): no desktop,
- * o painel com o que a pessoa ganha à esquerda, fixo enquanto o formulário rola (no
- * cadastro longo ele não some nem deixa um vazio), e o formulário num card à direita; no
+ * o painel com o que a pessoa ganha à esquerda e, abaixo dele, "Como funciona" e as
+ * perguntas frequentes (o lado esquerdo cresce com conteúdo útil enquanto o formulário
+ * é longo, sem congelar nada); o formulário num card à direita; no
  * celular, o formulário primeiro e o painel embaixo, resumido.
  */
 export function AuthLayout({
@@ -12,6 +13,8 @@ export function AuthLayout({
   subtitle,
   progress,
   panel,
+  steps,
+  faq,
   children,
 }: {
   title: string;
@@ -19,6 +22,10 @@ export function AuthLayout({
   /** Passo do cadastro: "1 de 2 · depois, …" e quantos passos. */
   progress?: { label: string; step: number; total: number };
   panel: { eyebrow: string; title: string; perks: readonly string[] };
+  /** Os passos, em ordem (cadastros). */
+  steps?: readonly string[];
+  /** Perguntas frequentes curtas, só com o que a CajuGo já definiu. */
+  faq?: readonly { q: string; a: string }[];
   children: ReactNode;
 }) {
   return (
@@ -51,38 +58,87 @@ export function AuthLayout({
         </div>
         {children}
       </section>
-      <aside
-        aria-label={panel.eyebrow}
-        className="relative flex flex-col gap-5 overflow-hidden rounded-card bg-[radial-gradient(120%_120%_at_90%_10%,#e8551e_0%,#b23c12_35%,#1c1b20_75%)] p-6 text-white lg:sticky lg:top-6 lg:order-1 lg:h-[min(620px,calc(100dvh-3rem))] lg:p-10"
-      >
-        <p className="text-xs font-extrabold tracking-[0.12em] text-castanha uppercase">
-          {panel.eyebrow}
-        </p>
-        <p className="max-w-md text-[24px] leading-[1.15] font-extrabold tracking-[-0.01em] lg:text-[36px]">
-          {panel.title}
-        </p>
-        <ul className="flex flex-col gap-3">
-          {panel.perks.map((p) => (
-            <li
-              key={p}
-              className="flex items-start gap-3 text-[15px] text-white/90"
-            >
-              <span className="mt-0.5 flex size-5 flex-none items-center justify-center rounded-full bg-white/15">
-                <CheckIcon size={13} />
-              </span>
-              {p}
-            </li>
-          ))}
-        </ul>
-        {/* eslint-disable-next-line @next/next/no-img-element -- ilustração estática (WebP), só no desktop */}
-        <img
-          src="/tipos/hero.webp"
-          alt=""
-          width={360}
-          height={252}
-          className="mt-auto hidden max-h-[220px] min-h-0 w-auto shrink self-end object-contain drop-shadow-2xl lg:block"
-        />
-      </aside>
+      <div className="flex flex-col gap-4 lg:order-1">
+        <aside
+          aria-label={panel.eyebrow}
+          className="relative flex flex-col gap-5 overflow-hidden rounded-card bg-[radial-gradient(120%_120%_at_90%_10%,#e8551e_0%,#b23c12_35%,#1c1b20_75%)] p-6 text-white lg:p-10"
+        >
+          <p className="text-xs font-extrabold tracking-[0.12em] text-castanha uppercase">
+            {panel.eyebrow}
+          </p>
+          <p className="max-w-md text-[24px] leading-[1.15] font-extrabold tracking-[-0.01em] lg:text-[36px]">
+            {panel.title}
+          </p>
+          <ul className="flex flex-col gap-3">
+            {panel.perks.map((p) => (
+              <li
+                key={p}
+                className="flex items-start gap-3 text-[15px] text-white/90"
+              >
+                <span className="mt-0.5 flex size-5 flex-none items-center justify-center rounded-full bg-white/15">
+                  <CheckIcon size={13} />
+                </span>
+                {p}
+              </li>
+            ))}
+          </ul>
+          {/* eslint-disable-next-line @next/next/no-img-element -- ilustração estática (WebP), só no desktop */}
+          <img
+            src="/tipos/hero.webp"
+            alt=""
+            width={360}
+            height={252}
+            className="hidden h-[200px] w-auto self-end object-contain drop-shadow-2xl lg:block"
+          />
+        </aside>
+        {steps && (
+          <section
+            aria-labelledby="como-funciona"
+            className="flex flex-col gap-4 rounded-card border border-line bg-surface p-6"
+          >
+            <h2 id="como-funciona" className="text-[17px] font-extrabold">
+              Como funciona
+            </h2>
+            <ol className="grid gap-4 sm:grid-cols-3">
+              {steps.map((step, i) => (
+                <li key={step} className="flex flex-col gap-2">
+                  <span className="flex size-8 items-center justify-center rounded-full bg-caju-soft text-sm font-extrabold text-caju-deep">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm text-text-2">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+        {faq && (
+          <section
+            aria-labelledby="perguntas"
+            className="flex flex-col gap-1 rounded-card border border-line bg-surface p-6"
+          >
+            <h2 id="perguntas" className="mb-2 text-[17px] font-extrabold">
+              Perguntas frequentes
+            </h2>
+            {faq.map((f) => (
+              <details
+                key={f.q}
+                className="group border-b border-line-2 last:border-0"
+              >
+                <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-bold [&::-webkit-details-marker]:hidden">
+                  {f.q}
+                  <span
+                    aria-hidden
+                    className="text-text-3 transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="pb-3 text-sm text-text-2">{f.a}</p>
+              </details>
+            ))}
+          </section>
+        )}
+      </div>
     </main>
   );
 }

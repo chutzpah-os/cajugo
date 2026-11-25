@@ -55,6 +55,25 @@ export default function SellerSignupPage() {
           total: 2,
         }}
         panel={PANEL}
+        steps={[
+          "Faça o cadastro e envie a foto do documento",
+          "A equipe CajuGo confere e aprova",
+          "Divulgue os veículos e ganhe a comissão das vendas",
+        ]}
+        faq={[
+          {
+            q: "Preciso pagar algo?",
+            a: "Não. Ser vendedor da Rede Caju é grátis.",
+          },
+          {
+            q: "Quem paga a minha comissão?",
+            a: "A loja parceira, quando a venda é confirmada.",
+          },
+          {
+            q: "Posso divulgar carros de várias lojas?",
+            a: "Sim, das lojas que aceitam vendedores e aprovarem a parceria.",
+          },
+        ]}
       >
         <Suspense fallback={null}>
           <Form />

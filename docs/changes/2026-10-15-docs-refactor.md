@@ -1280,3 +1280,6 @@
 
 # 2026-11-24 · fix(site): painel das telas de cadastro acompanha a rolagem [017]
 - No desktop, o painel de Entrar e dos cadastros fica fixo ao lado do formulário (altura da tela, até 620 px) enquanto os campos rolam; a ilustração encolhe quando falta altura.
+
+# 2026-11-24 · feat(site): cadastros com Como funciona e perguntas frequentes no lugar do painel fixo [017]
+- Sai o painel fixo na rolagem; abaixo dele entram Como funciona (3 passos) e Perguntas frequentes (abrem na própria tela) nos cadastros do lojista, do Caju Indica e da Rede Caju, com o que a CajuGo já definiu. O lado esquerdo acompanha a altura do formulário com conteúdo útil.

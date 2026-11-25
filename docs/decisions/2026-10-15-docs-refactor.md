@@ -631,3 +631,6 @@
 
 # 2026-11-24 · fix(site): painel das telas de cadastro acompanha a rolagem [017]
 - Pedido do dono: nos cadastros longos o painel acabava e deixava um vazio ao lado dos campos.
+
+# 2026-11-24 · feat(site): cadastros com Como funciona e perguntas frequentes no lugar do painel fixo [017]
+- O dono não gostou do painel congelado: 'dá agonia'.

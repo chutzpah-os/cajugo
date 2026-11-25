@@ -52,6 +52,25 @@ export default function ReferrerSignupPage() {
         title="Indique lojas e ganhe"
         subtitle="Ganhe parte da mensalidade de cada loja de veículos que assinar o Catálogo com o seu link. CPF e chave Pix só no primeiro resgate."
         panel={PANEL}
+        steps={[
+          "Crie a sua conta de indicador",
+          "Compartilhe o seu link com a loja",
+          "Ganhe a cada mensalidade paga e resgate por Pix",
+        ]}
+        faq={[
+          {
+            q: "Preciso ter uma loja?",
+            a: "Não. Qualquer pessoa pode indicar lojas de veículos.",
+          },
+          {
+            q: "Quando eu ganho?",
+            a: "A cada mensalidade que a loja indicada pagar, pelo prazo das regras do programa.",
+          },
+          {
+            q: "Como recebo?",
+            a: "O saldo fica no seu painel e você resgata por Pix a partir do valor mínimo.",
+          },
+        ]}
       >
         <Suspense fallback={null}>
           <Form />
