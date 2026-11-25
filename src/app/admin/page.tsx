@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
-import { TemporaryPasswordTool } from "@/domains/auth/components/temporary-password-tool";
 import { requireArea } from "@/domains/auth/guards";
-import { accountMenu, can } from "@/domains/auth/service";
+import { accountMenu } from "@/domains/auth/service";
 import { AdminDashboardView } from "@/domains/admin/components/admin-dashboard";
 import { adminDashboard } from "@/domains/admin/service";
 import { ReviewQueue } from "@/domains/billing/components/review-queue";
@@ -46,8 +45,6 @@ async function Content() {
   const prev = new Date(now);
   prev.setUTCDate(1);
   prev.setUTCMonth(prev.getUTCMonth() - 1);
-  // Suporte vê a busca, sem o botão (AUT-SEC-008).
-  const canSet = can(session, "users.temporaryPassword");
 
   return (
     <div className="flex flex-col pb-6">
@@ -89,23 +86,6 @@ async function Content() {
           </section>
         }
       />
-      {/* Senha temporária fica aqui até o detalhe da loja [6g] (T015). */}
-      <section
-        aria-labelledby="temporary-password-title"
-        className="mt-3 flex flex-col gap-3 rounded-card border border-line bg-surface p-4 lg:mt-5"
-      >
-        <h2
-          id="temporary-password-title"
-          className="text-[17px] font-extrabold"
-        >
-          Senha temporária
-        </h2>
-        <p className="text-sm text-text-2">
-          Para quem esqueceu a senha: confirme pelo WhatsApp que a conta é da
-          pessoa, gere uma senha temporária e envie a ela.
-        </p>
-        <TemporaryPasswordTool canSet={canSet} />
-      </section>
     </div>
   );
 }

@@ -1350,3 +1350,6 @@
 
 # 2026-11-25 · test(home): e2e da página inicial e dos menus; 017 implementada [017/T004]
 - e2e do 308 antigo, menu do celular, layout desktop de Entrar e cadastro e "Quero ser avisado" do leilão até o admin; setas da faixa de tipos com 44 px (alvo de toque). 017 verificada: todos os HOM com teste passando.
+
+# 2026-11-25 · feat(admin): detalhe da loja [6g] [012b/T015]
+- /admin/lojas/{id}: cabeçalho, KPIs, cards Dono, Assinatura (faturas), Rede Caju e Veículos; ações Editar dados (recolhível), Ver catálogo, Definir senha temporária do dono, Histórico no Log e Suspender/Reativar. Suporte vê sem as ações. A busca de senha temporária saiu do Painel para a Conta admin.

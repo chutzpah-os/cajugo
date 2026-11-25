@@ -249,6 +249,7 @@ export async function adminStoreDetail(
       phone: store.ownerPhone,
       taxIdLabel: store.taxIdType === "cnpj" ? "CNPJ" : "CPF",
       taxId,
+      roles: store.ownerRoles,
     },
     subscription: {
       plan: "Catálogo",
@@ -268,6 +269,25 @@ export async function adminStoreDetail(
     },
     vehicles: stock.first,
     canManage: manage,
+    /** Dados de Minha loja para **Editar dados da loja** (ADM-FR-010): só para o admin. */
+    edit: manage
+      ? {
+          name: store.name,
+          whatsapp: store.whatsapp,
+          city: store.city,
+          state: store.state,
+          about: store.about ?? "",
+          instagram: store.instagram ?? "",
+          addressStreet: store.addressStreet ?? "",
+          addressNumber: store.addressNumber ?? "",
+          addressComplement: store.addressComplement ?? "",
+          addressDistrict: store.addressDistrict ?? "",
+          addressZip: store.addressZip ?? "",
+        }
+      : null,
+    /** Suspender/Reativar e senha temporária (ADM-FR-009): só o admin. */
+    canSuspend: can(s, "stores.suspend"),
+    canSetPassword: can(s, "users.temporaryPassword"),
   };
 }
 

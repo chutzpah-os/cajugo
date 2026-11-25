@@ -71,6 +71,25 @@ describe("detalhe da loja no admin [6g] (012b)", () => {
     expect(view.vehicles).toHaveLength(2);
   });
 
+  it("[ADM-FR-009] [ADM-FR-010] o admin recebe os dados para editar e as ações da loja", async () => {
+    // Arrange
+    const o = await silva();
+    const admin = await personWith(t.db, "admin");
+
+    // Act
+    const view = await adminStoreDetail(deps(), admin, o.storeId);
+
+    // Assert
+    expect(view.edit).toMatchObject({
+      name: "Auto Center Silva",
+      city: "Campinas",
+      state: "SP",
+    });
+    expect(view.owner.roles).toContain("store_owner");
+    expect(view.canSuspend).toBe(true);
+    expect(view.canSetPassword).toBe(true);
+  });
+
   it("[ADM-SEC-004] o suporte vê o CNPJ mascarado", async () => {
     const o = await silva();
     const support = await personWith(t.db, "support");
@@ -79,6 +98,9 @@ describe("detalhe da loja no admin [6g] (012b)", () => {
 
     expect(view.owner.taxId).toBe("12.***.***/0001-90");
     expect(view.canManage).toBe(false);
+    expect(view.edit).toBeNull();
+    expect(view.canSuspend).toBe(false);
+    expect(view.canSetPassword).toBe(false);
   });
 
   it("[ADM-SEC-005] id inválido ou loja inexistente → 404; lojista → 403", async () => {

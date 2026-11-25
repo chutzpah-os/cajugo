@@ -118,3 +118,76 @@ test("[ADM-FR-005] [ADM-SEC-003] Nova loja: cadastrada, com a senha temporária 
   await expect(page.getByTestId("admin-store")).toContainText("Cadastrada");
   await expect(page.getByTestId("new-store-done")).toHaveCount(0);
 });
+
+/** Detalhe da loja [6g] (012b · T015): cards, ações e edição no próprio detalhe. */
+for (const width of [390, 1280]) {
+  test(`[ADM-FR-008] [ADM-FR-009] [ADM-FR-010] detalhe da loja com cards e ações em ${width} px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/entrar?next=%2Fadmin%2Flojas%3Fq%3DVitrine%2BE2E");
+    await signIn(page, accounts.admin.email);
+    await page
+      .getByRole("link", { name: /^Gerenciar Vitrine E2E/ })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/\/admin\/lojas\/[0-9a-f-]{36}$/);
+    await expect(heading(page)).toContainText("Vitrine E2E");
+    for (const card of ["Dono", "Assinatura", "Rede Caju", "Veículos"])
+      await expect(page.getByRole("region", { name: card })).toBeVisible();
+
+    const actions = page.getByRole("region", { name: "Ações da loja" });
+    await expect(
+      actions.locator("summary", { hasText: "Definir senha temporária" }),
+    ).toBeVisible();
+    await expect(
+      actions.getByRole("link", { name: "Histórico de atividade" }),
+    ).toHaveAttribute("href", /\/admin\/log\?loja=/);
+
+    await actions.getByText("Editar dados da loja").click();
+    const about = `Loja de teste E2E (${width})`;
+    await actions.getByLabel("Sobre a loja").fill(about);
+    await actions.getByRole("button", { name: "Salvar alterações" }).click();
+    await expect(actions.getByText("Alterações salvas.")).toBeVisible();
+
+    await page.screenshot({
+      path: `test-results/admin-loja-${width}.png`,
+      fullPage: true,
+    });
+    expect(await audit(page)).toEqual({
+      horizontalScroll: false,
+      small: [],
+      unlabeled: [],
+    });
+  });
+}
+
+test("[ADM-SEC-002] [ADM-SEC-004] suporte vê o detalhe sem editar, sem senha e sem suspender", async ({
+  page,
+}) => {
+  await page.goto("/entrar?next=%2Fadmin%2Flojas%3Fq%3DVitrine%2BE2E");
+  await signIn(page, accounts.support.email);
+  await page
+    .getByRole("link", { name: /^Gerenciar Vitrine E2E/ })
+    .first()
+    .click();
+  const actions = page.getByRole("region", { name: "Ações da loja" });
+  await expect(actions).toBeVisible();
+  for (const text of [
+    "Editar dados da loja",
+    "Definir senha temporária",
+    "Suspender",
+  ])
+    await expect(actions.getByText(text)).toHaveCount(0);
+});
+
+test("[ADM-SEC-005] loja inexistente no detalhe responde não encontrado", async ({
+  page,
+}) => {
+  await page.goto("/entrar?next=%2Fadmin");
+  await signIn(page, accounts.admin.email);
+  await expect(heading(page)).toHaveText(/^Olá, |^Visão geral/);
+  // A área do admin é transmitida aos poucos: a resposta já saiu, então vale a tela.
+  await page.goto("/admin/lojas/01900000-0000-7000-8000-000000000000");
+  await expect(page.getByText("Página não encontrada")).toBeVisible();
+});

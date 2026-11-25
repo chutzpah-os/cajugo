@@ -701,3 +701,6 @@
 
 # 2026-11-25 · 017 fechada [017/T004]
 - A auditoria de acessibilidade do e2e achou as setas da faixa de tipos com 36 px; subiram para 44 px (DESIGN.md §7). Com isso a 017 fecha e o próximo é o resto da 012b.
+
+# 2026-11-25 · Senha temporária no detalhe da loja [012b/T015]
+- A senha do lojista é gerada no detalhe da loja (o admin já está com a loja aberta); a busca por e-mail continua, na Conta admin, para vendedor e indicador, que não têm loja. Loja inexistente mostra "Página não encontrada" (a área é transmitida, então o status já saiu como 200).

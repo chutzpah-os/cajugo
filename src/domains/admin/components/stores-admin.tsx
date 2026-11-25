@@ -122,7 +122,10 @@ const STORE_FILTERS: readonly (readonly [StoreFilter, string])[] = [
   ["canceladas", "Canceladas"],
 ];
 
-const STORE_BADGE: Record<AdminStoreItem["status"], [string, BadgeTone]> = {
+export const STORE_BADGE: Record<
+  AdminStoreItem["status"],
+  [string, BadgeTone]
+> = {
   registered: ["Cadastrada", "neutral"],
   payment_review: ["Em análise", "info"],
   active: ["Em dia", "ok"],

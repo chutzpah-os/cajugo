@@ -98,9 +98,9 @@ test.describe("login e painéis", () => {
   test("[AUT-SEC-008] suporte busca contas, sem o botão de senha temporária", async ({
     page,
   }) => {
-    await page.goto("/entrar?next=%2Fadmin");
+    await page.goto("/entrar?next=%2Fadmin%2Fconta");
     await signIn(page, accounts.support.email);
-    // A busca fica no próprio Painel admin, sem outra página (012).
+    // A busca fica na Conta admin; a do lojista, no detalhe da loja [6g] (012b).
     await expect(
       page.getByRole("heading", { name: "Senha temporária" }),
     ).toBeVisible();

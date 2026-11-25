@@ -8,6 +8,7 @@ import { SettingsGroupForm } from "@/domains/settings/components/settings-group-
 import { currentSettings } from "@/domains/settings/current";
 import { groupFields } from "@/domains/settings/form";
 import { maskPixKey } from "@/domains/settings/format";
+import { TemporaryPasswordTool } from "@/domains/auth/components/temporary-password-tool";
 import { ReadOnlyNotice } from "@/ui/read-only-notice";
 import { signOutAction } from "@/domains/auth/actions";
 import { accountMenu } from "@/domains/auth/service";
@@ -114,6 +115,27 @@ async function Content() {
       {form("approval", "Aprovação prévia")}
       {form("data", "Dados")}
       {form("laudo", "LaudoCaju")}
+
+      {/* Busca por e-mail para contas sem loja (vendedor, indicador); a do lojista fica
+          no detalhe da loja [6g]. Suporte vê a busca sem o botão (AUT-SEC-008). */}
+      <section
+        aria-labelledby="temporary-password-title"
+        className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4"
+      >
+        <h2
+          id="temporary-password-title"
+          className="text-[17px] font-extrabold"
+        >
+          Senha temporária
+        </h2>
+        <p className="text-sm text-text-2">
+          Para quem esqueceu a senha: confirme pelo WhatsApp que a conta é da
+          pessoa, gere uma senha temporária e envie a ela.
+        </p>
+        <TemporaryPasswordTool
+          canSet={can(session, "users.temporaryPassword")}
+        />
+      </section>
 
       <nav
         aria-label="Minha conta"

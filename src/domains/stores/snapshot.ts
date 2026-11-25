@@ -61,6 +61,15 @@ export async function storeForAdmin(db: Db, storeId: string) {
       ownerName: profiles.name,
       ownerEmail: profiles.email,
       ownerPhone: profiles.phone,
+      ownerRoles: profiles.roles,
+      whatsapp: stores.whatsapp,
+      about: stores.about,
+      instagram: stores.instagram,
+      addressStreet: stores.addressStreet,
+      addressNumber: stores.addressNumber,
+      addressComplement: stores.addressComplement,
+      addressDistrict: stores.addressDistrict,
+      addressZip: stores.addressZip,
     })
     .from(stores)
     .innerJoin(profiles, eq(profiles.id, stores.ownerId))

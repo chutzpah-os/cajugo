@@ -14,7 +14,7 @@ import { PANEL_LABEL } from "../labels";
 import type { AccountSummary } from "../service";
 
 /** Gera a senha e a mostra uma única vez (AUT-FR-014, AUT-SEC-003). */
-function SetPassword({ account }: { account: AccountSummary }) {
+export function SetPassword({ account }: { account: AccountSummary }) {
   const [state, action, pending] = useActionState<
     TemporaryPasswordState,
     FormData
