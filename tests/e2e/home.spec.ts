@@ -55,3 +55,20 @@ test("[HOM-FR-003] o menu aparece também nas páginas públicas de cadastro e l
     ).toBeVisible();
   }
 });
+
+test("[PRC-FR-009] [HOM-FR-007] rodapé com os menus, Em breve, Instagram e Topo nas páginas públicas", async ({
+  page,
+}) => {
+  for (const path of ["/", "/veiculos", "/entrar", "/conheca/lojistas"]) {
+    await page.goto(path);
+    const footer = page.getByTestId("site-footer");
+    await expect(footer).toBeVisible();
+    await expect(
+      footer.getByRole("navigation", { name: "Mapa do site" }),
+    ).toContainText("Descobrir");
+    await expect(footer.getByText("(em breve)").first()).toBeAttached();
+    await expect(
+      footer.getByRole("link", { name: /Instagram @caju\.go/ }),
+    ).toHaveAttribute("href", "https://www.instagram.com/caju.go/");
+  }
+});

@@ -167,6 +167,15 @@
 ## 014 · Tipos de veículo e o que a loja vende — telas 2a, 3b, 1a, 1b, 15a
 - 11 tipos (carro, moto, scooter, picape, van, ônibus, caminhão, trator, quadriciclo, motorhome, implemento); o lojista diz o que vende; ficha e campo obrigatório por tipo; filtro Tipo → Marca → Modelo na vitrine. Spec em `docs/specs/014-vehicle-types/` (clarified).
 
+## 015 · Compare os preços (FIPE) e financiamento — tela 1b
+> ✅ **Implementada** em 2026-11-25 (`docs/specs/015-price-compare-financing/`): FIPE pela fipe.api.br v2; fim da parcela estimada e do simulador; página do veículo completa (galeria contida com setas, coluna da direita com preço, Ver parcelas, WhatsApp e mensagem, Sobre a loja com aberta agora, Compare os preços com a média CajuGo e a FIPE, Veja as parcelas com o aviso da integração com os bancos, Você também pode gostar), rodapé do site. Migration `0025` (remove `show_installment`) no staging; **prod pendente, com a `0024`, só com autorização**.
+
+## 016 · LaudoCaju · consulta veicular por Pix — telas 1b, admin
+- Pedido com contato, veículo e Pix de R$ 70; fila do admin (Recebi, Enviei); página de vendas `/laudocaju`. Spec em `docs/specs/016-laudo-caju/` (clarified).
+
+## 017 · Página inicial e menu do site
+- `/` como página inicial, vitrine em `/veiculos`, páginas por tipo, menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir, páginas de vendas em `/conheca/*`, Entrar e cadastros com desktop. Spec em `docs/specs/017-home-menu/` (in-progress).
+
 ## 014b · Tipos de veículo · descoberta, alertas, admin e cadastro da loja — telas 5b, 5c, 14c, 14e, 1d
 - Páginas `/motos/...`, `/caminhoes/...` etc.; alerta de busca por tipo; tipo nas filas do admin; landing e cadastro com "o que você vende". Spec em `docs/specs/014b-vehicle-types-discovery/` (draft).
 

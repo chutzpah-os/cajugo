@@ -1295,3 +1295,6 @@
 
 # 2026-11-24 · feat(site): página de vendas do Catálogo para lojas em Descobrir [017]
 - Nova /conheca/lojistas no formato das outras páginas de vendas (números, para quem é, como funciona, card do Plano Catálogo, o que ganha, por que a CajuGo, perguntas, chamada final), no sitemap; Descobrir → Para lojistas aponta para ela. /lojistas continua como a página do plano antes do cadastro.
+
+# 2026-11-24 · test(showcase): e2e da página do veículo e do rodapé; 015 implementada [015/T005]
+- e2e da página do veículo em 390 e 1280 px (Compare os preços, Ver parcelas → bloco sem envio, Sobre a loja, até 4 parecidos, sem /mês, auditoria) e do rodapé (menus, Em breve, Instagram) nas páginas públicas. Spec 015 implemented; PLAN com 015, 016 e 017.

@@ -17,4 +17,4 @@ spec: 015
 - [x] **T008** Rodapé do site com as colunas dos menus. · _PRC-FR-009_
 
 ## Fase 3 — Fechamento
-- [ ] **T005** e2e em 390 e 1280 px, rastreabilidade e status `implemented`. · _PRC-NFR-001, PRC-NFR-002_
+- [x] **T005** e2e em 390 e 1280 px, rastreabilidade e status `implemented`. · _PRC-NFR-001, PRC-NFR-002_

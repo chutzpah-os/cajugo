@@ -646,3 +646,6 @@
 
 # 2026-11-24 · feat(site): página de vendas do Catálogo para lojas em Descobrir [017]
 - Pedido do dono: em Descobrir, uma página de vendas própria para o lojista, não o atalho para /lojistas.
+
+# 2026-11-24 · test(showcase): e2e da página do veículo e do rodapé; 015 implementada [015/T005]
+- Fechamento da 015: todo FR e SEC com teste nomeado pelo ID.
