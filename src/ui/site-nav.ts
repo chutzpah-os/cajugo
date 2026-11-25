@@ -24,7 +24,7 @@ export const SITE_NAV: NavSection[] = [
     key: "vender",
     label: "Vender",
     items: [
-      { label: "Anunciar minha loja", href: "/lojistas" },
+      { label: "Anunciar minha loja", href: "/lojistas/cadastro" },
       { label: "Ser vendedor da Rede Caju", href: "/rede-caju/cadastro" },
       { label: "Indicar uma loja (Caju Indica)", href: "/indica/cadastro" },
     ],
@@ -71,8 +71,10 @@ export const SITE_NAV: NavSection[] = [
     key: "descobrir",
     label: "Descobrir",
     items: [
+      { label: "Para lojistas", href: "/lojistas" },
+      { label: "Caju Indica", href: "/conheca/caju-indica" },
+      { label: "Rede Caju", href: "/conheca/rede-caju" },
       { label: "Tabela FIPE", href: null },
-      { label: "Caju Indica", href: "/indica/cadastro" },
     ],
   },
 ];

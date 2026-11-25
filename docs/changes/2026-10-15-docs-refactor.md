@@ -1289,3 +1289,6 @@
 
 # 2026-11-24 · feat(db): remove a coluna da parcela estimada [015]
 - Migration 0025 remove vehicles.show_installment (aplicada no staging; prod só com autorização). As regras antigas da parcela ficam no histórico de setting_values, que o banco mantém só de inclusão (CFG-SEC-003).
+
+# 2026-11-24 · feat(site): páginas de vendas do Caju Indica e da Rede Caju; Vender e Descobrir separados [017]
+- ProgramLanding: abertura com a chamada, números em destaque, Para quem é, Como funciona, exemplo de ganhos (Caju Indica, com as regras reais do programa), O que você ganha, Por que a CajuGo, perguntas e chamada final. Novas /conheca/caju-indica e /conheca/rede-caju (no sitemap). Menu: Vender leva aos cadastros; Descobrir às páginas de vendas (Para lojistas, Caju Indica, Rede Caju). Rodapé com o Instagram @caju.go.

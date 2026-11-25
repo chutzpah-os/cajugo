@@ -49,6 +49,16 @@ export function staticSitemap(): MetadataRoute.Sitemap {
     { url: `${base}/`, changeFrequency: "daily", priority: 1 },
     { url: `${base}/veiculos`, changeFrequency: "daily", priority: 1 },
     { url: `${base}/lojistas`, changeFrequency: "monthly", priority: 0.8 },
+    {
+      url: `${base}/conheca/caju-indica`,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${base}/conheca/rede-caju`,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
     { url: `${base}/termos`, changeFrequency: "yearly", priority: 0.2 },
   ];
 }

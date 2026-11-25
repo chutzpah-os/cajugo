@@ -46,6 +46,8 @@ describe("indexação", () => {
       "https://cajugo.vercel.app/",
       "https://cajugo.vercel.app/veiculos",
       "https://cajugo.vercel.app/lojistas",
+      "https://cajugo.vercel.app/conheca/caju-indica",
+      "https://cajugo.vercel.app/conheca/rede-caju",
       "https://cajugo.vercel.app/termos",
     ]);
   });
