@@ -157,7 +157,7 @@ Fase 2 (gateway): `startSubscription`, status do Pix automático, `POST /api/v1/
 | Tipo | Rota / ação | Tela |
 |---|---|---|
 | página | `/admin` — painel [4a] / visão geral [15c] (`admin.read`, 012b) | 4a, 15c |
-| página | `/admin/lojas?aba=lojas\|veiculos\|usuarios` · `/admin/lojas/nova` · `/admin/lojas/[id]` · `/admin/lojas/[id]/editar` (012b; o histórico da loja fica em `/admin/log`) | 1d, 6g |
+| página | `/admin/lojas?aba=lojas\|veiculos\|usuarios` · `/admin/lojas/[id]` (012b; o histórico da loja fica em `/admin/log`) | 1d, 6g |
 | A | `createStoreByAdminAction(form)` → senha temporária uma vez · `updateStoreByAdminAction({ storeId, ... })` — `stores.manage` (só admin) · `setTemporaryPassword` (001) | 1d, 6g |
 | página | `/admin/log` — históricos das regras e registro de atividade com filtros (`admin.read`, 012b) | 4c |
 | A | `inviteTeamMemberAction({ name, email, role })` · `removeTeamMemberAction({ profileId })` — `team.manage` (012b) | 4c |

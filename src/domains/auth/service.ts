@@ -507,3 +507,6 @@ export { authorizeTo, can, type Permission } from "./permissions";
 export { currentSession } from "./current";
 export { grantRole } from "./roles";
 export { removeStoreAccounts, storeAccountsToDelete } from "./accounts";
+
+/** Usuários do admin [1d] (012b). */
+export { usersAdmin, type AdminUserItem } from "./admin-users";

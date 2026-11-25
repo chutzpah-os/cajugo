@@ -1187,3 +1187,6 @@
 
 # 2026-11-24 · feat(admin): painel [4a]/[15c] [012b/T003]
 - Domínio admin com adminDashboard (KPIs com variação, Precisa de atenção só com pendência, origem dos leads e top lojas) a partir de contagens de cada domínio (snapshot.ts); tela do Painel no celular e Visão geral no desktop com a fila de comprovantes.
+
+# 2026-11-24 · feat(stores): lista de lojas do admin [012b/T004]
+- storesAdmin: busca por nome, cidade, endereço ou dono, filtros pela situação, 20 por vez com cursor pelo id (uuid v7), 'N veículos · M na CajuGo'; tasks/plan da 012b sem páginas só de informação (Nova loja e Editar recolhíveis, histórico no Log).

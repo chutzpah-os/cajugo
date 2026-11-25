@@ -538,3 +538,6 @@
 
 # 2026-11-24 · feat(admin): painel [4a]/[15c] [012b/T003]
 - Dar ao admin a saúde do negócio em 5 segundos (ADM-FR-001..003); o domínio admin só compõe, sem regra própria.
+
+# 2026-11-24 · feat(stores): lista de lojas do admin [012b/T004]
+- ADM-FR-004 e ADM-NFR-003; regra do dono do produto de manter a informação na tela de origem.
