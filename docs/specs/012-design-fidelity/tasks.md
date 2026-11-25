@@ -25,7 +25,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 
 ## Fase 3 — Admin já entregue
 - [x] **T012** [4b] Assinaturas. · _DSG-FR-007_
-- [ ] **T013** [4c] Conta admin. · _DSG-FR-008_
+- [x] **T013** [4c] Conta admin. · _DSG-FR-008_
 - [ ] **T014** [10b], [7h], [14c], [14e], [12a], [8f]. · _DSG-FR-008, DSG-FR-017_
 
 ## Fase 4 — Rede Caju e Caju Indica

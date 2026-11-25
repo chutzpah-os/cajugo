@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { AreaPage } from "@/domains/auth/components/area-layout";
 import { NoPermission } from "@/domains/auth/components/no-permission";
 import { requireArea } from "@/domains/auth/guards";
@@ -10,6 +9,13 @@ import { currentSettings } from "@/domains/settings/current";
 import { groupFields } from "@/domains/settings/form";
 import { maskPixKey } from "@/domains/settings/format";
 import { ReadOnlyNotice } from "@/ui/read-only-notice";
+import { signOutAction } from "@/domains/auth/actions";
+import { accountMenu } from "@/domains/auth/service";
+import { getDb } from "@/platform/db/client";
+import { Badge } from "@/ui/badge";
+import { initialsOf } from "@/ui/initials";
+import { SettingsList } from "@/ui/settings-list";
+import { TextField } from "@/ui/text-field";
 
 export const metadata: Metadata = { title: "Conta | CajuGo" };
 
@@ -36,9 +42,28 @@ async function Content() {
     />
   );
 
+  const me = await accountMenu(getDb(), session);
   return (
-    <section className="flex flex-col gap-4 py-6">
-      <h1 className="text-[22px] font-extrabold">Conta</h1>
+    <section className="flex flex-col gap-3 pt-6 pb-6 lg:max-w-3xl lg:pt-2">
+      {/* Perfil [4c]: sigla, nome, e-mail e o selo do papel. */}
+      <header className="flex flex-col gap-4 pb-2">
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em]">Conta</h1>
+        {me && (
+          <div className="flex items-center gap-3 pr-12 lg:pr-0">
+            <span
+              aria-hidden
+              className="flex size-12 flex-none items-center justify-center rounded-full bg-ink text-base font-bold text-white"
+            >
+              {initialsOf(me.fullName)}
+            </span>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <p className="truncate text-base font-extrabold">{me.fullName}</p>
+              <p className="truncate text-[13px] text-text-3">{me.email}</p>
+            </div>
+            <Badge tone="dark">{canEdit ? "Admin" : "Suporte"}</Badge>
+          </div>
+        )}
+      </header>
       {!canEdit && (
         <ReadOnlyNotice>
           Só o admin altera as regras da plataforma.
@@ -51,16 +76,20 @@ async function Content() {
         fields={groupFields(settings, "showcase")}
         canEdit={canEdit}
       >
-        <div className="flex flex-col gap-1">
-          <p className="text-sm text-text-2">
-            Nome: <strong className="text-ink">CajuGo</strong>
-          </p>
-          <p className="text-sm text-text-2">
-            Endereço: <strong className="text-ink">{showcaseHost()}</strong>
-          </p>
-          <p className="text-xs text-text-3">
-            Nome e endereço mudam pelo deploy (links, QR codes e SEO).
-          </p>
+        <div className="flex flex-col gap-3">
+          <TextField
+            id="showcase-name"
+            label="Nome da vitrine"
+            value="CajuGo"
+            readOnly
+          />
+          <TextField
+            id="showcase-host"
+            label="Endereço"
+            value={showcaseHost()}
+            readOnly
+            help="Nome e endereço mudam pelo deploy (links, QR codes e SEO)."
+          />
         </div>
       </SettingsGroupForm>
       {form("network", "Rede Caju")}
@@ -85,18 +114,23 @@ async function Content() {
 
       <nav
         aria-label="Minha conta"
-        className="rounded-card border border-line bg-surface"
+        className="-mx-4 border-y border-line bg-surface px-4 lg:mx-0 lg:rounded-card lg:border"
       >
-        <Link
-          href="/conta/senha"
-          className="flex min-h-12 items-center justify-between px-4 text-[15px] font-bold"
-        >
-          Alterar senha
-          <span aria-hidden className="text-text-3">
-            ›
-          </span>
-        </Link>
+        <SettingsList
+          items={[
+            { href: "/conta/senha", label: "Alterar senha" },
+            { href: "/admin/avisos", label: "Avisos" },
+          ]}
+        />
       </nav>
+      <form action={signOutAction}>
+        <button
+          type="submit"
+          className="mt-2 flex h-[50px] w-full items-center justify-center rounded-button border-[1.5px] border-ink text-[15px] font-bold"
+        >
+          Sair
+        </button>
+      </form>
     </section>
   );
 }

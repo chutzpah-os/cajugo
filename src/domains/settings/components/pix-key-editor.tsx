@@ -63,7 +63,7 @@ export function PixKeyEditor({
   const typeLabel = TYPES.find(([t]) => t === draft.type)?.[1];
 
   return (
-    <div className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4">
+    <div className="-mx-4 flex flex-col gap-4 border-y border-line bg-surface px-4 py-5 lg:mx-0 lg:rounded-card lg:border">
       <h2 className="text-[17px] font-extrabold">Chave Pix da CajuGo</h2>
       {current ? (
         <p className="text-sm text-text-2">

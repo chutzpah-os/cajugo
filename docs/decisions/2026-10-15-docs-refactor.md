@@ -517,3 +517,6 @@
 
 # 2026-11-24 · 012 avisos só na tela Avisos
 - Pedido do dono do produto: avisos num único lugar por painel (DSG-FR-020).
+
+# 2026-11-24 · 012/T013 Conta admin [4c]
+- Fidelidade ao [4c]; a Equipe CajuGo com Convidar fica na 012b.

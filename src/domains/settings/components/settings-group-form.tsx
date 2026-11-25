@@ -47,7 +47,7 @@ export function SettingsGroupForm({
     <form
       action={action}
       aria-labelledby={`group-${group}`}
-      className="flex flex-col gap-4 rounded-card border border-line bg-surface p-4"
+      className="-mx-4 flex flex-col gap-4 border-y border-line bg-surface px-4 py-5 lg:mx-0 lg:rounded-card lg:border"
       noValidate
     >
       <input type="hidden" name="group" value={group} />

@@ -1166,3 +1166,6 @@
 
 # 2026-11-24 · 012 avisos só na tela Avisos
 - Item Avisos no menu de cada painel (/painel, /admin, /rede, /indica) com o contador de não dispensados; tela Avisos com a lista e o X; nenhuma outra página mostra avisos (o alerta da fatura continua no topo do lojista); loja cadastrada ou cancelada também abre Avisos; e2e ajustados.
+
+# 2026-11-24 · 012/T013 Conta admin [4c]
+- Perfil com sigla, nome, e-mail e selo Admin/Suporte; seções das regras em faixas brancas; Vitrine com nome e endereço em campos só de leitura; links Alterar senha e Avisos; Sair.
