@@ -553,3 +553,6 @@
 
 # 2026-11-24 · feat(stores): editar dados da loja pelo admin [012b/T008]
 - ADM-FR-010, ADM-SEC-002; mesmo schema de Minha loja para não divergir das regras da 003.
+
+# 2026-11-24 · feat(showcase): vitrine de veículos e faixa de tipos na spec [014]
+- Pedido do dono: a vitrine não é só de carros, e o primeiro filtro é o tipo de veículo, com ilustração.

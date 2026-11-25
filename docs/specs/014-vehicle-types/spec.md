@@ -64,7 +64,10 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **TIP-FR-006** O tipo e os campos dele aparecem:
   - na página do veículo [1b], na ficha (ex.: "Cilindrada 160 cc", "Horas de uso 2.400 h");
   - no card [1a], no lugar de ano · km quando o tipo usa horas.
-- **TIP-FR-007** A vitrine [1a]/[15a] tem o filtro **Tipo** no topo da árvore de filtros: **Tipo → Marca → Modelo**. Marcar um tipo mostra só as marcas dele, com a contagem.
+- **TIP-FR-007** A vitrine [1a]/[15a] tem o filtro **Tipo** no topo da árvore de filtros: **Tipo → Marca → Modelo**. Marcar um tipo mostra só as marcas dele, com a contagem. Além disso:
+  - sem tipo escolhido, o lugar da barra de filtros (abaixo da busca) mostra a **faixa de tipos**: um cartão por tipo, com uma ilustração vetorial (SVG) do veículo, fornecida pelo dono do produto, e o nome embaixo, na ordem de TIP-FR-001 (Carro, Moto, Scooter, Picape, Van e furgão, Ônibus e micro-ônibus, Caminhão, Trator, Quadriciclo e UTV, Máquinas pesadas, Motorhome e trailer, Implementos), rolando na horizontal;
+  - tocar num cartão filtra pelo tipo, e a faixa dá lugar à barra de filtros daquele tipo: **Filtros**, o chip **Tipo** com o tipo escolhido (para trocar ou tirar; sem tipo, a faixa volta) e os filtros do tipo;
+  - escolhido um tipo, aparecem os filtros dele (ex.: Km e Câmbio para carro e picape; Km e Cilindrada para moto e scooter; Horas de uso e Tração para trator e máquinas pesadas), tanto nos chips quanto na folha de **Filtros**.
 - **TIP-FR-008** A vitrine sem filtro mostra todos os tipos. O título passa a "Veículos usados e seminovos à venda" e, com um tipo só, vira o do tipo ("Motos usadas e seminovas à venda").
 - **TIP-FR-009** A busca por texto [1a] também acha pelo tipo ("moto", "caminhão", "trator") e pelos campos novos (ex.: "160 cc").
 - ~~**TIP-FR-010**~~ Movido para a 014b (páginas de descoberta por tipo), no `/clarify` de 2026-11-24.
@@ -142,6 +145,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 - **Dado** a vitrine com carros, motos e um caminhão
 - **Quando** o visitante marca o tipo Moto
 - **Então** a lista mostra só motos e a árvore mostra só as marcas de moto, com a contagem
+- **E** sem tipo, no lugar da barra de filtros aparece a faixa de tipos (cartão com ilustração e nome); tocar em Moto troca a faixa pela barra Filtros · Tipo: Moto · Marca · Cidade · Preço · Ano · Km · Cilindrada, sem Câmbio
 
 ### TIP-FR-008
 - **Dado** a vitrine

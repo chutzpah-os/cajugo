@@ -1202,3 +1202,6 @@
 
 # 2026-11-24 · feat(stores): editar dados da loja pelo admin [012b/T008]
 - updateStoreByAdmin grava nome, WhatsApp, cidade, endereço, sobre e Instagram com as validações de Minha loja; sem endereço do catálogo nem dono (schema estrito); loja inexistente/arquivada ou id inválido → 404; registro store.updated_by_admin; só admin. CEP extraído em zipSchema.
+
+# 2026-11-24 · feat(showcase): vitrine de veículos e faixa de tipos na spec [014]
+- Título e descrição da vitrine passam a 'Veículos usados e seminovos à venda' (TIP-FR-008). TIP-FR-007: sem tipo, a faixa de tipos com SVG ocupa o lugar da barra de filtros; escolhido o tipo, vem a barra Filtros · Tipo · filtros do tipo.

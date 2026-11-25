@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "CajuGo",
-  description: "Carros usados e seminovos das melhores lojas.",
+  description: "Veículos usados e seminovos das melhores lojas.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -18,7 +18,7 @@ import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
-const TITLE = "Carros usados e seminovos à venda";
+const TITLE = "Veículos usados e seminovos à venda";
 const BASE_PATH = "/";
 
 /**
@@ -30,7 +30,7 @@ export function showcaseMetadata(result: SearchResult): Metadata {
   const meta = pageMetadata({
     title: TITLE,
     description:
-      "Encontre carros usados e seminovos das melhores lojas, com preço, fotos e contato direto pelo WhatsApp.",
+      "Encontre veículos usados e seminovos das melhores lojas, com preço, fotos e contato direto pelo WhatsApp.",
     path: BASE_PATH,
     image: cover
       ? imageUrlFor(cloudName(), cover, IMAGE_WIDTHS.full)
