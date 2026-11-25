@@ -124,6 +124,7 @@ describe("migrations", () => {
       // Assert
       expect(Object.fromEntries(rows.map((r) => [r.key, r.value]))).toEqual({
         cajugo_fee_bps: 100,
+        // Regras da parcela estimada (fora de uso desde a 015): o histórico é só de inclusão.
         installment_down_bps: 2000,
         installment_months: 48,
         installment_rate_bps: 179,

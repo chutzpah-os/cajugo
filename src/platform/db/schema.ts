@@ -535,7 +535,6 @@ export const vehicles = pgTable(
     fipeCode: text("fipe_code"),
     fipePriceCents: integer("fipe_price_cents"),
     fipeMonth: text("fipe_month"),
-    showInstallment: boolean("show_installment").notNull().default(false),
     /** Condições Sim/Não do PRD [2a] (lista fechada, validada no domínio). */
     conditions: jsonb("conditions").notNull().default({}),
     features: text("features")

@@ -140,7 +140,7 @@ vehicles
   plate (privada), plate_end, chassis (privado),
   fipe_brand_id, fipe_model_id, fipe_year_id, make, model, version (nomes guardados), fipe_code, fipe_month,
   year_manufacture, year_model, mileage_km, transmission, fuel, body, color, doors, engine,
-  price_cents, fipe_price_cents, show_installment,
+  price_cents, fipe_price_cents,
   conditions (jsonb: accepts_trade, single_owner, ipva_paid, licensed, dealer_serviced, factory_warranty, armored),
   features (text[]), description, contact_whatsapp, share_on_cajugo, share_before_sale,
   hidden_reason, hidden_note, hidden_at, hidden_by (marca de moderação do Ocultar, 007b: sobrevive a despublicar,

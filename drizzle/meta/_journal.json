@@ -176,6 +176,13 @@
       "when": 1795578009683,
       "tag": "0024_activity_log_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795593259899,
+      "tag": "0025_drop_installment",
+      "breakpoints": true
     }
   ]
 }

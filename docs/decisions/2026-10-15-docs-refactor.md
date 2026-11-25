@@ -637,3 +637,6 @@
 
 # 2026-11-24 · fix(site): /lojistas sem a barra fixa; e2e ajustados ao novo layout [017]
 - Pedido do dono: a linha congelada não ficou boa.
+
+# 2026-11-24 · feat(db): remove a coluna da parcela estimada [015]
+- Remoção autorizada pelo dono; apagar o histórico das regras exigiria desligar a proteção de auditoria, então ele fica (o código não lê mais essas chaves).

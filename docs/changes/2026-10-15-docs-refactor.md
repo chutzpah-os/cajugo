@@ -1286,3 +1286,6 @@
 
 # 2026-11-24 · fix(site): /lojistas sem a barra fixa; e2e ajustados ao novo layout [017]
 - Sai a barra fixa 'R$ 100/mês · Prosseguir' de /lojistas; a chamada vira 'Anunciar minha loja' no card do Plano Catálogo. e2e: menu do cabeçalho pelo nome exato (o rodapé tem o Mapa do site), WhatsApp e coração visíveis na página do veículo, botão do plano por data-testid.
+
+# 2026-11-24 · feat(db): remove a coluna da parcela estimada [015]
+- Migration 0025 remove vehicles.show_installment (aplicada no staging; prod só com autorização). As regras antigas da parcela ficam no histórico de setting_values, que o banco mantém só de inclusão (CFG-SEC-003).

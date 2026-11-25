@@ -10,7 +10,7 @@ A FIPE já está no banco (`fipe_*` e `vehicles.fipe_price_cents`, `fipe_month`,
 ## Impacto
 | Camada | O quê |
 |---|---|
-| Banco | Sem migration. `vehicles.show_installment` e as linhas `installment_*` de `setting_values` ficam sem uso (remoção numa migration futura, com autorização) |
+| Banco | Migration `0025` remove `vehicles.show_installment` (autorizada pelo dono em 2026-11-25; staging aplicado, prod com autorização). As linhas `installment_*` de `setting_values` ficam: o histórico das regras é só de inclusão (CFG-SEC-003) |
 | `src/platform/fipe/client.ts` | Base `https://fipe.api.br/api/v2/cars`, formato `{code, name}` e preço `{price, codeFipe, referenceMonth}` |
 | `src/domains/showcase` | `vehiclePage` devolve `priceCompare {priceCents, averageCents \| null, fipe \| null}` (média: mesma `fipe_year_id`, `publicVisible("showcase")`, sem o próprio, ≥ 3); sai `installmentCents`/`simulator` do card e da página; saem `simulator.ts`, `components/simulator.tsx` |
 | `src/platform/br/installment.ts` | Removido (só a parcela usava) |
