@@ -16,9 +16,7 @@ test.describe("vitrine e catálogo (390 px)", () => {
   }) => {
     await page.goto("/veiculos");
 
-    await expect(heading(page)).toHaveText(
-      "Veículos novos e seminovos à venda",
-    );
+    await expect(heading(page)).toHaveText("Veículos novos e usados à venda");
     await expect(page.getByTestId("catalog-count")).toHaveText(
       /\d+ anúncios de \d+ lojas?/,
     );
@@ -353,7 +351,7 @@ test("[TIP-FR-007] [TIP-FR-020] faixa de tipos só na página inicial; na vitrin
   await page.goto("/");
   await page.getByTestId("showcase-panel").getByTestId("type-moto").click();
   await expect(page).toHaveURL(/\/motos$/);
-  await expect(heading(page)).toHaveText("Motos novas e seminovas à venda");
+  await expect(heading(page)).toHaveText("Motos novas e usadas à venda");
   // O Next guarda a página anterior oculta no DOM: o que vale é não estar visível.
   await expect(page.getByTestId("type-carro")).toBeHidden();
 

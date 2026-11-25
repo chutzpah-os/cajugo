@@ -97,7 +97,7 @@ test.describe("páginas de descoberta (390 px)", () => {
     page,
   }) => {
     await page.goto("/carros");
-    await expect(heading(page)).toHaveText("Carros novos e seminovos à venda");
+    await expect(heading(page)).toHaveText("Carros novos e usados à venda");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
       "href",
       /\/carros$/,

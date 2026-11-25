@@ -1265,3 +1265,6 @@
 
 # 2026-11-24 · feat(showcase): Conversar no card e dados do Compare os preços [015]
 - Card da vitrine ganha o botão Conversar (o card inteiro já é o link da página do veículo). vehiclePage devolve priceCompare: preço, média CajuGo dos iguais (mesma versão e ano FIPE, só vitrine, sem o próprio, com 3 ou mais) e a FIPE com o mês.
+
+# 2026-11-24 · feat(showcase): só novo e usado; Conversar ao lado do modelo e preço [017]
+- Sai o seminovo: filtro, menu e títulos ficam com novo (0 km) e usado (com km), 'Veículos novos e usados à venda'; ?estado=seminovo antigo vale como usado. Conversar fica à direita do modelo e do preço no card.

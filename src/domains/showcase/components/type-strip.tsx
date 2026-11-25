@@ -132,7 +132,7 @@ export function TypeList({
   );
 }
 
-/** Seção **Condição** logo depois do tipo: novo (0 km), seminovo ou usado (017). */
+/** Seção **Condição** logo depois do tipo: novo (0 km) ou usado (017). */
 export function ConditionList({
   filters,
   basePath,
@@ -178,6 +178,5 @@ export function ConditionList({
 
 const CONDITION_LABEL: Record<Condition, string> = {
   novo: "Novo (0 km)",
-  seminovo: "Seminovo",
   usado: "Usado",
 };

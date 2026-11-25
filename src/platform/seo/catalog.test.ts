@@ -41,7 +41,7 @@ describe("SEO do catálogo", () => {
     );
     expect(
       storeTitle({ name: "Silva Autocar", city: "Aracaju", state: "SE" }),
-    ).toBe("Silva Autocar – Carros usados e seminovos em Aracaju/SE");
+    ).toBe("Silva Autocar – Veículos novos e usados em Aracaju/SE");
   });
 
   it("[SHW-FR-013] alt da imagem com marca, modelo, ano e cor", () => {

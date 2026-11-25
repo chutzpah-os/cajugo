@@ -42,7 +42,7 @@ describe("filtro Tipo da vitrine (014)", () => {
   });
 });
 
-describe("filtro novo, seminovo e usado (017)", () => {
+describe("filtro novo e usado (017)", () => {
   let t: Awaited<ReturnType<typeof createTestDb>>;
 
   beforeEach(async () => {
@@ -54,7 +54,7 @@ describe("filtro novo, seminovo e usado (017)", () => {
     await t.close();
   });
 
-  it("[HOM-FR-003] novo é 0 km; seminovo, até 3 anos; usado, o resto", async () => {
+  it("[HOM-FR-003] novo é 0 km; usado, com km; o antigo seminovo vale como usado", async () => {
     const { storeId } = await liveStore(t.db, "loja-a");
     const year = new Date().getUTCFullYear();
     await car(t.db, storeId, { mileageKm: 0, yearModel: year });
@@ -72,7 +72,7 @@ describe("filtro novo, seminovo e usado (017)", () => {
       await count("novo"),
       await count("seminovo"),
       await count("usado"),
-    ]).toEqual([1, 1, 1]);
+    ]).toEqual([1, 2, 2]);
     expect(
       filtersToQuery(parseFilters({ estado: "novo", tipo: "carro" })),
     ).toBe("tipo=carro&estado=novo");

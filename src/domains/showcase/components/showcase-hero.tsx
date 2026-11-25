@@ -14,7 +14,7 @@ export function ShowcaseHero() {
           </span>
         </p>
         <p className="text-[15px] text-text-2 lg:text-[17px]">
-          Na CajuGo você encontra veículos novos e seminovos das lojas, coloca o
+          Na CajuGo você encontra veículos novos e usados das lojas, coloca o
           estoque da sua loja online, consulta o histórico de um veículo antes
           de comprar e fala direto com a loja pelo WhatsApp, sem intermediário.
         </p>

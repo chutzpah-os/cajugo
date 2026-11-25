@@ -70,7 +70,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
   - na folha de **Filtros** e no filtro lateral do desktop [15a], a primeira seção é **Tipo de veículo**, com todos os tipos e a contagem, antes de Marca;
   - escolhido um tipo, aparecem os filtros dele (ex.: Km e Câmbio para carro e picape; Km e Cilindrada para moto e scooter; Horas de uso e Tração para trator e máquinas pesadas), tanto nos chips quanto na folha de **Filtros**.
 - **TIP-FR-021** (pedido do dono do produto, 2026-11-25, pelo SEO) Cada tipo tem a sua página: `/carros`, `/motos`, `/scooters`, `/picapes`, `/vans`, `/onibus`, `/caminhoes`, `/tratores`, `/quadriciclos`, `/maquinas`, `/motorhomes` e `/implementos`, com título, canônica e trilha próprias; os outros filtros ficam na URL (`/motos?marca=honda`, fora do Google). A página do tipo só entra no Google e no sitemap com veículo na vitrine; `/veiculos?tipo=moto` responde 308 para `/motos`. `/carros` deixa de ser o índice de marcas e cidades (DSC-FR-013); `/carros/{marca}` e `/carros/{cidade}` continuam.
-- **TIP-FR-008** A vitrine sem filtro mostra todos os tipos. O título passa a "Veículos novos e seminovos à venda" e, com um tipo só, vira o do tipo ("Motos novas e seminovas à venda").
+- **TIP-FR-008** A vitrine sem filtro mostra todos os tipos. O título passa a "Veículos novos e usados à venda" e, com um tipo só, vira o do tipo ("Motos novas e usadas à venda").
 - **TIP-FR-009** A busca por texto [1a] também acha pelo tipo ("moto", "caminhão", "trator") e pelos campos novos (ex.: "160 cc").
 - ~~**TIP-FR-010**~~ Movido para a 014b (páginas de descoberta por tipo), no `/clarify` de 2026-11-24.
 - **TIP-FR-011** O catálogo da loja [1a modo Lojista] mostra o filtro Tipo só quando a loja vende mais de um tipo.
@@ -155,7 +155,7 @@ Sucesso: uma loja de motos se cadastra, publica uma moto com a ficha de moto, e 
 ### TIP-FR-008
 - **Dado** a vitrine
 - **Quando** o visitante abre sem filtro e depois filtra só Caminhão
-- **Então** o título é "Veículos novos e seminovos à venda" e depois "Caminhões novos e seminovos à venda"
+- **Então** o título é "Veículos novos e usados à venda" e depois "Caminhões novos e usados à venda"
 
 ### TIP-FR-009
 - **Dado** uma moto Honda CG 160 publicada

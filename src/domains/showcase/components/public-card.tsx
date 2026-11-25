@@ -83,22 +83,34 @@ export function PublicCard({
         />
       </div>
       <div className="flex flex-1 flex-col gap-0.5 px-4 pt-3.5 pb-4">
-        <h2 className="text-base leading-tight font-extrabold tracking-[-0.01em] uppercase">
-          <Link
-            href={card.path}
-            className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:outline-2 focus-visible:after:outline-ink"
+        <div className="flex items-end justify-between gap-3">
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <h2 className="text-base leading-tight font-extrabold tracking-[-0.01em] uppercase">
+              <Link
+                href={card.path}
+                className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:rounded-card focus-visible:after:outline-2 focus-visible:after:outline-ink"
+              >
+                {title || card.version}
+              </Link>
+            </h2>
+            {card.version && (
+              <p className="truncate text-[13px] text-text-3">{card.version}</p>
+            )}
+            {card.priceCents !== null && (
+              <p className="mt-1.5 text-xl leading-tight font-extrabold tracking-[-0.02em]">
+                {brlWhole(card.priceCents)}
+              </p>
+            )}
+          </div>
+          {/* O card inteiro é o link da página do veículo; o botão só o deixa à vista. */}
+          <span
+            aria-hidden
+            data-testid="card-talk"
+            className="flex h-10 flex-none items-center rounded-button bg-ink px-4 text-sm font-bold text-white"
           >
-            {title || card.version}
-          </Link>
-        </h2>
-        {card.version && (
-          <p className="truncate text-[13px] text-text-3">{card.version}</p>
-        )}
-        {card.priceCents !== null && (
-          <p className="mt-1.5 text-xl leading-tight font-extrabold tracking-[-0.02em]">
-            {brlWhole(card.priceCents)}
-          </p>
-        )}
+            Conversar
+          </span>
+        </div>
         <p className="mt-2.5 border-t border-line-2 pt-2.5 text-xs text-text-3">
           {meta}
         </p>
@@ -108,14 +120,6 @@ export function PublicCard({
             <span className="font-semibold text-ink">{card.storeName}</span>
           </p>
         )}
-        {/* O card inteiro é o link da página do veículo; o botão só o deixa à vista. */}
-        <span
-          aria-hidden
-          data-testid="card-talk"
-          className="mt-3 flex h-11 items-center justify-center rounded-button bg-ink text-sm font-bold text-white"
-        >
-          Conversar
-        </span>
       </div>
     </li>
   );

@@ -7,7 +7,7 @@ import { websiteJsonLd } from "@/platform/seo/catalog";
 export const metadata: Metadata = pageMetadata({
   title: "CajuGo: a sua plataforma automotiva",
   description:
-    "Compre, venda e cuide do seu veículo num só lugar: veículos novos e seminovos das lojas, catálogo para lojistas e consulta veicular. Fale direto com a loja pelo WhatsApp.",
+    "Compre, venda e cuide do seu veículo num só lugar: veículos novos e usados das lojas, catálogo para lojistas e consulta veicular. Fale direto com a loja pelo WhatsApp.",
   path: "/",
 });
 

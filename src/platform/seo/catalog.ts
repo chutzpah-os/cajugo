@@ -53,7 +53,7 @@ export function vehicleDescription(
 }
 
 export function storeTitle(s: { name: string; city: string; state: string }) {
-  return `${s.name} – Carros usados e seminovos em ${s.city}/${s.state}`;
+  return `${s.name} – Veículos novos e usados em ${s.city}/${s.state}`;
 }
 
 export function vehicleAlt(

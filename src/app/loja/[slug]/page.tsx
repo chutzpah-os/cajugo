@@ -53,7 +53,7 @@ export async function generateMetadata({
     title: storeTitle(page),
     description:
       page.about?.slice(0, 155) ??
-      `Veja o estoque de ${page.name} em ${page.city}/${page.state}: carros usados e seminovos, com preço e contato pelo WhatsApp.`,
+      `Veja o estoque de ${page.name} em ${page.city}/${page.state}: veículos novos e usados, com preço e contato pelo WhatsApp.`,
     path: `/loja/${page.slug}`,
     image: image
       ? imageUrlFor(cloudName(), image, IMAGE_WIDTHS.full)

@@ -24,27 +24,25 @@ import { FiltersSide } from "./filters-side";
 import { NoResults } from "./no-results";
 import { SortSelect } from "./sort-select";
 
-const TITLE = "Veículos novos e seminovos à venda";
+const TITLE = "Veículos novos e usados à venda";
 /** A vitrine, ou a página do tipo quando há tipo (`/motos`, 014). */
 const basePathOf = (f: Filters) =>
   f.type ? vehicleType(f.type).path : SHOWCASE_PATH;
 
 const CONDITION_TITLE = {
   novo: "Veículos novos (0 km) à venda",
-  seminovo: "Veículos seminovos à venda",
   usado: "Veículos usados à venda",
 } as const;
 
-/** Título da lista: o do tipo, o do estado (novo, seminovo, usado), os dois juntos ou o geral. */
+/** Título da lista: o do tipo, o do estado (novo, usado), os dois juntos ou o geral. */
 function titleOf(f: Filters): string {
   if (f.type && f.condition) {
     const title = vehicleType(f.type).title;
-    // "Motos novas e seminovas à venda" → "Motos" e o gênero do adjetivo.
+    // "Motos novas e usadas à venda" → "Motos" e o gênero do adjetivo.
     const feminine = title.includes(" novas ");
     const noun = title.split(feminine ? " novas" : " novos")[0];
     const word = {
       novo: feminine ? "novas (0 km)" : "novos (0 km)",
-      seminovo: feminine ? "seminovas" : "seminovos",
       usado: feminine ? "usadas" : "usados",
     }[f.condition];
     return `${noun} ${word} à venda`;
@@ -67,7 +65,7 @@ export function showcaseMetadata(
   const type = filters?.type ? vehicleType(filters.type) : null;
   const meta = pageMetadata({
     title: type ? type.title : TITLE,
-    description: `Encontre ${type ? type.label.toLowerCase() : "veículos"} novos e seminovos das melhores lojas, com preço, fotos e contato direto pelo WhatsApp.`,
+    description: `Encontre ${type ? type.label.toLowerCase() : "veículos"} novos e usados das melhores lojas, com preço, fotos e contato direto pelo WhatsApp.`,
     path: type ? type.path : SHOWCASE_PATH,
     image: cover
       ? imageUrlFor(cloudName(), cover, IMAGE_WIDTHS.full)

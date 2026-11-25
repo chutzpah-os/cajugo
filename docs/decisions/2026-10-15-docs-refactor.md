@@ -616,3 +616,6 @@
 
 # 2026-11-24 · feat(showcase): Conversar no card e dados do Compare os preços [015]
 - Pedido do dono (botão no card) e PRC-FR-001/PRC-SEC-002; o bloco na tela vem com o novo layout da página do veículo.
+
+# 2026-11-24 · feat(showcase): só novo e usado; Conversar ao lado do modelo e preço [017]
+- Pedidos do dono em 2026-11-25.

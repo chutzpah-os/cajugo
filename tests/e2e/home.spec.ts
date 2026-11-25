@@ -33,10 +33,10 @@ test("[HOM-FR-003] [HOM-FR-005] menus do desktop: Comprar leva à vitrine filtra
   ).toHaveCount(0);
 
   await nav.getByText("Comprar", { exact: true }).click();
-  await nav.getByRole("link", { name: "Veículos seminovos" }).click();
-  await expect(page).toHaveURL(/\/veiculos\?estado=seminovo$/);
+  await nav.getByRole("link", { name: "Veículos usados" }).click();
+  await expect(page).toHaveURL(/\/veiculos\?estado=usado$/);
   await expect(page.locator("main h1").first()).toHaveText(
-    "Veículos seminovos à venda",
+    "Veículos usados à venda",
   );
 });
 

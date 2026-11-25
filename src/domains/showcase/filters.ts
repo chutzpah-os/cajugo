@@ -41,7 +41,6 @@ const FUELS: Record<string, string> = {
 
 export const CONDITIONS = {
   novo: "Novos",
-  seminovo: "Seminovos",
   usado: "Usados",
 } as const;
 export type Condition = keyof typeof CONDITIONS;
@@ -49,7 +48,7 @@ export type Condition = keyof typeof CONDITIONS;
 export type Filters = {
   /** Tipo de veículo (014, TIP-FR-007): `?tipo=moto`. */
   type?: VehicleTypeSlug;
-  /** Novo (0 km), seminovo (até 3 anos) ou usado (017, HOM-FR-003): `?estado=`. */
+  /** Novo (0 km) ou usado (com km), 017 HOM-FR-003: `?estado=`. */
   condition?: Condition;
   makes: string[];
   /** Modelos escolhidos dentro de uma marca: "bmw--x1" (marca--modelo), 012. */
@@ -94,7 +93,9 @@ export function parseFilters(params: Params): Filters {
   };
   const q = one(params.q).trim().slice(0, 60);
   const type = one(params.tipo);
-  const condition = one(params.estado);
+  // `seminovo` saiu a pedido do dono (2026-11-25): o link antigo vale como usado.
+  const condition =
+    one(params.estado) === "seminovo" ? "usado" : one(params.estado);
   return {
     ...(isVehicleType(type) ? { type } : {}),
     ...(condition in CONDITIONS ? { condition: condition as Condition } : {}),
