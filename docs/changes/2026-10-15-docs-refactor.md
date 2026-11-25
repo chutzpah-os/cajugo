@@ -1356,3 +1356,6 @@
 
 # 2026-11-25 · feat(admin): Equipe CajuGo na Conta e Logs de atividade [012b/T016]
 - Conta admin com Equipe CajuGo (lista, Convidar recolhível com a senha temporária uma vez e Copiar, Remover com confirmação; suporte só vê). Log com Logs de atividade (filtros tipo e período, 20 por vez, Carregar mais) e o histórico da loja por ?loja=.
+
+# 2026-11-25 · test(admin): e2e do painel e verificação; 012b implementada [012b/T017-T018]
+- e2e do painel no celular, da Visão geral no desktop e do menu Mais com o ID; "Ver todos" dos comprovantes com 44 px. 31 e2e do admin passando; 012b `implemented`; fila de aprovação inline fica com a 005b.

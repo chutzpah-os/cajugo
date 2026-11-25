@@ -68,7 +68,7 @@ async function Content() {
               <h2 className="text-[17px] font-extrabold">Comprovantes Pix</h2>
               <Link
                 href="/admin/pagamentos"
-                className="text-[13px] font-bold text-caju-ink"
+                className="flex min-h-11 items-center text-[13px] font-bold text-caju-ink"
               >
                 Ver todos
               </Link>

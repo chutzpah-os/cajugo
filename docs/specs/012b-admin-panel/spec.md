@@ -2,7 +2,7 @@
 id: 012b
 slug: admin-panel
 title: Admin · painel, lojas, usuários e detalhe da loja
-status: in-progress
+status: implemented
 owner: dono do produto
 created: 2026-11-24
 ---
@@ -66,7 +66,7 @@ Sucesso: o admin entende a saúde do negócio em 5 segundos e resolve qualquer p
   - **Convidar** (nome, e-mail e papel Admin ou Suporte): a conta nasce com a senha temporária, mostrada uma vez;
   - **Remover da equipe**: a pessoa perde o papel e todas as sessões dela são encerradas. Ninguém remove a si mesmo, e o último admin não pode ser removido. Para trocar o papel, o admin remove e convida de novo.
 - **ADM-FR-015** O item **Log** do menu do admin (o único lugar dos históricos, 2026-11-25) reúne o histórico das regras (CFG-FR-006) e os **Logs de atividade**: o registro geral, do mais recente ao mais antigo, 20 por vez, com os filtros **tipo de ação** e **período** (de/até). O registro fica visível por inteiro (é só de inclusão; sem limpeza no MVP).
-- **ADM-FR-013** No desktop [15c], a Visão geral mostra os KPIs (Lojas ativas, Receita do mês, Em atraso, Veículos na vitrine) e as filas **Comprovantes Pix** e **Veículos aguardando aprovação**, com **Confirmar**/**Recusar** e **Aprovar**/**Recusar** inline (as mesmas regras de [10b] e [14c]) e **Ver todos**. A sidebar mostra os contadores de pendências.
+- **ADM-FR-013** (a fila de aprovação vai com a 005b, decisão de 2026-11-25) No desktop [15c], a Visão geral mostra os KPIs (Lojas ativas, Receita do mês, Em atraso, Veículos na vitrine) e as filas **Comprovantes Pix** e **Veículos aguardando aprovação**, com **Confirmar**/**Recusar** e **Aprovar**/**Recusar** inline (as mesmas regras de [10b] e [14c]) e **Ver todos**. A sidebar mostra os contadores de pendências.
 - **ADM-FR-014** A navegação do admin no celular é **Painel · Lojas · Assinaturas · Conta · Mais**; "Mais" abre a gaveta com Pagamentos Pix, Veículos, Alertas, Rede Caju e Caju Indica (PRD §7.2).
 
 ## Requisitos não funcionais

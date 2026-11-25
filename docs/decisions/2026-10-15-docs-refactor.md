@@ -707,3 +707,6 @@
 
 # 2026-11-25 · Equipe e Log no admin [012b/T016]
 - O e2e do convite usa um e-mail que já está na equipe para não criar conta nova no staging a cada rodada; a criação com senha fica coberta pelos testes de serviço (PGlite).
+
+# 2026-11-25 · 012b fechada sem a fila de aprovação [012b/T018]
+- Aprovar veículo depende da tela [14c] e da regra da 005b, que ainda não tem spec; a fila inline entra com ela. ADM-NFR-002 (desempenho com 500 lojas) fica para a medição do lançamento (013).

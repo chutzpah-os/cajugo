@@ -160,6 +160,7 @@
 - Pedido do dono do produto (2026-11-24): seguir o design de forma fiel. Comparação lado a lado com as capturas de `docs/design/telas/` em 390 e 1280 px; cabeçalho escuro com KPIs, sidebar escura no desktop, card de loja com sigla, selos, tabela de veículos [15b], card escuro da assinatura em [3c]. Sem mudar regra de negócio. Spec em `docs/specs/012-design-fidelity/` (draft).
 
 ## 012b · Admin: painel, lojas, usuários e detalhe da loja — telas 4a, 1d, 6g, 4c (equipe e logs), 15c
+> ✅ **Implementada** em 2026-11-25 (`docs/specs/012b-admin-panel/`): painel [4a] e Visão geral [15c] com KPIs, Precisa de atenção e Comprovantes Pix inline; Lojas [1d] com Veículos CajuGo e Usuários; Nova loja; detalhe da loja [6g] com editar, senha temporária, histórico no Log e suspender/reativar; Equipe CajuGo na Conta; Log com regras e logs de atividade; menu Mais no celular. Migration `0024` no staging e no prod. A fila de aprovação inline vai com a 005b.
 - Painel com KPIs e "Precisa de atenção" (comprovantes, vencimentos, atrasos, vendedores em análise, aprovações, denúncias, resgates, alertas de busca).
 - Lojas, usuários, detalhe da loja (senha temporária, suspender/reativar), equipe CajuGo, logs de atividade.
 - Desktop: painel do lojista [15b] e admin [15c] com sidebar e filas inline.
