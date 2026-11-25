@@ -21,7 +21,7 @@ describe("veículos no banco", () => {
         slug: "loja",
         city: "Aracaju",
         state: "SE",
-        whatsapp: "5579981360206",
+        whatsapp: "5579999990000",
         ownerId,
       })
       .returning({ id: stores.id });

@@ -685,3 +685,7 @@
 
 # 2026-11-25 · docs: migrations 0024, 0025 e 0026 aplicadas no prod
 - Autorizado pelo dono em 2026-11-25, depois de conferir que o deploy no ar já não usava a coluna removida.
+
+# 2026-11-25 · Pedidos de contato no admin [017]
+- Regra do dono: nenhum telefone ou dado pessoal da equipe/donos em página pública (HOM-SEC-001). Quem quer falar com a CajuGo deixa o contato e a equipe chama; o pedido fica em Contatos (admin e suporte), e não em Alertas, porque não depende de veículo.
+- O valor inicial do WhatsApp de atendimento continua igual ao da migration 0005 (já aplicada e no histórico do Git); ele só aparece em áreas logadas da loja. A vitrine sem veículo mantém o filtro lateral para a página não perder a estrutura (pedido do dono).

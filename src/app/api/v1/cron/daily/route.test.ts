@@ -4,6 +4,8 @@ const purgeExpired = vi.fn(async () => 2);
 const purgeRateLimits = vi.fn(async () => {});
 vi.mock("@/domains/buyers/service", () => ({ purgeExpired }));
 vi.mock("@/platform/http/rate-limit", () => ({ purgeRateLimits }));
+const purgeExpiredContacts = vi.fn(async () => 1);
+vi.mock("@/domains/contacts/service", () => ({ purgeExpiredContacts }));
 const purgeOldLeads = vi.fn(async () => 3);
 vi.mock("@/domains/leads/service", () => ({ purgeOldLeads }));
 const runBillingCycle = vi.fn(async () => ({

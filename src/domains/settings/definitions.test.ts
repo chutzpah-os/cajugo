@@ -86,7 +86,7 @@ describe("limites das regras", () => {
       "Use um valor entre 0 e 30 dias.",
     );
     expect(message("support_whatsapp", "79981")).toBe(
-      "Informe o WhatsApp com DDI e DDD, só números (ex.: 5579981360206).",
+      "Informe o WhatsApp com DDI e DDD, só números (ex.: 5579999990000).",
     );
     expect(message("payout_min_cents", 50)).toBe(
       "Use um valor entre R$ 1,00 e R$ 1.000,00.",

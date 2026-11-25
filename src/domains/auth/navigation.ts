@@ -59,6 +59,11 @@ export const AREA_NAV: Partial<Record<Area, AreaNavItem[]>> = {
       permission: "admin.moderate",
     },
     { href: "/admin/alertas", label: "Alertas", permission: "alerts.notify" },
+    {
+      href: "/admin/contatos",
+      label: "Contatos",
+      permission: "contacts.handle",
+    },
     { href: "/admin/vendedores", label: "Rede Caju" },
     { href: "/admin/indica", label: "Caju Indica" },
     { href: "/admin/conta", label: "Conta", mobile: true },

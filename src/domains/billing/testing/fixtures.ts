@@ -20,7 +20,7 @@ export async function storeOwner(
       storeName: `Loja ${slug}`,
       city: "Aracaju",
       state: "SE",
-      whatsapp: "79981360206",
+      whatsapp: "79999990000",
       slug,
       name: extra.name ?? "Dono",
       email,

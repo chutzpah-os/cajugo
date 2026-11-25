@@ -13,8 +13,8 @@ export const metadata: Metadata = pageMetadata({
 
 /**
  * Página de vendas do serviço de leilão (Serviços, 017): ajuda o comprador a escolher o
- * veículo no leilão. Ainda não existe: a chamada (`/conheca/leilao/avisar`) abre o
- * WhatsApp do atendimento; a página fica estática.
+ * veículo no leilão. Ainda não existe: a chamada (`/conheca/leilao/avisar`) leva ao
+ * formulário que cai no admin [Contatos]; a página fica estática.
  */
 export default function AuctionLanding() {
   return (
@@ -28,7 +28,6 @@ export default function AuctionLanding() {
           primary: {
             label: "Quero ser avisado",
             href: "/conheca/leilao/avisar",
-            newTab: true,
           },
           signIn: { label: "Ver veículos à venda", href: "/veiculos" },
           highlights: [
@@ -86,7 +85,7 @@ export default function AuctionLanding() {
           faq: [
             {
               q: "O serviço já está disponível?",
-              a: "Ainda não. Toque em Quero ser avisado e falamos com você pelo WhatsApp quando abrir.",
+              a: "Ainda não. Toque em Quero ser avisado, deixe o seu WhatsApp e avisamos quando abrir.",
             },
             {
               q: "Quanto vai custar?",

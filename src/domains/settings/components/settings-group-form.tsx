@@ -75,7 +75,7 @@ export function SettingsGroupForm({
               <TextField
                 key={f.key}
                 inputMode="tel"
-                help="Com DDI e DDD, só números (ex.: 5579981360206)."
+                help="Com DDI e DDD, só números (ex.: 5579999990000)."
                 {...common}
               />
             );

@@ -15,7 +15,7 @@ const NEW_STORE = {
   slug: "loja-nova",
   name: "Marta Souza",
   email: "Marta@LojaNova.com",
-  phone: "(79) 98136-0206",
+  phone: "(79) 99999-0000",
 };
 
 describe("Nova loja pelo admin (012b)", () => {

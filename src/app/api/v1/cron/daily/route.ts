@@ -2,6 +2,7 @@ import { revalidateTag } from "next/cache";
 import { runBillingCycle } from "@/domains/billing/service";
 import { purgeExpired } from "@/domains/buyers/service";
 import { ALERTS_TAG } from "@/domains/buyers/tags";
+import { purgeExpiredContacts } from "@/domains/contacts/service";
 import { purgeOldLeads } from "@/domains/leads/service";
 import { STORES_TAG } from "@/domains/stores/tags";
 import { VEHICLES_TAG } from "@/domains/vehicles/tags";
@@ -28,6 +29,8 @@ export async function GET(request: Request) {
     const expiredAlerts = await purgeExpired(db, now);
     // A lista em cache do admin não guarda mais nome e celular dos vencidos (ALR-SEC-004).
     if (expiredAlerts) revalidateTag(ALERTS_TAG, { expire: 0 });
+    // Pedidos de contato não atendidos em 90 dias perdem os dados pessoais.
+    await purgeExpiredContacts(db, now);
     // Janelas de rate limit vão até 1 dia; 2 dias de folga.
     const rateLimitsBefore = new Date(now.getTime() - 2 * DAY_MS);
     await purgeRateLimits(db, rateLimitsBefore);

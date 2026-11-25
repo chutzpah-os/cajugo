@@ -58,7 +58,7 @@ describe("confirmar comprovante", () => {
     const text = decodeURIComponent(
       new URL(whatsappUrl).searchParams.get("text")!,
     );
-    expect(whatsappUrl).toMatch(/^https:\/\/wa\.me\/5579981360206\?/);
+    expect(whatsappUrl).toMatch(/^https:\/\/wa\.me\/5579999990000\?/);
     expect(text).toContain("https://cajugo.test/loja/silva-autocar");
     expect(text).toContain("26/12/2026");
   });

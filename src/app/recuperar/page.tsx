@@ -1,43 +1,14 @@
 import { SiteFooter } from "@/ui/site-footer";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
+import { ContactRequestForm } from "@/domains/contacts/components/contact-request-form";
 import { AuthLayout } from "@/ui/auth-layout";
-import { connection } from "next/server";
-import { Suspense } from "react";
-import { currentSettings } from "@/domains/settings/current";
-import { publicSettings } from "@/domains/settings/service";
-import { whatsappLink } from "@/platform/whatsapp/link";
-import { ButtonLink } from "@/ui/button";
 
 export const metadata: Metadata = {
   title: "Recuperar senha | CajuGo",
-  description: "Fale com o suporte CajuGo para criar uma nova senha.",
+  description: "Peça à CajuGo uma nova senha para a sua conta.",
   robots: { index: false, follow: true },
 };
-
-const MESSAGE =
-  "Olá! Esqueci minha senha do CajuGo e preciso de ajuda para criar uma nova.";
-
-/**
- * Botão do WhatsApp com o número das regras [4c] (CFG-FR-007). Montado por requisição
- * (`connection`), com o cache de 1 min das regras: o build não depende do banco.
- */
-async function SupportButton() {
-  await connection();
-  const { supportWhatsapp } = publicSettings(await currentSettings());
-  return (
-    <ButtonLink
-      href={whatsappLink(supportWhatsapp, MESSAGE)}
-      variant="whatsapp"
-      block
-      className="mt-6"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Falar com o suporte no WhatsApp
-    </ButtonLink>
-  );
-}
 
 /** Recuperar senha [6b], manual no MVP: suporte pelo WhatsApp (AUT-FR-013, ADR 0004). */
 const PANEL = {
@@ -56,12 +27,17 @@ export default function RecoverPasswordPage() {
       <SiteHeader />
       <AuthLayout
         title="Recuperar senha"
-        subtitle="Para criar uma nova senha, fale com o suporte CajuGo. Vamos confirmar que a conta é sua e enviar uma senha temporária."
+        subtitle="Deixe o seu WhatsApp e o e-mail da conta. A equipe CajuGo chama você, confirma que a conta é sua e envia uma senha temporária."
         panel={PANEL}
       >
-        <Suspense fallback={<div className="h-[50px]" aria-hidden />}>
-          <SupportButton />
-        </Suspense>
+        <div className="mt-6">
+          <ContactRequestForm
+            topic="password_help"
+            submitLabel="Pedir nova senha"
+            doneTitle="Pedido recebido."
+            doneText="A equipe CajuGo chama você no WhatsApp para confirmar que a conta é sua e enviar uma senha temporária."
+          />
+        </div>
       </AuthLayout>
       <SiteFooter />
     </>

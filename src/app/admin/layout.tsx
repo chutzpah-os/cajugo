@@ -3,6 +3,7 @@ import { AreaLayout } from "@/domains/auth/components/area-layout";
 import type { NavCounts } from "@/domains/auth/components/area-shell";
 import { can } from "@/domains/auth/service";
 import { cachedPendingAlerts } from "@/domains/buyers/current";
+import { pendingContactsCount } from "@/domains/contacts/service";
 import { openReportsCount } from "@/domains/moderation/service";
 import { getDb } from "@/platform/db/client";
 
@@ -13,6 +14,7 @@ import { getDb } from "@/platform/db/client";
 const navCounts: NavCounts = async (session) => {
   const counts: Record<string, number> = {
     "/admin/denuncias": await openReportsCount(getDb(), session),
+    "/admin/contatos": await pendingContactsCount(getDb(), session),
   };
   if (can(session, "alerts.notify"))
     counts["/admin/alertas"] = await cachedPendingAlerts();

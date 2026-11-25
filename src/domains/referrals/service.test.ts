@@ -53,7 +53,7 @@ describe("referrals", () => {
   describe("checkCode", () => {
     it("[STO-FR-007] código válido mostra só o primeiro nome de quem indicou", async () => {
       // Arrange
-      const id = await person("Ricardo Souza", "r@x.com", "79981360206");
+      const id = await person("Ricardo Souza", "r@x.com", "79988887777");
       await getOrCreateCode(t.db, id, "Ricardo Souza");
 
       // Act
@@ -91,7 +91,7 @@ describe("referrals", () => {
 
     it("[STO-FR-007] [STO-SEC-005] autoindicação por e-mail ou celular, sem revelar o dado", async () => {
       // Arrange
-      const id = await person("Ricardo", "Ricardo@X.com", "5579981360206");
+      const id = await person("Ricardo", "Ricardo@X.com", "5579988887777");
       await getOrCreateCode(t.db, id, "Ricardo");
 
       // Act
@@ -101,13 +101,13 @@ describe("referrals", () => {
       });
       const byPhone = await checkCode(t.db, "RICARDO10", {
         email: "outro@x.com",
-        phone: "(79) 98136-0206",
+        phone: "(79) 98888-7777",
       });
 
       // Assert
       expect(byEmail).toEqual({ status: "self-referral" });
       expect(byPhone).toEqual({ status: "self-referral" });
-      expect(JSON.stringify([byEmail, byPhone])).not.toMatch(/ricardo@|98136/i);
+      expect(JSON.stringify([byEmail, byPhone])).not.toMatch(/ricardo@|98888/i);
     });
 
     it("link de campanha (sem dono) é aceito com o nome da campanha", async () => {

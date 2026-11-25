@@ -7,7 +7,7 @@ import { laudoPix, requestLaudo } from "./service";
 const NOW = new Date("2026-11-25T12:00:00Z");
 const VALID = {
   name: "Carla Souza",
-  whatsapp: "(79) 98136-0206",
+  whatsapp: "(79) 99999-0000",
   email: "Carla@Exemplo.com",
   plate: "abc-1d23",
   vehicle: "Toyota Corolla 2025",
@@ -40,7 +40,7 @@ describe("LaudoCaju: pedido e Pix (016)", () => {
       status: "awaiting_pix",
       plate: "ABC1D23",
       email: "carla@exemplo.com",
-      whatsapp: "5579981360206",
+      whatsapp: "5579999990000",
       priceCents: 7000,
     });
   });

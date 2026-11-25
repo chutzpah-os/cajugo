@@ -9,7 +9,7 @@ export const brPhoneSchema = z
       .string()
       .regex(
         /^[1-9]{2}9?\d{8}$/,
-        "Informe DDD e número (ex.: (79) 98136-0206).",
+        "Informe DDD e número (ex.: (79) 99999-0000).",
       ),
   )
   .transform((d) => `55${d}`);

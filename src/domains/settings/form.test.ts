@@ -15,8 +15,8 @@ describe("formulário das regras", () => {
     expect(settingFormValue("payout_min_cents", 5000)).toBe("50,00");
     expect(settingFormValue("min_photos", 6)).toBe("6");
     expect(settingFormValue("require_approval", true)).toBe(true);
-    expect(settingFormValue("support_whatsapp", "557981360206")).toBe(
-      "557981360206",
+    expect(settingFormValue("support_whatsapp", "557999990000")).toBe(
+      "557999990000",
     );
   });
 

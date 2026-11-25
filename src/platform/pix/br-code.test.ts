@@ -28,7 +28,7 @@ describe("BR Code do Pix estático", () => {
 
   it("[PIX-FR-004] tira acentos e corta nome (25) e cidade (15) no limite do padrão", () => {
     const code = brCode({
-      key: "+5579981360206",
+      key: "+5579999990000",
       name: "Concessionária São João de Aracaju Ltda",
       city: "São Cristóvão do Norte",
     });

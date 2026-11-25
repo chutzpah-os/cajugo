@@ -38,6 +38,8 @@ export const PERMISSIONS = {
   "admin.moderate": ["admin", "support"],
   /** Ver "Alertas" e marcar como avisado (006d). */
   "alerts.notify": ["admin", "support"],
+  /** Ver os pedidos de contato [Contatos] e marcar como atendido (017). */
+  "contacts.handle": ["admin", "support"],
   /** Confirmar ou recusar comprovante. */
   "payments.review": ["admin"],
   /** Ver a fila de comprovantes e abrir os arquivos (PIX-SEC-003). */

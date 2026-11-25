@@ -134,17 +134,16 @@ export async function ShowcaseView({
           </div>
         }
         sidebar={
-          makes.length > 0 || filtered ? (
-            <FiltersSide
-              types
-              filters={filters}
-              makes={makes}
-              cities={cities}
-              total={result.total}
-              basePath={basePathOf(filters)}
-              source={null}
-            />
-          ) : undefined
+          // Sempre no desktop, mesmo sem veículo: a página não perde a estrutura.
+          <FiltersSide
+            types
+            filters={filters}
+            makes={makes}
+            cities={cities}
+            total={result.total}
+            basePath={basePathOf(filters)}
+            source={null}
+          />
         }
         sort={
           result.total > 1 ? (

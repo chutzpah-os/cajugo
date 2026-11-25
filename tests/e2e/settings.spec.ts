@@ -105,19 +105,24 @@ test.describe("regras configuráveis", () => {
     ).toBeVisible();
   });
 
-  test("[CFG-FR-007] recuperar senha usa o WhatsApp definido nas regras", async ({
+  test("[AUT-FR-013] [HOM-FR-009] recuperar senha vira pedido em Contatos, sem número da equipe", async ({
     page,
   }) => {
-    await enterAs(page, accounts.admin.email, "/admin/conta");
-    const support = group(page, "Vitrine CajuGo");
-    await support.getByLabel("WhatsApp de atendimento").fill("5579900001111");
-    await support.getByRole("button", { name: "Salvar" }).click();
-    await expect(support.getByText("Alterações salvas.")).toBeVisible();
-
+    const name = `Pedido E2E ${Date.now()}`;
     await page.goto("/recuperar");
-    await expect(
-      page.getByRole("link", { name: "Falar com o suporte no WhatsApp" }),
-    ).toHaveAttribute("href", /^https:\/\/wa\.me\/5579900001111\?/);
+    await expect(page.locator('a[href*="wa.me"]')).toHaveCount(0);
+    await page.getByLabel("Nome").fill(name);
+    await page.getByLabel("E-mail da sua conta").fill("pedido-e2e@cajugo.test");
+    await page.getByLabel("Celular com WhatsApp").fill("(79) 99999-0000");
+    await page.getByLabel(/Aceito que a CajuGo/).check();
+    await page.getByRole("button", { name: "Pedir nova senha" }).click();
+    await expect(page.getByTestId("contact-done")).toBeVisible();
+
+    await enterAs(page, accounts.admin.email, "/admin/contatos");
+    const card = page.getByTestId("contact-request").filter({ hasText: name });
+    await expect(card).toContainText("Esqueceu a senha");
+    await card.getByRole("button", { name: "Marcar como atendido" }).click();
+    await expect(card).toHaveCount(0);
   });
 
   test("[CFG-FR-010] [CFG-SEC-006] troca da própria senha: atual errada recusa; certa troca", async ({

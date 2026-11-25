@@ -748,6 +748,42 @@ export const laudoRequests = pgTable(
   (t) => [index("laudo_requests_status_created").on(t.status, t.createdAt)],
 ).enableRLS();
 
+export const contactTopic = pgEnum("contact_topic", [
+  "auction_waitlist",
+  "password_help",
+]);
+export const contactStatus = pgEnum("contact_status", [
+  "pending",
+  "handled",
+  "expired",
+]);
+
+/**
+ * Pedidos de contato que chegam ao admin [Contatos] (017): "Quero ser avisado" dos
+ * serviços em breve e "Esqueci a senha". Nenhum número da equipe fica público: a equipe
+ * chama a pessoa. Atender ou vencer apaga nome, celular e e-mail.
+ */
+export const contactRequests = pgTable(
+  "contact_requests",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    topic: contactTopic("topic").notNull(),
+    status: contactStatus("status").notNull().default("pending"),
+    name: text("name"),
+    /** `55` + DDD + 9 dígitos. */
+    phone: text("phone"),
+    /** E-mail da conta, no pedido de senha. */
+    email: text("email"),
+    consentAt: timestamp("consent_at", { withTimezone: true }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    closedAt: timestamp("closed_at", { withTimezone: true }),
+    handledBy: uuid("handled_by").references(() => profiles.id),
+  },
+  (t) => [index("contact_requests_status_created").on(t.status, t.createdAt)],
+).enableRLS();
+
 export const leadChannel = pgEnum("lead_channel", ["form", "whatsapp"]);
 export const leadOrigin = pgEnum("lead_origin", [
   "cajugo",

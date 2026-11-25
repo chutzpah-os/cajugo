@@ -39,7 +39,7 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 - **AUT-FR-010** O lojista cuja loja está cancelada ou arquivada só acessa a Conta [3c].
 - **AUT-FR-011** Quem tenta abrir um painel sem estar conectado é levado ao login e, depois de entrar, volta para a página que tentou abrir.
 - **AUT-FR-012** Quem está conectado e tenta abrir um painel de um papel que não tem vê uma mensagem de "sem permissão".
-- **AUT-FR-013** Em "Esqueci minha senha" [6b], a pessoa vê a orientação para falar com o suporte e um botão que abre o WhatsApp de atendimento com uma mensagem pronta.
+- **AUT-FR-013** Em "Esqueci minha senha" [6b], a pessoa deixa nome, e-mail da conta e WhatsApp, e o pedido vai para o admin [Contatos] (017, HOM-FR-009); a equipe chama e envia a senha temporária. (Mudado em 2026-11-25 pela regra HOM-SEC-001: o WhatsApp da equipe não fica público.)
 - **AUT-FR-014** O admin define uma senha temporária para uma conta [6g]; a senha é gerada pelo sistema, mostrada ao admin uma única vez e deixa de valer se não for usada em 24 horas; ao defini-la, todas as sessões abertas da conta são encerradas.
 - **AUT-FR-015** Quem entra com senha temporária só consegue criar uma nova senha (a tela Nova senha existe só para essa situação) (senha + confirmação, mínimo de 8 caracteres) antes de usar qualquer painel; ao criar, as outras sessões da conta são encerradas.
 - **AUT-FR-016** O usuário da loja cuja loja ainda não teve o 1º pagamento confirmado, está cancelada ou arquivada vê "Loja indisponível, fale com o responsável" e não acessa o painel da loja.
@@ -153,8 +153,8 @@ Sucesso: toda pessoa com conta chega ao painel certo em até 2 toques depois de 
 ### AUT-FR-013
 - **Dado** um lojista que esqueceu a senha
 - **Quando** ele toca em "Esqueci minha senha"
-- **Então** vê a orientação para falar com o suporte
-- **E** o botão abre o WhatsApp de atendimento com a mensagem pronta
+- **Então** deixa nome, e-mail da conta e WhatsApp, e o pedido aparece no admin [Contatos]
+- **E** nenhum número da equipe aparece na página
 
 ### AUT-FR-014
 - **Dado** um admin no detalhe de uma loja [6g]

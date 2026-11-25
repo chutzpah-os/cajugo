@@ -21,7 +21,7 @@ export const VALID = {
   slug: "silvautocar",
   name: "João Silva",
   email: "Joao@Silva.com",
-  phone: "(79) 98136-0206",
+  phone: "(79) 98888-7777",
   password: "senha-forte-1",
   terms: true,
 };
@@ -58,7 +58,7 @@ describe("registerStore (visitante)", () => {
     expect(profile).toMatchObject({
       name: "João Silva",
       email: "joao@silva.com",
-      phone: "5579981360206",
+      phone: "5579988887777",
       roles: ["store_owner"],
       storeId,
     });
@@ -328,7 +328,7 @@ describe("registerStore (proteções e conta existente)", () => {
         storeName: "Ana Veículos",
         city: "Aracaju",
         state: "SE",
-        whatsapp: "79981360206",
+        whatsapp: "79988887777",
         slug: "ana-veiculos",
         terms: true,
       },
@@ -364,7 +364,7 @@ describe("registerStore (proteções e conta existente)", () => {
           storeName: "Ana Veículos",
           city: "Aracaju",
           state: "SE",
-          whatsapp: "79981360206",
+          whatsapp: "79988887777",
           slug: "ana-veiculos",
           terms: true,
           referralCode: "ANA10",
@@ -382,7 +382,7 @@ describe("registerStore (proteções e conta existente)", () => {
       storeName: "Loja",
       city: "Aracaju",
       state: "SE",
-      whatsapp: "79981360206",
+      whatsapp: "79988887777",
       slug: "loja-equipe",
       terms: true,
     };

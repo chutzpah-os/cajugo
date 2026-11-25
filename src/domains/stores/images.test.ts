@@ -22,7 +22,7 @@ describe("logo e capa da loja", () => {
         storeName: "Loja",
         city: "Aracaju",
         state: "SE",
-        whatsapp: "79981360206",
+        whatsapp: "79999990000",
         slug,
         name: "Dono",
         email,

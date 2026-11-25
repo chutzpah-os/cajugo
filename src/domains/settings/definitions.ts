@@ -124,7 +124,7 @@ export const SETTINGS = {
           .string()
           .regex(
             /^\d{12,13}$/,
-            "Informe o WhatsApp com DDI e DDD, só números (ex.: 5579981360206).",
+            "Informe o WhatsApp com DDI e DDD, só números (ex.: 5579999990000).",
           ),
       ),
     initial: "557981360206",
@@ -250,7 +250,7 @@ export type Settings = {
 
 /**
  * Lê `setting_values.value` como texto e interpreta o JSON aqui: o mapeamento de
- * `jsonb` do Drizzle interpreta de novo um texto JSON e transforma "557981360206"
+ * `jsonb` do Drizzle interpreta de novo um texto JSON e transforma "557999990000"
  * em número (testado em PGlite e postgres.js). Use sempre isto para ler valores.
  */
 export const settingValueJson = sql<

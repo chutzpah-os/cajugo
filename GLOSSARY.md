@@ -248,5 +248,8 @@ Período em que um valor de regra (Config) vale: de quando o admin salvou até a
 **Favorito** e **Alerta de busca**:
 Veículo salvo pelo comprador, guardado no aparelho (sem conta no MVP); pedido "Avisar quando chegar" para uma busca sem resultado. O alerta fica **pendente** até ser **avisado** pelo admin, **cancelado** pela pessoa ou **vencido** (validade das regras); fechado, perde o nome e o celular. No código: `search_alerts`, status `pending`, `notified`, `canceled`, `expired`.
 
+**Pedido de contato**:
+Pedido público para a equipe chamar a pessoa: "Quero ser avisado" de um serviço em breve (ex.: leilão) ou "Esqueci a senha". Cai no admin em **Contatos**; fica **pendente** até ser **atendido** ou **vencer** (90 dias) e, fechado, perde nome, celular e e-mail. Nenhum número da equipe fica público. No código: `contact_requests`, `topic` `auction_waitlist`/`password_help`, status `pending`, `handled`, `expired`.
+
 **Senha temporária**:
 Senha gerada pelo Admin para o lojista entrar quando esqueceu a dele; obriga a troca no próximo login.

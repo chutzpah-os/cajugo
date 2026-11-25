@@ -171,6 +171,7 @@
 > ✅ **Implementada** em 2026-11-25 (`docs/specs/015-price-compare-financing/`): FIPE pela fipe.api.br v2; fim da parcela estimada e do simulador; página do veículo completa (galeria contida com setas, coluna da direita com preço, Ver parcelas, WhatsApp e mensagem, Sobre a loja com aberta agora, Compare os preços com a média CajuGo e a FIPE, Veja as parcelas com o aviso da integração com os bancos, Você também pode gostar), rodapé do site. Migrations `0024`, `0025` e `0026` aplicadas no staging e no prod em 2026-11-25 (autorizadas pelo dono).
 
 ## 016 · LaudoCaju · consulta veicular por Pix — telas 1b, admin
+- **Pedidos de contato (017, 2026-11-25):** "Quero ser avisado" do leilão e "Esqueci a senha" caem no admin em Contatos; migration `0027` aplicada no staging e no prod em 2026-11-25 (autorizada pelo dono).
 - Pedido com contato, veículo e Pix de R$ 70; fila do admin (Recebi, Enviei); página de vendas `/laudocaju`. Spec em `docs/specs/016-laudo-caju/` (in-progress, **pausada pelo dono em 2026-11-25**: feitas T001 e T002; a `0026` já está no prod).
 
 ## 018 · Indicação legítima — telas 4c (lojista), 8b, 8g
