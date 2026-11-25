@@ -1,7 +1,25 @@
-import { and, asc, desc, eq, inArray, isNotNull, ne } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  isNotNull,
+  lt,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
+import { z } from "zod";
 import { can, authorizeTo } from "@/domains/auth/service";
 import { notifyStore } from "@/domains/notices/service";
-import { contactTarget, vehiclePath } from "@/domains/showcase/service";
+import {
+  contactTarget,
+  publicVisible,
+  vehiclePath,
+} from "@/domains/showcase/service";
 import {
   hideVehicle,
   shortTitle,
@@ -384,4 +402,123 @@ export async function show(
     });
     return true;
   });
+}
+
+export const SHOWCASE_FILTERS = ["todos", "denunciados", "aguardando"] as const;
+export type ShowcaseFilter = (typeof SHOWCASE_FILTERS)[number];
+export const SHOWCASE_PAGE_SIZE = 20;
+
+const showcaseQuery = z.object({
+  filtro: z.enum(SHOWCASE_FILTERS).catch("todos").default("todos"),
+  q: z.string().trim().max(80).optional().catch(undefined),
+  depois: z.uuid().optional().catch(undefined),
+});
+
+export type ShowcaseAdminItem = {
+  vehicle: ModeratedCard;
+  /** Denúncias abertas (0 quando não há). */
+  openReports: number;
+  pendingApproval: boolean;
+};
+
+/**
+ * Aba **Veículos CajuGo** [1d] (ADM-FR-006): os veículos na vitrine (a regra pública),
+ * com os filtros **Denunciados** (denúncia aberta) e **Aguardando aprovação**; busca
+ * por marca, modelo ou loja; 20 por vez. Admin e suporte (os mesmos de [14e]).
+ */
+export async function showcaseAdmin(
+  db: Db,
+  session: Session | null,
+  raw: Record<string, string | string[] | undefined>,
+): Promise<{
+  items: ShowcaseAdminItem[];
+  next: string | null;
+  filter: ShowcaseFilter;
+  q: string;
+  counts: { reported: number; pending: number };
+}> {
+  authorizeTo(session, "admin.moderate");
+  const q = showcaseQuery.parse(
+    Object.fromEntries(
+      Object.entries(raw).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v]),
+    ),
+  );
+  const reported = sql`exists (select 1 from ${vehicleReports} where ${vehicleReports.vehicleId} = ${vehicles.id} and ${vehicleReports.status} = 'open')`;
+  const scope =
+    q.filtro === "aguardando"
+      ? eq(vehicles.status, "pending_approval")
+      : q.filtro === "denunciados"
+        ? and(publicVisible("showcase"), reported)
+        : publicVisible("showcase");
+  const search = q.q
+    ? or(
+        ilike(vehicles.make, `%${q.q}%`),
+        ilike(vehicles.model, `%${q.q}%`),
+        ilike(stores.name, `%${q.q}%`),
+      )
+    : undefined;
+
+  const [rows, [counts]] = await Promise.all([
+    db
+      .select({ id: vehicles.id })
+      .from(vehicles)
+      .innerJoin(stores, eq(stores.id, vehicles.storeId))
+      .where(
+        and(scope, search, q.depois ? lt(vehicles.id, q.depois) : undefined),
+      )
+      .orderBy(desc(vehicles.id))
+      .limit(SHOWCASE_PAGE_SIZE + 1),
+    db
+      .select({
+        reported: sql<number>`count(*) filter (where ${and(publicVisible("showcase"), reported)})::int`,
+        pending: sql<number>`count(*) filter (where ${vehicles.status} = 'pending_approval')::int`,
+      })
+      .from(vehicles)
+      .innerJoin(stores, eq(stores.id, vehicles.storeId)),
+  ]);
+  const page = rows.slice(0, SHOWCASE_PAGE_SIZE);
+  const ids = page.map((r) => r.id);
+  const [cards, reports, statuses] = await Promise.all([
+    cardsOf(db, ids),
+    ids.length
+      ? db
+          .select({ vehicleId: vehicleReports.vehicleId, n: count() })
+          .from(vehicleReports)
+          .where(
+            and(
+              inArray(vehicleReports.vehicleId, ids),
+              eq(vehicleReports.status, "open"),
+            ),
+          )
+          .groupBy(vehicleReports.vehicleId)
+      : [],
+    ids.length
+      ? db
+          .select({ id: vehicles.id, status: vehicles.status })
+          .from(vehicles)
+          .where(inArray(vehicles.id, ids))
+      : [],
+  ]);
+  const openBy = new Map(reports.map((r) => [r.vehicleId, r.n]));
+  const pendingIds = new Set(
+    statuses.filter((s) => s.status === "pending_approval").map((s) => s.id),
+  );
+  return {
+    items: ids.flatMap((id) => {
+      const vehicle = cards.get(id);
+      return vehicle
+        ? [
+            {
+              vehicle,
+              openReports: openBy.get(id) ?? 0,
+              pendingApproval: pendingIds.has(id),
+            },
+          ]
+        : [];
+    }),
+    next: rows.length > SHOWCASE_PAGE_SIZE ? ids[ids.length - 1] : null,
+    filter: q.filtro,
+    q: q.q ?? "",
+    counts,
+  };
 }

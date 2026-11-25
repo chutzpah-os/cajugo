@@ -565,3 +565,9 @@
 
 # 2026-11-24 · feat(auth): equipe CajuGo [012b/T010]
 - ADM-FR-012, ADM-SEC-002/003; equipe e clientes não se misturam (AUT-SEC-009).
+
+# 2026-11-24 · docs(vehicle-types): ilustrações SVG dos tipos [014]
+- Fonte das ilustrações da faixa de tipos (TIP-FR-007/020), enviadas pelo dono do produto; as versões leves para o site saem na implementação.
+
+# 2026-11-24 · feat(moderation): veículos CajuGo do admin [012b/T011]
+- ADM-FR-006; no domínio moderation porque reaproveita o card e a regra de [14e] e a mesma permissão (admin.moderate).

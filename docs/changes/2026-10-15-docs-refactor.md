@@ -1214,3 +1214,9 @@
 
 # 2026-11-24 · feat(auth): equipe CajuGo [012b/T010]
 - teamView (admins e suportes, Remover só para o admin, nunca na própria linha nem no último admin); inviteTeamMember (conta nova com senha temporária uma vez; conta sem papel recebe o papel; cliente ou já da equipe → 422); removeTeamMember (tira o papel, encerra as sessões, registro team.removed). Rótulos no Log.
+
+# 2026-11-24 · docs(vehicle-types): ilustrações SVG dos tipos [014]
+- SVGs de carro, moto, picape, ônibus, caminhão e trator em docs/specs/014-vehicle-types/imgs; os PNGs foram descartados.
+
+# 2026-11-24 · feat(moderation): veículos CajuGo do admin [012b/T011]
+- showcaseAdmin: veículos na vitrine (regra pública) com os filtros Denunciados e Aguardando aprovação, contagem de cada um, busca por marca/modelo/loja e 20 por vez; card da fila de denúncias (foto, nome, loja, preço) com o número de denúncias abertas.

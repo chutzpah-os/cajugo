@@ -41,7 +41,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
   - suporte → 403.
 
   · _ADM-FR-012, ADM-SEC-002, ADM-SEC-003_
-- [ ] **T011** Veículos CajuGo: na vitrine, com os filtros Denunciados e Aguardando aprovação. · _ADM-FR-006_
+- [x] **T011** Veículos CajuGo: na vitrine, com os filtros Denunciados e Aguardando aprovação. · _ADM-FR-006_
 
 ## Fase 3 — Telas
 - [ ] **T012** Painel [4a] no celular e Visão geral [15c] no desktop, com as filas inline de comprovantes e aprovação. _Parcial em 2026-11-25: [4a], [15c] e a fila de comprovantes. Falta a fila de aprovação: o admin ainda não aprova veículo ([14c] não existe); entra junto com a aba Veículos CajuGo (T011/T013)._ · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-FR-013, ADM-NFR-001_
