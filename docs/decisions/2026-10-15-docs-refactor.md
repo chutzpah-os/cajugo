@@ -673,3 +673,6 @@
 
 # 2026-11-24 · feat(db): pedidos do LaudoCaju, preço e permissão [016/T001]
 - LAU-FR-007, LAU-SEC-003; base para o pedido, o Pix e a fila.
+
+# 2026-11-25 · feat(laudos): pedido do LaudoCaju e tela do Pix [016/T002]
+- LAU-FR-003, 004, 007, LAU-SEC-001; o código no Pix ajuda o admin a achar o pagamento no extrato.

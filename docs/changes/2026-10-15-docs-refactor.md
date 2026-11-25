@@ -1322,3 +1322,6 @@
 
 # 2026-11-24 · feat(db): pedidos do LaudoCaju, preço e permissão [016/T001]
 - Migration 0026: laudo_requests (código, status, contatos, placa, veículo, preço da época, Recebi/Enviei, purged_at) e a regra laudo_price_cents (R$ 70) no grupo LaudoCaju da Conta e do Log; permissão laudos.manage (só admin). Staging aplicado; prod com autorização.
+
+# 2026-11-25 · feat(laudos): pedido do LaudoCaju e tela do Pix [016/T002]
+- Domínio laudos: requestLaudo (limite por rede, campo isca, schema estrito, placa normalizada, preço da época, código LC-XXXX sem caracteres ambíguos) e laudoPix (valor, chave, favorecido e BR Code com o código do pedido como identificador; nunca contatos nem placa). brCode aceita o txid.

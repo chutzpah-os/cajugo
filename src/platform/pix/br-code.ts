@@ -35,6 +35,8 @@ export function brCode(input: {
   /** Cidade do favorecido (até 15 caracteres). */
   city: string;
   amountCents?: number;
+  /** Identificador da cobrança (até 25 letras e números), que aparece no extrato. */
+  txid?: string;
 }): string {
   const account = field("00", "br.gov.bcb.pix") + field("01", input.key);
   const payload =
@@ -48,7 +50,13 @@ export function brCode(input: {
     field("58", "BR") +
     field("59", plain(input.name, 25)) +
     field("60", plain(input.city, 15)) +
-    field("62", field("05", "***")) +
+    field(
+      "62",
+      field(
+        "05",
+        input.txid?.replace(/[^A-Za-z0-9]/g, "").slice(0, 25) || "***",
+      ),
+    ) +
     "6304";
   return payload + crc16(payload);
 }

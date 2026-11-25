@@ -8,7 +8,7 @@ spec: 016
 - [x] **T001** Migration `0025` (`laudo_requests`), permissão `laudos.manage`, regra `laudo_price_cents` e docs (ARCHITECTURE, API, GLOSSARY, PRD). · _LAU-FR-007, LAU-SEC-003_
 
 ## Fase 2 — Fatias verticais
-- [ ] **T002** `requestLaudo` + `laudoPix`: pedido com isca e limite, código, preço da época; Pix com QR. · _LAU-FR-003, LAU-FR-004, LAU-SEC-001_
+- [x] **T002** `requestLaudo` + `laudoPix`: pedido com isca e limite, código, preço da época; Pix com QR. · _LAU-FR-003, LAU-FR-004, LAU-SEC-001_
 - [ ] **T003** Fila do admin: `laudoQueue`, `markPaid`, `markSent`, registro; `purgeOldLaudos` no cron. · _LAU-FR-005, LAU-SEC-002, LAU-SEC-003_
 
 ## Fase 3 — Telas
