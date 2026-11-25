@@ -1347,3 +1347,6 @@
 
 # 2026-11-25 · docs: planos da 014, 018 e 019
 - plan.md e tasks.md da 014 (tipos: enum e colunas da ficha, FIPE de motos e caminhões com id prefixado, 17 tasks), 018 (contestação da indicação, 7 tasks) e 019 (procedência em colunas, bloqueio no servidor, 11 tasks); specs em `planned`.
+
+# 2026-11-25 · test(home): e2e da página inicial e dos menus; 017 implementada [017/T004]
+- e2e do 308 antigo, menu do celular, layout desktop de Entrar e cadastro e "Quero ser avisado" do leilão até o admin; setas da faixa de tipos com 44 px (alvo de toque). 017 verificada: todos os HOM com teste passando.

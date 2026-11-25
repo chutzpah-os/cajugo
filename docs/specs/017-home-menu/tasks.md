@@ -7,4 +7,6 @@ spec: 017
 - [x] **T001** `/` como página inicial (abertura, Buscar · Vender, produtos); vitrine em `/veiculos`; 308 de `/?filtros`; sitemap, JSON-LD e ADR 0013. · _HOM-FR-001, HOM-FR-002_
 - [x] **T002** Filtro `?estado=` (novo, seminovo, usado). · _HOM-FR-003_
 - [x] **T003** Menus Comprar · Vender · Financiar · Cuidar · Assinar · Descobrir no desktop e no celular, com Em breve; cabeçalho em todas as páginas públicas. · _HOM-FR-003, HOM-FR-004, HOM-FR-005_
-- [ ] **T004** e2e da página inicial e dos menus em 390 e 1280 px. · _HOM-NFR-001_
+- [x] **T004** e2e da página inicial e dos menus em 390 e 1280 px. · _HOM-NFR-001_
+- [x] **T005** Pedidos de contato: "Quero ser avisado" do leilão e "Esqueci a senha" no admin [Contatos] (migration `0027`). · _HOM-FR-008, HOM-FR-009, HOM-SEC-001_
+- [x] **T006** `/verify`: todos os HOM com teste passando (2026-11-25). · _—_

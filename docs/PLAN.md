@@ -181,7 +181,8 @@
 - Leilão, sinistro, GNV, remarcação, gravame e restrições: livres, com aviso obrigatório ou bloqueados (no servidor); declaração de veracidade; selo Leilão; filtro Procedência. Spec em `docs/specs/019-vehicle-provenance/` (planned: plano e 11 tasks em 2026-11-25).
 
 ## 017 · Página inicial e menu do site
-- `/` como página inicial, vitrine em `/veiculos`, páginas por tipo, menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir, páginas de vendas em `/conheca/*`, Entrar e cadastros com desktop. Spec em `docs/specs/017-home-menu/` (in-progress).
+- `/` como página inicial, vitrine em `/veiculos`, páginas por tipo, menus Comprar · Vender · Aluguel · Financiar · Serviços · Cuidar · Assinar · Descobrir, páginas de vendas em `/conheca/*`, Entrar e cadastros com desktop. Spec em `docs/specs/017-home-menu/`.
+> ✅ **Implementada** em 2026-11-25: página inicial, vitrine em `/veiculos` e páginas por tipo, menus com Em breve no desktop e no celular, rodapé, páginas de vendas em `/conheca/*`, Entrar e cadastros com versão desktop, pedidos de contato no admin (Contatos) sem número da equipe em público. Migration `0027` no staging e no prod.
 
 ## 014b · Tipos de veículo · descoberta, alertas, admin e cadastro da loja — telas 5b, 5c, 14c, 14e, 1d
 - Páginas `/motos/...`, `/caminhoes/...` etc.; alerta de busca por tipo; tipo nas filas do admin; landing e cadastro com "o que você vende". Spec em `docs/specs/014b-vehicle-types-discovery/` (draft).

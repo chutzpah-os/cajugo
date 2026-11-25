@@ -24,7 +24,7 @@ export function ScrollRow({
       behavior: "smooth",
     });
   const arrow =
-    "absolute top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-lg font-bold text-ink shadow-md md:size-10";
+    "absolute top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-surface text-lg font-bold text-ink shadow-md";
   return (
     <div className={cn("relative", className)}>
       <div
