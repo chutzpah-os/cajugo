@@ -1253,3 +1253,6 @@
 
 # 2026-11-24 · feat(site): Rede Caju em /rede-caju, cabeçalho centralizado e menu nas páginas de erro [017]
 - Área do vendedor passa de /rede para /rede-caju (cadastro, painel, vitrine, extrato, conta, avisos), com 308 do endereço antigo; cabeçalho público numa coluna centralizada (max 1280 px); 404 e página de erro com o cabeçalho e os menus; docs (API, PRD, SEO) com o novo endereço.
+
+# 2026-11-24 · feat(showcase): Comprar · Vender, faixa do Caju Indica abaixo do quadro e abertura sem contagem [017]
+- Aba Buscar vira Comprar; a faixa do Caju Indica sai da grade e fica numa linha abaixo do quadro (inteira clicável, com a recompensa das regras); some o rodapé do Caju Indica e o espaço de divulgação da grade; a abertura da / perde a contagem de anúncios.

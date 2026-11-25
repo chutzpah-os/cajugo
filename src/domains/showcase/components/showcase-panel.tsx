@@ -24,7 +24,7 @@ export function ShowcasePanel({
   return (
     <section
       aria-label="Comprar ou vender"
-      className="-mx-4 flex flex-col lg:mx-auto lg:w-full lg:max-w-5xl"
+      className="-mx-4 flex flex-col lg:mx-0 lg:w-full"
       data-testid="showcase-panel"
     >
       <div role="tablist" className="flex px-4 lg:px-0">
@@ -50,7 +50,7 @@ export function ShowcasePanel({
         role="tabpanel"
         id={`painel-${tab}`}
         aria-labelledby={`tab-${tab}`}
-        className="flex flex-col gap-3 bg-surface px-4 py-4 lg:max-w-5xl lg:rounded-b-card lg:rounded-tr-card lg:border lg:border-line lg:p-4"
+        className="flex flex-col gap-3 bg-surface px-4 py-4 lg:rounded-b-card lg:rounded-tr-card lg:border lg:border-line lg:p-4"
       >
         {tab === "buscar" ? search : sell}
       </div>

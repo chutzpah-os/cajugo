@@ -19,7 +19,6 @@ export function CatalogView({
   sort,
   intro,
   empty,
-  promo,
   toolbarOnDesktop = false,
 }: {
   title: string;
@@ -35,8 +34,6 @@ export function CatalogView({
   /** Texto logo abaixo do título (parágrafo da descoberta, DSC-FR-006). */
   intro?: ReactNode;
   empty: ReactNode;
-  /** Card de divulgação na grade (Caju Indica). */
-  promo?: ReactNode;
   /** A vitrine mostra o quadro Buscar/Vender também no desktop (014). */
   toolbarOnDesktop?: boolean;
 }) {
@@ -108,7 +105,6 @@ export function CatalogView({
             source={source}
             query={query}
             empty={empty}
-            promo={promo}
           />
         </div>
       </div>

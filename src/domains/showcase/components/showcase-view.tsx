@@ -65,13 +65,11 @@ export async function ShowcaseView({
   filters,
   result,
   promo,
-  promoFooter,
 }: {
   filters: Filters;
   result: SearchResult;
-  /** Card montado pela rota dentro da grade e a linha do rodapé (Caju Indica [9a], 010). */
+  /** Faixa do Caju Indica ao lado do quadro Comprar · Vender (010, pedido do dono). */
   promo?: ReactNode;
-  promoFooter?: ReactNode;
 }) {
   const { makes, cities } = await cachedFacets("showcase");
   const filtered = filtersToQuery(filters) !== "";
@@ -88,7 +86,6 @@ export async function ShowcaseView({
         <JsonLd data={itemListJsonLd(result.items.map((c) => c.path))} />
       )}
       <CatalogView
-        promo={promo}
         title={titleOf(filters)}
         count={
           result.total || filtered
@@ -102,17 +99,20 @@ export async function ShowcaseView({
         showStore
         toolbarOnDesktop
         toolbar={
-          <ShowcasePanel
-            search={
-              <ShowcaseSearch
-                filters={filters}
-                makes={makes}
-                cities={cities}
-                total={result.total}
-              />
-            }
-            sell={<SellPitch />}
-          />
+          <div className="flex flex-col gap-3 lg:mx-auto lg:w-full lg:max-w-5xl">
+            <ShowcasePanel
+              search={
+                <ShowcaseSearch
+                  filters={filters}
+                  makes={makes}
+                  cities={cities}
+                  total={result.total}
+                />
+              }
+              sell={<SellPitch />}
+            />
+            {promo}
+          </div>
         }
         sidebar={
           makes.length > 0 || filtered ? (
@@ -152,7 +152,6 @@ export async function ShowcaseView({
           )
         }
       />
-      <div className="lg:hidden">{promoFooter}</div>
     </main>
   );
 }

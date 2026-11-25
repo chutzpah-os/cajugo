@@ -19,7 +19,6 @@ export function CatalogList({
   source,
   query,
   empty,
-  promo,
 }: {
   result: SearchResult;
   cloudName: string;
@@ -27,8 +26,6 @@ export function CatalogList({
   source: ListSource;
   query: string;
   empty: ReactNode;
-  /** Card de divulgação na grade (Caju Indica [15a], [9a]), depois do 5º veículo. */
-  promo?: ReactNode;
 }) {
   const { pending } = useCatalogNavigation();
   const list = useLoadMore<Card>({
@@ -54,9 +51,6 @@ export function CatalogList({
               showStore={showStore}
               priority={i === 0}
             />
-            {promo && i === Math.min(4, list.items.length - 1) && (
-              <li>{promo}</li>
-            )}
           </Fragment>
         ))}
       </ul>

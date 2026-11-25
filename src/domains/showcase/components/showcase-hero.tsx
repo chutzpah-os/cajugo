@@ -1,11 +1,9 @@
-const count = new Intl.NumberFormat("pt-BR");
-
 /**
  * Abertura da página inicial (017, pedido do dono em 2026-11-25): a CajuGo como a
  * plataforma automotiva, com o texto à esquerda e a ilustração à direita no desktop;
  * o quadro Buscar · Vender vem logo abaixo.
  */
-export function ShowcaseHero({ total }: { total: number }) {
+export function ShowcaseHero() {
   return (
     <div className="flex items-center gap-8 pt-4 lg:pt-6">
       <div className="flex max-w-2xl flex-col gap-2.5 lg:gap-4">
@@ -16,8 +14,7 @@ export function ShowcaseHero({ total }: { total: number }) {
           </span>
         </p>
         <p className="text-[15px] text-text-2 lg:text-[17px]">
-          Na CajuGo você encontra veículos novos e seminovos das lojas
-          {total > 0 ? ` (${count.format(total)} à venda agora)` : ""}, coloca o
+          Na CajuGo você encontra veículos novos e seminovos das lojas, coloca o
           estoque da sua loja online, consulta o histórico de um veículo antes
           de comprar e fala direto com a loja pelo WhatsApp, sem intermediário.
         </p>

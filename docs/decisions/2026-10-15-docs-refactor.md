@@ -604,3 +604,6 @@
 
 # 2026-11-24 · feat(site): Rede Caju em /rede-caju, cabeçalho centralizado e menu nas páginas de erro [017]
 - Pedidos do dono em 2026-11-25: 'rede' sozinho não diz o que é; menu em todas as páginas públicas, inclusive as de erro.
+
+# 2026-11-24 · feat(showcase): Comprar · Vender, faixa do Caju Indica abaixo do quadro e abertura sem contagem [017]
+- Pedidos do dono em 2026-11-25 (preferiu a faixa simples ao carrossel).

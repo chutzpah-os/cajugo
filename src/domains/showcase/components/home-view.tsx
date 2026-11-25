@@ -37,12 +37,12 @@ const PRODUCTS = [
  * Página inicial (017, HOM-FR-001): a abertura, o quadro Buscar · Vender (a busca e a
  * faixa de tipos levam à vitrine em `/veiculos`) e os produtos da CajuGo.
  */
-export function HomeView({ total }: { total: number }) {
+export function HomeView() {
   return (
     <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col gap-8 px-4 pb-12 md:max-w-3xl lg:max-w-5xl lg:px-8">
       <h1 className="sr-only">CajuGo: veículos novos e seminovos das lojas</h1>
       <div className="flex flex-col gap-4 lg:gap-7">
-        <ShowcaseHero total={total} />
+        <ShowcaseHero />
         <CatalogNavigation>
           <ShowcasePanel
             search={

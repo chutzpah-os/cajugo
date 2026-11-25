@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/domains/auth/components/site-header";
 import { HomeView } from "@/domains/showcase/components/home-view";
-import { cachedFacets } from "@/domains/showcase/current";
 import { JsonLd, pageMetadata } from "@/platform/seo/seo";
 import { websiteJsonLd } from "@/platform/seo/catalog";
 
@@ -13,13 +12,12 @@ export const metadata: Metadata = pageMetadata({
 });
 
 /** Página inicial (017): pré-renderizada; a lista de veículos fica em `/veiculos`. */
-export default async function Home() {
-  const { makes } = await cachedFacets("showcase");
+export default function Home() {
   return (
     <>
       <JsonLd data={websiteJsonLd()} />
       <SiteHeader active="inicio" />
-      <HomeView total={makes.reduce((sum, m) => sum + m.count, 0)} />
+      <HomeView />
     </>
   );
 }

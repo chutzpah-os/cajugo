@@ -26,15 +26,7 @@ export default async function Showcase() {
         search={<HeaderSearch filters={NONE} basePath="/veiculos" />}
       />
       <ShowcaseView
-        promo={
-          <ReferralBanner banner={await cachedProgramBanner()} variant="card" />
-        }
-        promoFooter={
-          <ReferralBanner
-            banner={await cachedProgramBanner()}
-            variant="footer"
-          />
-        }
+        promo={<ReferralBanner banner={await cachedProgramBanner()} />}
         filters={NONE}
         result={await cachedSearch("showcase", NONE)}
       />
