@@ -1205,3 +1205,6 @@
 
 # 2026-11-24 · feat(showcase): vitrine de veículos e faixa de tipos na spec [014]
 - Título e descrição da vitrine passam a 'Veículos usados e seminovos à venda' (TIP-FR-008). TIP-FR-007: sem tipo, a faixa de tipos com SVG ocupa o lugar da barra de filtros; escolhido o tipo, vem a barra Filtros · Tipo · filtros do tipo.
+
+# 2026-11-24 · feat(admin): logs de atividade com filtros [012b/T009]
+- activityLogView: filtros tipo (grupos de ações), período de/até (dia de São Paulo) e loja (a própria loja ou data.storeId), 20 por vez com cursor, ação em texto e o nome de quem fez ('Sistema' sem autor); nunca devolve data. readActivity na plataforma e profileNames no auth.

@@ -1,4 +1,14 @@
-import { and, desc, eq, ilike, lt, or, sql, type SQL } from "drizzle-orm";
+import {
+  and,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  lt,
+  or,
+  sql,
+  type SQL,
+} from "drizzle-orm";
 import { z } from "zod";
 import { profiles, stores } from "@/platform/db/schema";
 import type { Db } from "@/platform/db/types";
@@ -101,4 +111,17 @@ export async function usersAdmin(
     })),
     next: rows.length > USERS_PAGE_SIZE ? (page.at(-1)?.id ?? null) : null,
   };
+}
+
+/** Nome de cada conta pelo id (quem fez, no Log do admin); só o nome. */
+export async function profileNames(
+  db: Db,
+  ids: string[],
+): Promise<Map<string, string>> {
+  if (!ids.length) return new Map();
+  const rows = await db
+    .select({ id: profiles.id, name: profiles.name })
+    .from(profiles)
+    .where(inArray(profiles.id, ids));
+  return new Map(rows.map((r) => [r.id, r.name]));
 }

@@ -509,4 +509,4 @@ export { grantRole } from "./roles";
 export { removeStoreAccounts, storeAccountsToDelete } from "./accounts";
 
 /** Usuários do admin [1d] (012b). */
-export { usersAdmin, type AdminUserItem } from "./admin-users";
+export { profileNames, usersAdmin, type AdminUserItem } from "./admin-users";

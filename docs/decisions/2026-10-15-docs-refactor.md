@@ -556,3 +556,6 @@
 
 # 2026-11-24 · feat(showcase): vitrine de veículos e faixa de tipos na spec [014]
 - Pedido do dono: a vitrine não é só de carros, e o primeiro filtro é o tipo de veículo, com ilustração.
+
+# 2026-11-24 · feat(admin): logs de atividade com filtros [012b/T009]
+- ADM-FR-011, ADM-FR-015, ADM-SEC-005; o histórico da loja é o Log filtrado por ela (regra do dono, 2026-11-25).
