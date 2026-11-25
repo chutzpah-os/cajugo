@@ -3,7 +3,8 @@ import { CheckIcon } from "./icons";
 
 /**
  * Telas de entrar e de cadastro (login, lojista, Caju Indica, Rede Caju): no desktop,
- * o painel com o que a pessoa ganha à esquerda e o formulário num card à direita; no
+ * o painel com o que a pessoa ganha à esquerda, fixo enquanto o formulário rola (no
+ * cadastro longo ele não some nem deixa um vazio), e o formulário num card à direita; no
  * celular, o formulário primeiro e o painel embaixo, resumido.
  */
 export function AuthLayout({
@@ -52,7 +53,7 @@ export function AuthLayout({
       </section>
       <aside
         aria-label={panel.eyebrow}
-        className="relative flex flex-col gap-5 overflow-hidden rounded-card bg-[radial-gradient(120%_120%_at_90%_10%,#e8551e_0%,#b23c12_35%,#1c1b20_75%)] p-6 text-white lg:order-1 lg:min-h-[560px] lg:p-10"
+        className="relative flex flex-col gap-5 overflow-hidden rounded-card bg-[radial-gradient(120%_120%_at_90%_10%,#e8551e_0%,#b23c12_35%,#1c1b20_75%)] p-6 text-white lg:sticky lg:top-6 lg:order-1 lg:h-[min(620px,calc(100dvh-3rem))] lg:p-10"
       >
         <p className="text-xs font-extrabold tracking-[0.12em] text-castanha uppercase">
           {panel.eyebrow}
@@ -79,7 +80,7 @@ export function AuthLayout({
           alt=""
           width={360}
           height={252}
-          className="mt-auto hidden h-[220px] w-auto self-end object-contain drop-shadow-2xl lg:block"
+          className="mt-auto hidden max-h-[220px] min-h-0 w-auto shrink self-end object-contain drop-shadow-2xl lg:block"
         />
       </aside>
     </main>

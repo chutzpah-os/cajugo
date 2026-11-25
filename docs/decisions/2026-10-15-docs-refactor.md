@@ -628,3 +628,6 @@
 
 # 2026-11-24 · feat(site): entrar e cadastros com versão para desktop [017]
 - Pedido do dono: melhorar essas telas, com desktop e ajustes no celular.
+
+# 2026-11-24 · fix(site): painel das telas de cadastro acompanha a rolagem [017]
+- Pedido do dono: nos cadastros longos o painel acabava e deixava um vazio ao lado dos campos.

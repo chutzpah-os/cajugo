@@ -1277,3 +1277,6 @@
 
 # 2026-11-24 · feat(site): entrar e cadastros com versão para desktop [017]
 - AuthLayout: no desktop, painel escuro com o título, o que a pessoa ganha e a ilustração à esquerda, e o formulário num card à direita; no celular, formulário primeiro e o painel embaixo. Aplicado a Entrar, Recuperar senha, cadastro do lojista, Caju Indica e Rede Caju (os formulários não mudam).
+
+# 2026-11-24 · fix(site): painel das telas de cadastro acompanha a rolagem [017]
+- No desktop, o painel de Entrar e dos cadastros fica fixo ao lado do formulário (altura da tela, até 620 px) enquanto os campos rolam; a ilustração encolhe quando falta altura.
