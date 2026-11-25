@@ -1319,3 +1319,6 @@
 
 # 2026-11-24 · docs(vehicles): spec da procedência e situação do veículo [019]
 - Spec 019: seção obrigatória no cadastro (procedência, sinistro, GNV, remarcação, gravame, restrições, roubo); três grupos (livre, aviso obrigatório, bloqueado no servidor); selo Leilão; filtro Procedência; declaração de veracidade; procedência sempre na ficha; motivo de denúncia; chamada do LaudoCaju. Substitui o TIP-FR-018 da 014.
+
+# 2026-11-24 · feat(db): pedidos do LaudoCaju, preço e permissão [016/T001]
+- Migration 0026: laudo_requests (código, status, contatos, placa, veículo, preço da época, Recebi/Enviei, purged_at) e a regra laudo_price_cents (R$ 70) no grupo LaudoCaju da Conta e do Log; permissão laudos.manage (só admin). Staging aplicado; prod com autorização.

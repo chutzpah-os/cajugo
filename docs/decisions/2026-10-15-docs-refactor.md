@@ -670,3 +670,6 @@
 
 # 2026-11-24 · docs(vehicles): spec da procedência e situação do veículo [019]
 - Regras do dono do produto em 2026-11-25 contra golpe e desistência; ele pediu para completar como fosse melhor.
+
+# 2026-11-24 · feat(db): pedidos do LaudoCaju, preço e permissão [016/T001]
+- LAU-FR-007, LAU-SEC-003; base para o pedido, o Pix e a fila.

@@ -128,6 +128,7 @@ describe("migrations", () => {
         installment_down_bps: 2000,
         installment_months: 48,
         installment_rate_bps: 179,
+        laudo_price_cents: 7000,
         min_photos: 6,
         membership_cents: 10000,
         past_due_tolerance_days: 5,

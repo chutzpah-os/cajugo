@@ -87,6 +87,7 @@ describe("ações do admin", () => {
     "payouts.markPaid",
     "settings.edit",
     "team.manage",
+    "laudos.manage",
   ];
 
   it("[AUT-SEC-008] suporte lê o admin e modera, sem outras ações", () => {

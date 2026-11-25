@@ -708,6 +708,46 @@ export const searchAlerts = pgTable(
   ],
 ).enableRLS();
 
+export const laudoStatus = pgEnum("laudo_status", [
+  "awaiting_pix",
+  "paid",
+  "sent",
+]);
+
+/**
+ * Pedidos do LaudoCaju (016): consulta veicular por Pix. Nome, contatos e placa só para
+ * a equipe e apagados 2 anos depois (LAU-SEC-002); o preço é o da época do pedido.
+ */
+export const laudoRequests = pgTable(
+  "laudo_requests",
+  {
+    id: uuid("id").primaryKey().$defaultFn(uuidv7),
+    /** "LC-4F7K": vai na descrição do Pix e na URL da tela do Pix. */
+    code: text("code").notNull().unique(),
+    status: laudoStatus("status").notNull().default("awaiting_pix"),
+    name: text("name"),
+    /** `55` + DDD + número. */
+    whatsapp: text("whatsapp"),
+    email: text("email"),
+    plate: text("plate"),
+    /** "Toyota Corolla 2025", escrito ou vindo da página do veículo. */
+    vehicle: text("vehicle"),
+    vehicleId: uuid("vehicle_id").references(() => vehicles.id, {
+      onDelete: "set null",
+    }),
+    priceCents: integer("price_cents").notNull(),
+    consentAt: timestamp("consent_at", { withTimezone: true }).notNull(),
+    paidAt: timestamp("paid_at", { withTimezone: true }),
+    paidBy: uuid("paid_by").references(() => profiles.id),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    sentBy: uuid("sent_by").references(() => profiles.id),
+    /** Quando os dados pessoais foram apagados (LAU-SEC-002). */
+    purgedAt: timestamp("purged_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [index("laudo_requests_status_created").on(t.status, t.createdAt)],
+).enableRLS();
+
 export const leadChannel = pgEnum("lead_channel", ["form", "whatsapp"]);
 export const leadOrigin = pgEnum("lead_origin", [
   "cajugo",

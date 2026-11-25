@@ -199,6 +199,7 @@ payouts                  id, profile_id, amount_cents, pix_key, cpf, status (req
 # Comprador
 favorites                profile_id + vehicle_id (pk), price_at_save_cents, created_at   # sem conta: no aparelho
 search_alerts            id, status (pending|notified|canceled|expired), name, phone (apagados ao fechar), query (filtros normalizados), discovery_path, consent_at, created_at, closed_at, notified_by   # 006d
+laudo_requests           id, code (LC-XXXX, único), status (awaiting_pix|paid|sent), name, whatsapp, email, plate, vehicle, vehicle_id, price_cents (da época), consent_at, paid_at/by, sent_at/by, purged_at (dados apagados em 2 anos), created_at   # 016
 
 # Plataforma
 setting_values           id, key, value (jsonb), valid_from, changed_by    # só INSERT; ADR 0010

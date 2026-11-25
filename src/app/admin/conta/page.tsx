@@ -113,6 +113,7 @@ async function Content() {
       {form("payment", "Pagamento")}
       {form("approval", "Aprovação prévia")}
       {form("data", "Dados")}
+      {form("laudo", "LaudoCaju")}
 
       <nav
         aria-label="Minha conta"

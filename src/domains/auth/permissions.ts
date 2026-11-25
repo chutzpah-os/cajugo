@@ -57,6 +57,8 @@ export const PERMISSIONS = {
   "team.manage": ["admin"],
   /** Criar loja e editar os dados dela pelo admin [1d], [6g] (012b). */
   "stores.manage": ["admin"],
+  /** Marcar Recebi e Enviei nos pedidos do LaudoCaju (016). */
+  "laudos.manage": ["admin"],
 } as const satisfies Record<string, readonly Role[]>;
 
 export type Permission = keyof typeof PERMISSIONS;

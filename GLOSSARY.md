@@ -104,6 +104,9 @@ Análise do cadastro do vendedor pela CajuGo [7h]: CPF, foto do documento e ante
 Em análise (`in_review`, aguardando a curadoria) → Ativo (`active`, gera links e ganha comissão das parceiras) ⇄ Bloqueado (`blocked`, com motivo; parcerias suspensas até desbloquear).
 _Evite_: banido, suspenso
 
+## LaudoCaju
+Consulta veicular vendida pela CajuGo (spec 016): o comprador pede, paga por Pix e a equipe manda o laudo à mão. No código, `laudos` (pedido: `LaudoRequest`, tabela `laudo_requests`).
+
 ## Caju Indica
 
 **Caju Indica**:

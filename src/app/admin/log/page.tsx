@@ -22,6 +22,7 @@ const GROUP_TITLE: Record<SettingGroup, string> = {
   approval: "Aprovação prévia",
   data: "Dados",
   referral: "Caju Indica",
+  laudo: "LaudoCaju",
 };
 
 async function Content() {

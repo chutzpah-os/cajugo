@@ -36,6 +36,7 @@ describe("lista de regras", () => {
     expect([...SETTING_KEYS].sort()).toEqual(
       [
         "cajugo_fee_bps",
+        "laudo_price_cents",
         "membership_cents",
         "min_photos",
         "past_due_tolerance_days",

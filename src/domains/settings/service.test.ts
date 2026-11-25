@@ -36,6 +36,7 @@ describe("settings", () => {
         review_business_days: 1,
         past_due_tolerance_days: 5,
         cajugo_fee_bps: 100,
+        laudo_price_cents: 7000,
         require_approval: false,
         min_photos: 6,
         retention_days: 90,

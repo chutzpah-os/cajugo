@@ -18,6 +18,7 @@ export const SETTING_GROUPS = [
   "approval",
   "data",
   "referral",
+  "laudo",
 ] as const;
 export type SettingGroup = (typeof SETTING_GROUPS)[number];
 
@@ -134,6 +135,13 @@ export const SETTINGS = {
     label: "Chave Pix da CajuGo",
     schema: pixSchema.nullable(),
     initial: null,
+  }),
+  laudo_price_cents: define({
+    group: "laudo",
+    input: "money",
+    label: "Preço da consulta veicular (LaudoCaju)",
+    schema: money(1000, 100000),
+    initial: 7000,
   }),
   membership_cents: define({
     group: "payment",

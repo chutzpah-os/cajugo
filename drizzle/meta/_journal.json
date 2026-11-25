@@ -183,6 +183,13 @@
       "when": 1795593259899,
       "tag": "0025_drop_installment",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1795619124704,
+      "tag": "0026_laudo_requests",
+      "breakpoints": true
     }
   ]
 }

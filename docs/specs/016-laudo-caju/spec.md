@@ -2,7 +2,7 @@
 id: 016
 slug: laudo-caju
 title: LaudoCaju · consulta veicular por Pix
-status: clarified
+status: in-progress
 owner: dono do produto
 created: 2026-11-25
 ---
