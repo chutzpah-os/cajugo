@@ -1232,3 +1232,6 @@
 
 # 2026-11-24 · feat(admin): nova loja dentro de Lojas [012b/T014]
 - '+ Nova loja' ao lado do título Lojas abre o formulário na própria tela (loja: nome, cidade, WhatsApp, endereço checado ao vivo; dono: nome, e-mail, celular); ao criar, mostra e-mail e senha temporária com Copiar, uma vez. Actions createStoreByAdminAction e updateStoreByAdminAction (esta para a T015). e2e.
+
+# 2026-11-24 · docs(price-compare): spec, plano e tasks [015]
+- Spec 015: Compare os preços (anunciado, média CajuGo com ≥ 3 iguais, Tabela FIPE) na página do veículo; FIPE pela fipe.api.br v2 gratuita; fim da parcela estimada e do simulador; bloco Veja as parcelas com aviso da integração com os bancos; Ver parcelas ao lado do preço e coluna da direita no desktop.

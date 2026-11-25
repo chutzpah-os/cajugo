@@ -583,3 +583,6 @@
 
 # 2026-11-24 · feat(admin): nova loja dentro de Lojas [012b/T014]
 - ADM-FR-005, ADM-SEC-003; regra do dono: sem página própria, o formulário abre onde está o botão.
+
+# 2026-11-24 · docs(price-compare): spec, plano e tasks [015]
+- Pedido do dono do produto em 2026-11-25, com as referências da Webmotors: nada de 'simulação imaginária'.
