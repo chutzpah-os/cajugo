@@ -1211,3 +1211,6 @@
 
 # 2026-11-24 · feat(showcase): veículos novos e seminovos; abas Buscar e Vender na spec [014]
 - Título da vitrine: 'Veículos novos e seminovos à venda'. Spec 014: Tipo de veículo como 1ª seção do filtro lateral e da folha; TIP-FR-020 com as abas Buscar (busca + faixa de tipos, um veículo por ilustração) e Vender (vantagens + Quero anunciar → /lojistas).
+
+# 2026-11-24 · feat(auth): equipe CajuGo [012b/T010]
+- teamView (admins e suportes, Remover só para o admin, nunca na própria linha nem no último admin); inviteTeamMember (conta nova com senha temporária uma vez; conta sem papel recebe o papel; cliente ou já da equipe → 422); removeTeamMember (tira o papel, encerra as sessões, registro team.removed). Rótulos no Log.

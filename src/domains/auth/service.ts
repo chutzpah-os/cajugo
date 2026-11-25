@@ -510,3 +510,7 @@ export { removeStoreAccounts, storeAccountsToDelete } from "./accounts";
 
 /** Usuários do admin [1d] (012b). */
 export { profileNames, usersAdmin, type AdminUserItem } from "./admin-users";
+
+/** Equipe CajuGo [4c] (012b). */
+export { inviteTeamMember, removeTeamMember, teamView } from "./team";
+export type { TeamMember } from "./team";

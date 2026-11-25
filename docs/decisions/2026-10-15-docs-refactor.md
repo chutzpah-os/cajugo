@@ -562,3 +562,6 @@
 
 # 2026-11-24 · feat(showcase): veículos novos e seminovos; abas Buscar e Vender na spec [014]
 - Pedidos do dono do produto em 2026-11-25, com a referência visual das abas Buscar/Vender.
+
+# 2026-11-24 · feat(auth): equipe CajuGo [012b/T010]
+- ADM-FR-012, ADM-SEC-002/003; equipe e clientes não se misturam (AUT-SEC-009).

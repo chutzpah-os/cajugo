@@ -76,6 +76,8 @@ const ACTION_LABEL: Record<string, string> = {
   "auth.temp_password_set": "Senha temporária definida",
   "auth.password_changed": "Senha trocada",
   "auth.admin_created": "Admin criado",
+  "team.invited": "Convite para a equipe",
+  "team.removed": "Removido da equipe",
   "vehicle.published": "Veículo publicado",
   "vehicle.unpublished": "Veículo despublicado",
   "vehicle.price_changed": "Preço alterado",
