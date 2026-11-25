@@ -1220,3 +1220,6 @@
 
 # 2026-11-24 · feat(moderation): veículos CajuGo do admin [012b/T011]
 - showcaseAdmin: veículos na vitrine (regra pública) com os filtros Denunciados e Aguardando aprovação, contagem de cada um, busca por marca/modelo/loja e 20 por vez; card da fila de denúncias (foto, nome, loja, preço) com o número de denúncias abertas.
+
+# 2026-11-24 · feat(admin): lojas [1d] com as abas [012b/T013]
+- /admin/lojas com as abas Lojas (KPIs, busca, filtros, cards com Gerenciar), Veículos CajuGo (filtros Denunciados e Aguardando aprovação, Ocultar) e Usuários (busca, selos); /admin/veiculos mostra a mesma lista; 20 por vez com Ver mais; e2e em 390 e 1280 px. Obs.: a T011 (showcaseAdmin) entrou por engano no commit e73720d, das ilustrações.

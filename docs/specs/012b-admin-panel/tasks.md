@@ -45,7 +45,7 @@ Decisões D1–D5 do plano aprovadas em 2026-11-24.
 
 ## Fase 3 — Telas
 - [ ] **T012** Painel [4a] no celular e Visão geral [15c] no desktop, com as filas inline de comprovantes e aprovação. _Parcial em 2026-11-25: [4a], [15c] e a fila de comprovantes. Falta a fila de aprovação: o admin ainda não aprova veículo ([14c] não existe); entra junto com a aba Veículos CajuGo (T011/T013)._ · _ADM-FR-001, ADM-FR-002, ADM-FR-003, ADM-FR-013, ADM-NFR-001_
-- [ ] **T013** Lojas [1d] com as abas Lojas, Veículos CajuGo e Usuários. · _ADM-FR-004, ADM-FR-006, ADM-FR-007, ADM-NFR-001_
+- [x] **T013** Lojas [1d] com as abas Lojas, Veículos CajuGo e Usuários. · _ADM-FR-004, ADM-FR-006, ADM-FR-007, ADM-NFR-001_
 - [ ] **T014** Nova loja dentro de Lojas (formulário recolhível, sem página própria), com a senha mostrada uma vez e **Copiar**. · _ADM-FR-005_
 - [ ] **T015** Detalhe da loja [6g]:
   - cards e lista de ações;

@@ -571,3 +571,6 @@
 
 # 2026-11-24 · feat(moderation): veículos CajuGo do admin [012b/T011]
 - ADM-FR-006; no domínio moderation porque reaproveita o card e a regra de [14e] e a mesma permissão (admin.moderate).
+
+# 2026-11-24 · feat(admin): lojas [1d] com as abas [012b/T013]
+- ADM-FR-004, 006, 007, ADM-NFR-001; o título some no celular como na captura [1d], e fica para leitor de tela.

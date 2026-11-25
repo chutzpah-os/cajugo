@@ -95,10 +95,13 @@ export function LightHeader({
   avatar,
   action,
   tabs,
+  titleOnMobile = true,
   children,
 }: {
   eyebrow?: ReactNode;
   title?: ReactNode;
+  /** `false`: no celular o título fica só para leitor de tela ([1d]: logo e abas). */
+  titleOnMobile?: boolean;
   /** Título diferente no desktop (ex.: [4a] "Olá, Ana" × [15c] "Visão geral"). */
   desktop?: { eyebrow?: ReactNode; title: ReactNode };
   avatar?: ReactNode;
@@ -124,7 +127,12 @@ export function LightHeader({
       </div>
       {title && (
         <>
-          <div className="flex flex-col gap-0.5 lg:hidden">
+          <div
+            className={cn(
+              "flex flex-col gap-0.5 lg:hidden",
+              !titleOnMobile && "sr-only",
+            )}
+          >
             {eyebrow && <p className="text-[13px] text-text-3">{eyebrow}</p>}
             <h1 className="text-2xl font-extrabold tracking-[-0.02em]">
               {title}

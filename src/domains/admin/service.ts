@@ -270,3 +270,19 @@ export async function adminStoreDetail(
     canManage: manage,
   };
 }
+
+/** KPIs da aba Lojas [1d] (ADM-FR-004): assinaturas ativas e receita mensal. */
+export async function storesKpis(
+  deps: AdminDeps,
+  session: Session | null,
+): Promise<{ active: number; mrrCents: number }> {
+  const s = authorizeTo(session, "admin.read");
+  const now = deps.now?.() ?? new Date();
+  const [subs, snapshot] = await Promise.all([
+    subscriptionsView({ db: deps.db, now: () => now }, s, {
+      filtro: "em-dia",
+    }),
+    storesSnapshot(deps.db, now),
+  ]);
+  return { active: snapshot.active, mrrCents: subs.mrrCents };
+}
